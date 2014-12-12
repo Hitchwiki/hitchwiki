@@ -67,19 +67,20 @@ FileETag None
 #
 
 RewriteEngine On
-#RewriteBase /
-#Options +FollowSymLinks
+RewriteBase /
+Options +FollowSymLinks
+
+# Ensure working of static assets
+#RewriteRule ^/(load.php|wp-content|wp-includes|wp-admin|images|skins|stylesheets|config|forum|community|maps|translate|phrasebook-v2|phrasebook)/ - [L]
 
 # Don't allow access to .php~ files
 RewriteRule \.php~$ - [F,L]
 
 ## Hitchwiki Redirects
-#RewriteCond %{REQUEST_HOST} !^192.168.33.10
 #RewriteCond %{HTTP_HOST} !^(www\.)?hitchwiki\.(com|info|net)$ [NC]
 #RewriteRule ^(.*) http://hitchwiki.org/$1 [R=301,NE,L]
 #
 ## Hitchgathering redirects
-#RewriteCond %{REQUEST_HOST} !^192.168.33.10
 #RewriteCond %{HTTP_HOST} !^(www\.)?hitchgathering\.(com|info|net)$ [NC]
 #RewriteRule ^(.*) http://hitchgathering.org/$1 [R=301,NE,L]
 
@@ -88,24 +89,30 @@ RewriteRule \.php~$ - [F,L]
 # MEDIAWIKI
 #
 
-# Fix http://hitchwiki.org/en/$1
-RewriteRule ^(..)/\$1$ /$1/ [R=301,L]
-
 # Add trailing slash to language codes
-RewriteRule ^(..)$ /$1/ [R=301,L]
+#RewriteRule ^(..)$ /$1/ [R=301,L]
 
-# Fix http://hitchwiki.org/de/.au
-RewriteRule ^(..)/\.(..)$ /$1/ [R=301,L]
-
-# Wiki articles
-RewriteRule ^(..)/(.*)$ /wiki/$2 [L,QSA]
+# Wiki Main_Page for different languages
+#RewriteRule ^(..)/(.*)$ /wiki/$2 [L,QSA]
 
 #RewriteCond %{REQUEST_URI} !^/noexist.*
-#RewriteCond %{REQUEST_URI} !^/(stylesheets|skins|images|config)/
 #RewriteCond %{REQUEST_URI} !^/(index|redirect|texvc)\.php$
 #RewriteCond %{REQUEST_URI} !^/errors/(40(1|3|4)|500)\.php$
 #RewriteCond %{REQUEST_URI} !^/(favicon\.png|favicon\.ico|humans\.txt|robots\.txt)$
-#RewriteRule ^wiki/(.*)$ /wiki/index.php?title=$2 [L,QSA]
+RewriteCond %{REQUEST_URI} ^/(..)/(load.php|stylesheets|resources|skins|images|config)
+RewriteRule ^(..)/(.*)$ /wiki/$2 [L,QSA]
+
+RewriteRule ^/?(..)(/.*)?$ %{DOCUMENT_ROOT}/wiki/index.php [L]
+RewriteRule ^/?$ %{DOCUMENT_ROOT}/wiki/index.php [L]
+
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+RewriteRule ^/?(..)/images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/wiki/thumb.php?f=$1&width=$2 [L,QSA,B]
+
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+RewriteRule ^/?(..)/images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/wiki/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
+
 
 #
 # File uploads

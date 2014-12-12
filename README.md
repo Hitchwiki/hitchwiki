@@ -35,8 +35,16 @@ vagrant ssh
 ```
 
 #### Pause your server
+Do this before turning computer off.
 ```bash
 vagrant suspend
+```
+
+#### Clean Vagrant box
+If for some reason you want to have clean Scotchbox installed, run:
+```bash
+vagrant destroy
+vagrant up
 ```
 
 #### Read more

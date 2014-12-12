@@ -14,9 +14,11 @@ if ( !defined( 'MEDIAWIKI' ) ) {
   exit;
 }
 
+# If PHP's memory limit is very low, some operations may fail.
+ini_set('memory_limit', '64M');
+
 # Load Hitchwiki Config
 $hwConfig = parse_ini_file("settings.ini",true);
-
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -34,13 +36,21 @@ if ($wgCommandLineMode) {
   if (!ini_get( 'zlib.output_compression')) @ob_start('ob_gzhandler');
 }
 
-
-
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "Hitchwiki Dev";
-$wgMetaNamespace = "Hitchwiki_Dev";
+$wgSitename = "Hitchwiki";
+$wgMetaNamespace = "Hitchwiki";
+
+if(HW_ENV == 'dev') {
+  $wgSitename .= ' Development';
+  $wgMetaNamespace .= '_dev';
+}
+
+# Setup $lang
+# Will also change $wgSitename if it finds local name
+require_once("mediawiki-lang.php");
+
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -54,29 +64,49 @@ $wgScriptExtension = ".php";
 $wgServer = "http://" . $hwConfig["general"]["domain"];
 
 ## The relative URL path to the skins directory
-$wgStylePath = "$wgScriptPath/skins";
+$wgStylePath = $wgScriptPath . "/skins";
+
+# TODO: should be different on non-hitchwiki.org domains
+#$wgCookieDomain     = ".hitchwiki.org";
+
+## The URL base path to the directory containing the wiki;
+## defaults for all runtime URL paths are based off of this.
+## For more information on customizing the URLs please see:
+## http://www.mediawiki.org/wiki/Manual:Short_URL
+$wgScriptPath = "/en";
+$wgScriptExtension = ".php";
+$wgArticlePath = "{$wgScriptPath}/$1";
+
+
+
+$wgScriptPath       = "/" . $lang;
+$wgScript           = $wgScriptPath . "/index.php";
+$wgRedirectScript   = "/redirect.php";
+$wgArticlePath      = "/" . $lang . "/$1";
+$wgUsePathInfo      = false;
+
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgScriptPath/resources/assets/wiki.png";
+$wgLogo = $wgScriptPath . "/resources/assets/wiki.png";
 
 ## UPO means: this is also a user preference option
 
 $wgEnableEmail = true;
 $wgEnableUserEmail = true; # UPO
 
-$wgEmergencyContact = "apache@" . $hwConfig["general"]["domain"];
-$wgPasswordSender = "apache@" . $hwConfig["general"]["domain"];
+$wgEmergencyContact = "contact@" . $hwConfig["general"]["domain"];
+$wgPasswordSender = "noreply@" . $hwConfig["general"]["domain"];
 
 $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO
 $wgEmailAuthentication = true;
 
 ## Database settings
-$wgDBtype = "mysql";
-$wgDBserver = $hwConfig["db"]["host"];
-$wgDBname = $hwConfig["db"]["database"];
-$wgDBuser = $hwConfig["db"]["username"];
+$wgDBtype     = "mysql";
+$wgDBserver   = $hwConfig["db"]["host"];
+$wgDBname     = $hwConfig["db"]["database"];
+$wgDBuser     = $hwConfig["db"]["username"];
 $wgDBpassword = $hwConfig["db"]["password"];
 
 # MySQL specific settings
@@ -92,11 +122,21 @@ $wgDBmysql5 = true;
 $wgMainCacheType = CACHE_NONE;
 $wgMemCachedServers = array();
 
+
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
 $wgEnableUploads = true;
 $wgUseImageMagick = true;
 $wgImageMagickConvertCommand = "/usr/bin/convert";
+
+## To enable image uploads, make sure the 'images' directory
+## is writable, then set this to true:
+$wgEnableUploads  = true;
+$wgGenerateThumbnailOnParse = false;
+
+$wgUploadPath       = "$wgScriptPath/images/$lang";
+$wgUploadDirectory  = "$IP/images/$lang";
+
 
 # InstantCommons allows wiki to use images from http://commons.wikimedia.org
 $wgUseInstantCommons = true;
@@ -134,8 +174,21 @@ $wgRightsUrl = "";
 $wgRightsText = "";
 $wgRightsIcon = "";
 
+$wgAllowDisplayTitle = true;
+
+# CSS
+$wgUseSiteCss        = true;
+$wgAllowUserCss      = true;
+
 # Path to the GNU diff3 utility. Used for conflict resolution.
 $wgDiff3 = "/usr/bin/diff3";
+
+// Recent changes stuff
+$wgShowUpdatedMarker             = true;
+$wgAllowCategorizedRecentChanges = true;
+$wgAllowCategorizedRecentChanges = true;
+$wgPutIPinRC                     = true;
+$wgUseRCPatrol                   = true;
 
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, ie 'vector', 'monobook':
