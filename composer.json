@@ -1,62 +1,67 @@
 {
-	"name": "hitchwiki",
-	"description": "The Hitchhiker's Guide to Hitchhiking the World",
-	"keywords": ["mediawiki", "wiki", "hitchwiki"],
-	"homepage": "http://hitchwiki.org/",
-	"authors": [
-		{
-			"name": "Hitchwiki Community"
-		}
-	],
-	"license": "MIT",
-	"support": {
-		"issues": "https://github.com/Hitchwiki/hitchwiki/issues",
-		"irc": "irc://irc.freenode.net/hitchwiki"
-	},
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "mediawiki/geo-data",
-                "version": "2.4",
-                "type": "mediawiki-extension",
-                "dist": {
-                    "url": "https://extdist.wmflabs.org/dist/extensions/GeoData-REL1_24-6b01042.tar.gz",
-                    "type": "tar"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "mediawiki/semantic-forms-inputs",
-                "version": "2.4",
-                "type": "mediawiki-extension",
-                "dist": {
-                    "url": "https://extdist.wmflabs.org/dist/extensions/SemanticFormsInputs-REL1_24-4ff1557.tar.gz",
-                    "type": "tar"
-                }
-            }
+  "name": "hitchwiki",
+  "description": "The Hitchhiker's Guide to Hitchhiking the World",
+  "keywords": ["mediawiki", "wiki", "hitchwiki"],
+  "homepage": "http://hitchwiki.org/",
+  "authors": [
+    {
+    	"name": "Hitchwiki"
+    }
+  ],
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/Hitchwiki/hitchwiki/issues",
+    "source": "https://github.com/Hitchwiki/hitchwiki/",
+    "irc": "irc://irc.freenode.net/hitchhiking"
+  },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/geo-data",
+        "version": "2.4",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/GeoData-REL1_24-6b01042.tar.gz",
+          "type": "tar"
         }
-    ],
-	"require": {
-		"php": ">=5.3.2",
-		"psr/log": "1.0.0",
-		"mediawiki/semantic-media-wiki": "~2.0",
-		"mediawiki/semantic-forms": "~3.0",
-		"mediawiki/maps": "~3.2",
-		"mediawiki/semantic-maps": "~3.1",
-        "mediawiki/geo-data":  "*",
-        "mediawiki/semantic-forms-inputs":  "*"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "*"
-	},
-	"suggest": {
-		"ext-fileinfo": "*",
-		"ext-mbstring": "*",
-		"ext-wikidiff2": "*",
-		"ext-apc": "*",
-		"monolog/monolog": "*"
-	}
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/semantic-forms-inputs",
+        "version": "2.4",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/SemanticFormsInputs-REL1_24-4ff1557.tar.gz",
+          "type": "tar"
+        }
+      }
+    }
+  ],
+  "require": {
+    "php": ">=5.3.2",
+    "psr/log": "1.0.0",
+    "mediawiki/semantic-media-wiki": "~2.0",
+    "mediawiki/semantic-forms": "~3.0",
+    "mediawiki/maps": "~3.2",
+    "mediawiki/semantic-maps": "~3.1",
+    "mediawiki/geo-data":  "*",
+    "mediawiki/semantic-forms-inputs":  "*"
+  },
+  "require-dev": {
+  },
+  "suggest": {
+    "ext-fileinfo": "*",
+    "ext-mbstring": "*",
+    "ext-wikidiff2": "*",
+    "ext-apc": "*",
+    "monolog/monolog": "*"
+  },
+  "extra": {
+    "installer-paths": {
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
+    }
+  }
 }

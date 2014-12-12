@@ -1,0 +1,21 @@
+.DS_STORE
+
+# Composer
+composer.phar
+composer.lock
+vendor
+
+# Vagrant/Scotchbox
+scotch-box
+.vagrant
+
+# Wiki
+mediawiki-*.tar.gz
+public/mediawiki-*
+public/wiki
+
+# Logs
+*.log
+
+# Other
+public/google*.html
