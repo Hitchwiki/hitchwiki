@@ -13,42 +13,43 @@ _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
 _Tested on Ubuntu & OSX._
 
 ### Prerequisites
-* Install [VirtualBox](https://www.virtualbox.org/) [...because](http://docs.vagrantup.com/v2/virtualbox)
+* Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
 * Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
 * Make sure you have [`git`](http://git-scm.com/), `curl` and `php` in your system.
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Run installation script: `sh install.sh`
+2. Run installation script: `sh ./scripts/install.sh`
 3. Run `vagrant up` to run development environment
 4. Open [http://192.168.33.10/](http://192.168.33.10/) in your browser
 
 #### This will do the following
-* Install [Scotch-box](http://box.scotch.io/) Vagrant box if you choose so
 * Downloads [Composer](https://getcomposer.org/) into the project
+* Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Download dependencies with Composer
 * Import development database into Scotchbox
 
-#### SSH into your server
+### Update
+1. Pull latest changes: `git pull origin master`
+2. Run update script: `sh ./scripts/update.sh`
+
+### SSH into your server
 ```bash
 vagrant ssh
 ```
 
-#### Pause your server
+### Pause your server
 Do this before turning computer off.
 ```bash
 vagrant suspend
 ```
 
-#### Clean Vagrant box
+### Clean Vagrant box
 If for some reason you want to have clean Scotchbox installed, run:
 ```bash
 vagrant destroy
 vagrant up
 ```
-
-#### Read more
-* About [Scotchbox](http://box.scotch.io/)
 
 ## Production environment
 _TODO_
