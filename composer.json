@@ -38,6 +38,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/OAuth",
+        "version": "2.4",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://git.wikimedia.org/zip/?r=mediawiki/extensions/OAuth&format=zip",
+          "type": "zip"
+        }
+      }
     }
   ],
   "require": {
@@ -48,7 +60,8 @@
     "mediawiki/maps": "~3.2",
     "mediawiki/semantic-maps": "~3.1",
     "mediawiki/geo-data":  "*",
-    "mediawiki/semantic-forms-inputs":  "*"
+    "mediawiki/semantic-forms-inputs":  "*",
+    "mediawiki/OAuth":  "*"
   },
   "require-dev": {
   },
