@@ -4,6 +4,6 @@
 mysql -u root -proot < /var/www/dumps/hitchwiki_db.sql
 
 # Import dev mediawiki SQL dump
-mysql -u root -proot hitchwiki < /var/www/dumps/mediawiki-dev.sql
+zcat /var/www/dumps/hitchwiki_dev.sql.gz | mysql -u root -proot hitchwiki
 
 # And we're done!

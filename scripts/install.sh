@@ -78,14 +78,6 @@ fi
 echo "Installing dependencies..."
 php composer.phar install
 
-echo "Preparing Scotch-box..."
-#vagrant up
-
-echo "Prepare development database..."
-#create database hitchwiki_wiki_en;
-#grant index, create, select, insert, update, delete, alter, lock tables on wikidb.* to 'root'@'localhost' identified by 'root';
-
-
 # Yay!
 echo "Done!"
 echo ""
