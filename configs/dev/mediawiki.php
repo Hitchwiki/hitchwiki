@@ -42,15 +42,24 @@ if ($wgCommandLineMode) {
 $wgSitename = "Hitchwiki";
 $wgMetaNamespace = "Hitchwiki";
 
+##
+## Dev environment settings
+##
 if(HW_ENV == 'dev') {
   $wgSitename .= ' Development';
   $wgMetaNamespace .= '_dev';
+
+  $wgShowExceptionDetails = true;
 }
 
-# Setup $lang
-# Will also change $wgSitename if it finds local name
+## Setup $lang
+## Will also change $wgSitename if it finds local name
 require_once("mediawiki-lang.php");
 
+## When you make changes to this configuration file, this will make
+## sure that cached pages are cleared.
+$configdate      = gmdate( 'YmdHis', @filemtime( __FILE__ ) );
+$wgCacheEpoch    = max($wgCacheEpoch, $configdate);
 
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
@@ -66,24 +75,19 @@ $wgServer = "http://" . $hwConfig["general"]["domain"];
 ## The relative URL path to the skins directory
 $wgStylePath = $wgScriptPath . "/skins";
 
-# TODO: should be different on non-hitchwiki.org domains
-#$wgCookieDomain     = ".hitchwiki.org";
-
 ## The URL base path to the directory containing the wiki;
 ## defaults for all runtime URL paths are based off of this.
 ## For more information on customizing the URLs please see:
 ## http://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath = "/en";
+$wgScriptPath       = "/" . $lang;
 $wgScriptExtension = ".php";
 $wgArticlePath = "{$wgScriptPath}/$1";
 
-
-
-$wgScriptPath       = "/" . $lang;
-$wgScript           = $wgScriptPath . "/index.php";
-$wgRedirectScript   = "/redirect.php";
-$wgArticlePath      = "/" . $lang . "/$1";
-$wgUsePathInfo      = false;
+#$wgScriptPath       = "/" . $lang;
+#$wgScript           = $wgScriptPath . "/index.php";
+#$wgRedirectScript   = "/redirect.php";
+#$wgArticlePath      = "/" . $lang . "/$1";
+#$wgUsePathInfo      = false;
 
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
@@ -169,10 +173,13 @@ $wgUpgradeKey = "e420593e5f32abdf";
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
 ## License and Creative Commons licenses are supported so far.
-$wgRightsPage = ""; # Set to the title of a wiki page that describes your license/copyright
-$wgRightsUrl = "";
-$wgRightsText = "";
-$wgRightsIcon = "";
+
+$wgEnableCreativeCommonsRdf = true;
+$wgRightsPage               = ""; // Set to the title of a wiki page that describes your license/copyright
+$wgRightsUrl                = "http://creativecommons.org/licenses/by-sa/4.0/";
+$wgRightsText               = "Creative Commons Attribution-Share Alike";
+$wgRightsIcon               = "${wgStylePath}/common/images/cc-by-sa.png";
+
 
 $wgAllowDisplayTitle = true;
 
@@ -183,44 +190,46 @@ $wgAllowUserCss      = true;
 # Path to the GNU diff3 utility. Used for conflict resolution.
 $wgDiff3 = "/usr/bin/diff3";
 
-// Recent changes stuff
+# Recent changes patrolling
 $wgShowUpdatedMarker             = true;
 $wgAllowCategorizedRecentChanges = true;
 $wgAllowCategorizedRecentChanges = true;
 $wgPutIPinRC                     = true;
 $wgUseRCPatrol                   = true;
 
+# Permissions
+$wgGroupPermissions['*']['edit'] = false;
+
+
+
+/***** Skins ******************************************************************************************/
+
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, ie 'vector', 'monobook':
 $wgDefaultSkin = "vector";
 
-# Enabled skins.
-# The following skins were automatically enabled:
-require_once "$IP/skins/CologneBlue/CologneBlue.php";
-require_once "$IP/skins/Modern/Modern.php";
-require_once "$IP/skins/MonoBook/MonoBook.php";
+# Enabled skins
+#require_once "$IP/skins/CologneBlue/CologneBlue.php";
+#require_once "$IP/skins/Modern/Modern.php";
+#require_once "$IP/skins/MonoBook/MonoBook.php";
 require_once "$IP/skins/Vector/Vector.php";
+#require_once "$IP/skins/Hitchwiki/Hitchwiki.php";
 
 
-# End of automatically generated settings.
-# Add more configuration options below.
+/***** Extensions ******************************************************************************************/
 
-
-#include_once "$IP/extensions/SemanticForms/SemanticForms.php";
-#require_once("$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php");
+require_once "$IP/extensions/SemanticForms/SemanticForms.php";
+require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
 #enableSemantics($IP);
-#
-#require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
-#
-#$wgGroupPermissions['*']['edit'] = false;
-#
-#$wgShowExceptionDetails = true;
-#
-#$wgPFEnableStringFunctions = true;
-#
-#require_once "$IP/extensions/GeoData/GeoData.php";
-#
+
+require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
+$wgPFEnableStringFunctions = true;
+require_once "$IP/extensions/GeoData/GeoData.php";
+require_once "$IP/extensions/OAuth/OAuth.php";
+
+# Hitchwiki extensions
 #require_once "$IP/extensions/HitchwikiMap/HitchwikiMap.php";
-#
+
+
 // Settings for preventing spam on MediaWiki
-require_once("mediawiki-spam.php");
+require_once "mediawiki-spam.php";
