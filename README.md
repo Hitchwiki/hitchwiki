@@ -8,6 +8,7 @@ This version is [currently under heavy developed](https://love.hitchwiki.net/) i
 
 _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
 
+Read more [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
 
 ## Install & start hacking Hitchwiki
 _Tested on Ubuntu & OSX._
@@ -27,7 +28,7 @@ _Tested on Ubuntu & OSX._
 * Downloads [Composer](https://getcomposer.org/) into the project
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Download dependencies with Composer
-* Import development database into Scotchbox
+* Import development database into Scotchbox (see [`dumps/import_dev.sh`](dumps/import_dev.sh) if you want to do this manually)
 
 ### Update
 1. Pull latest changes: `git pull origin master`

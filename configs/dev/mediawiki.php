@@ -39,16 +39,13 @@ if ($wgCommandLineMode) {
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = "Hitchwiki";
-$wgMetaNamespace = "Hitchwiki";
+$wgSitename = $hwConfig["general"]["sitename"];
+$wgMetaNamespace = $hwConfig["general"]["metanamespace"];
 
 ##
 ## Dev environment settings
 ##
 if(HW_ENV == 'dev') {
-  $wgSitename .= ' Development';
-  $wgMetaNamespace .= '_dev';
-
   $wgShowExceptionDetails = true;
 }
 
@@ -66,28 +63,18 @@ $wgCacheEpoch    = max($wgCacheEpoch, $configdate);
 ## For more information on customizing the URLs
 ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
 ## https://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath = "/wiki";
-$wgScriptExtension = ".php";
+$wgScriptPath       = "/" . $lang;
+$wgScriptExtension  = ".php";
+$wgArticlePath      = "{$wgScriptPath}/$1";
+$wgScript           = "{$wgScriptPath}/index.php";
+$wgUsePathInfo      = true;
+
 
 ## The protocol and server name to use in fully-qualified URLs
 $wgServer = "http://" . $hwConfig["general"]["domain"];
 
 ## The relative URL path to the skins directory
 $wgStylePath = $wgScriptPath . "/skins";
-
-## The URL base path to the directory containing the wiki;
-## defaults for all runtime URL paths are based off of this.
-## For more information on customizing the URLs please see:
-## http://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath       = "/" . $lang;
-$wgScriptExtension = ".php";
-$wgArticlePath = "{$wgScriptPath}/$1";
-
-#$wgScriptPath       = "/" . $lang;
-#$wgScript           = $wgScriptPath . "/index.php";
-#$wgRedirectScript   = "/redirect.php";
-#$wgArticlePath      = "/" . $lang . "/$1";
-#$wgUsePathInfo      = false;
 
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
