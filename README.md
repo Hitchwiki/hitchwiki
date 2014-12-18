@@ -35,7 +35,9 @@ Suspend the virtual machine by typing `vagrant suspend`. When you're ready to be
 * Install SemanticMediawiki
 * Run install scripts for various extensions
 
-Admin username for the wiki is "Hitchwiki" and password "autobahn"
+#### Pre-created users (user/pass)
+* Admin/bot: Hitchwiki / autobahn
+* Normal user: Hitchhiker / autobahn
 
 ### Update
 1. Pull latest changes: `git pull origin master`

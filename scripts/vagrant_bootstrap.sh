@@ -47,8 +47,13 @@ php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 # Install CheckUser
 cd $WIKIDIR/extensions/CheckUser && php install.php
 
+cd $WIKIDIR
+
 # Turn Hitchwiki admin account into a bot
-cd $WIKIDIR && php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki
+php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki
+
+# Create another dummy account
+php maintenance/createAndPromote.php Hitchhiker autobahn
 
 # Import pages
 bash $SCRIPTDIR/vagrant_import_pages.sh
