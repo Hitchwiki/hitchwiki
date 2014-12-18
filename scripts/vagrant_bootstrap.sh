@@ -52,6 +52,9 @@ cd $WIKIDIR
 # Turn Hitchwiki admin account into a bot
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki
 
+# Create bot account
+php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
+
 # Create another dummy account
 php maintenance/createAndPromote.php Hitchhiker autobahn
 

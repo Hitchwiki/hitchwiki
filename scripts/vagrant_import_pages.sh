@@ -37,7 +37,7 @@ while (( ${#PAGES[@]} > i )); do
   echo "Importing $PAGE..."
 
   if [ -f $PAGESDIR/$PAGE ]; then
-    php maintenance/edit.php --no-rc -u Hitchwiki -b -s "Importing semantic structure." $PAGE < $PAGESDIR/$PAGE
+    php maintenance/edit.php --no-rc -u Hitchbot -b -s "Importing semantic structure." $PAGE < $PAGESDIR/$PAGE
   else
     echo "-> ERROR: Could not load file contents for $PAGE - file does not exist."
     echo ""

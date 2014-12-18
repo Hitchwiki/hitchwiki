@@ -36,8 +36,9 @@ Suspend the virtual machine by typing `vagrant suspend`. When you're ready to be
 * Run install scripts for various extensions
 
 #### Pre-created users (user/pass)
-* Admin/bot: Hitchwiki / autobahn
-* Normal user: Hitchhiker / autobahn
+* Admin: Hitchwiki / autobahn
+* Bot: Hitchbot / autobahn
+* User: Hitchhiker / autobahn
 
 ### Update
 1. Pull latest changes: `git pull origin master`
