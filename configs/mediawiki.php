@@ -37,11 +37,16 @@ $wgMetaNamespace = $hwConfig["general"]["metanamespace"];
 ##
 ## Dev environment settings
 ##
+$hwDebug = ($hwConfig['general']['debug']) ? true : false;
+$hwCache = ($hwConfig['general']['cache']) ? true : false;
+
 if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
 
   // Enable error reporting
-  error_reporting( -1 );
-  ini_set( 'display_errors', 1 );
+  if($hwDebug) {
+    error_reporting( -1 );
+    ini_set( 'display_errors', 1 );
+  }
 
   // Show the debug toolbar if 'debug' is set on the request, either as a
   // parameter or a cookie.
@@ -50,11 +55,11 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
   }
 
   // Expose debug info for PHP & SQL errors.
-  $wgShowExceptionDetails = true;
-  $wgDevelopmentWarnings = true;
-  $wgDebugDumpSql = true;
-  $wgShowDBErrorBacktrace = true;
-  $wgShowSQLErrors = true;
+  $wgShowExceptionDetails = $hwDebug;
+  $wgDevelopmentWarnings = $hwDebug;
+  $wgDebugDumpSql = $hwDebug;
+  $wgShowDBErrorBacktrace = $hwDebug;
+  $wgShowSQLErrors = $hwDebug;
 
   // Profiling
   $wgDebugProfiling = false;
@@ -67,8 +72,8 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
   }
 
   # Disable caching
-  #$wgEnableParserCache = false;
-  #$wgCachePages = false;
+  $wgEnableParserCache = $hwCache;
+  $wgCachePages = $hwCache;
 }
 
 ## Setup $hwLang
