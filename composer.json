@@ -27,7 +27,7 @@
     {
       "type": "package",
       "package": {
-        "name": "anti-spoof",
+        "name": "AntiSpoof",
         "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
@@ -39,7 +39,7 @@
     {
       "type": "package",
       "package": {
-        "name": "abuse-filter",
+        "name": "AbuseFilter",
         "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
@@ -51,7 +51,7 @@
     {
       "type": "package",
       "package": {
-        "name": "geo-data",
+        "name": "GeoData",
         "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
@@ -63,7 +63,7 @@
     {
       "type": "package",
       "package": {
-        "name": "semantic-forms-inputs",
+        "name": "SemanticFormsInputs",
         "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
@@ -235,10 +235,10 @@
     "HWMap": "@dev",
     "HWCoordinateApi": "@dev",
     "SemanticWatchlist": "*",
-    "anti-spoof": "*",
-    "abuse-filter": "*",
-    "geo-data":  "*",
-    "semantic-forms-inputs":  "*",
+    "AntiSpoof": "*",
+    "AbuseFilter": "*",
+    "GeoData":  "*",
+    "SemanticFormsInputs":  "*",
     "OAuth":  "*",
     "DismissableSiteNotice": "*",
     "GeoCrumbs": "*",
