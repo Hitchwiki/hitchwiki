@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "scotchbox"
 
   # Run the import_dev.sh file to configure our environment for development
-  config.vm.provision :shell, :path => "scripts/import_db.sh"
+  config.vm.provision :shell, :path => "scripts/vagrant_bootstrap.sh"
 
   config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
 

@@ -19,3 +19,5 @@ public/wiki
 
 # Other
 public/google*.html
+scripts/bash_ini_parser
+configs/settings.ini

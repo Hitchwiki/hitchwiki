@@ -1,7 +1,7 @@
 {
   "name": "hitchwiki",
   "description": "The Hitchhiker's Guide to Hitchhiking the World",
-  "keywords": ["mediawiki", "wiki", "hitchwiki"],
+  "keywords": ["mediawiki", "wiki", "hitchhiking"],
   "homepage": "http://hitchwiki.org/",
   "authors": [
     {
@@ -16,10 +16,46 @@
   },
   "repositories": [
     {
+      "url": "https://github.com/Hitchwiki/HWCoordinateApi-extension.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWMap-extension.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/JeroenDeDauw/ParamProcessor.git",
+      "type": "git"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/anti-spoof",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/AntiSpoof-REL1_24-a99ed84.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/abuse-filter",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/AbuseFilter-REL1_24-782f0f8.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
       "type": "package",
       "package": {
         "name": "mediawiki/geo-data",
-        "version": "2.4",
+        "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
           "url": "https://extdist.wmflabs.org/dist/extensions/GeoData-REL1_24-6b01042.tar.gz",
@@ -31,7 +67,7 @@
       "type": "package",
       "package": {
         "name": "mediawiki/semantic-forms-inputs",
-        "version": "2.4",
+        "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
           "url": "https://extdist.wmflabs.org/dist/extensions/SemanticFormsInputs-REL1_24-4ff1557.tar.gz",
@@ -42,26 +78,185 @@
     {
       "type": "package",
       "package": {
-        "name": "mediawiki/OAuth",
-        "version": "2.4",
+        "name": "mediawiki/DismissableSiteNotice",
+        "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://git.wikimedia.org/zip/?r=mediawiki/extensions/OAuth&format=zip",
+          "url": "https://extdist.wmflabs.org/dist/extensions/DismissableSiteNotice-REL1_24-1c10322.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/CustomData",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/CustomData-REL1_24-d8f758e.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/OAuth",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_24-5c7b96c.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/GeoCrumbs",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/GeoCrumbs-REL1_24-5ac5727.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/CheckUser",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/CheckUser-REL1_24-530e1e3.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/ExternalData",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/ExternalData-REL1_24-ec1e7db.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/RecentChangesCleanup",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "http://sites.google.com/site/rutismwextensions/RecentChangesCleanup.zip",
           "type": "zip"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/TorBlock",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/TorBlock-REL1_24-5bad703.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/ApiSandbox",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/ApiSandbox-REL1_24-a57a230.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/MultimediaViewer",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/MultimediaViewer-REL1_24-7ba92a7.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/AdminLinks",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/AdminLinks-REL1_24-59036bd.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/SemanticWatchlist",
+        "version": "0.2.2",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/SemanticMediaWiki/SemanticWatchlist/archive/0.2.2.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mediawiki/ReplaceText",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/ReplaceText-REL1_24-1c436b4.tar.gz",
+          "type": "tar"
+        }
+      }
     }
+
+
+
   ],
   "require": {
     "php": ">=5.3.2",
     "psr/log": "1.0.0",
-    "mediawiki/semantic-media-wiki": "~2.0",
-    "mediawiki/semantic-forms": "~3.0",
-    "mediawiki/maps": "~3.2",
-    "mediawiki/semantic-maps": "~3.1",
+    "mediawiki/HWMap": "@dev",
+    "mediawiki/HWCoordinateApi": "@dev",
+    "mediawiki/SemanticWatchlist": "*",
+    "mediawiki/anti-spoof": "*",
+    "mediawiki/abuse-filter": "*",
     "mediawiki/geo-data":  "*",
     "mediawiki/semantic-forms-inputs":  "*",
-    "mediawiki/OAuth":  "*"
+    "mediawiki/OAuth":  "*",
+    "mediawiki/DismissableSiteNotice": "*",
+    "mediawiki/CustomData": "*",
+    "mediawiki/GeoCrumbs": "*",
+    "mediawiki/CheckUser": "*",
+    "mediawiki/ExternalData": "*",
+    "mediawiki/RecentChangesCleanup": "*",
+    "mediawiki/TorBlock": "*",
+    "mediawiki/ApiSandbox": "*",
+    "mediawiki/MultimediaViewer": "*",
+    "mediawiki/AdminLinks": "*",
+    "mediawiki/ReplaceText": "*"
   },
   "require-dev": {
   },
@@ -74,7 +269,7 @@
   },
   "extra": {
     "installer-paths": {
-      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension", "param-processor/param-processor"]
     }
   }
 }

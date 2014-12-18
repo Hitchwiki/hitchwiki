@@ -21,6 +21,17 @@ do
   type -P $i &>/dev/null  && continue  || { echo "ERROR: $i command not found. Cannot continue."; exit 1; }
 done
 
+# Make sure we're at right directory
+SCRIPTDIR="$(dirname "$0")"
+cd $SCRIPTDIR/..
+
+# Download Composer
+if [ ! -f "configs/settings.ini" ]; then
+  echo "ERROR! Rename configs/settings-example.ini to configs/settings.ini and try then again."
+  echo ""
+  exit 0
+fi
+
 # Make sure public directory exists
 if [ ! -d "public" ]; then
   echo "Creating ./public/ directory..."
@@ -34,54 +45,58 @@ if [ ! -f composer.phar ]; then
   echo ""
 fi
 
-# Install Scotchbox
-#echo "Scotch-box (http://box.scotch.io/) is a LAMP Vagrantbox useful for developing."
-#echo "You could also choose to run your own AMP setup but Vagrant method is recommended."
-#while true; do
-#  read -p "Install Scotchbox? " yn
-#  case $yn in
-#    [Yy]* )
-#      SCOTCHBOX=true
-#      git clone https://github.com/scotch-io/scotch-box.git scotch-box && mv scotch-box/Vagrantfile ./ && rm -fr scotch-box;
-#      break;;
-#    [Nn]* )
-#      SCOTCHBOX=false
-#      exit;;
-#    * ) echo "(y/n) ";;
-#  esac
-#done
+# Get bash ini parser
+if [ ! -f "$SCRIPTDIR/bash_ini_parser/read_ini.sh" ]; then
+  echo "Installing Bash ini parser..."
+  git clone https://github.com/rudimeier/bash_ini_parser.git $SCRIPTDIR/bash_ini_parser
+  echo ""
+fi
 
 # Install Mediawiki
 if [ ! -d "$WIKIDIR" ]; then
-  echo "Installing MediaWiki..."
+  echo "Downloading MediaWiki..."
 
   # Download and extract
   if [ ! -f mediawiki-$WIKIVERSION.tar.gz ]; then
-    curl -O http://releases.wikimedia.org/mediawiki/$WIKIVERSIONBRANCH/mediawiki-$WIKIVERSION.tar.gz
+    curl -O http://releases.wikimedia.org/mediawiki/$WIKIVERSIONBRANCH/mediawiki-$WIKIVERSION.tar.gz;
   fi
-  tar xzf mediawiki-$WIKIVERSION.tar.gz -C ./public
-  rm mediawiki-$WIKIVERSION.tar.gz
-  mv -i public/mediawiki-$WIKIVERSION $WIKIDIR
+  tar xzf mediawiki-$WIKIVERSION.tar.gz -C ./public;
+  rm mediawiki-$WIKIVERSION.tar.gz;
+  mv -i public/mediawiki-$WIKIVERSION $WIKIDIR;
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
-  cat > public/wiki/LocalSettings.php << EOL
-  <?php
-  // Load Hitchwiki
-  define("HW_ENV", "dev");
-  require_once("../../configs/" . HW_ENV . "/mediawiki.php");
-  EOL
+  WIKISETTINGS=public/wiki/LocalSettings.php
+  # Replace file contents with this:
+  echo '<?php' >$WIKISETTINGS
+  # Appends following lines to file:
+  echo '/**' >>$WIKISETTINGS
+  echo ' * LOAD HITCHWIKI' >>$WIKISETTINGS
+  echo ' *' >>$WIKISETTINGS
+  echo ' * When running maintenance scripts inside Vagrant,' >>$WIKISETTINGS
+  echo ' * this might have trouble finding config file.' >>$WIKISETTINGS
+  echo ' */' >>$WIKISETTINGS
+  echo '$HWconfigPath = (file_exists("/var/www/configs/mediawiki.php")) ? "/var/www/configs/mediawiki.php" : "../../configs/mediawiki.php";' >>$WIKISETTINGS
+  echo 'require_once($HWconfigPath);' >>$WIKISETTINGS
+
 else
-  echo "public/wiki folder already exists. Skipping."
+  echo "public/wiki folder already exists. Skipping downloading MediaWiki..."
 fi
 
 # Install dependencies
 echo "Installing dependencies..."
 php composer.phar install
 
+# Run Vagrant to finalize setup
+vagrant up
+
 # Yay!
+echo ""
 echo "Done!"
 echo ""
-echo "You can run development environment by typing 'vagrant up' and then open http://192.168.33.10/ in your browser."
+echo "Now open http://192.168.33.10/ in your browser."
 echo ""
-echo "Read more from http://github.com/Hitchwiki/hitchwiki and http://hitchwiki.org/developers"
+echo "Suspend the virtual machine by calling 'vagrant suspend'."
+echo "When you're ready to begin working again, just run 'vagrant up'."
+echo ""
+echo "Read more from http://github.com/Hitchwiki/hitchwiki"
 echo ""
