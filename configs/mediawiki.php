@@ -106,8 +106,9 @@ $wgServer = "http://" . $hwConfig["general"]["domain"];
 $wgStylePath = $wgScriptPath . "/skins";
 
 
-## The relative URL path to the logo.
+## The relative URL path to the logo and favicon
 $wgLogo = $wgScriptPath . "/../wiki-logo.png";
+$wgFavicon = $wgScriptPath . "/../favicon.png";
 
 ## UPO means: this is also a user preference option
 
@@ -181,13 +182,13 @@ $wgShellLocale = "en_US.utf8";
 ## Set $wgCacheDirectory to a writable directory on the web server
 ## to make your wiki go slightly faster. The directory should not
 ## be publically accessible from the web.
-#$wgCacheDirectory = "$IP/cache";
+$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = "a9fcd44f28a9e7caf01d2a8e7a27031805d08b23fa37f3030dc55fae01709145";
+$wgSecretKey = $hwConfig["general"]["secretkey"];
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "e420593e5f32abdf";
+$wgUpgradeKey = $hwConfig["general"]["upgradekey"];
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
