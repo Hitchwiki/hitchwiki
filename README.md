@@ -11,74 +11,86 @@ _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
 Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
 
 ## Install & start hacking Hitchwiki
-_Tested on Ubuntu & OSX._
 
 ### Prerequisites
 * Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
 * Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
-* Make sure you have [`git`](http://git-scm.com/), `curl` and `php` in your system.
+* Make sure you have [`git`](http://git-scm.com/) in your system.
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Rename `configs/settings-example.ini` to `configs/settings.ini`
-3. Run installation script: `sh ./scripts/install.sh`
-4. Open [http://192.168.33.10/](http://192.168.33.10/) in your browser
+2. Start dev environment: `vagrant up`. This will run installation script on first launch.
+3. Open [http://192.168.33.10/](http://192.168.33.10/) in your browser.
 
-Suspend the virtual machine by typing `vagrant suspend`. When you're ready to begin working again, just run `vagrant up`.
+Suspend the virtual machine by typing `vagrant suspend`. When you're ready to begin working again, just run `vagrant up` again.
 
 #### Install script will do the following:
-* Downloads [Composer](https://getcomposer.org/) into the project
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
-* Download dependencies with Composer
-* Boot up Vagrant
-* Create a database and install MediaWiki
-* Install SemanticMediawiki
-* Run install scripts for various extensions
+* Install dependencies with Composer
+* Create a database and configure MediaWiki
+* Create three users
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
 * Bot: Hitchbot / autobahn
 * User: Hitchhiker / autobahn
 
+### Export Semantic structure
+If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
+```bash
+sh scripts/export.sh
+```
+
+Then notify others about changes so they know to update their project.
+
 ### Update
 1. Pull latest changes: `git pull origin master`
 2. Run update script: `sh ./scripts/update.sh`
 
-### SSH into your server
+### Vagrant box
+
+We're using [Scotchbox](http://box.scotch.io/).
+
+#### SSH into Vagrant
 ```bash
 vagrant ssh
 ```
 
-### Pause your server
-Do this before turning computer off.
+#### Database access
+##### From the app
+User: root
+Pass: root
+Host: localhost
+
+##### From desktop
+Only via SSH Forwarding.
+
+User: root
+Pass: root
+Host: localhost
+SSH Host: 192.168.33.10
+SSH User: vagrant
+SSH Password: vagrant
+
+#### Clean Vagrant box
+If for some reason you want to have clean Scotchbox, database and MediaWiki installed, run:
 ```bash
-vagrant suspend
+vagrant destroy && vagrant up
 ```
 
-### Clean Vagrant box
-If for some reason you want to have clean Scotchbox (and database) installed, run:
+#### Update Vagrant box
+Although not necessary, if you want to check for updates, just type:
 ```bash
-vagrant destroy
-vagrant up
+vagrant box outdated
 ```
 
-## Production environment
+It will tell you if you are running the latest version or not of the box. If it says you aren't, simply run:
+```bash
+vagrant box update
+```
+
+## Setting up production environment
 _TODO_
-
-### Install
-* Install Apache
-* Install MySQL or MariaDB
-* Install PHP
-* Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-* Rename `configs/settings-example.ini` to `configs/settings.ini` and modify settings inside it
-* Download Mediawiki under `/public/wiki/` folder and replace contents of `LocalSettings.php` file with this:
-```php
-<?php
-require_once("../../configs/mediawiki.php");
-```
-* Install Composer: `curl -sS https://getcomposer.org/installer | php`
-* Install components with Composer `php composer.phar install`
-* Run MediaWiki [install script](https://www.mediawiki.org/wiki/Manual:Installation_guide) or have your production DB ready.
 
 ## License
 Code [MIT](LICENSE.md)
