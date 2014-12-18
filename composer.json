@@ -3,6 +3,7 @@
   "description": "The Hitchhiker's Guide to Hitchhiking the World",
   "keywords": ["mediawiki", "wiki", "hitchhiking"],
   "homepage": "http://hitchwiki.org/",
+  "type": "project",
   "authors": [
     {
     	"name": "Hitchwiki"
@@ -240,16 +241,16 @@
     "mediawiki/semantic-forms-inputs":  "*",
     "mediawiki/OAuth":  "*",
     "mediawiki/DismissableSiteNotice": "*",
-    "mediawiki/CustomData": "*",
     "mediawiki/GeoCrumbs": "*",
-    "mediawiki/CheckUser": "*",
     "mediawiki/ExternalData": "*",
     "mediawiki/RecentChangesCleanup": "*",
     "mediawiki/TorBlock": "*",
     "mediawiki/ApiSandbox": "*",
     "mediawiki/MultimediaViewer": "*",
     "mediawiki/AdminLinks": "*",
-    "mediawiki/ReplaceText": "*"
+    "mediawiki/ReplaceText": "*",
+    "mediawiki/CustomData": "*",
+    "mediawiki/CheckUser": "*"
   },
   "require-dev": {
   },
@@ -262,7 +263,7 @@
   },
   "extra": {
     "installer-paths": {
-      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension", "mediawiki/CustomData", "mediawiki/CheckUser"]
     }
   }
 }
