@@ -284,8 +284,8 @@ $wgGroupPermissions['recentchangescleanup']['recentchangescleanup'] = true;
 # CheckUser
 # https://www.mediawiki.org/wiki/Extension:CheckUser
 # Requires install, see scripts/vagrant_bootstrap.sh
-require_once "$IP/extensions/CheckUser/CheckUser.php";
-$wgGroupPermissions['sysop']['checkuser'] = true;
+#require_once "$IP/extensions/CheckUser/CheckUser.php";
+#$wgGroupPermissions['sysop']['checkuser'] = true;
 
 # Preventing confusable usernames from being created.
 # It blocks the creation of accounts with mixed-script,
@@ -315,7 +315,8 @@ $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 #
 # Hitchwiki extensions
 #
-#require_once "$IP/extensions/HitchwikiMap/HitchwikiMap.php";
+require_once "$IP/extensions/HWMap/HWMap.php";
+require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
 
 #
 # Settings for preventing spam on MediaWiki
