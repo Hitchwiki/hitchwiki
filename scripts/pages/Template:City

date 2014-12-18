@@ -1,0 +1,21 @@
+<noinclude>
+This is the "City" template.
+It should be called in the following format:
+<pre>
+{{City}}
+</pre>
+Edit the page to see the template text.
+</noinclude><includeonly>
+{{#ask:[[Cities::Grenoble]]
+|?Location
+|format=broadtable
+|link=all
+|headers=show
+|searchlabel=... further results
+|class=sortable wikitable smwtable
+}}
+
+<hwmap></hwmap>
+
+[[Category:Cities]]
+</includeonly>

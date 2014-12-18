@@ -1,0 +1,6 @@
+Template:Country
+Template:City
+Template:Spot
+Form:Country
+Form:City
+Form:Spot

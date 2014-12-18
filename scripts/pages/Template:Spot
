@@ -1,0 +1,24 @@
+<noinclude>
+This is the "Spot" template.
+It should be called in the following format:
+<pre>
+{{Spot
+|Description=
+|Cities=
+}}
+</pre>
+Edit the page to see the template text.
+</noinclude><includeonly>{| class="wikitable"
+! Description
+| [[Description::{{{Description|}}}]] 
+|-
+! Cities
+| {{#arraymap:{{{Cities|}}}|,|x|[[Cities::x]]}}
+|-
+! Location
+| [[Location::{{{Location|}}}]] 
+|}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+{{#default_form::spot}}
+[[Category:Spots]]
+</includeonly>
