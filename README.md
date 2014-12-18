@@ -3,8 +3,8 @@ _The Hitchhiker's Guide to Hitchhiking the World_
 
 [Hitchwiki](http://hitchwiki.org/) is a collaborative website for gathering information about [hitchhiking](http://hitchwiki.org/en/Hitchhiking) and other ways of extremely cheap ways of transport. It is maintained by many active hitchhikers all around the world. We have information about how to hitch out of big cities, how to cover long distances, maps and many more tips.
 
-# How to help
-This version is [currently under heavy developed](https://love.hitchwiki.net/) in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison) and [@Remigr](https://github.com/Remigr/).
+## How to help
+This version is [currently under heavy development](https://love.hitchwiki.net/) in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison) and [@Remigr](https://github.com/Remigr/).
 
 _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
 
@@ -47,22 +47,22 @@ Then notify others about changes so they know to update their project.
 1. Pull latest changes: `git pull origin master`
 2. Run update script: `sh ./scripts/update.sh`
 
-### Vagrant box
+## Vagrant box
 
 We're using [Scotchbox](http://box.scotch.io/).
 
-#### SSH into Vagrant
+### SSH into Vagrant
 ```bash
 vagrant ssh
 ```
 
-#### Database access
-##### From the app
+### Database access
+#### From the app
 User: root
 Pass: root
 Host: localhost
 
-##### From desktop
+#### From desktop
 Only via SSH Forwarding.
 
 User: root
@@ -72,13 +72,13 @@ SSH Host: 192.168.33.10
 SSH User: vagrant
 SSH Password: vagrant
 
-#### Clean Vagrant box
+### Clean Vagrant box
 If for some reason you want to have clean Scotchbox, database and MediaWiki installed, run:
 ```bash
 vagrant destroy && vagrant up
 ```
 
-#### Update Vagrant box
+### Update Vagrant box
 Although not necessary, if you want to check for updates, just type:
 ```bash
 vagrant box outdated
