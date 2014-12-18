@@ -25,35 +25,27 @@ done
 SCRIPTDIR="$(dirname "$0")"
 cd $SCRIPTDIR/..
 
-# Download Composer
-if [ ! -f "configs/settings.ini" ]; then
-  echo "ERROR! Rename configs/settings-example.ini to configs/settings.ini and try then again."
-  echo ""
-  exit 0
-fi
+# Makes sure we have settings.ini and "Bash ini parser"
+source $SCRIPTDIR/settings.sh
 
 # Make sure public directory exists
 if [ ! -d "public" ]; then
+  echo ""
   echo "Creating ./public/ directory..."
   mkdir public
 fi
 
 # Download Composer
 if [ ! -f composer.phar ]; then
+  echo ""
   echo "Installing Composer..."
   curl -sS https://getcomposer.org/installer | php
   echo ""
 fi
 
-# Get bash ini parser
-if [ ! -f "$SCRIPTDIR/bash_ini_parser/read_ini.sh" ]; then
-  echo "Installing Bash ini parser..."
-  git clone https://github.com/rudimeier/bash_ini_parser.git $SCRIPTDIR/bash_ini_parser
-  echo ""
-fi
-
 # Install Mediawiki
 if [ ! -d "$WIKIDIR" ]; then
+  echo ""
   echo "Downloading MediaWiki..."
 
   # Download and extract
@@ -61,7 +53,7 @@ if [ ! -d "$WIKIDIR" ]; then
     curl -O http://releases.wikimedia.org/mediawiki/$WIKIVERSIONBRANCH/mediawiki-$WIKIVERSION.tar.gz;
   fi
   tar xzf mediawiki-$WIKIVERSION.tar.gz -C ./public;
-  rm mediawiki-$WIKIVERSION.tar.gz;
+  #rm mediawiki-$WIKIVERSION.tar.gz;
   mv -i public/mediawiki-$WIKIVERSION $WIKIDIR;
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
@@ -79,10 +71,12 @@ if [ ! -d "$WIKIDIR" ]; then
   echo 'require_once($HWconfigPath);' >>$WIKISETTINGS
 
 else
-  echo "public/wiki folder already exists. Skipping downloading MediaWiki..."
+  echo ""
+  echo "Skipping downloading MediaWiki: public/wiki folder already exists."
 fi
 
 # Install dependencies
+echo ""
 echo "Installing dependencies..."
 php composer.phar install
 
@@ -91,9 +85,9 @@ vagrant up
 
 # Yay!
 echo ""
-echo "Done!"
+echo "Hitchwiki is now installed!"
 echo ""
-echo "Now open http://192.168.33.10/ in your browser."
+echo "Vagrant is up. Open http://192.168.33.10/ in your browser."
 echo ""
 echo "Suspend the virtual machine by calling 'vagrant suspend'."
 echo "When you're ready to begin working again, just run 'vagrant up'."

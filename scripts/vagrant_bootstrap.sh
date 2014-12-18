@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 CONFPATH=/var/www/configs/mediawiki.php
 SCRIPTDIR=/var/www/scripts
 WIKIDIR=/var/www/public/wiki
@@ -23,7 +22,7 @@ mv LocalSettings.php LocalSettings.php~
 
 # Install MediaWiki
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-php maintenance/install.php --conf $CONFPATH --dbuser $HW__db__username --dbpass $HW__db__password --dbname hitchwiki --dbtype mysql --pass autobahn --scriptpath $WIKIDIR "$HW__general__sitename" hitchwiki
+php maintenance/install.php --conf $CONFPATH --dbuser $HW__db__username --dbpass $HW__db__password --dbname hitchwiki --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
 
 # Download Composer
 if [ ! -f composer.phar ]; then
@@ -48,5 +47,10 @@ php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 # Install CheckUser
 cd $WIKIDIR/extensions/CheckUser && php install.php
 
+# Turn Hitchwiki admin account into a bot
+cd $WIKIDIR && php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki
+
+# Import pages
+bash $SCRIPTDIR/vagrant_import_pages.sh
 
 # And we're done!

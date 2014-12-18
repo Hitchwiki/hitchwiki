@@ -7,13 +7,12 @@ WIKIDIR=/var/www/public/wiki
 
 cd $WIKIDIR
 
+echo "Exporting Semantic content..."
+
 if [ ! -f $PAGESDIR/_pagelist.txt ]; then
   echo "ERROR: $PAGESDIR/pagelist.txt does not exist! Aborting."
   exit 1
 fi
-
-# READ lines into array
-IFS=$'\n' read -d '' -r -a PAGES < $PAGESDIR/_pagelist.txt
 
 # Loop them trough and import to mediawiki using https://www.mediawiki.org/wiki/Manual:Edit.php
 #
@@ -25,8 +24,14 @@ IFS=$'\n' read -d '' -r -a PAGES < $PAGESDIR/_pagelist.txt
 # -a	                Enable autosummary
 # --no-rc	            Do not show the change in recent changes
 #
-echo "Importing ${#PAGES[@]} pages..."
-for PAGE in ${PAGES[@]}; do
+# Load page names into array
+declare -a PAGES
+readarray PAGES < $PAGESDIR/_pagelist.txt
+
+# Loop array trough
+let i=0
+while (( ${#PAGES[@]} > i )); do
+  PAGE=${PAGES[i++]}
   echo "Exporting $PAGE..."
   php maintenance/getText.php "$PAGE" >"$PAGESDIR/$PAGE"
 done

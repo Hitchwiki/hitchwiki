@@ -5,6 +5,8 @@
 PAGESDIR=/var/www/scripts/pages
 WIKIDIR=/var/www/public/wiki
 
+echo "Importing Semantic content..."
+
 cd $WIKIDIR
 
 if [ ! -f $PAGESDIR/_pagelist.txt ]; then
