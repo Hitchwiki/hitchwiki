@@ -232,26 +232,6 @@ require_once "$IP/skins/Vector/Vector.php";
 
 /***** Extensions ******************************************************************************************/
 
-# Validator & ParamProcessor are required by SMW
-# Note that this doesn't load param-processor's tests
-#require_once "$IP/extensions/param-processor/src/Settings.php";
-#require_once "$IP/extensions/param-processor/src/IParam.php";
-#require_once "$IP/extensions/param-processor/src/IParamDefinition.php";
-#require_once "$IP/extensions/param-processor/src/Param.php";
-#require_once "$IP/extensions/param-processor/src/ParamDefinition.php";
-#require_once "$IP/extensions/param-processor/src/ProcessedParam.php";
-#require_once "$IP/extensions/param-processor/src/ParamDefinitionFactory.php";
-#require_once "$IP/extensions/param-processor/src/ProcessingResult.php";
-#require_once "$IP/extensions/param-processor/src/ProcessingError.php";
-#require_once "$IP/extensions/param-processor/src/ProcessingErrorHandler.php";
-#require_once "$IP/extensions/param-processor/src/Options.php";
-#require_once "$IP/extensions/param-processor/src/TopologicalSort.php";
-#require_once "$IP/extensions/param-processor/src/Definition/StringParam.php";
-#require_once "$IP/extensions/param-processor/src/Definition/DimensionParam.php";
-#require_once "$IP/extensions/param-processor/DefaultConfig.php";
-#require_once "$IP/extensions/Validator/Validator.php";
-
-
 require_once "$IP/extensions/CustomData/CustomData.php"; // CustomData is needed by GeoCrumbs
 require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
 require_once "$IP/extensions/GeoData/GeoData.php";
@@ -272,6 +252,7 @@ require_once "$IP/extensions/DismissableSiteNotice/DismissableSiteNotice.php";
 # Semantic MediaWiki extensions
 # These were installed via composer directly at MediaWiki folder and Composer takes care loading them
 # https://semantic-mediawiki.org/wiki/Help:Installation#Installation
+
 //require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
 if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   enableSemantics();

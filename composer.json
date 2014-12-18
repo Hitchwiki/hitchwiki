@@ -24,10 +24,6 @@
       "type": "git"
     },
     {
-      "url": "https://github.com/JeroenDeDauw/ParamProcessor.git",
-      "type": "git"
-    },
-    {
       "type": "package",
       "package": {
         "name": "mediawiki/anti-spoof",
@@ -231,9 +227,6 @@
         }
       }
     }
-
-
-
   ],
   "require": {
     "php": ">=5.3.2",
@@ -269,7 +262,7 @@
   },
   "extra": {
     "installer-paths": {
-      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension", "param-processor/param-processor"]
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
     }
   }
 }
