@@ -2,7 +2,8 @@
 
 # Export Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
 
-PAGESDIR=/var/www/scripts/pages
+SCRIPTSDIR=/var/www/scripts
+PAGESDIR=$SCRIPTSDIR/pages
 WIKIDIR=/var/www/public/wiki
 
 cd $WIKIDIR
@@ -25,16 +26,34 @@ fi
 # --no-rc	            Do not show the change in recent changes
 #
 # Load page names into array
-declare -a PAGES
-readarray PAGES < $PAGESDIR/_pagelist.txt
+
+
+
+# Return lines from the file into $MAPFILE array
+source $SCRIPTSDIR/vendor/filelines2array.sh
+fileLines2Array $PAGESDIR/_pagelist.txt
 
 # Loop array trough
 let i=0
-while (( ${#PAGES[@]} > i )); do
-  PAGE=${PAGES[i++]}
-  echo "Exporting $PAGE..."
+for l in "${MAPFILE[@]}"
+do
+
+  PAGE=${MAPFILE[$i]}
+
+  echo "Exporting '$PAGE'..."
+
+  if [ -z "${PAGE}" ]; then
+    echo "-> ERROR: Filename empty!"
+    continue
+  fi
+
   php maintenance/getText.php "$PAGE" >"$PAGESDIR/$PAGE"
+
+  let i++
 done
+
+
+
 
 echo ""
 echo "All done!"

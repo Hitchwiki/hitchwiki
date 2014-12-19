@@ -3,7 +3,6 @@
 # Composer
 composer.phar
 composer.lock
-vendor
 
 # Vagrant/Scotchbox
 scotch-box
@@ -19,5 +18,5 @@ public/wiki
 
 # Other
 public/google*.html
-scripts/bash_ini_parser
+scripts/vendor/bash_ini_parser
 configs/settings.ini

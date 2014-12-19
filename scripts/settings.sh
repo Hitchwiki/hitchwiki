@@ -36,14 +36,14 @@ if [ ! -f $SETTINGSFILE ]; then
 fi
 
 # Make sure Bash ini parser is installed
-if [ ! -d $SCRIPTDIR/bash_ini_parser ]; then
+if [ ! -d $SCRIPTDIR/vendor/bash_ini_parser ]; then
   echo ""
   echo "Installing Bash ini parser..."
-  git clone https://github.com/rudimeier/bash_ini_parser.git $SCRIPTDIR/bash_ini_parser
+  git clone https://github.com/rudimeier/bash_ini_parser.git $SCRIPTDIR/vendor/bash_ini_parser
 fi
 
 # Load parser
-source $SCRIPTDIR/bash_ini_parser/read_ini.sh
+source $SCRIPTDIR/vendor/bash_ini_parser/read_ini.sh
 
 # Read settings and expose them
 read_ini $SETTINGSFILE -p HW
