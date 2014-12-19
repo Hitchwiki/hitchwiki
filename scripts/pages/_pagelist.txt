@@ -1,3 +1,4 @@
+MediaWiki:Sidebar
 Template:Country
 Template:City
 Template:Spot
