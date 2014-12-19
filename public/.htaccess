@@ -70,6 +70,8 @@ RewriteEngine On
 RewriteBase /
 Options +FollowSymLinks
 
+RewriteRule ^robots.txt$ /robots.txt.php
+
 # Ensure working of static assets
 #RewriteRule ^/(load.php|wp-content|wp-includes|wp-admin|images|skins|stylesheets|config|forum|community|maps|translate|phrasebook-v2|phrasebook)/ - [L]
 
