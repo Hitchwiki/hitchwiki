@@ -139,8 +139,10 @@ $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 $wgDBmysql5 = true;
 
 ## Shared memory settings
-$wgMainCacheType = CACHE_NONE;
-$wgMemCachedServers = array();
+## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
+## https://www.mediawiki.org/wiki/Memcached
+$wgMainCacheType = ($hwCache) ? CACHE_ACCEL : CACHE_NONE;
+$wgMemCachedServers = array("127.0.0.1:11211");
 
 
 ## To enable image uploads, make sure the 'images' directory
