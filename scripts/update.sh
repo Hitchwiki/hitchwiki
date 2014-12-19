@@ -16,7 +16,8 @@ vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --quick --conf
 echo "Running update script for Semantic MediaWiki"
 vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v"
 
-vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"
+# @TODO: ask if to update?
+#vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"
 
 echo ""
 echo "All done!"
