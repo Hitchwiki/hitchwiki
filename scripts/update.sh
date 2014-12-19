@@ -3,7 +3,7 @@
 # Hitchwiki update script
 
 VAGRANT_CONFPATH=/var/www/configs/mediawiki.php
-VAGRANT_WIKIDIR=/var/www/public/wiki/
+VAGRANT_WIKIDIR=/var/www/public/wiki
 
 # Update dependencies
 echo "Updating dependencies..."
@@ -15,6 +15,9 @@ vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --quick --conf
 
 echo "Running update script for Semantic MediaWiki"
 vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v"
+
+# Update assets for HWMaps
+vagrant ssh -c "cd $VAGRANT_WIKIDIR/extensions/HWMap && bower update -f"
 
 # @TODO: ask if to update?
 #vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"

@@ -109,6 +109,9 @@ mv LocalSettings.php~ LocalSettings.php
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
+# Install assets for HWMaps
+vagrant ssh -c "cd $WIKIDIR/extensions/HWMap && bower install -f"
+
 # Install CheckUser
 cd $WIKIDIR/extensions/CheckUser && php install.php && cd $WIKIDIR
 
@@ -125,7 +128,6 @@ mysql -u$HW__db__username -p$HW__db__password hitchwiki -e "UPDATE user SET user
 
 # Import Semantic pages
 bash $SCRIPTDIR/vagrant_import_pages.sh
-
 
 echo ""
 echo "Hitchwiki is now installed!"
