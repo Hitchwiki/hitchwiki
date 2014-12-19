@@ -95,6 +95,7 @@ $wgScriptExtension  = ".php";
 $wgArticlePath      = "{$wgScriptPath}/$1";
 $wgScript           = "{$wgScriptPath}/index.php";
 $wgUsePathInfo      = true;
+$wgCookieDomain     = $hwConfig["general"]["cookiedomain"];
 
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = $hwLang;
