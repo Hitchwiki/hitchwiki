@@ -275,6 +275,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "MobileFrontend",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/MobileFrontend-REL1_24-011e6c1.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -301,7 +313,9 @@
     "CheckUser": "*",
     "BetaFeatures": "*",
     "VectorBeta": "*",
-    "Echo": "*"
+    "Echo": "*",
+    "StopForumSpam": "*",
+    "MobileFrontend": "*"
   },
   "require-dev": {
   },
