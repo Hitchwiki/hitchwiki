@@ -72,10 +72,12 @@ foreach ( $arr as $key => $value ) {
  * ConfirmEdit - ReCaptcha
  * http://www.mediawiki.org/wiki/Extension:ConfirmEdit#ReCaptcha
  */
-require_once("{$IP}/extensions/ConfirmEdit/ReCaptcha.php");
-$wgCaptchaClass = 'ReCaptcha';
-$wgReCaptchaPublicKey = '6LdceAAAAAAAAJVzHf__qPaRsvlRtRfpuwc-WH88';
-$wgReCaptchaPrivateKey = '6LdceAAAAAAAAIsrbmn4sHK_wSoKq_WyHTNZFYMH';
+if( !empty($hwConfig["general"]["recaptchapublickey"]) && !empty($hwConfig["general"]["recaptchaprivatekey"]) ) {
+   require_once("{$IP}/extensions/ConfirmEdit/ReCaptcha.php");
+   $wgCaptchaClass = 'ReCaptcha';
+   $wgReCaptchaPublicKey = $hwConfig["general"]["recaptchapublickey"];
+   $wgReCaptchaPrivateKey = $hwConfig["general"]["recaptchaprivatekey"];
+}
 
 /*
  * Honeypots/blacklisting
