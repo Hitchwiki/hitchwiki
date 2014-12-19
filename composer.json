@@ -263,6 +263,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "StopForumSpam",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/StopForumSpam-REL1_24-5a7ff21.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {

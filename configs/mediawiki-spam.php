@@ -35,6 +35,16 @@ $wgAutoConfirmAge = 60*60*24;
 $wgAutoConfirmCount = 1;
 
 /*
+ * StopForumSpam
+ * https://www.mediawiki.org/wiki/Extension:StopForumSpam
+ */
+if( !empty($hwConfig["spam"]["stopforumspamkey"]) ) {
+  require_once "$IP/extensions/StopForumSpam/StopForumSpam.php";
+  $wgSFSAPIKey = $hwConfig["general"]["stopforumspamkey"];
+  $wgSFSIPListLocation = "";
+}
+
+/*
  * ConfirmEdit
  * https://www.mediawiki.org/wiki/Extension:ConfirmEdit
  */
@@ -72,7 +82,7 @@ foreach ( $arr as $key => $value ) {
  * ConfirmEdit - ReCaptcha
  * http://www.mediawiki.org/wiki/Extension:ConfirmEdit#ReCaptcha
  */
-if( !empty($hwConfig["general"]["recaptchapublickey"]) && !empty($hwConfig["general"]["recaptchaprivatekey"]) ) {
+if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"]["recaptchaprivatekey"]) ) {
    require_once("{$IP}/extensions/ConfirmEdit/ReCaptcha.php");
    $wgCaptchaClass = 'ReCaptcha';
    $wgReCaptchaPublicKey = $hwConfig["general"]["recaptchapublickey"];
@@ -90,6 +100,10 @@ $wgSpamRegexGroup['*'] = "/https?|viagra|porn|phentermine|free-resumes|playmate|
 $wgSpamRegexGroup['sysop'] = '';
 $wgSpamRegexGroup['bureaucrat'] = '';
 $wgSpamRegexGroup['autoconfirmed'] = '/viagra|porn/';
+
+$wgEnableDnsBlacklist = true;
+$wgDnsBlacklistUrls = array( 'xbl.spamhaus.org', 'opm.tornevall.org' );
+
 
 /*
  * Locking out spambots.

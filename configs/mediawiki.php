@@ -18,7 +18,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 ini_set('memory_limit', '64M');
 
 # Load Hitchwiki Config
-$hwConfig = parse_ini_file("settings.ini",true);
+$hwConfig = parse_ini_file("settings.ini", true);
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -358,4 +358,6 @@ require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
 #
 # Settings for preventing spam on MediaWiki
 #
-require_once "mediawiki-spam.php";
+if($hwConfig["spam"]["spamprotection"]) {
+  require_once "mediawiki-spam.php";
+}
