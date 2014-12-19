@@ -219,11 +219,47 @@
     {
       "type": "package",
       "package": {
+        "name": "BetaFeatures",
+        "version": "0.1",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/BetaFeatures-REL1_24-1f70525.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "VectorBeta",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/VectorBeta-REL1_24-4a282a0.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
         "name": "ReplaceText",
         "version": "1.24.0",
         "type": "mediawiki-extension",
         "dist": {
           "url": "https://extdist.wmflabs.org/dist/extensions/ReplaceText-REL1_24-1c436b4.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "Echo",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/Echo-REL1_24-0b8c699.tar.gz",
           "type": "tar"
         }
       }
@@ -250,7 +286,10 @@
     "AdminLinks": "*",
     "ReplaceText": "*",
     "CustomData": "*",
-    "CheckUser": "*"
+    "CheckUser": "*",
+    "BetaFeatures": "*",
+    "VectorBeta": "*",
+    "Echo": "*"
   },
   "require-dev": {
   },

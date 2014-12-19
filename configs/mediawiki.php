@@ -320,6 +320,20 @@ $wgGroupPermissions['sysop']['abusefilter-private'] = true;
 $wgGroupPermissions['sysop']['abusefilter-modify-restricted'] = true;
 $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 
+# Echo
+# https://www.mediawiki.org/wiki/Extension:Echo
+require_once "$IP/extensions/Echo/Echo.php";
+$wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
+
+# Adds some features into Vector theme
+# Careful when updating this!
+# https://www.mediawiki.org/wiki/Extension:VectorBeta
+require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
+require_once "$IP/extensions/VectorBeta/VectorBeta.php";
+$wgVectorBetaTypography = true;
+$wgVectorBetaPersonalBar = true;
+$wgVectorBetaWinter = true;
+
 #
 # Hitchwiki extensions
 #
