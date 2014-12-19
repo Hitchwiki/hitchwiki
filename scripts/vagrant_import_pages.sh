@@ -2,7 +2,8 @@
 
 # Import Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
 
-PAGESDIR=/var/www/scripts/pages
+SCRIPTSDIR=/var/www/scripts
+PAGESDIR=$SCRIPTSDIR/pages
 WIKIDIR=/var/www/public/wiki
 
 echo "Importing Semantic content..."
@@ -25,24 +26,33 @@ fi
 # -a	           Enable autosummary
 # --no-rc	       Do not show the change in recent changes
 
-# Load page names into array
-declare -a PAGES
-readarray PAGES < $PAGESDIR/_pagelist.txt
+
+# Return lines from the file into $MAPFILE array
+source $SCRIPTSDIR/vendor/filelines2array.sh
+fileLines2Array $PAGESDIR/_pagelist.txt
 
 # Loop array trough
 let i=0
-while (( ${#PAGES[@]} > i )); do
+for l in "${MAPFILE[@]}"
+do
 
-  PAGE=${PAGES[i++]}
-  echo "Importing $PAGE..."
+  PAGE=${MAPFILE[$i]}
+
+  echo "Importing '$PAGE'..."
+
+  if [ -z "${PAGE}" ]; then
+    echo "-> ERROR: Filename empty!"
+    continue
+  fi
 
   if [ -f $PAGESDIR/$PAGE ]; then
     php maintenance/edit.php --no-rc -u Hitchbot -b -s "Importing semantic structure." $PAGE < $PAGESDIR/$PAGE
   else
-    echo "-> ERROR: Could not load file contents for $PAGE - file does not exist."
+    echo "-> ERROR: Could not load file contents for '$PAGE' - file does not exist."
     echo ""
   fi
 
+    let i++
 done
 
 echo ""
