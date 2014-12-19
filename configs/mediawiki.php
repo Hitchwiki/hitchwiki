@@ -142,8 +142,19 @@ $wgDBmysql5 = true;
 ## Shared memory settings
 ## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
 ## https://www.mediawiki.org/wiki/Memcached
-$wgMainCacheType = ($hwCache) ? CACHE_ACCEL : CACHE_NONE;
-$wgMemCachedServers = array("127.0.0.1:11211");
+if($hwCache) {
+  $wgMemCachedPersistent = false;
+  $wgUseMemCached = true;
+  $wgMainCacheType = CACHE_MEMCACHED;
+  $wgParserCacheType = CACHE_MEMCACHED;
+  $wgMemCachedTimeout = 5000000;
+  $wgMemCachedInstanceSize = 2000;
+  $wgMemCachedServers = array('127.0.0.1:11211');
+  $wgResourceLoaderMaxage['unversioned'] = 1;
+}
+else {
+  $wgMainCacheType = CACHE_NONE;
+}
 
 
 ## To enable image uploads, make sure the 'images' directory
