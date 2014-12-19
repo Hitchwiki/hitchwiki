@@ -222,6 +222,9 @@ $wgUseRCPatrol                   = true;
 # Permissions
 $wgGroupPermissions['*']['edit'] = false;
 
+# API
+$wgEnableAPI = true;
+$wgEnableWriteAPI = true;
 
 
 /***** Skins ******************************************************************************************/
