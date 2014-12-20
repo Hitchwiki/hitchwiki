@@ -362,6 +362,8 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 #
 require_once "$IP/extensions/HWMap/HWMap.php";
 require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
+require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php";
+require_once "$IP/extensions/HWRatings/HWRatings.php";
 
 #
 # Settings for preventing spam on MediaWiki

@@ -25,6 +25,14 @@
       "type": "git"
     },
     {
+      "url": "https://github.com/Hitchwiki/HWRatings-extension",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWWaitingTime-extension",
+      "type": "git"
+    },
+    {
       "type": "package",
       "package": {
         "name": "AntiSpoof",
@@ -306,6 +314,8 @@
     "psr/log": "1.0.0",
     "HWMap": "@dev",
     "HWCoordinateApi": "@dev",
+    "HWRatings": "@dev",
+    "HWWaitingTime": "@dev",
     "SemanticWatchlist": "*",
     "AntiSpoof": "*",
     "AbuseFilter": "*",
