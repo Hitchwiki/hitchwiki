@@ -25,6 +25,10 @@
       "type": "git"
     },
     {
+      "url": "https://github.com/simison/BetaFeatureEverywhere.git",
+      "type": "git"
+    },
+    {
       "type": "package",
       "package": {
         "name": "AntiSpoof",
@@ -328,7 +332,8 @@
     "Echo": "*",
     "StopForumSpam": "*",
     "MobileFrontend": "*",
-    "Mantle": "*"
+    "Mantle": "*",
+    "BetaFeatureEverywhere": "*"
   },
   "require-dev": {
   },
