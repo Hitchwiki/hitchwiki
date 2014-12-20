@@ -45,7 +45,7 @@ if [ ! -d "$WIKIDIR" ]; then
     curl --silent -O http://releases.wikimedia.org/mediawiki/$WIKIVERSIONBRANCH/mediawiki-$WIKIVERSION.tar.gz > /dev/null;
   fi
   tar xzf mediawiki-$WIKIVERSION.tar.gz -C $ROOTDIR/public;
-  rm mediawiki-$WIKIVERSION.tar.gz;
+  #rm mediawiki-$WIKIVERSION.tar.gz;
   mv -i $ROOTDIR/public/mediawiki-$WIKIVERSION $WIKIDIR;
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
