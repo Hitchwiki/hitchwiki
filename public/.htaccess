@@ -115,6 +115,14 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
 RewriteRule ^/?(..)/images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/wiki/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
 
+# If the requested URL to an image directory contains the download query parameter,
+# the Content-Disposition-header must be set to attachment.
+# https://www.mediawiki.org/wiki/Extension:MultimediaViewer
+# https://gerrit.wikimedia.org/r/#/c/120614/3/puppet/templates/content_disposition_attachment.conf.erb
+RewriteCond %{REQUEST_URI} ^/images.*
+RewriteCond %{QUERY_STRING} ^download$
+RewriteRule .* - [E=DOWNLOAD:yes]
+#Header set "Content-Disposition" "attachment" env=DOWNLOAD
 
 #
 # File uploads

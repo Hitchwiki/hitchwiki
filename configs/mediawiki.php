@@ -293,9 +293,9 @@ $wgPFEnableStringFunctions = true;
 # Interwiki links (nomadwiki, trashwiki etc)
 # - Grant sysops permissions to edit interwiki data
 # - To enable pulling global interwikis from a central database
-require_once "$IP/extensions/Interwiki/Interwiki.php";
-$wgGroupPermissions['sysop']['interwiki'] = true;
-$wgInterwikiCentralDB = 'interwiki';
+#require_once "$IP/extensions/Interwiki/Interwiki.php";
+#$wgGroupPermissions['sysop']['interwiki'] = true;
+#$wgInterwikiCentralDB = 'interwiki';
 
 # Recent changes cleanup
 # https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup

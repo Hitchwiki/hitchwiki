@@ -14,20 +14,6 @@ CONFPATH=$CONFDIR/mediawiki.php
 SCRIPTDIR=$ROOTDIR/scripts
 WIKIDIR=$ROOTDIR/public/wiki
 
-# Let's roll...
-echo "------------------------------------------------------------"
-echo ""
-echo "   o  o o-O-o o-O-o   o-o o  o o       o o-O-o o  o o-O-o"
-echo "   |  |   |     |    /    |  | |       |   |   | /    |  "
-echo "   O--O   |     |   O     O--O o   o   o   |   OO     |  "
-echo "   |  |   |     |    \    |  |  \ / \ /    |   | \    |  "
-echo "   o  o o-O-o   o     o-o o  o   o   o   o-O-o o  o o-O-o"
-echo ""
-echo "     The Hitchhiker's Guide to Hitchhiking the World"
-echo ""
-echo "------------------------------------------------------------"
-echo ""
-
 # Make sure we're at right directory
 cd $ROOTDIR
 
@@ -90,6 +76,10 @@ mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki CHAR
 # Rename config so install process can pass
 mv LocalSettings.php LocalSettings.php~
 
+# Install APC
+sudo apt-get -y install php-apc
+sudo /etc/init.d/apache2 restart
+
 # Install MediaWiki
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
 php maintenance/install.php --conf $CONFPATH --dbuser $HW__db__username --dbpass $HW__db__password --dbname hitchwiki --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
@@ -132,7 +122,7 @@ bash $SCRIPTDIR/vagrant_import_pages.sh
 echo ""
 echo "Hitchwiki is now installed!"
 echo ""
-echo "Vagrant is up. Open http://192.168.33.10/ in your browser."
+echo "Vagrant is up. Open http://$HW__general__domain/ in your browser."
 echo ""
 echo "Suspend the virtual machine by calling 'vagrant suspend'."
 echo "When you're ready to begin working again, just run 'vagrant up'."

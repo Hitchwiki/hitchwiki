@@ -19,12 +19,15 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Start dev environment: `vagrant up`. This will run installation script on first launch.
-3. Open [http://192.168.33.10/](http://192.168.33.10/) in your browser.
+2. Type `sh scripts/install.sh`.
+3. Install will ask for your password to add "hitchwiki.dev" to your hosts file. To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead, set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile). You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
+4. Open [http://hitchwiki.dev/](http://hitchwiki.dev/) in your browser.
 
-Suspend the virtual machine by typing `vagrant suspend`. When you're ready to begin working again, just run `vagrant up` again.
+After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`. When you're ready to begin working again, just run `vagrant up`.
 
 #### Install script will do the following:
+* Setup Vagrant box
+* Install [Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
