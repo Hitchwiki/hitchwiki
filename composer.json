@@ -17,6 +17,10 @@
   },
   "repositories": [
     {
+      "url": "https://github.com/Hitchwiki/HitchwikiVector-extension.git",
+      "type": "git"
+    },
+    {
       "url": "https://github.com/Hitchwiki/HWCoordinateApi-extension.git",
       "type": "git"
     },
@@ -26,6 +30,10 @@
     },
     {
       "url": "https://github.com/Hitchwiki/HWRatings-extension",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/simison/BetaFeatureEverywhere.git",
       "type": "git"
     },
     {
@@ -316,6 +324,10 @@
     "HWCoordinateApi": "@dev",
     "HWRatings": "@dev",
     "HWWaitingTime": "@dev",
+    "HitchwikiVector": "@dev",
+    "BetaFeatureEverywhere": "@dev",
+    "BetaFeatures": "*",
+    "VectorBeta": "*",
     "SemanticWatchlist": "*",
     "AntiSpoof": "*",
     "AbuseFilter": "*",
@@ -333,8 +345,6 @@
     "ReplaceText": "*",
     "CustomData": "*",
     "CheckUser": "*",
-    "BetaFeatures": "*",
-    "VectorBeta": "*",
     "Echo": "*",
     "StopForumSpam": "*",
     "MobileFrontend": "*",

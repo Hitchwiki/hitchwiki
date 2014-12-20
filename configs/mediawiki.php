@@ -250,7 +250,6 @@ require_once "$IP/skins/CologneBlue/CologneBlue.php";
 require_once "$IP/skins/Modern/Modern.php";
 require_once "$IP/skins/MonoBook/MonoBook.php";
 require_once "$IP/skins/Vector/Vector.php";
-#require_once "$IP/skins/Hitchwiki/Hitchwiki.php";
 
 
 /***** Extensions ******************************************************************************************/
@@ -337,17 +336,23 @@ $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 
 # Echo
 # https://www.mediawiki.org/wiki/Extension:Echo
-require_once "$IP/extensions/Echo/Echo.php";
+#require_once "$IP/extensions/Echo/Echo.php";
 $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
 
 # Adds some features into Vector theme
-# Careful when updating this!
 # https://www.mediawiki.org/wiki/Extension:VectorBeta
 require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
 require_once "$IP/extensions/VectorBeta/VectorBeta.php";
+require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
+$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
+$wgDefaultUserOptions['betafeatures-vector-typography-update'] = '1';
+$wgDefaultUserOptions['betafeatures-vector-fixedheader'] = '1';
 $wgVectorBetaTypography = true;
 $wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
+
+
+#$wgBetaFeaturesWhitelist = array( 'betafeatures-vector-fixedheader', 'betafeatures-vector-compact-personal-bar', 'betafeatures-vector-typography-update' );
 
 # Enables some features required by VectorBeta such as Special:MobileMenu
 # https://www.mediawiki.org/wiki/Extension:MobileFrontend
@@ -360,6 +365,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 #
 # Hitchwiki extensions
 #
+require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";
 require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
 require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php";
