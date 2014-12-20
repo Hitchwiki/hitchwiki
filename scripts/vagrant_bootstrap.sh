@@ -62,7 +62,7 @@ cp -f $ROOTDIR/composer.phar $WIKIDIR/composer.phar
 # Install dependencies
 echo ""
 echo "Installing dependencies..."
-php composer.phar install
+php composer.phar install --no-progress
 
 cd $WIKIDIR
 
@@ -86,10 +86,10 @@ php maintenance/install.php --conf $CONFPATH --dbuser $HW__db__username --dbpass
 
 # Install SemanticMediawiki extensions
 # (Less headache to do this here instead of our composer.json)
-php composer.phar require mediawiki/semantic-media-wiki "~2.0"
-php composer.phar require mediawiki/semantic-forms "~3.0"
-php composer.phar require mediawiki/maps "~3.0"
-php composer.phar require mediawiki/semantic-maps "~3.1"
+php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
+php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
+php composer.phar require --no-progress mediawiki/maps "~3.0"
+php composer.phar require --no-progress mediawiki/semantic-maps "~3.1"
 
 php maintenance/update.php --quick --conf $CONFPATH
 
