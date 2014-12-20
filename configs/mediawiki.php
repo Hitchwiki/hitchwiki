@@ -18,7 +18,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 ini_set('memory_limit', '64M');
 
 # Load Hitchwiki Config
-$hwConfig = parse_ini_file("settings.ini",true);
+$hwConfig = parse_ini_file("settings.ini", true);
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -95,6 +95,7 @@ $wgScriptExtension  = ".php";
 $wgArticlePath      = "{$wgScriptPath}/$1";
 $wgScript           = "{$wgScriptPath}/index.php";
 $wgUsePathInfo      = true;
+$wgCookieDomain     = $hwConfig["general"]["cookiedomain"];
 
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = $hwLang;
@@ -139,8 +140,21 @@ $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 $wgDBmysql5 = true;
 
 ## Shared memory settings
-$wgMainCacheType = CACHE_NONE;
-$wgMemCachedServers = array();
+## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
+## https://www.mediawiki.org/wiki/Memcached
+if($hwCache) {
+  $wgMemCachedPersistent = false;
+  $wgUseMemCached = true;
+  $wgMainCacheType = CACHE_MEMCACHED;
+  $wgParserCacheType = CACHE_MEMCACHED;
+  $wgMemCachedTimeout = 5000000;
+  $wgMemCachedInstanceSize = 2000;
+  $wgMemCachedServers = array('127.0.0.1:11211');
+  $wgResourceLoaderMaxage['unversioned'] = 1;
+}
+else {
+  $wgMainCacheType = CACHE_NONE;
+}
 
 
 ## To enable image uploads, make sure the 'images' directory
@@ -220,6 +234,9 @@ $wgUseRCPatrol                   = true;
 # Permissions
 $wgGroupPermissions['*']['edit'] = false;
 
+# API
+$wgEnableAPI = true;
+$wgEnableWriteAPI = true;
 
 
 /***** Skins ******************************************************************************************/
@@ -276,9 +293,9 @@ $wgPFEnableStringFunctions = true;
 # Interwiki links (nomadwiki, trashwiki etc)
 # - Grant sysops permissions to edit interwiki data
 # - To enable pulling global interwikis from a central database
-require_once "$IP/extensions/Interwiki/Interwiki.php";
-$wgGroupPermissions['sysop']['interwiki'] = true;
-$wgInterwikiCentralDB = 'interwiki';
+#require_once "$IP/extensions/Interwiki/Interwiki.php";
+#$wgGroupPermissions['sysop']['interwiki'] = true;
+#$wgInterwikiCentralDB = 'interwiki';
 
 # Recent changes cleanup
 # https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
@@ -318,6 +335,28 @@ $wgGroupPermissions['sysop']['abusefilter-private'] = true;
 $wgGroupPermissions['sysop']['abusefilter-modify-restricted'] = true;
 $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 
+# Echo
+# https://www.mediawiki.org/wiki/Extension:Echo
+require_once "$IP/extensions/Echo/Echo.php";
+$wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
+
+# Adds some features into Vector theme
+# Careful when updating this!
+# https://www.mediawiki.org/wiki/Extension:VectorBeta
+require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
+require_once "$IP/extensions/VectorBeta/VectorBeta.php";
+$wgVectorBetaTypography = true;
+$wgVectorBetaPersonalBar = true;
+$wgVectorBetaWinter = true;
+
+# Enables some features required by VectorBeta such as Special:MobileMenu
+# https://www.mediawiki.org/wiki/Extension:MobileFrontend
+require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
+require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
+$wgMFAutodetectMobileView = true;
+$wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
+
+
 #
 # Hitchwiki extensions
 #
@@ -327,4 +366,6 @@ require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
 #
 # Settings for preventing spam on MediaWiki
 #
-require_once "mediawiki-spam.php";
+if($hwConfig["spam"]["spamprotection"]) {
+  require_once "mediawiki-spam.php";
+}

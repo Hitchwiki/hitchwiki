@@ -70,6 +70,8 @@ RewriteEngine On
 RewriteBase /
 Options +FollowSymLinks
 
+RewriteRule ^robots.txt$ /robots.txt.php
+
 # Ensure working of static assets
 #RewriteRule ^/(load.php|wp-content|wp-includes|wp-admin|images|skins|stylesheets|config|forum|community|maps|translate|phrasebook-v2|phrasebook)/ - [L]
 
@@ -99,7 +101,7 @@ RewriteRule \.php~$ - [F,L]
 #RewriteCond %{REQUEST_URI} !^/(index|redirect|texvc)\.php$
 #RewriteCond %{REQUEST_URI} !^/errors/(40(1|3|4)|500)\.php$
 #RewriteCond %{REQUEST_URI} !^/(favicon\.png|favicon\.ico|humans\.txt|robots\.txt)$
-RewriteCond %{REQUEST_URI} ^/(..)/(load.php|stylesheets|extensions|resources|skins|images|config)
+RewriteCond %{REQUEST_URI} ^/(..)/(profileinfo.php|opensearch_desc.php|api.php|load.php|stylesheets|extensions|resources|skins|images|config)
 RewriteRule ^(..)/(.*)$ /wiki/$2 [L,QSA]
 
 RewriteRule ^/?(..)(/.*)?$ %{DOCUMENT_ROOT}/wiki/index.php [L]
@@ -113,6 +115,14 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
 RewriteRule ^/?(..)/images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/wiki/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
 
+# If the requested URL to an image directory contains the download query parameter,
+# the Content-Disposition-header must be set to attachment.
+# https://www.mediawiki.org/wiki/Extension:MultimediaViewer
+# https://gerrit.wikimedia.org/r/#/c/120614/3/puppet/templates/content_disposition_attachment.conf.erb
+RewriteCond %{REQUEST_URI} ^/images.*
+RewriteCond %{QUERY_STRING} ^download$
+RewriteRule .* - [E=DOWNLOAD:yes]
+#Header set "Content-Disposition" "attachment" env=DOWNLOAD
 
 #
 # File uploads
