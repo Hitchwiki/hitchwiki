@@ -4,3 +4,4 @@ Template:Spot
 Form:Country
 Form:City
 Form:Spot
+Property:Location
