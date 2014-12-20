@@ -1,3 +1,7 @@
+#!/bin/bash
+
+cd $(dirname $0)/..
+
 # Kick start Hitchwiki installation
 
 echo "------------------------------------------------------------"
