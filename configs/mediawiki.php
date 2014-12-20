@@ -250,7 +250,6 @@ require_once "$IP/skins/CologneBlue/CologneBlue.php";
 require_once "$IP/skins/Modern/Modern.php";
 require_once "$IP/skins/MonoBook/MonoBook.php";
 require_once "$IP/skins/Vector/Vector.php";
-#require_once "$IP/skins/Hitchwiki/Hitchwiki.php";
 
 
 /***** Extensions ******************************************************************************************/
@@ -366,6 +365,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 #
 # Hitchwiki extensions
 #
+require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";
 require_once "$IP/extensions/HWCoordinateApi/HWCoordinateApi.php";
 

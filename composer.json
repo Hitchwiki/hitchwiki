@@ -17,6 +17,10 @@
   },
   "repositories": [
     {
+      "url": "https://github.com/Hitchwiki/HitchwikiVector-extension.git",
+      "type": "git"
+    },
+    {
       "url": "https://github.com/Hitchwiki/HWCoordinateApi-extension.git",
       "type": "git"
     },
@@ -310,6 +314,10 @@
     "psr/log": "1.0.0",
     "HWMap": "@dev",
     "HWCoordinateApi": "@dev",
+    "HitchwikiVector": "@dev",
+    "BetaFeatureEverywhere": "@dev",
+    "BetaFeatures": "*",
+    "VectorBeta": "*",
     "SemanticWatchlist": "*",
     "AntiSpoof": "*",
     "AbuseFilter": "*",
@@ -327,13 +335,10 @@
     "ReplaceText": "*",
     "CustomData": "*",
     "CheckUser": "*",
-    "BetaFeatures": "*",
-    "VectorBeta": "*",
     "Echo": "*",
     "StopForumSpam": "*",
     "MobileFrontend": "*",
-    "Mantle": "*",
-    "BetaFeatureEverywhere": "*"
+    "Mantle": "*"
   },
   "require-dev": {
   },
