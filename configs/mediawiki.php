@@ -359,6 +359,12 @@ require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
 $wgMFAutodetectMobileView = true;
 $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
 
+# EventLogging
+# Required by $wgVectorBetaPersonalBar
+require_once "$IP/extensions/EventLogging/EventLogging.php";
+$wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
+$wgEventLoggingFile = $wgScriptPath.'/../../logs/mediawiki/events.log';
+
 # UploadWizard
 # https://www.mediawiki.org/wiki/Extension:UploadWizard
 require_once "$IP/extensions/UploadWizard/UploadWizard.php";

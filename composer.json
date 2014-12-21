@@ -323,6 +323,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "EventLogging",
+        "version": "0.8",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/EventLogging-REL1_24-753e5b8.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -356,7 +368,8 @@
     "StopForumSpam": "*",
     "MobileFrontend": "*",
     "Mantle": "*",
-    "UploadWizard": "*"
+    "UploadWizard": "*",
+    "EventLogging": "*"
   },
   "require-dev": {
   },
