@@ -60,6 +60,7 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
   $wgDebugDumpSql = $hwDebug;
   $wgShowDBErrorBacktrace = $hwDebug;
   $wgShowSQLErrors = $hwDebug;
+  $wgResourceLoaderDebug = $hwDebug;
 
   // Profiling
   $wgDebugProfiling = false;
@@ -364,7 +365,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 # https://www.mediawiki.org/wiki/Extension:EventLogging
 require_once "$IP/extensions/EventLogging/EventLogging.php";
 $wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
-$wgEventLoggingFile = $wgScriptPath.'/../../logs/mediawiki/events.log';
+$wgEventLoggingFile = "{$logDir}/events.log";
 
 # UploadWizard
 # https://www.mediawiki.org/wiki/Extension:UploadWizard
