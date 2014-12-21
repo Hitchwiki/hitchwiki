@@ -361,6 +361,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 
 # EventLogging
 # Required by $wgVectorBetaPersonalBar
+# https://www.mediawiki.org/wiki/Extension:EventLogging
 require_once "$IP/extensions/EventLogging/EventLogging.php";
 $wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
 $wgEventLoggingFile = $wgScriptPath.'/../../logs/mediawiki/events.log';

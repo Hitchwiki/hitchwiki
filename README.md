@@ -31,6 +31,7 @@ After setup your virtual machine is running. Suspend the virtual machine by typi
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
+* Import pages from `./scripts/pages/`
 * Create three users
 
 #### Pre-created users (user/pass)
