@@ -47,6 +47,7 @@ do
 
   if [ -f $PAGESDIR/$PAGE ]; then
     php maintenance/edit.php --no-rc -u Hitchbot -b -s "Importing semantic structure." $PAGE < $PAGESDIR/$PAGE
+    php maintenance/protect.php --user Hitchbot $PAGE
   else
     echo "-> ERROR: Could not load file contents for '$PAGE' - file does not exist."
     echo ""
