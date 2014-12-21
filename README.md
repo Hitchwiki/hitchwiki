@@ -45,7 +45,14 @@ If you do changes to Semantic structures (forms, templates etc), you should expo
 sh scripts/export.sh
 ```
 
-Then notify others about changes so they know to update their project.
+### Import Semantic structure
+
+This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`
+
+### Debug
+* Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
+* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable debug = 1.
+* See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
 
 ### Update
 1. Pull latest changes: `git pull origin master`
