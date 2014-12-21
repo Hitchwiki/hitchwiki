@@ -159,6 +159,7 @@ else {
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
+# ImageMagick is required by UploadWizard extension
 $wgEnableUploads = true;
 $wgUseImageMagick = true;
 $wgImageMagickConvertCommand = "/usr/bin/convert";
@@ -351,15 +352,36 @@ $wgVectorBetaTypography = true;
 $wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
 
-
-#$wgBetaFeaturesWhitelist = array( 'betafeatures-vector-fixedheader', 'betafeatures-vector-compact-personal-bar', 'betafeatures-vector-typography-update' );
-
 # Enables some features required by VectorBeta such as Special:MobileMenu
 # https://www.mediawiki.org/wiki/Extension:MobileFrontend
 require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
 require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
 $wgMFAutodetectMobileView = true;
 $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
+
+# UploadWizard
+# https://www.mediawiki.org/wiki/Extension:UploadWizard
+require_once "$IP/extensions/UploadWizard/UploadWizard.php";
+$wgUploadWizardConfig = array(
+  'debug' => $hwDebug,
+  #'autoCategory' => 'Uploaded with UploadWizard',
+  #'feedbackPage' => '',
+  'altUploadForm' => 'Special:Upload',
+  'fallbackToAltUploadForm' => false,
+  'enableFormData' => true,  # Should FileAPI uploads be used on supported browsers?
+  'enableMultipleFiles' => true,
+  'enableMultiFileSelect' => true,
+  'tutorial' => array('skip' => true),
+  'fileExtensions' => $wgFileExtensions # omitting this can cause errors
+);
+// Needed to make UploadWizard work in IE, see bug 39877
+$wgApiFrameOptions = 'SAMEORIGIN';
+$wgUploadNavigationUrl = '/'.$hwLang.'/Special:UploadWizard';
+// This modifies the sidebar's "Upload file" link - probably in other places as well. More at Manual:$wgUploadNavigationUrl.
+$wgExtensionFunctions[] = function() {
+  $GLOBALS['wgUploadNavigationUrl'] = SpecialPage::getTitleFor( 'UploadWizard' )->getLocalURL();
+  return true;
+};
 
 
 #
