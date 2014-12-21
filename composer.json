@@ -315,6 +315,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "UploadWizard",
+        "version": "1.24.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/UploadWizard-REL1_24-f173a1d.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -348,7 +360,8 @@
     "Echo": "*",
     "StopForumSpam": "*",
     "MobileFrontend": "*",
-    "Mantle": "*"
+    "Mantle": "*",
+    "UploadWizard": "*"
   },
   "require-dev": {
   },
