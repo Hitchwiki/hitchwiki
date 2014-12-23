@@ -3,7 +3,7 @@ from pywikibot import pagegenerators
 import json, requests # geopy is too limited ;(
 import re
 
-site = pywikibot.Site('en', 'hitchwiki')
+site = pywikibot.Site()
 gen = pagegenerators.AllpagesPageGenerator(site=site)
 
 url = 'http://api.geonames.org/searchJSON'
