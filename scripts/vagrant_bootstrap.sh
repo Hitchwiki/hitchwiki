@@ -100,7 +100,7 @@ mv LocalSettings.php~ LocalSettings.php
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 # Install assets for HWMaps
-vagrant ssh -c "cd $WIKIDIR/extensions/HWMap && bower install -f"
+vagrant ssh -c "cd $WIKIDIR/extensions/HWMap && bower install --config.interactive=false"
 
 # Install CheckUser
 cd $WIKIDIR/extensions/CheckUser && php install.php && cd $WIKIDIR
