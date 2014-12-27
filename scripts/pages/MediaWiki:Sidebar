@@ -1,13 +1,13 @@
 * navigation
 ** mainpage|Home
 ** Special:HWMap|Map
-** Special:FormStart|New place
-** Special:FormStart|New city
+** Special:FormStart/Spot|New spot
+** Special:FormStart/City|New city
 ** Special:UploadWizard|Add photo
 
 * Hitchwiki
 ** recentchanges-url|recentchanges
-** portal-url|Community Portal
+** portal-url|Community
 ** helppage|Tutorial
 ** Contact|Contact us
 * SEARCH
