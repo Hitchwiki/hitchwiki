@@ -69,19 +69,23 @@ vagrant ssh
 
 ### Database access
 #### From the app
-User: root
-Pass: root
-Host: localhost
+Setting | Value
+------------ | -------------
+User | root
+Pass | root
+Host | localhost
 
 #### From desktop
 Only via SSH Forwarding.
 
-User: root
-Pass: root
-Host: localhost
-SSH Host: 192.168.33.10
-SSH User: vagrant
-SSH Password: vagrant
+Setting | Value
+------------ | -------------
+User | root
+Pass | root
+Host | localhost
+SSH Host | 192.168.33.10
+SSH User | vagrant
+SSH Password | vagrant
 
 ### Clean Vagrant box
 If for some reason you want to have clean Scotchbox, database and MediaWiki installed, run:
