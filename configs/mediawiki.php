@@ -346,7 +346,7 @@ $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
 require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
 require_once "$IP/extensions/VectorBeta/VectorBeta.php";
 require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
-$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
+$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '0';
 $wgDefaultUserOptions['betafeatures-vector-typography-update'] = '1';
 $wgDefaultUserOptions['betafeatures-vector-fixedheader'] = '1';
 $wgVectorBetaTypography = true;
