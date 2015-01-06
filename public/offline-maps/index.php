@@ -1,11 +1,8 @@
 <?php
 /*
- * List *.map files
+ * List *.map files from this folder
+ * @link https://github.com/Hitchwiki/hitchwiki/wiki/API#offline-vector-maps
  */
-
-error_reporting(1);
-ini_set('error_reporting', E_ALL);
-
 
 $files = scandir("./");
 $format = (isset($_GET['format']) && $_GET['format'] == 'json') ? 'json' : 'html';
@@ -81,6 +78,7 @@ else:
       echo ($name) ? '<td>' . $name . '</td>' : '<td></td>';
       echo '<td><a href="' . $file . '">' . $file . '</a></td>';
       echo '<td>' . human_filesize( filesize($file), 1) . '</td>';
+      echo '<td>' . date ("Y-m-d", $mtime) . '</td>';
       echo '</tr>';
     }
   }
