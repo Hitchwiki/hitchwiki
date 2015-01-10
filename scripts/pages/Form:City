@@ -10,13 +10,13 @@ if a page with that name already exists, you will be sent to a form to edit that
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
 {{{for template|City}}}
 {| class="formtable"
+! Location: 
+| {{{field|Location|input type=openlayers|height=500|width=100%|autozoom=off|zoom=2}}}
+|-
+! City information:
+| {{{field|text|input type=textarea}}}
 |}
 {{{end template}}}
-
-'''Free text:'''
-
-{{{standard input|free text|rows=10}}}
-
 
 {{{standard input|summary}}}
 

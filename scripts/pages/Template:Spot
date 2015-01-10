@@ -5,19 +5,23 @@ It should be called in the following format:
 {{Spot
 |Description=
 |Cities=
+|CardinalDirection=
+|CitiesDirection=
+|RoadsDirection=
 }}
 </pre>
-Edit the page to see the template text.
-</noinclude><includeonly>{| class="wikitable"
-! Description
-| [[Description::{{{Description|}}}]]
-|-
-! Cities
-| {{#arraymap:{{{Cities|}}}|,|x|[[Cities::x]]}}
-|-
-! Location
-| [[Location::{{{Location|}}}]]
-|}
+</noinclude><includeonly>
+<div style="display:none">
+{{#arraymap:{{{Cities|}}}|,|x|[[Cities::x]]}}
+{{#arraymap:{{{CitiesDirection|}}}|,|x|[[CitiesDirection::x]]}}
+{{#arraymap:{{{RoadsDirection|}}}|,|x|[[RoadsDirection::x]]}}
+[[CardinalDirection::{{{CardinalDirection|}}}]]
+[[Location::{{{Location|}}}]]
+[[Country::{{{Country|}}}]]
+</div>
+
+{{{Description|}}}
+
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 {{#default_form::spot}}
 [[Category:Spots]]

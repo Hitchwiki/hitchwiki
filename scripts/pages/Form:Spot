@@ -11,20 +11,26 @@ if a page with that name already exists, you will be sent to a form to edit that
 {{{for template|Spot}}}
 {| class="formtable"
 ! Description:
-| {{{field|Description}}}
+| {{{field|Description|input type=textarea}}}
 |-
 ! Cities:
-| {{{field|Cities}}}
+| {{{field|Cities|values from category=Cities}}}
+|-
+! Cardinal direction:
+| {{{field|CardinalDirection|list|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
+|-
+! Cities direction:
+| {{{field|CitiesDirection|list|values from category=Cities}}}
+|-
+! Roads direction:
+| {{{field|RoadsDirection|list}}}
 |-
 ! Location:
 | {{{field|Location|input type=googlemaps|height=500|width=100%|autozoom=off|zoom=2}}}
+|-
+| {{{field|Country|hidden}}}
 |}
 {{{end template}}}
-
-'''Free text:'''
-
-{{{standard input|free text|rows=10}}}
-
 
 {{{standard input|summary}}}
 
