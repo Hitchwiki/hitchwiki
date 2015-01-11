@@ -399,6 +399,7 @@ require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";
 require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php";
 require_once "$IP/extensions/HWRatings/HWRatings.php";
+require_once "$IP/extensions/HWComments/HWComments.php";
 
 #
 # Settings for preventing spam on MediaWiki

@@ -29,6 +29,10 @@
       "type": "git"
     },
     {
+      "url": "https://github.com/Hitchwiki/HWComments-extension",
+      "type": "git"
+    },
+    {
       "url": "https://github.com/simison/BetaFeatureEverywhere.git",
       "type": "git"
     },
@@ -342,6 +346,7 @@
     "psr/log": "1.0.0",
     "HWMap": "@dev",
     "HWRatings": "@dev",
+    "HWComments": "@dev",
     "HWWaitingTime": "@dev",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
