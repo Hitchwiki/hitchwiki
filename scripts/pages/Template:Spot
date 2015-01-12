@@ -9,6 +9,7 @@ It should be called in the following format:
 |CitiesDirection=
 |RoadsDirection=
 |Location=latitude, longitude
+|Country=
 }}
 </pre>
 </noinclude><includeonly>
