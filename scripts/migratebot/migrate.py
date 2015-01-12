@@ -1,10 +1,27 @@
 import pywikibot
 from pywikibot import pagegenerators
-import json, requests # geopy is too limited ;(
-import re
+import json, requests, urllib # geopy is too limited ;(
+import re, hashlib
+import os.path
+
+class CachedHttpRequest:
+    @staticmethod
+    def request(url, cache_dir):
+        hash = hashlib.md5(url).hexdigest()
+        filename = cache_dir + '/' + hash
+        if (os.path.isfile(filename)):
+            print 'Loading cache for %s from %s' % (url, filename)
+            with open(filename, 'r') as cache_file:
+                content = cache_file.read().decode('utf-8')
+        else:
+            print 'Saving cache for %s into %s' % (url, filename)
+            content = requests.get(url=url).text
+            with open(filename, 'w') as cache_file:
+                cache_file.write(content.encode('utf-8'))
+        return content
 
 class GeoNames(object):
-    def __init__(self, username):
+    def __init__(self, username, cache_dir):
         self.url = 'http://api.geonames.org/searchJSON'
         self.default_params = dict(
             formatted='true',
@@ -13,23 +30,26 @@ class GeoNames(object):
             username=username,
             style='full'
         )
+        self.cache_dir = cache_dir
 
     def lookup(self, query):
         params = self.default_params.copy()
         params['q'] = query
-        resp = requests.get(url=self.url, params=params)
-        return json.loads(resp.text)
+        url = self.url + '?' + urllib.urlencode(params)
+        return json.loads(CachedHttpRequest.request(url, self.cache_dir))
 
 class GoogleGeocode(object):
-    def __init__(self):
+    def __init__(self, cache_dir):
         self.url = 'https://maps.googleapis.com/maps/api/geocode/json'
         self.default_params = dict()
+        self.cache_dir = cache_dir
 
     def lookup(self, query):
         params = self.default_params.copy()
         params['address'] = query
-        resp = requests.get(url=self.url, params=params)
-        return json.loads(resp.text)
+        url = self.url + '?' + urllib.urlencode(params)
+        txt = CachedHttpRequest.request(url, self.cache_dir)
+        return json.loads(txt)
 
 scoreThreshold = 24 # magic!
 relevanceFilter = [
@@ -41,9 +61,11 @@ relevanceFilter = [
     {'fcl': 'A'}, # country or administrative division
     {'fcl': 'P'} # city or village
 ]
+motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
+border_regex = '.*border (crossing|checkpoint)'
 
-geonames = GeoNames('hitchwiki')
-google_geocode = GoogleGeocode()
+geonames = GeoNames('hitchwiki', '/tmp/hw-migrate-cache')
+google_geocode = GoogleGeocode('/tmp/hw-migrate-cache')
 
 site = pywikibot.Site()
 gen = pagegenerators.AllpagesPageGenerator(site=site)
@@ -56,7 +78,7 @@ for page in gen:
         print '#%d. %s' % (count + 1, page.title().encode('ascii', 'ignore'))
         print 'http://hitchwiki.org/en/' + page.title(asUrl=True)
 
-        if not re.match('[A-Z]?-?\d+\s*(\((\w|\s)+\))', page.title().encode('ascii', 'ignore')): # no motorway info in GeoNames DB
+        if not re.match(motorway_regex, page.title()) and not re.match(border_regex, page.title()): # no motorway info in GeoNames DB
             data = geonames.lookup(page.title())
 
             if (
@@ -91,7 +113,7 @@ for page in gen:
                     print 'No Google Geocode viewport data'
             else:
                 print '-'
-        else: # use Google Geocode for motorway lookup
+        else: # use Google Geocode for motorway and border crossing lookup
             google_data = google_geocode.lookup(page.title())
             if google_data['results']:
                 print 'Google GeoCode bounding box: %s %s - %s %s' % (
