@@ -13,28 +13,29 @@ if a page with that name already exists, you will be sent to a form to edit that
 ! Description:
 | {{{field|Description|input type=textarea}}}
 |-
-! Cities:
+! City:
 | {{{field|Cities|values from category=Cities}}}
 |-
 ! Cardinal direction:
 | {{{field|CardinalDirection|list|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
 |-
-! Cities direction:
+! Towards cities:
 | {{{field|CitiesDirection|list|values from category=Cities}}}
 |-
-! Roads direction:
+! Major roads:
 | {{{field|RoadsDirection|list}}}
 |-
 ! Location:
-| {{{field|Location|input type=googlemaps|height=500|width=100%|autozoom=off|zoom=2}}}
+| {{{field|Location|input type=googlemaps|height=300|width=100%|autozoom=off|zoom=15}}}
 |-
 | {{{field|Country|hidden}}}
 |}
 {{{end template}}}
 
-{{{standard input|summary}}}
+<div style="text-align:center">
+  {{{standard input|save}}} {{{standard input|preview}}} {{{standard input|cancel}}}
+</div>
 
-{{{standard input|minor edit}}} {{{standard input|watch}}}
+<small>{{{standard input|watch}}}</small>
 
-{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
 </includeonly>
