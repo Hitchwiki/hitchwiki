@@ -2,7 +2,10 @@
 This is the "City" template.
 It should be called in the following format:
 <pre>
-{{City}}
+{{City
+|Location=latitude, longitude
+|text=
+}}
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
