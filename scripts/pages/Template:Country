@@ -1,0 +1,21 @@
+<noinclude>
+This is the "City" template.
+It should be called in the following format:
+<pre>
+{{City
+|Location=latitude, longitude
+|Capital=
+|Currency=
+|Population=
+|text=
+}}
+</pre>
+Edit the page to see the template text.
+</noinclude><includeonly>
+[[Capital::{{{Capital|}}}]]
+[[Currency::{{{Currency|}}}]]
+[[Population::{{{Population|}}}]]
+{{{text|}}}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+[[Category:Countries]]
+</includeonly>

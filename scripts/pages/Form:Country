@@ -1,0 +1,37 @@
+<noinclude>
+This is the "Country" form.
+To create a page with this form, enter the page name below;
+if a page with that name already exists, you will be sent to a form to edit that page.
+
+
+{{#forminput:form=Country}}
+
+</noinclude><includeonly>
+<div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
+{{{for template|Country}}}
+{| class="formtable"
+! Location: 
+| {{{field|Location|input type=map|height=500|width=100%|autozoom=off|zoom=2}}}
+|-
+| {{{field|BoundingBox|list|hidden}}}
+|-
+! Capital city:
+| {{{field|Capital|input type=tokens|values from category=Cities|max values=1}}}
+|-
+! Currency:
+| {{{field|Currency}}}
+|-
+! Population:
+| {{{field|Population}}}
+|-
+! City information:
+| {{{field|text|input type=textarea}}}
+|}
+{{{end template}}}
+
+{{{standard input|summary}}}
+
+{{{standard input|minor edit}}} {{{standard input|watch}}}
+
+{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
+</includeonly>

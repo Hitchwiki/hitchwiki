@@ -11,7 +11,21 @@ if a page with that name already exists, you will be sent to a form to edit that
 {{{for template|City}}}
 {| class="formtable"
 ! Location: 
-| {{{field|Location|input type=openlayers|height=500|width=100%|autozoom=off|zoom=2}}}
+| {{{field|Location|input type=map|height=500|width=100%|autozoom=off|zoom=2}}}
+|-
+| {{{field|BoundingBox|list|hidden}}}
+|-
+! Country:
+| {{{field|Cities|input type=tokens|values from category=Countries}}}
+|-
+! Population:
+| {{{field|Population}}}
+|-
+! Licence Plate:
+| {{{field|Population}}}
+|-
+! Major Roads:
+| {{{field|MajorRoads|input type=tokens|values from category=Road}}}
 |-
 ! City information:
 | {{{field|text|input type=textarea}}}

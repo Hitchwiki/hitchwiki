@@ -4,11 +4,19 @@ It should be called in the following format:
 <pre>
 {{City
 |Location=latitude, longitude
+|Country=
+|Licence Plate=
+|Population=
+|Major Roads=
 |text=
 }}
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
+{{#arraymap:{{{Country|}}}|,|x|[[Country::x]]}}
+{{#arraymap:{{{Major Roads|}}}|,|x|[[Major Roads::x]]}}
+[[Licence Plate::{{{Licence Plate|}}}]]
+[[Population::{{{Population|}}}]]
 {{{text|}}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <hwmap></hwmap>
