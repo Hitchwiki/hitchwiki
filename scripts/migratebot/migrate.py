@@ -51,7 +51,9 @@ class GoogleGeocode(object):
         txt = CachedHttpRequest.request(url, self.cache_dir)
         return json.loads(txt)
 
-score_threshold = 24 # magic!
+with open('config.json') as config_file:    
+    config = json.load(config_file)
+
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 
@@ -95,59 +97,61 @@ for page in gen:
                 country = next(component["long_name"] for component in address if "country" in component["types"])
                 entity = 'Area'
                 properties = {
-                    'Type': 'Border Crossing',
+                    'Type': 'Border rCossing',
                     'Location': '%s,%s' % (location['lat'], location['lng']),
                     'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                     'Countries': country
                 }
         else:
             geonames_data = geonames.lookup(page.title())
-            if (geonames_data["totalResultsCount"] > 0 and geonames_data['geonames'][0]['score'] >= score_threshold):
+            if geonames_data["totalResultsCount"] > 0:
                 geonames_result = geonames_data['geonames'][0]
-                properties = {
-                    'Location': '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
-                }
+                relevant = (page.title() in config['whitelist'] or geonames_result['score'] >= config['score_threshold'])
+                if relevant and page.title() not in config['blacklist']:
+                    properties = {
+                        'Location': '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
+                    }
 
-                google_data = google_geocode.lookup(page.title())
-                if google_data['results']:
-                    viewport = google_data['results'][0]['geometry']['viewport']
-                    properties['Bbox'] = '%s,%s,%s,%s' % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat'])
-                elif 'bbox' in geonames_result: # bbox sucks for countries like France with remote islands, so only use as a fallback strategy
-                    bbox = geonames_result['bbox']
-                    properties['Bbox'] = '%s,%s,%s,%s' % (bbox['west'], bbox['south'], bbox['east'], bbox['north'])
-                else:
-                    properties['Bbox'] = ''
+                    google_data = google_geocode.lookup(page.title())
+                    if google_data['results']:
+                        viewport = google_data['results'][0]['geometry']['viewport']
+                        properties['Bbox'] = '%s,%s,%s,%s' % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat'])
+                    elif 'bbox' in geonames_result: # bbox sucks for countries like France with remote islands, so only use as a fallback strategy
+                        bbox = geonames_result['bbox']
+                        properties['Bbox'] = '%s,%s,%s,%s' % (bbox['west'], bbox['south'], bbox['east'], bbox['north'])
+                    else:
+                        properties['Bbox'] = ''
 
-                if geonames_result['fcl'] == 'A' and 'fcode' in geonames_result and geonames_result['fcode'] in ['PCL', 'PCLI', 'PCLF']: # {{Country}}
-                    entity = 'Country'
-                    properties.update({
-                        'Population': geonames_result['population'],
-                        'Capital': '',
-                        'Currency': ''
-                    })
-                elif geonames_result['fcl'] == 'P': # {{City}}
-                        entity = 'City'
+                    if geonames_result['fcl'] == 'A' and 'fcode' in geonames_result and geonames_result['fcode'] in ['PCL', 'PCLI', 'PCLF']: # {{Country}}
+                        entity = 'Country'
                         properties.update({
-                            'Country': geonames_result['countryName'],
                             'Population': geonames_result['population'],
-                            'LicensePlate': '',
-                            'MajorRoads': ''
+                            'Capital': '',
+                            'Currency': ''
                         })
-                else: # {{Area}}
-                    properties['Countries'] = geonames_result['countryName']
-                    if geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'CONT': # continent
-                        entity = 'Area'
-                        properties['Type'] = 'Continent'
-                    elif (
-                        geonames_result['fcl'] == 'A' # administrative division
-                        or (geonames_result['fcl'] == 'T' and geonames_result['fcode'] in ['ISL', 'ISLS']) # island(s)
-                        or (geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'RGN')  # region
-                    ):
-                        entity = 'Area'
-                        properties['Type'] = 'Region'
-                    elif geonames_result['fcl'] == 'S' and geonames_result['fcode'] == 'AIRP': # airport
-                        entity = 'Area'
-                        properties['Type'] = 'Airport'
+                    elif geonames_result['fcl'] == 'P': # {{City}}
+                            entity = 'City'
+                            properties.update({
+                                'Country': geonames_result['countryName'],
+                                'Population': geonames_result['population'],
+                                'LicensePlate': '',
+                                'MajorRoads': ''
+                            })
+                    else: # {{Area}}
+                        properties['Countries'] = geonames_result['countryName']
+                        if geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'CONT': # continent
+                            entity = 'Area'
+                            properties['Type'] = 'Continent'
+                        elif (
+                            geonames_result['fcl'] == 'A' # administrative division
+                            or (geonames_result['fcl'] == 'T' and geonames_result['fcode'] in ['ISL', 'ISLS']) # island(s)
+                            or (geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'RGN')  # region
+                        ):
+                            entity = 'Area'
+                            properties['Type'] = 'Region'
+                        elif geonames_result['fcl'] == 'S' and geonames_result['fcode'] == 'AIRP': # airport
+                            entity = 'Area'
+                            properties['Type'] = 'Airport'
 
         if entity:
             print "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
