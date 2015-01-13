@@ -34,7 +34,7 @@ class GeoNames(object):
 
     def lookup(self, query):
         params = self.default_params.copy()
-        params['q'] = query
+        params['q'] = query.encode('utf-8')
         url = self.url + '?' + urllib.urlencode(params)
         return json.loads(CachedHttpRequest.request(url, self.cache_dir))
 
@@ -46,7 +46,7 @@ class GoogleGeocode(object):
 
     def lookup(self, query):
         params = self.default_params.copy()
-        params['address'] = query
+        params['address'] = query.encode('utf-8')
         url = self.url + '?' + urllib.urlencode(params)
         txt = CachedHttpRequest.request(url, self.cache_dir)
         return json.loads(txt)
@@ -64,8 +64,8 @@ relevanceFilter = [
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 
-geonames = GeoNames('hitchwiki', '/tmp/hw-migrate-cache')
-google_geocode = GoogleGeocode('/tmp/hw-migrate-cache')
+geonames = GeoNames('hitchwiki', './.cache')
+google_geocode = GoogleGeocode('./.cache')
 
 site = pywikibot.Site()
 gen = pagegenerators.AllpagesPageGenerator(site=site)
@@ -75,7 +75,7 @@ disamb_page_titles = [article.title() for article in disamb_cat.articles()]
 count = 0
 for page in gen:
     if not page.isRedirectPage() and page.title() not in disamb_page_titles:
-        print '#%d. %s' % (count + 1, page.title().encode('ascii', 'ignore'))
+        print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
         print 'http://hitchwiki.org/en/' + page.title(asUrl=True)
 
         if not re.match(motorway_regex, page.title()) and not re.match(border_regex, page.title()): # no motorway info in GeoNames DB
@@ -86,7 +86,7 @@ for page in gen:
                 and data['geonames'][0]['score'] >= scoreThreshold
                 and any(all(item in data['geonames'][0].items() for item in filter.items()) for filter in relevanceFilter)
             ):
-                print 'GeoNames name: %s' % (data['geonames'][0]['name'].encode('ascii', 'ignore'))
+                print 'GeoNames name: %s' % (data['geonames'][0]['name'].encode('utf-8'))
                 print 'GeoNames Location: %s %s' % (
                     data['geonames'][0]['lat'],
                     data['geonames'][0]['lng']

@@ -11,3 +11,4 @@ logs*
 *pycache*
 .idea
 /pywikibot-core
+.cache/*
