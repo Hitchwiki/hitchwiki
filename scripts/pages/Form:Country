@@ -24,7 +24,7 @@ if a page with that name already exists, you will be sent to a form to edit that
 ! Population:
 | {{{field|Population}}}
 |-
-! City information:
+! Country information:
 | {{{field|text|input type=textarea}}}
 |}
 {{{end template}}}

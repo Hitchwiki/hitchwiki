@@ -17,7 +17,7 @@ if a page with that name already exists, you will be sent to a form to edit that
 | {{{field|Cities|values from category=Cities}}}
 |-
 ! Cardinal direction:
-| {{{field|CardinalDirection|list|input type=radiobutton|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
+| {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
 |-
 ! Towards cities:
 | {{{field|CitiesDirection|list|values from category=Cities}}}
