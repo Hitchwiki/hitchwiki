@@ -1,0 +1,18 @@
+<noinclude>
+This is the "Area" template.
+It should be called in the following format:
+<pre>
+{{City
+|Location=latitude, longitude
+|Type=Region, Road, Airport, Border Crossing, or Continent
+|text=
+}}
+</pre>
+Edit the page to see the template text.
+</noinclude><includeonly>
+[[Type::{{{Type|}}}]]
+{{{text|}}}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+<hwmap></hwmap>
+[[Category:Cities]]
+</includeonly>

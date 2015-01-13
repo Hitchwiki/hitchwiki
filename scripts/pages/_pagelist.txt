@@ -2,7 +2,9 @@ MediaWiki:Sidebar
 Template:Country
 Template:City
 Template:Spot
+Template:Area
 Form:Country
 Form:City
 Form:Spot
+Form:Area
 Property:Location

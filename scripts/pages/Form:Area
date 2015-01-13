@@ -1,0 +1,33 @@
+<noinclude>
+This is the "Area" form.
+It can refer to pages that are neither cities or countries.
+Pages such as airport, road, continent, border crossing, and region.
+To create a page with this form, enter the page name below;
+if a page with that name already exists, you will be sent to a form to edit that page.
+
+
+{{#forminput:form=Area}}
+
+</noinclude><includeonly>
+<div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
+{{{for template|Area}}}
+{| class="formtable"
+! Location: 
+| {{{field|Location|input type=map|height=500|width=100%|autozoom=off|zoom=2}}}
+|-
+| {{{field|BoundingBox|list|hidden}}}
+|-
+! Type:
+| {{{field|Type|mandatory|default=Region|input type=radiobutton|values=Region,Road,Airport,Border Crossing,Continent}}}
+|-
+! Area information:
+| {{{field|text|input type=textarea}}}
+|}
+{{{end template}}}
+
+{{{standard input|summary}}}
+
+{{{standard input|minor edit}}} {{{standard input|watch}}}
+
+{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
+</includeonly>
