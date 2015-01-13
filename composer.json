@@ -357,6 +357,7 @@
     "AbuseFilter": "*",
     "GeoData":  "*",
     "SemanticFormsInputs":  "*",
+    "mediawiki/semantic-maps":  "*",
     "OAuth":  "*",
     "DismissableSiteNotice": "*",
     "GeoCrumbs": "*",
