@@ -34,10 +34,6 @@ indent_size = 2
 insert_final_newline = false
 trim_trailing_whitespace = true
 
-[scripts/pages/*]
-insert_final_newline = false
-trim_trailing_whitespace = false
-
 [**.md]
 indent_style = space
 
