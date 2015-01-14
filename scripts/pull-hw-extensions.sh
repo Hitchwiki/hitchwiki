@@ -18,20 +18,20 @@ git pull origin master
 bower update
 
 # HWMaps
-cd HWMap
+cd ../HWMap
 git pull origin master
 bower update
 
 # HWComments
-cd HWComments
+cd ../HWComments
 git pull origin master
 
 # HWRatings
-cd HWRatings
+cd ../HWRatings
 git pull origin master
 
 # HWWaitingTime
-cd HWWaitingTime
+cd ../HWWaitingTime
 git pull origin master
 
 echo ""
