@@ -4,7 +4,18 @@
 		"Police",
 		"Statistics",
 		"West Coast",
-		"Winter"
+		"Winter",
+
+		"English",
+		"French",
+		"German",
+		"P%C3%A9age",
+		"Pierre_Trudeau",
+		"Planes",
+		"RSA",
+		"Russian",
+		"Spanish",
+		"Sunday"
 	],
     "whitelist": [
         "Saltspring Island",
