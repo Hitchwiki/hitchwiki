@@ -108,8 +108,9 @@ $wgServer = "http://" . $hwConfig["general"]["domain"];
 $wgStylePath = $wgScriptPath . "/skins";
 
 
-## The relative URL path to the logo and favicon
+## The relative URL path to the logo and icons
 $wgLogo = $wgScriptPath . "/../wiki-logo.png";
+$wgAppleTouchIcon = $wgScriptPath . "/../apple-touch-icon.png";
 $wgFavicon = $wgScriptPath . "/../favicon.png";
 
 ## UPO means: this is also a user preference option
