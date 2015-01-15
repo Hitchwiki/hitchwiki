@@ -10,11 +10,6 @@ cd $WIKIDIR
 
 echo "Exporting Semantic content..."
 
-if [ ! -f $PAGESDIR/_pagelist.txt ]; then
-  echo "ERROR: $PAGESDIR/pagelist.txt does not exist! Aborting."
-  exit 1
-fi
-
 # Loop them trough and import to mediawiki using https://www.mediawiki.org/wiki/Manual:Edit.php
 #
 # Option/Parameter    Description
@@ -29,9 +24,22 @@ fi
 
 
 
-# Return lines from the file into $MAPFILE array
-source $SCRIPTSDIR/vendor/filelines2array.sh
-fileLines2Array $PAGESDIR/_pagelist.txt
+# Determine which pages to export
+if [ -z ${1+x} ]; then
+
+  # Check if list file exists
+  if [ ! -f $PAGESDIR/_pagelist.txt ]; then
+    echo "ERROR: $PAGESDIR/pagelist.txt does not exist! Aborting."
+    exit 1
+  fi
+
+  # Return lines from the file into $MAPFILE array
+  source $SCRIPTSDIR/vendor/filelines2array.sh
+  fileLines2Array $PAGESDIR/_pagelist.txt
+else
+  # Import only asked pages
+  MAPFILE=($1)
+fi
 
 # Loop array trough
 let i=0

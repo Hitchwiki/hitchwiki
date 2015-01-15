@@ -3,7 +3,6 @@
  * Hitchwiki language settings
  *
  * https://www.mediawiki.org/wiki/MediaWiki_Language_Extension_Bundle
- 
  */
 
 $hwLangConfig = parse_ini_file("languages.ini",true);
