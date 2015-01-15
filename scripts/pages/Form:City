@@ -10,7 +10,7 @@ if a page with that name already exists, you will be sent to a form to edit that
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
 {{{for template|City}}}
 {| class="formtable"
-! Location: 
+! Location:
 | {{{field|Location|input type=map|height=500|width=100%|autozoom=off|zoom=2}}}
 |-
 | {{{field|BoundingBox|list|hidden}}}

@@ -1,13 +1,10 @@
 <noinclude>
-This is the "Spot" form.
-To create a page with this form, enter the page name below;
-if a page with that name already exists, you will be sent to a form to edit that page.
 
-
-{{#forminput:form=Spot}}
+<div class="hw-spot-add">[[Special:HWMap#add|Add new hitchhiking spot]]</div>
 
 </noinclude><includeonly>
-<div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
+<div id="wikiPreview" class="hw-spot-preview"></div>
+<div class="hw-spot-form">
 {{{for template|Spot}}}
 {| class="formtable"
 ! Description:
@@ -32,10 +29,9 @@ if a page with that name already exists, you will be sent to a form to edit that
 |}
 {{{end template}}}
 
-<div style="text-align:center">
-  {{{standard input|save}}} {{{standard input|preview}}} {{{standard input|cancel}}}
+<div class="hw-spot-form-actions">
+{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|cancel}}}
+<small class="hw-spot-form-watch">{{{standard input|watch}}}</small>
 </div>
-
-<small>{{{standard input|watch}}}</small>
-
+</div>
 </includeonly>
