@@ -10,7 +10,7 @@ hitch out of big cities, how to cover long distances, maps and many
 more tips.
 
 ## How to help
-This version is [currently under heavy development](https://love.hitchwiki.net/) 
+This version is [currently under heavy development](https://love.hitchwiki.net/)
 in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison) and [@Remigr](https://github.com/Remigr/).
 
 _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
@@ -28,14 +28,14 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
 2. Type `sh scripts/install.sh`.
-3. Install will ask for your password to add "hitchwiki.dev" to your hosts file. 
-To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead, 
-set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile). 
-You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) 
+3. Install will ask for your password to add "hitchwiki.dev" to your hosts file.
+To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead,
+set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile) and copy `configs/settings-example.ini` to `configs/settings.ini` and change domain also from there before installing.
+You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo)
 to stop Vagrant asking for password each time.
 4. Open [http://hitchwiki.dev/](http://hitchwiki.dev/) in your browser.
 
-After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`. 
+After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just run `vagrant up`.
 
 #### Install script will do the following:
