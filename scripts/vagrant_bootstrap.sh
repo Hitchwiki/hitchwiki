@@ -14,7 +14,7 @@ WIKIDIR=$ROOTDIR/public/wiki
 cd "$ROOTDIR"
 
 # Makes sure we have settings.ini and "Bash ini parser"
-source $SCRIPTDIR/settings.sh
+source "$SCRIPTDIR/settings.sh"
 
 # Download Composer
 if [ ! -f composer.phar ]; then
@@ -70,7 +70,9 @@ sudo /etc/init.d/apache2 restart
 # Install MediaWiki dependencies
 echo ""
 echo "Installing Mediawiki dependencies..."
-cd "$WIKIDIR" && php composer.phar install --no-dev --no-progress
+cd "$WIKIDIR"
+cp "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
+php composer.phar install --no-dev --no-progress
 
 # Install MediaWiki
 echo ""
@@ -138,6 +140,9 @@ sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 sudo service parsoid restart
 
 
+echo ""
+echo ""
+echo "---------------------------------------------------------------------"
 echo ""
 echo "Hitchwiki is now installed!"
 echo ""
