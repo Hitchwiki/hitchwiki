@@ -9,6 +9,10 @@ VAGRANT_WIKIDIR=/var/www/public/wiki
 echo "Updating Hitchwiki dependencies..."
 php composer.phar update
 
+echo "Updating MediaWiki dependencies..."
+cd public/wiki
+php composer.phar update
+
 # Update Mediawiki
 echo "Running update script for MediaWiki"
 vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --quick --conf $VAGRANT_CONFPATH"
@@ -18,6 +22,12 @@ vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/SemanticMediaWiki/maintena
 
 # Update assets for HWMaps
 vagrant ssh -c "cd $VAGRANT_WIKIDIR/extensions/HWMap && bower update --config.interactive=false"
+
+# Update assets for HitchwikiVector
+vagrant ssh -c "cd $VAGRANT_WIKIDIR/extensions/HitchwikiVector && bower update --config.interactive=false"
+
+# Update locales
+vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/LocalisationUpdate/update.php"
 
 # @TODO: ask if to update?
 #vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"

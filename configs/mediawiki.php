@@ -292,7 +292,6 @@ require_once "$IP/extensions/CustomData/CustomData.php"; // CustomData is needed
 require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
 require_once "$IP/extensions/GeoData/GeoData.php";
 require_once "$IP/extensions/ExternalData/ExternalData.php";
-require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
 require_once "$IP/extensions/MultimediaViewer/MultimediaViewer.php";
 require_once "$IP/extensions/ApiSandbox/ApiSandbox.php";
 require_once "$IP/extensions/OAuth/OAuth.php";
@@ -331,9 +330,12 @@ $wgPFEnableStringFunctions = true;
 # Interwiki links (nomadwiki, trashwiki etc)
 # - Grant sysops permissions to edit interwiki data
 # - To enable pulling global interwikis from a central database
-#require_once "$IP/extensions/Interwiki/Interwiki.php";
-#$wgGroupPermissions['sysop']['interwiki'] = true;
+require_once "$IP/extensions/Interwiki/Interwiki.php";
+$wgGroupPermissions['sysop']['interwiki'] = true;
 #$wgInterwikiCentralDB = 'interwiki';
+// To create a new user group that may edit interwiki data
+// (bureaucrats can add users to this group)
+#$wgGroupPermissions['developer']['interwiki'] = true;
 
 # Recent changes cleanup
 # https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
@@ -390,12 +392,21 @@ $wgVectorBetaTypography = true;
 $wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
 
+# LocalisationUpdate
+# https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+require_once "$IP/extensions/LocalisationUpdate/LocalisationUpdate.php";
+$wgLocalisationUpdateDirectory = "$IP/cache";
+
 # Enables some features required by VectorBeta such as Special:MobileMenu
 # https://www.mediawiki.org/wiki/Extension:MobileFrontend
 require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
 require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
 $wgMFAutodetectMobileView = true;
 $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
+
+# Rename user
+require_once "$IP/extensions/Renameuser/Renameuser.php";
+$wgGroupPermissions['sysop']['renameuser'] = true;
 
 # EventLogging
 # Required by $wgVectorBetaPersonalBar

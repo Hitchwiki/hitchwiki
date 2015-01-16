@@ -104,6 +104,10 @@ $wgSpamRegexGroup['autoconfirmed'] = '/viagra|porn/';
 $wgEnableDnsBlacklist = true;
 $wgDnsBlacklistUrls = array( 'xbl.spamhaus.org', 'opm.tornevall.org' );
 
+/*
+ * Mass delete pages with Nuke
+ */
+require_once "$IP/extensions/Nuke/Nuke.php";
 
 /*
  * Locking out spambots.

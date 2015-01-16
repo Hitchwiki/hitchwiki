@@ -17,6 +17,7 @@ cd "$ROOTDIR"
 source "$SCRIPTDIR/settings.sh"
 
 # Download Composer
+# https://www.mediawiki.org/wiki/Composer
 if [ ! -f composer.phar ]; then
   echo ""
   echo "Downloading Composer..."
@@ -80,6 +81,8 @@ cp -f "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
 php composer.phar install --no-dev --no-progress
 
 # Install VisualEditor (yeah no composer here...)
+echo ""
+echo "Installing VisualEditor..."
 git clone https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
 cd "$WIKIDIR/extensions/VisualEditor"
 git submodule update --init
@@ -100,9 +103,6 @@ php maintenance/update.php --quick --conf "$CONFPATH"
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
-
-# Put this back
-#mv LocalSettings.php~ LocalSettings.php
 
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
