@@ -108,6 +108,11 @@ cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false
 # Install CheckUser
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
+# Install VisualEditor (yeah no composer here...)
+git clone https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
+cd "$WIKIDIR/extensions/VisualEditor"
+git submodule update --init
+
 # Create bot account
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
