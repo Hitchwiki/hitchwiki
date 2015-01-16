@@ -5,7 +5,7 @@
 
 # Settings
 WIKIVERSIONBRANCH="1.24"
-WIKIVERSION="1.24.0"
+WIKIVERSION="1.24.1"
 
 # Paths
 ROOTDIR=/var/www
