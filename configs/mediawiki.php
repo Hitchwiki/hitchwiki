@@ -257,6 +257,18 @@ require_once "$IP/skins/Vector/Vector.php";
 
 /***** Extensions ******************************************************************************************/
 
+// WikiEditor (code)
+// https://www.mediawiki.org/wiki/Extension:WikiEditor
+require_once "$IP/extensions/WikiEditor/WikiEditor.php";
+# Enables use of WikiEditor by default but still allow users to disable it in preferences
+$wgDefaultUserOptions['usebetatoolbar'] = 1;
+$wgDefaultUserOptions['usebetatoolbar-cgd'] = 1;
+# Displays the Preview and Changes tabs
+$wgDefaultUserOptions['wikieditor-preview'] = 1;
+# Displays the Publish and Cancel buttons on the top right side
+$wgDefaultUserOptions['wikieditor-publish'] = 1;
+
+
 require_once "$IP/extensions/CustomData/CustomData.php"; // CustomData is needed by GeoCrumbs
 require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
 require_once "$IP/extensions/GeoData/GeoData.php";
