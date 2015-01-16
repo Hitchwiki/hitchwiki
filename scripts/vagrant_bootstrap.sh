@@ -138,7 +138,9 @@ sudo echo "deb [arch=amd64] http://parsoid.wmflabs.org:8080/deb wmf-production m
 sudo apt-get update && sudo apt-get install parsoid
 
 # Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
-while read a ; do sudo echo ${a//hitchwiki.dev/$HW__general__domain} ; done < "$SCRIPTDIR/configs/parsoid_localsettings.js" > /etc/mediawiki/parsoid/localsettings.js ;
+localsettingsjs=$(<"$SCRIPTDIR/configs/parsoid_localsettings.js")
+echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
+
 
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 
