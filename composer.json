@@ -339,6 +339,30 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "WikiEditor",
+        "version": "0.4.0",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/WikiEditor-REL1_24-b13e25d.tar.gz",
+          "type": "tar"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "Header_Tabs",
+        "version": "1.0.1",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/HeaderTabs-REL1_24-307b16c.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -348,6 +372,7 @@
     "HWRatings": "@dev",
     "HWComments": "@dev",
     "HWWaitingTime": "@dev",
+    "mediawiki/vector-skin": "*",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
     "BetaFeatures": "*",
@@ -374,7 +399,9 @@
     "MobileFrontend": "*",
     "Mantle": "*",
     "UploadWizard": "*",
-    "EventLogging": "*"
+    "EventLogging": "*",
+    "WikiEditor": "*",
+    "Header_Tabs": "*"
   },
   "require-dev": {
   },
@@ -387,7 +414,8 @@
   },
   "extra": {
     "installer-paths": {
-      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"],
+      "public/wiki/skins/{$name}/": ["type:mediawiki-skin"]
     }
   },
   "config": {

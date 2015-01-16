@@ -249,13 +249,44 @@ $wgEnableWriteAPI = true;
 $wgDefaultSkin = "vector";
 
 # Enabled skins
-require_once "$IP/skins/CologneBlue/CologneBlue.php";
-require_once "$IP/skins/Modern/Modern.php";
-require_once "$IP/skins/MonoBook/MonoBook.php";
+#require_once "$IP/skins/CologneBlue/CologneBlue.php";
+#require_once "$IP/skins/Modern/Modern.php";
+#require_once "$IP/skins/MonoBook/MonoBook.php";
 require_once "$IP/skins/Vector/Vector.php";
 
 
 /***** Extensions ******************************************************************************************/
+
+#
+# VisualEditor
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+#
+require_once "$IP/extensions/VisualEditor/VisualEditor.php";
+// Enable by default for everybody
+$wgDefaultUserOptions['visualeditor-enable'] = 1;
+// Don't allow users to disable it
+$wgHiddenPrefs[] = 'visualeditor-enable';
+// OPTIONAL: Enable VisualEditor's experimental code features
+#$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
+// URL to the Parsoid instance
+// MUST NOT end in a slash due to Parsoid bug
+// Use port 8142 if you use the Debian package
+$wgVisualEditorParsoidURL = 'http://hitchwiki.dev:8142';
+// Interwiki prefix to pass to the Parsoid instance
+// Parsoid will be called as $url/$prefix/$pagename
+$wgVisualEditorParsoidPrefix = 'hitchwiki.dev';
+
+// WikiEditor (code)
+// https://www.mediawiki.org/wiki/Extension:WikiEditor
+require_once "$IP/extensions/WikiEditor/WikiEditor.php";
+# Enables use of WikiEditor by default but still allow users to disable it in preferences
+$wgDefaultUserOptions['usebetatoolbar'] = 1;
+$wgDefaultUserOptions['usebetatoolbar-cgd'] = 1;
+# Displays the Preview and Changes tabs
+$wgDefaultUserOptions['wikieditor-preview'] = 1;
+# Displays the Publish and Cancel buttons on the top right side
+$wgDefaultUserOptions['wikieditor-publish'] = 1;
+
 
 require_once "$IP/extensions/CustomData/CustomData.php"; // CustomData is needed by GeoCrumbs
 require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
@@ -286,6 +317,11 @@ if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   require_once "$IP/extensions/SemanticForms/SemanticForms.php";
   require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
   require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
+
+  // You can have the set of values used for autocompletion in forms be cached, which may
+  // improve performance. To do that, add something like the following to LocalSettings.php:
+  $sfgCacheAutocompleteValues = true;
+  $sfgAutocompleteCacheTimeout = 60 * 60 * 24; // 1 day (in seconds)
 }
 
 # Enable old string functions (needed at our semantic templates)
@@ -395,6 +431,7 @@ $wgExtensionFunctions[] = function() {
 
 #
 # Hitchwiki extensions
+# https://github.com/Hitchwiki/
 #
 require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";

@@ -6,7 +6,7 @@ VAGRANT_CONFPATH=/var/www/configs/mediawiki.php
 VAGRANT_WIKIDIR=/var/www/public/wiki
 
 # Update dependencies
-echo "Updating dependencies..."
+echo "Updating Hitchwiki dependencies..."
 php composer.phar update
 
 # Update Mediawiki
