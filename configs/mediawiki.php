@@ -257,6 +257,25 @@ require_once "$IP/skins/Vector/Vector.php";
 
 /***** Extensions ******************************************************************************************/
 
+#
+# VisualEditor
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+#
+require_once "$IP/extensions/VisualEditor/VisualEditor.php";
+// Enable by default for everybody
+$wgDefaultUserOptions['visualeditor-enable'] = 1;
+// Don't allow users to disable it
+$wgHiddenPrefs[] = 'visualeditor-enable';
+// OPTIONAL: Enable VisualEditor's experimental code features
+#$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
+// URL to the Parsoid instance
+// MUST NOT end in a slash due to Parsoid bug
+// Use port 8142 if you use the Debian package
+$wgVisualEditorParsoidURL = 'http://hitchwiki.dev:8142';
+// Interwiki prefix to pass to the Parsoid instance
+// Parsoid will be called as $url/$prefix/$pagename
+$wgVisualEditorParsoidPrefix = 'hitchwiki.dev';
+
 // WikiEditor (code)
 // https://www.mediawiki.org/wiki/Extension:WikiEditor
 require_once "$IP/extensions/WikiEditor/WikiEditor.php";
@@ -298,6 +317,11 @@ if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   require_once "$IP/extensions/SemanticForms/SemanticForms.php";
   require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
   require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
+
+  // You can have the set of values used for autocompletion in forms be cached, which may
+  // improve performance. To do that, add something like the following to LocalSettings.php:
+  $sfgCacheAutocompleteValues = true;
+  $sfgAutocompleteCacheTimeout = 60 * 60 * 24; // 1 day (in seconds)
 }
 
 # Enable old string functions (needed at our semantic templates)
@@ -407,6 +431,7 @@ $wgExtensionFunctions[] = function() {
 
 #
 # Hitchwiki extensions
+# https://github.com/Hitchwiki/
 #
 require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";

@@ -1,0 +1,13 @@
+# Defaults for parsoid initscript
+
+# File where the parsoid daemon will write stderr and stdout to
+PARSOID_LOG_FILE=/var/log/parsoid/parsoid.log
+
+PARSOID_SETTINGS_FILE=/etc/mediawiki/parsoid/localsettings.js
+
+PORT="8142"
+
+# Default is to listen on all interfaces
+#INTERFACE="0.0.0.0"
+
+DAEMON_ARGS="-c $PARSOID_SETTINGS_FILE"
