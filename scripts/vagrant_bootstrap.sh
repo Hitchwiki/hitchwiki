@@ -28,10 +28,11 @@ fi
 if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
   echo "Cloning MediaWiki... (this might take a while)"
-  cd public
+  cd "$ROOTDIR/public"
   git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Use branches for versions, eg. REL1_24
+  cd "$WIKIDIR"
   git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 fi
 
@@ -71,7 +72,7 @@ sudo /etc/init.d/apache2 restart
 echo ""
 echo "Installing Mediawiki dependencies..."
 cd "$WIKIDIR"
-cp "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
+cp -f "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
 php composer.phar install --no-dev --no-progress
 
 # Install MediaWiki
