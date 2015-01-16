@@ -24,13 +24,12 @@ if [ ! -f composer.phar ]; then
   echo ""
 fi
 
-# Install Mediawiki
-
 # Clone MW Core
 if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
-  echo "Cloning MediaWiki..."
-  git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git "$WIKIDIR"
+  echo "Cloning MediaWiki... (this might take a while)"
+  cd public
+  git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Use branches for versions, eg. REL1_24
   git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
