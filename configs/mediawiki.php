@@ -249,9 +249,9 @@ $wgEnableWriteAPI = true;
 $wgDefaultSkin = "vector";
 
 # Enabled skins
-require_once "$IP/skins/CologneBlue/CologneBlue.php";
-require_once "$IP/skins/Modern/Modern.php";
-require_once "$IP/skins/MonoBook/MonoBook.php";
+#require_once "$IP/skins/CologneBlue/CologneBlue.php";
+#require_once "$IP/skins/Modern/Modern.php";
+#require_once "$IP/skins/MonoBook/MonoBook.php";
 require_once "$IP/skins/Vector/Vector.php";
 
 

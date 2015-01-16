@@ -348,6 +348,7 @@
     "HWRatings": "@dev",
     "HWComments": "@dev",
     "HWWaitingTime": "@dev",
+    "mediawiki/vector-skin": "*",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
     "BetaFeatures": "*",
@@ -387,7 +388,8 @@
   },
   "extra": {
     "installer-paths": {
-      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"]
+      "public/wiki/extensions/{$name}/": ["type:mediawiki-extension"],
+      "public/wiki/skins/{$name}/": ["type:mediawiki-skin"]
     }
   },
   "config": {
