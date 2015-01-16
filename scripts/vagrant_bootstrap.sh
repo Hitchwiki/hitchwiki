@@ -113,6 +113,14 @@ cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false
 # Install CheckUser
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
+# Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
+cd "$WIKIDIR/extensions/HitchwikiVector"
+bower install
+cd "$WIKIDIR/extensions/HWMap"
+bower install
+
+cd "$WIKIDIR"
+
 # Create bot account
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
