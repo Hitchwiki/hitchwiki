@@ -34,6 +34,10 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   # Use branches for versions, eg. REL1_24
   cd "$WIKIDIR"
   git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
+
+  # Get Vector skin
+  cd "$WIKIDIR/skins"
+  git clone https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
 fi
 
 # Clone MW skin(s)
