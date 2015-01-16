@@ -383,7 +383,7 @@
         "version": "1.6.0",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Renameuser-REL1_24-7cb2e39.tar.gz",
+          "url": "https://extdist.wmflabs.org/dist/extensions/ParserFunctions-REL1_24-738403b.tar.gz",
           "type": "tar"
         }
       }
