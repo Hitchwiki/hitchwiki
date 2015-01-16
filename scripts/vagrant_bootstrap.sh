@@ -127,18 +127,15 @@ sudo echo "## https://www.mediawiki.org/wiki/Parsoid/Setup" >> /etc/apt/sources.
 sudo echo "deb [arch=amd64] http://parsoid.wmflabs.org:8080/deb wmf-production main" >> /etc/apt/sources.list
 sudo apt-get update && sudo apt-get install parsoid
 
-# Copy our settings for Parsoid (replace DEV_DOMAIN from settings.ini)
+# Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
 while read a ; do sudo echo ${a//hitchwiki.dev/$HW__general__domain} ; done < "$SCRIPTDIR/configs/parsoid_localsettings.js" > /etc/mediawiki/parsoid/localsettings.js ;
 
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 
-#while read a ; do sudo echo ${a//DEV_DOMAIN/$HW__general__domain} ; done < "$SCRIPTDIR/configs/parsoid_initscript" > /etc/default/parsoid ;
-
-#sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_localsettings.js" /etc/mediawiki/parsoid/localsettings.js
-
 # Restart Parsoid to get new settings affect
 sudo service parsoid restart
 
+# And we're done!
 
 echo ""
 echo ""
@@ -155,5 +152,3 @@ echo "When you're ready to begin working again, just run 'vagrant up'."
 echo ""
 echo "Read more from http://github.com/Hitchwiki/hitchwiki"
 echo ""
-
-# And we're done!
