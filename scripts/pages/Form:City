@@ -9,11 +9,9 @@ if a page with that name already exists, you will be sent to a form to edit that
 </noinclude><includeonly>
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
 {{{for template|City}}}
-{| class="formtable"
-! Location:
-| {{{field|Location|input type=map|height=500|width=100%|autozoom=off|zoom=2}}}
-|-
-| {{{field|BoundingBox|list|hidden}}}
+<div class="clearfix">{{{standard input|free text|editor=wikieditor|rows=15}}}</div>
+<div class="clearfix hw-form-semantics toccolours mw-collapsible"><!--mw-collapsed-->
+{| class="formtable floatleft"
 |-
 ! Country:
 | {{{field|Cities|input type=tokens|values from category=Countries}}}
@@ -26,15 +24,18 @@ if a page with that name already exists, you will be sent to a form to edit that
 |-
 ! Major Roads:
 | {{{field|MajorRoads|input type=tokens|values from category=Road}}}
-|-
-! City information:
-| {{{field|text|input type=textarea}}}
 |}
+{| class="wikitable hw-form-location floatright"
+|-
+! Location
+|-
+| {{{field|Location|input type=map|height=250|width=100%|autozoom=off|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
+|}
+</div>
 {{{end template}}}
 
-{{{standard input|summary}}}
-
-{{{standard input|minor edit}}} {{{standard input|watch}}}
-
-{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}
+<div class="clearfix editOptions">{{{standard input|summary}}}
+<div class="editCheckboxes">{{{standard input|minor edit}}} {{{standard input|watch}}}</div>
+<div class="editButtons">{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}</div>
+</div>
 </includeonly>
