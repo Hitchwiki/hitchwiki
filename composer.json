@@ -355,7 +355,7 @@
     {
       "type": "package",
       "package": {
-        "name": "Header_Tabs",
+        "name": "HeaderTabs",
         "version": "1.0.1",
         "type": "mediawiki-extension",
         "dist": {
