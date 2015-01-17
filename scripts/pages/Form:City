@@ -10,7 +10,9 @@ if a page with that name already exists, you will be sent to a form to edit that
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
 {{{for template|City}}}
 <div class="clearfix">{{{standard input|free text|editor=wikieditor|rows=15}}}</div>
-<div class="clearfix hw-form-semantics toccolours mw-collapsible"><!--mw-collapsed-->
+<div class="clearfix hw-form-semantics toccolours mw-collapsible mw-collapsed">
+<h4 class="hw-form-semantics-section">City details</h4>
+<div class="mw-collapsible-content">
 {| class="formtable floatleft"
 |-
 ! Country:
@@ -31,6 +33,7 @@ if a page with that name already exists, you will be sent to a form to edit that
 |-
 | {{{field|Location|input type=map|height=250|width=100%|autozoom=off|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
 |}
+</div>
 </div>
 {{{end template}}}
 
