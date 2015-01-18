@@ -473,7 +473,7 @@
     "UploadWizard": "*",
     "EventLogging": "*",
     "WikiEditor": "*",
-    "Header_Tabs": "*",
+    "HeaderTabs": "*",
     "Renameuser": "*",
     "ParserFunctions": "*",
     "Nuke": "*",
