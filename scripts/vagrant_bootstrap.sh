@@ -110,14 +110,11 @@ php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 # Install assets for HWMaps
 cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false
 
+# Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
+cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false
+
 # Install CheckUser
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
-
-# Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
-cd "$WIKIDIR/extensions/HitchwikiVector"
-bower install
-cd "$WIKIDIR/extensions/HWMap"
-bower install
 
 cd "$WIKIDIR"
 
