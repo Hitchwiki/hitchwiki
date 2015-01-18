@@ -38,6 +38,6 @@ if a page with that name already exists, you will be sent to a form to edit that
 </div>
 {{{end template}}}<div class="clearfix editOptions">{{{standard input|summary}}}
 <div class="editCheckboxes">{{{standard input|minor edit}}} {{{standard input|watch}}}</div>
-<div class="editButtons">{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}</div>
+<div class="editButtons">{{{standard input|save|label=Save city}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}</div>
 </div>
 </includeonly>

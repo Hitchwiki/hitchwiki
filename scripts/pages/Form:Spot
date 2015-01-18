@@ -31,7 +31,7 @@
 {{{end template}}}
 
 <div class="hw-spot-form-actions">
-{{{standard input|save}}} {{{standard input|preview}}} {{{standard input|cancel}}}
+{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}
 <small class="hw-spot-form-watch">{{{standard input|watch}}}</small>
 </div>
 </div>
