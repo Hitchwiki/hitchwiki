@@ -3,6 +3,7 @@
 <div class="hw-spot-add">[[Special:HWMap#add|Add new hitchhiking spot]]</div>
 
 </noinclude><includeonly>
+{{{info|add title=Add spot|edit title=Edit spot}}}
 <div id="wikiPreview" class="hw-spot-preview"></div>
 <div class="hw-spot-form">
 {{{for template|Spot}}}
