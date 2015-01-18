@@ -11,7 +11,16 @@ php composer.phar update
 
 echo "Updating MediaWiki dependencies..."
 cd public/wiki
+git pull
 php composer.phar update
+
+cd skins/Vector
+git pull
+cd ../../
+
+cd extensions/VisualEditor
+git pull
+git submodule update --init
 
 # Update Mediawiki
 echo "Running update script for MediaWiki"
