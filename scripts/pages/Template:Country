@@ -7,15 +7,15 @@ It should be called in the following format:
 |Capital=
 |Currency=
 |Population=
-|text=
 }}
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
+<div class="toccolours">
 [[Capital::{{{Capital|}}}]]
 [[Currency::{{{Currency|}}}]]
 [[Population::{{{Population|}}}]]
-{{{text|}}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+</div>
 [[Category:Countries]]
 </includeonly>
