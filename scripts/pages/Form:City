@@ -1,11 +1,10 @@
 <noinclude>
-This is the "City" form.
-To create a page with this form, enter the page name below;
-if a page with that name already exists, you will be sent to a form to edit that page.
+=Add new city to Hitchwiki=
 
+{{#forminput:form=City|Placeholder=City name|autocomplete on category=Cities}}
+<small>If a city with that name already exists, you will be sent to a form to edit that page.</small>
 
-{{#forminput:form=City}}
-
+__NOEDITSECTION__
 </noinclude><includeonly>
 {{{info|add title=Add city|edit title=Edit city}}}
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
@@ -27,6 +26,9 @@ if a page with that name already exists, you will be sent to a form to edit that
 |-
 ! Major Roads:
 | {{{field|MajorRoads|input type=tokens|values from category=Road}}}{{#info:Road code e.g. "A1" or "E68"}}
+|-
+! Public transportation:
+| {{{field|PublicTransportationURL|input type=url}}}{{#info:URL to the page where you have info about public transportation. Preferably English version.}}
 |}
 {| class="wikitable hw-form-location floatleft"
 |-

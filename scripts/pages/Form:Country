@@ -1,11 +1,10 @@
 <noinclude>
-This is the "Country" form.
-To create a page with this form, enter the page name below;
-if a page with that name already exists, you will be sent to a form to edit that page.
+=Add new country to Hitchwiki=
 
+{{#forminput:form=Country|Placeholder=Country name|autocomplete on category=Cities}}
+<small>If a country with that name already exists, you will be sent to a form to edit that page.</small>
 
-{{#forminput:form=Country}}
-
+__NOEDITSECTION__
 </noinclude><includeonly>
 {{{info|add title=Add country|edit title=Edit country}}}
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
