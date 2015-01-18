@@ -11,3 +11,4 @@ Property:Location
 Category:Cities
 Category:Countries
 Category:Spots
+Category:Areas
