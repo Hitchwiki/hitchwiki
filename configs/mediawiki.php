@@ -132,13 +132,23 @@ $wgDBname     = $hwConfig["db"]["database"];
 $wgDBuser     = $hwConfig["db"]["username"];
 $wgDBpassword = $hwConfig["db"]["password"];
 
-# MySQL specific settings
+## Shared database settings
+## Mainly for Users and Interwiki extension
+## By default shares 'users' and 'user_properties' tables
+$wgSharedDB = $hwConfig["db"]["database"];
+$wgSharedPrefix = $hwConfig["db"]["prefix"];
+## https://www.mediawiki.org/wiki/Extension:Interwiki#Global_interwikis
+$wgSharedTables[] = "interwiki";
+## https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
+$wgSharedTables[] = "user_groups";
+
+## MySQL specific settings
 $wgDBprefix = $hwConfig["db"]["prefix"];
 
-# MySQL table options to use during installation or update
+## MySQL table options to use during installation or update
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 
-# Experimental charset support for MySQL 5.0.
+## Experimental charset support for MySQL 5.0.
 $wgDBmysql5 = true;
 
 ## Shared memory settings
@@ -330,10 +340,9 @@ $wgPFEnableStringFunctions = true;
 
 # Interwiki links (nomadwiki, trashwiki etc)
 # - Grant sysops permissions to edit interwiki data
-# - To enable pulling global interwikis from a central database
+# - See Database settings to understand how Interwiki settings are shared between wikis
 require_once "$IP/extensions/Interwiki/Interwiki.php";
 $wgGroupPermissions['sysop']['interwiki'] = true;
-#$wgInterwikiCentralDB = 'interwiki';
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
 #$wgGroupPermissions['developer']['interwiki'] = true;

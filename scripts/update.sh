@@ -24,7 +24,7 @@ git submodule update --init
 
 # Update Mediawiki
 echo "Running update script for MediaWiki"
-vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --quick --conf $VAGRANT_CONFPATH"
+vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --doshared --quick --conf $VAGRANT_CONFPATH"
 
 echo "Running update script for Semantic MediaWiki"
 vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v"

@@ -62,9 +62,10 @@ cd "$ROOTDIR"
 php composer.phar install --no-progress
 
 # Prepare databases
-mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki"
-mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki CHARACTER SET utf8 COLLATE utf8_general_ci"
+mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
+mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
 #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
+
 
 # Install APC
 sudo apt-get -y install php-apc
@@ -91,7 +92,7 @@ git submodule update --init
 echo ""
 echo "Installing Mediawiki..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname hitchwiki --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
+cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname $HW__db__database --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
 
 # Install SemanticMediawiki extensions
 # (Less headache to do this here instead of our composer.json)
@@ -125,12 +126,16 @@ php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot
 php maintenance/createAndPromote.php Hitchhiker autobahn
 
 # Confirm emails for all created users
-mysql -u$HW__db__username -p$HW__db__password hitchwiki -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-mysql -u$HW__db__username -p$HW__db__password hitchwiki -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-mysql -u$HW__db__username -p$HW__db__password hitchwiki -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
+mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
+mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
 bash $SCRIPTDIR/vagrant_import_pages.sh
+
+# Import interwiki table
+mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
+
 
 # Install Parsoid
 # https://www.mediawiki.org/wiki/Parsoid/Setup
