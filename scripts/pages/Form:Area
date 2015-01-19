@@ -22,7 +22,7 @@ __NOEDITSECTION__
 | {{{field|Type|mandatory|default=Region|input type=radiobutton|values=Region,Road,Airport,Border Crossing,Continent}}}
 |-
 ! Country
-| {{{field|Cities|input type=tokens|values from category=Countries}}}
+| {{{field|Countries|input type=tokens|values from category=Countries}}}
 |}
 {| class="wikitable hw-form-location floatleft"
 |-

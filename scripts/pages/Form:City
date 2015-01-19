@@ -16,7 +16,7 @@ __NOEDITSECTION__
 {| class="formtable floatleft"
 |-
 ! Country:
-| {{{field|Cities|input type=tokens|values from category=Countries}}}
+| {{{field|Countries|input type=tokens|values from category=Countries}}}
 |-
 ! Population:
 | {{{field|Population}}}
