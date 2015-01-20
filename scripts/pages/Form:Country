@@ -21,6 +21,9 @@ __NOEDITSECTION__
 ! Currency:
 | {{{field|Currency}}}
 |-
+! Languages:
+| {{{field|Languages}}}
+|-
 ! Population:
 | {{{field|Population}}}
 |}

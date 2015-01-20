@@ -11,11 +11,46 @@ It should be called in the following format:
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
-<div class="toccolours">
-[[Capital::{{{Capital|}}}]]
-[[Currency::{{{Currency|}}}]]
-[[Population::{{{Population|}}}]]
-{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
-</div>
+{| class="infobox mw-collapsible"
+! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
+|-
+| colspan="2" class="infobox-h2" | '''Information'''
+|-
+! [[Language]]s:
+| [[Languages::{{{Languages|}}}]]
+|-
+! Capital:
+| {{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}}
+|-
+! Population:
+| [[Population::{{{Population|}}}]]
+|-
+! Currency:
+| [[Currency::{{{Currency|}}}]]
+|-
+! [[Hitchwiki:Hitchability|Hitchability]]:
+| <rate/>
+|-
+! colspan=2 {{!}} Meet fellow hitchhikers on [[:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
+|-
+| colspan="2" class="infobox-map" | {{{map|}}}
+|}{{IsIn|{{{in|}}}}}
+<!-- {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}} -->
+
+== Cities ==
+{{#ask: [[Category:Cities]] [[In country::{{PAGENAME}}]]
+ | format=ul
+}}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/City|<i class="fa fa-plus-square"></i> Add another city]]</div>
+
+
+== Areas ==
+{{#ask: [[Category:Areas]] [[located in::{{PAGENAME}}]]
+ | format=ul
+}}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/Area|<i class="fa fa-plus-square"></i> Add another area]]</div>
+
 [[Category:Countries]]
+[[wikivoyage:{{PAGENAME}}]]
+[[nomad:{{PAGENAME}}]]
+[[trash:{{PAGENAME}}]]
+__NOEDITSECTION__
 </includeonly>

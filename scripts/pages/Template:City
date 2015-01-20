@@ -13,14 +13,23 @@ It should be called in the following format:
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
-<div class="toccolours">
-* {{#arraymap:{{{Country|}}}|,|x|[[Country::x]]}}
+{{PAGENAME}}
+
+
+
+<div class="hw-infobox hw-country">
+
+In {{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}}
+
+
 * {{#arraymap:{{{Major Roads|}}}|,|x|[[Major Roads::x]]}}
 * [[Licence Plate::{{{Licence Plate|}}}]]
 * [[Population::{{{Population|}}}]]
-* [{{{PublicTransportationURL}}} Public transportation]
 * {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+* Meet fellow hitchhikers on [[:trustroots:{{PAGENAME}}|Trustroots]].
 </div>
 <hwmap></hwmap>
 [[Category:Cities]]
+[[wikivoyage:{{PAGENAME}}]]
+__NOEDITSECTION__
 </includeonly>

@@ -15,4 +15,5 @@ Edit the page to see the template text.
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <hwmap></hwmap>
 [[Category:Areas]]
+__NOEDITSECTION__
 </includeonly>
