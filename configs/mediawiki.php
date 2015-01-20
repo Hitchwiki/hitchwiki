@@ -306,6 +306,7 @@ require_once "$IP/extensions/MultimediaViewer/MultimediaViewer.php";
 require_once "$IP/extensions/ApiSandbox/ApiSandbox.php";
 require_once "$IP/extensions/OAuth/OAuth.php";
 require_once "$IP/extensions/HeaderTabs/HeaderTabs.php";
+require_once "$IP/extensions/AddBodyClass/AddBodyClass.php";
 
 # Define "Special:AdminLinks" page, that holds links meant to be helpful for wiki administrators
 require_once "$IP/extensions/AdminLinks/AdminLinks.php";

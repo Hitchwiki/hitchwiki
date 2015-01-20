@@ -435,6 +435,18 @@
           "type": "tar"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AddBodyClass",
+        "version": "1.1",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/p12tic/AddBodyClass.git",
+          "type": "git"
+        }
+      }
     }
   ],
   "require": {
@@ -479,7 +491,8 @@
     "Nuke": "*",
     "LocalisationUpdate": "*",
     "Interwiki": "*",
-    "ConfirmEdit": "*"
+    "ConfirmEdit": "*",
+    "AddBodyClass": "*"
   },
   "require-dev": {
   },
