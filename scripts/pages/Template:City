@@ -13,23 +13,27 @@ It should be called in the following format:
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
-{{PAGENAME}}
-
-
-
-<div class="hw-infobox hw-country">
-
-In {{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}}
-
-
-* {{#arraymap:{{{Major Roads|}}}|,|x|[[Major Roads::x]]}}
-* [[Licence Plate::{{{Licence Plate|}}}]]
-* [[Population::{{{Population|}}}]]
-* {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
-* Meet fellow hitchhikers on [[:trustroots:{{PAGENAME}}|Trustroots]].
-</div>
+{| class="infobox mw-collapsible"
+! colspan="2" class="infobox-h1" | <div>'''{{PAGENAME}}''' ({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</div>
+|-
+| colspan="2" class="infobox-h2" | '''Information'''
+|-
+! Population:
+| {{{Population|}}}
+|-
+! Major roads:
+| {{#arraymap:{{{Major roads|}}}|,|x|[[Major roads::x]]}}
+|-
+! Licence Plate:
+| {{{Licence Plate|}}}
+|-
+| colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
+|}
+<!-- {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}} -->
 <hwmap></hwmap>
 [[Category:Cities]]
 [[wikivoyage:{{PAGENAME}}]]
 __NOEDITSECTION__
+{{#addbodyclass:hwmap-page hw-page-city}}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 </includeonly>

@@ -38,6 +38,7 @@ INSERT INTO `interwiki` (`iw_prefix`, `iw_url`, `iw_api`, `iw_wikiid`, `iw_local
 ('it', 'http://hitchwiki.org/it/$1', '', '', 1, 0),
 ('lt', 'http://hitchwiki.org/lt/$1', '', '', 1, 0),
 ('maps', 'http://hitchwiki.org/en/Special:HWMap?location=$1', '', '', 1, 0),
+('mapslatlon', 'http://hitchwiki.org/en/Special:HWMap?latlon=$1', '', '', 1, 0),
 ('moneyless', 'http://moneyless.org/$1', '', '', 0, 0),
 ('nl', 'http://hitchwiki.org/nl/$1', '', '', 1, 0),
 ('nomad', 'http://nomadwiki.org/en/$1', '', '', 0, 0),

@@ -16,7 +16,7 @@ Edit the page to see the template text.
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
 |-
-! [[Language]]s:
+! [[Language]]:
 | [[Languages::{{{Languages|}}}]]
 |-
 ! Capital:
@@ -31,17 +31,13 @@ Edit the page to see the template text.
 ! [[Hitchwiki:Hitchability|Hitchability]]:
 | <rate/>
 |-
-! colspan=2 {{!}} Meet fellow hitchhikers on [[:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
-|-
-| colspan="2" class="infobox-map" | {{{map|}}}
-|}{{IsIn|{{{in|}}}}}
-<!-- {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}} -->
+! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
+|}
 
 == Cities ==
 {{#ask: [[Category:Cities]] [[In country::{{PAGENAME}}]]
  | format=ul
 }}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/City|<i class="fa fa-plus-square"></i> Add another city]]</div>
-
 
 == Areas ==
 {{#ask: [[Category:Areas]] [[located in::{{PAGENAME}}]]
@@ -53,4 +49,6 @@ Edit the page to see the template text.
 [[nomad:{{PAGENAME}}]]
 [[trash:{{PAGENAME}}]]
 __NOEDITSECTION__
+{{#addbodyclass:hwmap-page hw-page-country}}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 </includeonly>
