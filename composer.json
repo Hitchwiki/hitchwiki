@@ -443,8 +443,8 @@
         "version": "1.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/p12tic/AddBodyClass.git",
-          "type": "git"
+          "url": "https://github.com/p12tic/AddBodyClass/archive/1.1.zip",
+          "type": "zip"
         }
       }
     }
