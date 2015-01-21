@@ -7,32 +7,22 @@
 <div id="wikiPreview" class="hw-spot-preview"></div>
 <div class="hw-spot-form">
 {{{for template|Spot}}}
-{| class="formtable"
-! Description:
-| {{{field|Description|input type=textarea}}}
+{| class="formtable hw-spot-add-form"
+! class="hw-spot-add-description" colspan="3" | Description: {{{field|Description|input type=textarea}}}
 |-
-! City:
-| {{{field|Cities|values from category=Cities}}}
+! class="hw-spot-add-cardinal" rowspan="4" | Cardinal direction: {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
 |-
-! Cardinal direction:
-| {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
+!City: || class="hw-spot-add-select" | {{{field|Cities|values from category=Cities}}}
 |-
-! Towards cities:
-| {{{field|CitiesDirection|list|values from category=Cities}}}
+!Towards cities: || class="hw-spot-add-select" | {{{field|CitiesDirection|list|values from category=Cities}}}
 |-
-! Major roads:
-| {{{field|RoadsDirection|list}}}
-|-
-! Location:
-| {{{field|Location|input type=googlemaps|height=300|width=100%|autozoom=off|zoom=15}}}
-|-
-| {{{field|Country|hidden}}}
+!Major roads: || class="hw-spot-add-select" | {{{field|RoadsDirection|list}}}
 |}
-{{{end template}}}
 
-<div class="hw-spot-form-actions">
-{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}
-<small class="hw-spot-form-watch">{{{standard input|watch}}}</small>
-</div>
+{{{field|Location|hidden}}}
+{{{field|Country|hidden}}}
+{{{end template}}}<div class="clearfix editOptions">
+<div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}</div>
+<div class="editCheckboxes">{{{standard input|watch}}}</div>
 </div>
 </includeonly>
