@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd $(dirname $0)/..
 chgrp -R hitchwiki .
 chmod -R g+rw .
