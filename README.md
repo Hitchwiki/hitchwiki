@@ -11,7 +11,7 @@ more tips.
 
 ## How to help
 This version is [currently under heavy development](https://love.hitchwiki.net/)
-in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison) and [@Remigr](https://github.com/Remigr/).
+in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison), [@Remigr](https://github.com/Remigr/) and [@omelnyk](https://github.com/omelnyk/).
 
 _[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
 
