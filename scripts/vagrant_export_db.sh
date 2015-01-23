@@ -10,7 +10,7 @@ cd /var/www/dumps
 mv hitchwiki_dev.sql.gz hitchwiki_dev.sql.gz~
 
 # Export
-mysqldump -u$HW__db__username -p$HW__db__password hitchwiki | gzip > hitchwiki_dev.sql.gz
+mysqldump -u$HW__db__username -p$HW__db__password $HW__db__database | gzip > hitchwiki_dev.sql.gz
 
 # Remove old dump
 rm hitchwiki_dev.sql.gz~
