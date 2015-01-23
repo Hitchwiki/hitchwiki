@@ -31,26 +31,26 @@ git submodule update --init
 # Update Mediawiki
 echo ""
 echo "Running update script for MediaWiki"
-vagrant ssh -c "cd $VAGRANT_WIKIDIR && php maintenance/update.php --doshared --quick --conf $VAGRANT_CONFPATH"
+vagrant ssh -c "cd \"$VAGRANT_WIKIDIR\" && php maintenance/update.php --doshared --quick --conf \"$VAGRANT_CONFPATH\""
 
 echo ""
 echo "Running update script for Semantic MediaWiki"
-vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v"
+vagrant ssh -c "cd \"$VAGRANT_WIKIDIR\" && php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v"
 
 # Update assets for HWMaps
 echo ""
 echo "Update assets for HWMaps..."
-vagrant ssh -c "cd $VAGRANT_WIKIDIR/extensions/HWMap && bower update --config.interactive=false"
+vagrant ssh -c "cd \"$VAGRANT_WIKIDIR/extensions/HWMap\" && bower update --config.interactive=false"
 
 echo ""
 echo "Update assets for HitchwikiVector..."
 # Update assets for HitchwikiVector
-vagrant ssh -c "cd $VAGRANT_WIKIDIR/extensions/HitchwikiVector && bower update --config.interactive=false"
+vagrant ssh -c "cd \"$VAGRANT_WIKIDIR/extensions/HitchwikiVector\" && bower update --config.interactive=false"
 
 echo ""
 echo "Fetch latest localisation files..."
 # Update locales
-vagrant ssh -c "cd $VAGRANT_WIKIDIR && php extensions/LocalisationUpdate/update.php"
+vagrant ssh -c "cd \"$VAGRANT_WIKIDIR\" && php extensions/LocalisationUpdate/update.php"
 
 # @TODO: ask if to update?
 #vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"

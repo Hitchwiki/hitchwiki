@@ -22,28 +22,28 @@
 
 # SCRIPTDIR can be set outside this script as well
 # That's the case when using this from inside vagrant
-if [ -z ${SCRIPTDIR+x} ]; then
+if [ -z "${SCRIPTDIR+x}" ]; then
   SCRIPTDIR="$(dirname "$0")"
 fi
 
-SETTINGSFILE=$SCRIPTDIR/../configs/settings.ini
+SETTINGSFILE="$SCRIPTDIR/../configs/settings.ini"
 
 # If we don't have settings.ini, copy example
-if [ ! -f $SETTINGSFILE ]; then
+if [ ! -f "$SETTINGSFILE" ]; then
   echo ""
   echo "Create configs/settings.ini"
-  cp -i $SCRIPTDIR/../configs/settings-example.ini $SCRIPTDIR/../configs/settings.ini
+  cp -i "$SCRIPTDIR/../configs/settings-example.ini" "$SCRIPTDIR/../configs/settings.ini"
 fi
 
 # Make sure Bash ini parser is installed
-if [ ! -d $SCRIPTDIR/vendor/bash_ini_parser ]; then
+if [ ! -d "$SCRIPTDIR/vendor/bash_ini_parser" ]; then
   echo ""
   echo "Installing Bash ini parser..."
-  git clone https://github.com/rudimeier/bash_ini_parser.git $SCRIPTDIR/vendor/bash_ini_parser
+  git clone https://github.com/rudimeier/bash_ini_parser.git "$SCRIPTDIR/vendor/bash_ini_parser"
 fi
 
 # Load parser
-source $SCRIPTDIR/vendor/bash_ini_parser/read_ini.sh
+source "$SCRIPTDIR/vendor/bash_ini_parser/read_ini.sh"
 
 # Read settings and expose them
-read_ini $SETTINGSFILE -p HW
+read_ini "$SETTINGSFILE" -p HW

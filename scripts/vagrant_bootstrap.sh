@@ -4,11 +4,11 @@
 
 
 # Paths
-ROOTDIR=/var/www
-CONFDIR=$ROOTDIR/configs
-CONFPATH=$CONFDIR/mediawiki.php
-SCRIPTDIR=$ROOTDIR/scripts
-WIKIDIR=$ROOTDIR/public/wiki
+ROOTDIR="/var/www"
+CONFDIR="$ROOTDIR/configs"
+CONFPATH="$CONFDIR/mediawiki.php"
+SCRIPTDIR="$ROOTDIR/scripts"
+WIKIDIR="$ROOTDIR/public/wiki"
 
 # Make sure we're at right directory
 cd "$ROOTDIR"

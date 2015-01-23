@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPTDIR="$(dirname "$0")"
-source $SCRIPTDIR/settings.sh
+source "$SCRIPTDIR/settings.sh"
 
 echo "Exporting database into SQL dump, this might take a while..."
 cd /var/www/dumps

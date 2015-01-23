@@ -4,7 +4,7 @@ echo ""
 echo "One script to pull 'em all..."
 echo ""
 
-cd $(dirname $0)/..
+cd "$(dirname $0)/.."
 
 # Main repo
 git pull origin master
