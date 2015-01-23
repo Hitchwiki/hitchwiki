@@ -55,12 +55,15 @@ When you're ready to begin working again, just run `vagrant up`.
 ### Export Semantic structure
 If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
 ```bash
-bash scripts/export.sh
+bash scripts/vagrant_export_pages.sh
 ```
 
 ### Import Semantic structure
 
-This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`
+This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`. It can be done by running:
+```bash
+bash scripts/vagrant_import_pages.sh
+```
 
 ### Debug
 * Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
