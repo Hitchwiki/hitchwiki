@@ -53,7 +53,7 @@ echo "Fetch latest localisation files..."
 vagrant ssh -c "cd \"$VAGRANT_WIKIDIR\" && php extensions/LocalisationUpdate/update.php"
 
 # @TODO: ask if to update?
-#vagrant ssh -c "bash /var/www/scripts/vagrant_import_pages.sh"
+#vagrant ssh -c "bash /var/www/scripts/import_pages.sh"
 
 echo ""
 echo "All done!"

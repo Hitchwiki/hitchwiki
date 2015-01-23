@@ -14,8 +14,10 @@
 #   $HW__db__password
 #   $HW__db__database
 #   $HW__db__prefix
+# among others
 #
 # Usage:
+#   "source path_resolve.sh" # settings.sh relies on path variables being set
 #   "source settings.sh"
 #
 
