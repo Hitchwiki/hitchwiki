@@ -27,7 +27,7 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Type `sh scripts/install.sh`.
+2. Type `bash scripts/install.sh`.
 3. Install will ask for your password to add "hitchwiki.dev" to your hosts file.
 To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead,
 set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile) and copy `configs/settings-example.ini` to `configs/settings.ini` and change domain also from there before installing.
@@ -55,7 +55,7 @@ When you're ready to begin working again, just run `vagrant up`.
 ### Export Semantic structure
 If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
 ```bash
-sh scripts/export.sh
+bash scripts/export.sh
 ```
 
 ### Import Semantic structure
@@ -69,7 +69,7 @@ This is done once at install, but needs to be done each time somebody changes co
 
 ### Update
 1. Pull latest changes: `git pull origin master`
-2. Run update script: `sh ./scripts/update.sh`
+2. Run update script: `bash ./scripts/update.sh`
 
 ## Vagrant box
 
