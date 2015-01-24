@@ -13,4 +13,4 @@ fi
 source "scripts/path_resolve.sh"
 
 # Run update script inside Vagrant
-vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && \"$VAGRANT_SCRIPTDIR/update.sh\""
+vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/update.sh\""

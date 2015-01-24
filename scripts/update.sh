@@ -62,7 +62,7 @@ echo ""
 
 # @TODO: ask if to import?
 # cd "$SCRIPTDIR"
-# ./scripts/import_pages.sh
+# bash ./scripts/import_pages.sh
 # echo ""
 
 echo "All done!"
