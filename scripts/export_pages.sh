@@ -2,16 +2,14 @@
 
 # Export Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
 
-SCRIPTSDIR="/var/www/scripts"
-PAGESDIR="$SCRIPTSDIR/pages"
-WIKIDIR="/var/www/public/wiki"
+source "scripts/path_resolve.sh"
 
 cd "$WIKIDIR"
 
 echo "Exporting Semantic content..."
 
 # Determine which pages to export
-if [ -z ${1+x} ]; then
+if [ -z "${1+x}" ]; then
 
   # Check if list file exists
   if [ ! -f "$PAGESDIR/_pagelist.txt" ]; then
@@ -20,7 +18,7 @@ if [ -z ${1+x} ]; then
   fi
 
   # Return lines from the file into $MAPFILE array
-  source "$SCRIPTSDIR/vendor/filelines2array.sh"
+  source "$SCRIPTDIR/vendor/filelines2array.sh"
   fileLines2Array "$PAGESDIR/_pagelist.txt"
 else
   # Import only asked pages

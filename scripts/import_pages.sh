@@ -2,16 +2,14 @@
 
 # Import Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
 
-SCRIPTSDIR="/var/www/scripts"
-PAGESDIR="$SCRIPTSDIR/pages"
-WIKIDIR="/var/www/public/wiki"
+source "scripts/path_resolve.sh"
 
 echo "Importing Semantic content..."
 
 cd "$WIKIDIR"
 
 # Determine which pages to import
-if [ -z ${1+x} ]; then
+if [ -z "${1+x}" ]; then
 
   # Check if list file exists
   if [ ! -f "$PAGESDIR/_pagelist.txt" ]; then
@@ -20,7 +18,7 @@ if [ -z ${1+x} ]; then
   fi
 
   # Return lines from the file into $MAPFILE array
-  source "$SCRIPTSDIR/vendor/filelines2array.sh"
+  source "$SCRIPTDIR/vendor/filelines2array.sh"
   fileLines2Array "$PAGESDIR/_pagelist.txt"
 else
   # Import only asked pages
@@ -28,7 +26,7 @@ else
 fi
 echo ""
 
-# Loop pages through and import them to mediawiki using https://www.mediawiki.org/wiki/Manual:Edit.php
+# Loop pages through and import them to mediawiki
 let i=0
 for l in "${MAPFILE[@]}"
 do
@@ -43,7 +41,7 @@ do
   fi
 
   if [ -f "$PAGESDIR/$PAGE" ]; then
-    # edit.php supported parameters:
+    # Supported parameters of https://www.mediawiki.org/wiki/Manual:Edit.php:
     #
     # Parameter      Description
     # --------------------------

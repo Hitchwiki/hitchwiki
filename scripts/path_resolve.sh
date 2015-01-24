@@ -11,7 +11,7 @@
 #
 
 #
-# Canonical paths to important directories
+# Canonical paths to important directories and files
 #
 # Can be relied upon in all 3 scenarios:
 # - run a script inside the Vagrant box;
@@ -21,12 +21,14 @@
 
 ROOTDIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
 CONFDIR="$ROOTDIR/configs"
-CONFPATH="$CONFDIR/mediawiki.php"
+MWCONFFILE="$CONFDIR/mediawiki.php"
 SCRIPTDIR="$ROOTDIR/scripts"
+PAGESDIR="$SCRIPTDIR/pages"
+DUMPSDIR="$ROOTDIR/dumps"
 WIKIDIR="$ROOTDIR/public/wiki"
 
 #
-# Canonical paths to important directories inside the Vagrant box
+# Canonical paths to important directories and files inside the Vagrant box
 #
 # Useful for passing explicit paths from the host OS to a script inside Vagrant,
 # for example:
@@ -39,6 +41,8 @@ WIKIDIR="$ROOTDIR/public/wiki"
 
 VAGRANT_ROOTDIR="/var/www"
 VAGRANT_CONFDIR="$VAGRANT_ROOTDIR/configs"
-VAGRANT_CONFPATH="$VAGRANT_CONFDIR/mediawiki.php"
+VAGRANT_MWCONFFILE="$VAGRANT_CONFDIR/mediawiki.php"
 VAGRANT_SCRIPTDIR="$VAGRANT_ROOTDIR/scripts"
+VAGRANT_PAGESDIR="$VAGRANT_SCRIPTDIR/pages"
+VAGRANT_DUMPSDIR="$VAGRANT_ROOTDIR/dumps"
 VAGRANT_WIKIDIR="$VAGRANT_ROOTDIR/public/wiki"

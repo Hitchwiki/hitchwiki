@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Hitchwiki import script
+# Import Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
+# when using Vagrant setup
+
+source "scripts/path_resolve.sh"
 
 if [ -z "${1+x}" ]; then
-  vagrant ssh -c "bash /var/www/scripts/import_pages.sh"
+  vagrant ssh -c "bash \"$VAGRANT_SCRIPTDIR/import_pages.sh\""
 else
-  vagrant ssh -c "bash /var/www/scripts/import_pages.sh \"$1\""
+  vagrant ssh -c "bash \"$VAGRANT_SCRIPTDIR/import_pages.sh\" \"$1\""
 fi
