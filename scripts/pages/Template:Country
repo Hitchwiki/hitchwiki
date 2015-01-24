@@ -43,7 +43,7 @@ Edit the page to see the template text.
 {{#ask: [[Category:Areas]] [[located in::{{PAGENAME}}]]
  | format=ul
 }}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/Area|<i class="fa fa-plus-square"></i> Add another area]]</div>
-
+<hwmap></hwmap>
 [[Category:Countries]]
 [[wikivoyage:{{PAGENAME}}]]
 [[nomad:{{PAGENAME}}]]
