@@ -14,7 +14,7 @@ It should be called in the following format:
 Edit the page to see the template text.
 </noinclude><includeonly>
 {| class="infobox mw-collapsible"
-! colspan="2" class="infobox-h1" | <div>'''{{PAGENAME}}''' ({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</div>
+! colspan="2" class="infobox-h1" | <div><i class="fa fa-star"></i> '''{{PAGENAME}}''' <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span></div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
 |-
