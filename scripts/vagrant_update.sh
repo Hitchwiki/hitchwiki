@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #
-# Hitchwiki update script for Vagrant setup
+# Shorthand to run update.sh inside the Vagrant box
+#
+# On not Vagrant-based setups (eg. production), directly invoke update.sh instead
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree

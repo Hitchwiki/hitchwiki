@@ -17,10 +17,9 @@
 # among others
 #
 # Usage:
-#   "source path_resolve.sh" # settings.sh relies on path variables being set
-#   "source settings.sh"
+#   "source scripts/path_resolve.sh" # settings.sh relies on path variables being set
+#   "source scripts/settings.sh"
 #
-
 
 # SCRIPTDIR can be set outside this script as well
 # That's the case when using this from inside vagrant

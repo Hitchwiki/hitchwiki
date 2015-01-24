@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#
+# Fast trimmed down extension update script for dev environment:
+# pull HitchwikiVector, HWMap, HWComments, HWRatings, HWWaitingTime extensions
+# and update their frontend assets
+#
+# For a proper update, including backend dependencies, MediaWiki and third-party
+# extensions, use update.sh (or its wrapper vagrant_update.sh) instead
+#
+
 echo ""
 echo "One script to pull 'em all..."
 echo ""

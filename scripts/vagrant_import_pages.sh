@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Import Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
-# when using Vagrant setup
+#
+# Shorthand to run import_pages.sh inside the Vagrant box
+#
+# On not Vagrant-based setups (eg. production), directly invoke import_pages.sh instead
+#
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
     echo "ERROR: Bad working directory ($(pwd))."

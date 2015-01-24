@@ -8,7 +8,7 @@
 # - working directory must be the root directory of hitchwiki repo;
 #
 # Usage:
-#   "source path_resolve.sh"
+#   "source scripts/path_resolve.sh"
 #
 
 #
@@ -34,8 +34,8 @@ WIKIDIR="$ROOTDIR/public/wiki"
 # Useful for passing explicit paths from the host OS to a script inside Vagrant,
 # for example:
 #
-#   source "path_resolve.sh"
-#   vagrant ssh -c "bash \"$VAGRANT_SCRIPTDIR/export_pages.sh\""
+#   source "scripts/path_resolve.sh"
+#   vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/export_pages.sh\""
 #
 # Serve no purpose when used in a non-Vagrant environment, eg. production server
 #
