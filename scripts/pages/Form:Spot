@@ -2,27 +2,29 @@
 
 <div class="hw-spot-add">[[Special:HWMap#add|Add new hitchhiking spot]]</div>
 
-</noinclude><includeonly>
-{{{info|add title=Add spot|edit title=Edit spot}}}
-<div id="wikiPreview" class="hw-spot-preview"></div>
-<div class="hw-spot-form">
-{{{for template|Spot}}}
-{| class="formtable hw-spot-add-form"
-! class="hw-spot-add-description" colspan="3" | Description: {{{field|Description|input type=textarea}}}
-|-
-! class="hw-spot-add-cardinal" rowspan="4" | Cardinal direction: {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}
-|-
-!City: || class="hw-spot-add-select" | {{{field|Cities|values from category=Cities}}}
-|-
-!Towards cities: || class="hw-spot-add-select" | {{{field|CitiesDirection|list|values from category=Cities}}}
-|-
-!Major roads: || class="hw-spot-add-select" | {{{field|RoadsDirection|list}}}
-|}
+</noinclude><includeonly>{{{info|add title=Add spot|edit title=Edit spot}}}
+<div id="wikiPreview" class="hw-spot-preview"></div><nowiki />
+<div class="hw-spot-form"><nowiki />
+{{{for template|Spot}}}<div class="row"><div class="col-xs-12"><nowiki />
+'''Description'''<nowiki />
+{{{field|Description|input type=textarea}}}<nowiki />
+</div></div>
+<div class="row"><div class="col-xs-6 hw-spot-add-cardinal">
+'''Cardinal direction'''<nowiki />
+{{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}<nowiki />
+</div><div class="col-xs-6"><nowiki />
 
-{{{field|Location|hidden}}}
-{{{field|Country|hidden}}}
-{{{end template}}}<div class="clearfix editOptions">
-<div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}</div>
-<div class="editCheckboxes">{{{standard input|watch}}}</div>
-</div>
-</includeonly>
+'''City'''<nowiki />
+{{{field|Cities|values from category=Cities}}}<nowiki />
+
+'''Towards cities'''<nowiki />
+{{{field|CitiesDirection|list|values from category=Cities}}}<nowiki />
+
+'''Major roads'''<nowiki />
+{{{field|RoadsDirection|list}}}<nowiki />
+</div></div>{{{field|Location|hidden}}}{{{field|Country|hidden}}}
+{{{end template}}}</div><!--/hw-spot-form--><nowiki />
+<div class="editOptions clearfix"><nowiki />
+<div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}</div><nowiki />
+<div class="editCheckboxes">{{{standard input|watch}}}</div><nowiki />
+</div></includeonly>
