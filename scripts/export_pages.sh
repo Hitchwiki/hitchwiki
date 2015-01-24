@@ -2,18 +2,25 @@
 
 # Export Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
 
+if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
+    echo "ERROR: Bad working directory ($(pwd))."
+    echo "Scripts have to be run from the root directory of the hitchwiki repository."
+    echo "Aborting."
+    exit 1
+fi
+
 source "scripts/path_resolve.sh"
 
-cd "$WIKIDIR"
-
 echo "Exporting Semantic content..."
+
+cd "$WIKIDIR"
 
 # Determine which pages to export
 if [ -z "${1+x}" ]; then
 
   # Check if list file exists
   if [ ! -f "$PAGESDIR/_pagelist.txt" ]; then
-    echo "ERROR: $PAGESDIR/pagelist.txt does not exist! Aborting."
+    echo "ERROR: $PAGESDIR/_pagelist.txt does not exist! Aborting."
     exit 1
   fi
 

@@ -3,8 +3,9 @@
 #
 # Include path variables in any bash script
 #
-# Invoking script has to be in the same folder as this file in order for path
-# resolution to work correctly
+# In order for path resolution to work correctly:
+# - invoking script must be in the same folder as this file;
+# - working directory must be the root directory of hitchwiki repo;
 #
 # Usage:
 #   "source path_resolve.sh"
@@ -19,7 +20,7 @@
 # - run a script in a non-Vagrant setup, eg. production server.
 #
 
-ROOTDIR="$(dirname "$(dirname "$(readlink -f "$0")")")"
+ROOTDIR=$(pwd)
 CONFDIR="$ROOTDIR/configs"
 MWCONFFILE="$CONFDIR/mediawiki.php"
 SCRIPTDIR="$ROOTDIR/scripts"
