@@ -1,7 +1,11 @@
 #!/bin/bash
 
 #
-# Hitchwiki update script
+# Hitchwiki update script: update MediaWiki, its database, extensions and assets
+#
+# Usage:
+#   "git pull"
+#   "bash scripts/update.sh"
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree

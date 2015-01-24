@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Export Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
+#
+# Export Hitchwiki pages related to Semantic MediaWiki (forms, templates etc)
+#
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
     echo "ERROR: Bad working directory ($(pwd))."
@@ -32,7 +34,7 @@ else
   MAPFILE=("$1")
 fi
 
-# Loop trough pages and import them to mediawiki using https://www.mediawiki.org/wiki/Manual:Edit.php
+# Loop through pages and import them to mediawiki using https://www.mediawiki.org/wiki/Manual:GetText.php
 let i=0
 for l in "${MAPFILE[@]}"
 do

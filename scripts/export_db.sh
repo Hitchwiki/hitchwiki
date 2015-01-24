@@ -1,6 +1,8 @@
 #!/bin/bash
 
+#
 # Export Hitchwiki database
+#
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
     echo "ERROR: Bad working directory ($(pwd))."

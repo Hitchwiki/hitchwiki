@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Export Hitchwiki pages related to SemanticMediaWiki (forms, templates etc)
-# when using Vagrant setup
+#
+# Shorthand to run export_pages.sh inside the Vagrant box
+#
+# On not Vagrant-based setups (eg. production), directly invoke export_pages.sh instead
+#
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
     echo "ERROR: Bad working directory ($(pwd))."
