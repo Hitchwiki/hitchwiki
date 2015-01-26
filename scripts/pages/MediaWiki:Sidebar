@@ -4,6 +4,8 @@
 ** Special:HWMap#add|New spot
 ** Form:City|New city
 ** Special:UploadWizard|Add photo
+** Special:UserLogin|createaccount
+** Special:UserLogin|login
 
 * Hitchwiki
 ** recentchanges-url|recentchanges
