@@ -39,6 +39,9 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   # Get Vector skin
   cd "$WIKIDIR/skins"
   git clone https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  cd Vector
+  # Use branches for versions, eg. REL1_24
+  git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 fi
 
 # Clone MW skin(s)
@@ -86,6 +89,8 @@ echo ""
 echo "Installing VisualEditor..."
 git clone https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
 cd "$WIKIDIR/extensions/VisualEditor"
+# Use branches for versions, eg. REL1_24
+git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git submodule update --init
 
 # Install MediaWiki
