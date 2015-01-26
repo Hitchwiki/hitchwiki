@@ -1,3 +1,8 @@
+#
+# Migrate spots from old (pre-Feb 2015) Hitchwiki maps DB to the new setup based on
+# Semantic MediaWiki and custom MediaWiki extensions
+#
+
 import pywikibot
 import json, requests, urllib
 import hashlib
@@ -7,6 +12,7 @@ from lib.cachedhttprequest import CachedHttpRequest
 
 class OldHitchwikiMaps(object):
     def __init__(self, cache_dir):
+        # @TODO: Directly use database instead
         self.url = 'http://hitchwiki.org/maps/api/'
         self.default_params = dict()
         self.cache_dir = cache_dir

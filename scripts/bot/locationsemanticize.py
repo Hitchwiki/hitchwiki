@@ -1,19 +1,29 @@
+#
+# Add Semantic MediaWiki templates to articles that (supposedly) correspond to geographic locations
+# There are 4 location templates: Area, City, Country, Spot (all can be found in /scripts/pages/)
+# This script handles the first three
+#
+
 import pywikibot
 from pywikibot import pagegenerators
 
 import re
 import json
+import ConfigParser
 
 from lib.geonames import GeoNames
 from lib.googlegeocode import GoogleGeocode
 
-with open('config.json') as config_file:    
+settings = ConfigParser.ConfigParser()
+settings.read('../../configs/settings.ini')
+
+with open('config.json') as config_file:
     config = json.load(config_file)
 
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 
-geonames = GeoNames('hitchwiki', './.cache')
+geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
 google_geocode = GoogleGeocode('./.cache')
 
 site = pywikibot.Site()
@@ -53,7 +63,7 @@ for page in gen:
                 country = next(component["long_name"] for component in address if "country" in component["types"])
                 entity = 'Area'
                 properties = {
-                    'Type': 'Border rCossing',
+                    'Type': 'Border Crossing',
                     'Location': '%s,%s' % (location['lat'], location['lng']),
                     'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                     'Countries': country
