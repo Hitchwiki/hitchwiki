@@ -15,6 +15,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     exit 1
 fi
 source "scripts/path_resolve.sh"
+source "scripts/settings.sh"
 
 echo ""
 
@@ -24,17 +25,20 @@ echo ""
 
 echo "Update MediaWiki dependencies..."
 cd "$WIKIDIR"
+git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git pull
 php composer.phar update
 echo ""
 
 echo "Update Vector skin..."
 cd "$WIKIDIR/skins/Vector"
+git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git pull
 echo ""
 
 echo "Update VisualEditor..."
 cd "$WIKIDIR/extensions/VisualEditor"
+git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git pull
 git submodule update --init
 echo ""
