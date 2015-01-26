@@ -10,19 +10,18 @@ scotch-box
 
 # Wiki
 mediawiki-*.tar.gz
-public/mediawiki-*
-public/wiki
+/public/mediawiki-*
+/public/wiki
 
 # Logs
 logs
 *.log
 
 # Other
-public/google*.html
-scripts/vendor/bash_ini_parser
-configs/settings.ini
-/vendor/
+/public/google*.html
+/scripts/vendor/bash_ini_parser
+/configs/settings.ini
 
 # Admin tools
-public/phpmyadmin
-public/sqlbuddy
+/public/phpmyadmin
+/public/sqlbuddy
