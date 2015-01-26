@@ -1,55 +1,11 @@
 import pywikibot
 from pywikibot import pagegenerators
-import json, requests, urllib # geopy is too limited ;(
-import re, hashlib
-import os.path
 
-class CachedHttpRequest:
-    @staticmethod
-    def request(url, cache_dir):
-        hash = hashlib.md5(url).hexdigest()
-        filename = cache_dir + '/' + hash
-        if (os.path.isfile(filename)):
-            #print 'Loading cache for %s from %s' % (url, filename)
-            with open(filename, 'r') as cache_file:
-                content = cache_file.read().decode('utf-8')
-        else:
-            #print 'Saving cache for %s into %s' % (url, filename)
-            content = requests.get(url=url).text
-            with open(filename, 'w') as cache_file:
-                cache_file.write(content.encode('utf-8'))
-        return content
+import re
+import json
 
-class GeoNames(object):
-    def __init__(self, username, cache_dir):
-        self.url = 'http://api.geonames.org/searchJSON'
-        self.default_params = dict(
-            formatted='true',
-            maxRows=10,
-            lang='en',
-            username=username,
-            style='full'
-        )
-        self.cache_dir = cache_dir
-
-    def lookup(self, query):
-        params = self.default_params.copy()
-        params['q'] = query.encode('utf-8')
-        url = self.url + '?' + urllib.urlencode(params)
-        return json.loads(CachedHttpRequest.request(url, self.cache_dir))
-
-class GoogleGeocode(object):
-    def __init__(self, cache_dir):
-        self.url = 'https://maps.googleapis.com/maps/api/geocode/json'
-        self.default_params = dict()
-        self.cache_dir = cache_dir
-
-    def lookup(self, query):
-        params = self.default_params.copy()
-        params['address'] = query.encode('utf-8')
-        url = self.url + '?' + urllib.urlencode(params)
-        txt = CachedHttpRequest.request(url, self.cache_dir)
-        return json.loads(txt)
+from lib.geonames import GeoNames
+from lib.googlegeocode import GoogleGeocode
 
 with open('config.json') as config_file:    
     config = json.load(config_file)
