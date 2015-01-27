@@ -16,13 +16,27 @@ fi
 source "scripts/path_resolve.sh"
 source "$SCRIPTDIR/settings.sh"
 
-echo "Drop database and recreate it..."
+echo "Drop $HW__db__database database and recreate it..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
 mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
 echo ""
 
-echo "Import old Hitchwiki SQL dump..."
+echo "Import old English Hitchwiki SQL dump..."
 DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_en.sql"
+if [ ! -f "$DUMPFILE" ]; then
+    echo "File $DUMPFILE not found"
+    exit 1
+fi
+cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password $HW__db__database
+echo ""
+
+echo "Drop hitchwiki_maps database and recreate it..."
+mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_maps"
+mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_maps CHARACTER SET utf8 COLLATE utf8_general_ci"
+echo ""
+
+echo "Import old Hitchwiki Maps SQL dump..."
+DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_maps.sql"
 if [ ! -f "$DUMPFILE" ]; then
     echo "File $DUMPFILE not found"
     exit 1
