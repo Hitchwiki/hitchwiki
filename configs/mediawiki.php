@@ -329,6 +329,10 @@ if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
   require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
 
+  // Sets whether help information on the edit page is displayed
+  $smwgEnabledEditPageHelp = false;
+
+
   // You can have the set of values used for autocompletion in forms be cached, which may
   // improve performance. To do that, add something like the following to LocalSettings.php:
   $sfgCacheAutocompleteValues = true;
