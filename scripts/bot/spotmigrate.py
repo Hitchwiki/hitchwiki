@@ -24,6 +24,20 @@ db = MySQLdb.connect(
 )
 points_cur = db.cursor(MySQLdb.cursors.DictCursor)
 
+# Create a temporary (old) point_id <-> (new) page_id mappings table
+table_cur = db.cursor()
+table_cur.execute(
+    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
+)
+table_cur.execute(
+    'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
+        ' point_id integer NOT NULL PRIMARY KEY,' +
+        ' page_id integer NOT NULL UNIQUE,' +
+        ' user_id integer DEFAULT NULL,' +
+        ' datetime datetime DEFAULT NULL'
+    ')'
+)
+
 # Fetch points and their English description from the old DB
 sql = (
     "SELECT p.id AS point_id, p.user, p.lat, p.lon, p.datetime," +
@@ -40,23 +54,25 @@ sql = (
 )
 points_cur.execute(sql)
 
-# Create a temporary (old) point_id <-> (new) page_id mappings table
-table_cur = db.cursor()
-table_cur.execute(
-    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
-)
-table_cur.execute(
-    'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
-        ' point_id integer NOT NULL PRIMARY KEY,' +
-        ' page_id integer NOT NULL UNIQUE,' +
-        ' user_id integer DEFAULT NULL,' +
-        ' datetime datetime DEFAULT NULL'
-    ')'
-)
-
 count = points_cur.rowcount
 for point in points_cur.fetchall() :
     #print point['point_id'], point['user'], point['lat'], point['lon'], point['description']
+    #description = point["description"]
+
+    # Fetch latest English description for the spot
+    descr_cur = db.cursor(MySQLdb.cursors.DictCursor)
+    descr_cur.execute((
+        'SELECT description' +
+            ' FROM hitchwiki_maps.t_points_descriptions' +
+            ' WHERE fk_point = %s' +
+                " AND language = 'en_UK'" +
+            ' ORDER BY datetime DESC' +
+            ' LIMIT 1'
+    ) % (point['point_id']))
+    if descr_cur.rowcount != 0:
+        description = descr_cur.fetchone()['description']
+    else:
+        description = ''
 
     # Create MediaWiki page for the spot
     title = 'Spot %s (%s %s)' % (point['point_id'], point['lat'], point['lon'])
@@ -64,7 +80,7 @@ for point in points_cur.fetchall() :
     page = pywikibot.Page(site, title)
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
-        ("|Description=%s\n" % point["description"]) +
+        ("|Description=%s\n" % description) +
         "|Cities=\n" +
         "|Country=\n" +
         "|CardinalDirection=\n" +

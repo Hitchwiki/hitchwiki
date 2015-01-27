@@ -31,7 +31,12 @@
 # If you use either of these functions to define the family to work on by
 # default (the ‘family’ variable below), you must place the function call
 # before the definition of the ‘family’ variable.
-family_files['hitchwiki'] = 'http://hitchwiki.org/en/api.php'
+
+import ConfigParser
+settings = ConfigParser.ConfigParser()
+settings.read('../../configs/settings.ini')
+
+family_files['hitchwiki'] = 'http://' + settings.get('general', 'domain') + '/en/api.php'
 
 # TODO: Implement proper hitchwiki family file
 # register_families_folder('families')
@@ -44,4 +49,6 @@ mylang = 'en'
 # The dictionary usernames should contain a username for each site where you
 # have a bot account. If you have a unique username for all languages of a
 # family , you can use '*'
-usernames['hitchwiki']['en'] = u'MigrateBot'
+usernames['hitchwiki']['en'] = u'Hitchhiker'
+
+put_throttle = 0

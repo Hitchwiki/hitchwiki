@@ -41,7 +41,7 @@ if [ ! -f "$DUMPFILE" ]; then
     echo "File $DUMPFILE not found"
     exit 1
 fi
-cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password $HW__db__database
+cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_maps
 echo ""
 
 echo "Update MediaWiki..."
