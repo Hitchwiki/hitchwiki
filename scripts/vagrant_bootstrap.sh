@@ -154,7 +154,8 @@ sudo apt-get update && sudo apt-get install parsoid
 
 # Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
 localsettingsjs=$(<"$SCRIPTDIR/configs/parsoid_localsettings.js")
-echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
+sudo mkdir -p /etc/mediawiki/parsoid/
+sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
 
 
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
