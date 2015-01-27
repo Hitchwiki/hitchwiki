@@ -116,6 +116,18 @@ comments_cur.execute(
 )
 db.commit()
 
+print 'Update comment count for each page...'
+
+comment_count_cur = db.cursor()
+comment_count_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_comments_count' +
+        ' (hw_page_id, hw_comments_count)' +
+    ' SELECT hw_page_id, COUNT(*)' +
+        ' FROM hitchwiki_en.hw_comments' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
+
 print 'Import spot waiting times...'
 
 waiting_times_cur = db.cursor()
@@ -129,10 +141,23 @@ waiting_times_cur.execute(
 )
 db.commit()
 
+print 'Update min waiting time, max waiting time and waiting time count for each page...'
+
+waiting_time_count_cur = db.cursor()
+waiting_time_count_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_waiting_time_avg' +
+        ' (hw_page_id, hw_count_waiting_time, hw_min_waiting_time, hw_max_waiting_time)' +
+    ' SELECT hw_page_id, COUNT(*), MIN(hw_waiting_time), MAX(hw_waiting_time)' +
+        ' FROM hitchwiki_en.hw_waiting_time' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
+# @TODO: update median values
+
 print 'Import spot ratings...'
 
-comments_cur = db.cursor()
-comments_cur.execute(
+ratings_cur = db.cursor()
+ratings_cur.execute(
     'INSERT INTO hitchwiki_en.hw_ratings' +
         ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
     " SELECT r.id, r.fk_user, ppm.page_id, DATE_FORMAT(r.datetime, '%Y%m%d%H%i%S'), 6 - r.rating" +
@@ -143,4 +168,14 @@ comments_cur.execute(
 )
 db.commit()
 
-# @TODO: update aggregate data tables
+print 'Update average rating and rating count for each page...'
+
+rating_avg_cur = db.cursor()
+rating_avg_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
+        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
+    ' SELECT hw_page_id, COUNT(*), AVG(hw_rating)' +
+        ' FROM hitchwiki_en.hw_ratings' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
