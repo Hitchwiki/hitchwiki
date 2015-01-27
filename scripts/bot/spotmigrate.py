@@ -7,74 +7,97 @@ import pywikibot
 import json, requests, urllib
 import hashlib
 import os.path
-
-from lib.cachedhttprequest import CachedHttpRequest
-
-class OldHitchwikiMaps(object):
-    def __init__(self, cache_dir):
-        # @TODO: Directly use database instead
-        self.url = 'http://hitchwiki.org/maps/api/'
-        self.default_params = dict()
-        self.cache_dir = cache_dir
-
-    def allspots(self):
-        params = self.default_params.copy()
-        params['bounds'] = "-90,90,-180,180".encode('utf-8')
-        url = self.url + '?' + urllib.urlencode(params)
-        return json.loads(CachedHttpRequest.request(url, self.cache_dir))
-
-    def spotinfo(self, spot_id):
-        params = self.default_params.copy()
-        params['place'] = spot_id
-        url = self.url + '?' + urllib.urlencode(params)
-        return json.loads(CachedHttpRequest.request(url, self.cache_dir))
+import ConfigParser
+import MySQLdb
 
 site = pywikibot.Site()
-oldhwmaps = OldHitchwikiMaps('./.cache')
-spots = oldhwmaps.allspots()
 
-count = 0
+settings = ConfigParser.ConfigParser()
+settings.read('../../configs/settings.ini')
 dummy_user_id = 0
-for spot in spots:
-    print spot['id'], spot['lat'], spot['lon'], spot['rating']
-    spotinfo = oldhwmaps.spotinfo(spot['id'])
 
-    #print '#%d. %s' % (count + 1, page.title().encode('ascii', 'ignore'))
-    #print 'http://hitchwiki.org/en/' + page.title(asUrl=True)
+db = MySQLdb.connect(
+    host=settings.get('db', 'host'),
+    user=settings.get('db', 'username'),
+    passwd=settings.get('db', 'password'),
+    db=settings.get('db', 'database')
+)
+points_cur = db.cursor(MySQLdb.cursors.DictCursor)
 
-    print 'saving spot'
-    title = 'Spot %s (%s %s)' % (spot['id'], spot['lat'], spot['lon'])
+# Fetch points and their English description from the old DB
+sql = (
+    "SELECT p.id AS point_id, p.user, p.lat, p.lon, p.datetime," +
+            # @TODO: fix performance issue; index is ignored :/
+            # " ( SELECT d.description" +
+            #     " FROM hitchwiki_maps.t_points_descriptions AS d" +
+            #     " WHERE d.fk_point = p.id" +
+            #         " AND d.language = 'en_UK'" +
+            #     " LIMIT 1"
+            # " ) AS description" # most recent English description
+            " '' AS description"
+        " FROM hitchwiki_maps.t_points AS p" +
+        " WHERE p.type = 1" # ignore type = 2 (probably trip/event points)
+)
+points_cur.execute(sql)
+
+# Create a temporary (old) point_id <-> (new) page_id mappings table
+table_cur = db.cursor()
+table_cur.execute(
+    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
+)
+table_cur.execute(
+    'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
+        ' point_id integer NOT NULL PRIMARY KEY,' +
+        ' page_id integer NOT NULL UNIQUE,' +
+        ' user_id integer DEFAULT NULL,' +
+        ' datetime datetime DEFAULT NULL'
+    ')'
+)
+
+count = points_cur.rowcount
+for point in points_cur.fetchall() :
+    #print point['point_id'], point['user'], point['lat'], point['lon'], point['description']
+
+    # Create MediaWiki page for the spot
+    title = 'Spot %s (%s %s)' % (point['point_id'], point['lat'], point['lon'])
+    print title
     page = pywikibot.Page(site, title)
-    page.text = (
+    page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
-        ("|Description=%s\n" % spotinfo["description"]["en_UK"]) +
+        ("|Description=%s\n" % point["description"]) +
         "|Cities=\n" +
         "|Country=\n" +
         "|CardinalDirection=\n" +
         "|CitiesDirection=\n" +
         "|RoadsDirection=\n" +
-        ("|Location=%s, %s\n" % (spot['lat'], spot['lon'])) +
+        ("|Location=%s, %s\n" % (point['lat'], point['lon'])) +
         "}}"
     )
+    print page.text
     page.save()
+
+    # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
     page.get()
-    print page._pageid
-    break
+    pageid = page._pageid
 
-    for comment in spotinfo['comments']:
-        try:
-            user_id = comment['user']['id']
-        except:
-            user_id = dummy_user_id
-        newhw.add_comment(comment['comment'], comment['datetime'], user_id)
+    if point["user"]:
+        user_id = point["user"]
+    else:
+        user_id = dummy_user_id
 
+    if point["datetime"]:
+        datetime = "'" + str(point["datetime"]) + "'"
+    else:
+        datetime = "NULL"
 
-
-    break
+    # Insert into (old) point_id and (new) page_id into the temporary mappings table
+    table_cur = db.cursor()
+    table_cur.execute(
+        'INSERT INTO hitchwiki_maps.point_page_mappings (point_id, page_id, user_id, datetime)' +
+            " VALUES (%s, %s, %s, %s)" % (point['point_id'], pageid, user_id, datetime)
+    )
+    db.commit()
 
     print
-    #page.text = page.text.replace('foo', 'bar')
-    #page.save('Replacing "foo" with "bar"')  # Saves the page
-    count += 1
 
 print 'total: ', count
