@@ -103,7 +103,7 @@ for point in points_cur.fetchall() :
 
 print 'total: ', count
 
-print 'Import comments...'
+print 'Import spot comments...'
 
 comments_cur = db.cursor()
 comments_cur.execute(
@@ -116,7 +116,7 @@ comments_cur.execute(
 )
 db.commit()
 
-print 'Import waiting times...'
+print 'Import spot waiting times...'
 
 waiting_times_cur = db.cursor()
 waiting_times_cur.execute(
@@ -128,3 +128,18 @@ waiting_times_cur.execute(
             ' ON ppm.point_id = w.fk_point'
 )
 db.commit()
+
+print 'Import spot ratings...'
+
+comments_cur = db.cursor()
+comments_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings' +
+        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
+    " SELECT r.id, r.fk_user, ppm.page_id, DATE_FORMAT(r.datetime, '%Y%m%d%H%i%S'), r.rating" +
+        ' FROM hitchwiki_maps.t_ratings AS r' +
+        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
+            ' ON ppm.point_id = r.fk_point'
+)
+db.commit()
+
+# @TODO: update aggregate data tables
