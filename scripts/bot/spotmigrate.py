@@ -97,7 +97,34 @@ for point in points_cur.fetchall() :
             " VALUES (%s, %s, %s, %s)" % (point['point_id'], pageid, user_id, datetime)
     )
     db.commit()
+    # @TODO: using SQL set page's create time and user id to the values from point_page_mappings
 
     print
 
 print 'total: ', count
+
+print 'Import comments...'
+
+comments_cur = db.cursor()
+comments_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_comments' +
+        ' (hw_comment_id, hw_user_id, hw_page_id, hw_timestamp, hw_commenttext)' +
+    " SELECT c.id, c.fk_user, ppm.page_id, DATE_FORMAT(c.datetime, '%Y%m%d%H%i%S'), c.comment" +
+        ' FROM hitchwiki_maps.t_comments AS c' +
+        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
+            ' ON ppm.point_id = c.fk_place'
+)
+db.commit()
+
+print 'Import waiting times...'
+
+waiting_times_cur = db.cursor()
+waiting_times_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_waiting_time' +
+        ' (hw_waiting_time_id, hw_user_id, hw_page_id, hw_timestamp, hw_waiting_time)' +
+    " SELECT w.id, w.fk_user, ppm.page_id, DATE_FORMAT(w.datetime, '%Y%m%d%H%i%S'), w.waitingtime" +
+        ' FROM hitchwiki_maps.t_waitingtimes AS w' +
+        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
+            ' ON ppm.point_id = w.fk_point'
+)
+db.commit()
