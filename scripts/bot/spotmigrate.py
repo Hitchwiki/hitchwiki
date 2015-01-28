@@ -120,6 +120,14 @@ for point in points_cur.fetchall() :
 
 print 'total: ', count
 
+print 'Truncate comments table...'
+
+comments_del_cur = db.cursor()
+comments_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_comments'
+)
+db.commit()
+
 print 'Import spot comments...'
 
 comments_cur = db.cursor()
@@ -133,6 +141,14 @@ comments_cur.execute(
 )
 db.commit()
 
+print 'Truncate comment counts table...'
+
+comments_count_del_cur = db.cursor()
+comments_count_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_comments_count'
+)
+db.commit()
+
 print 'Update comment count for each page...'
 
 comment_count_cur = db.cursor()
@@ -142,6 +158,14 @@ comment_count_cur.execute(
     ' SELECT hw_page_id, COUNT(*)' +
         ' FROM hitchwiki_en.hw_comments' +
         ' GROUP BY hw_page_id'
+)
+db.commit()
+
+print 'Truncate waiting times table...'
+
+waiting_times_del_cur = db.cursor()
+waiting_times_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_waiting_time'
 )
 db.commit()
 
@@ -158,6 +182,14 @@ waiting_times_cur.execute(
 )
 db.commit()
 
+print 'Truncate waiting time aggregates (min, max, avg, count) table...'
+
+waiting_times_avg_del_cur = db.cursor()
+waiting_times_avg_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_waiting_time_avg'
+)
+db.commit()
+
 print 'Update min waiting time, max waiting time and waiting time count for each page...'
 
 waiting_time_count_cur = db.cursor()
@@ -170,7 +202,7 @@ waiting_time_count_cur.execute(
 )
 db.commit()
 
-print 'Update median waiting time...'
+print 'Update median waiting times...'
 
 waiting_time_all_cur = db.cursor(MySQLdb.cursors.DictCursor)
 waiting_time_all_cur.execute(
@@ -196,6 +228,14 @@ for waiting_time_group in waiting_time_all_cur.fetchall():
     ) % (median, waiting_time_group['hw_page_id']))
     db.commit()
 
+print 'Truncate spot ratings table...'
+
+ratings_del_cur = db.cursor()
+ratings_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings'
+)
+db.commit()
+
 print 'Import spot ratings...'
 
 ratings_cur = db.cursor()
@@ -207,6 +247,14 @@ ratings_cur.execute(
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
             ' ON ppm.point_id = r.fk_point' +
         ' WHERE r.rating <> 0'
+)
+db.commit()
+
+print 'Truncate spot rating aggregates (avg, count) table...'
+
+ratings_avg_del_cur = db.cursor()
+ratings_avg_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings_avg'
 )
 db.commit()
 
