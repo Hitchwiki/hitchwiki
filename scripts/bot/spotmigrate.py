@@ -115,6 +115,7 @@ for point in points_cur.fetchall() :
     db.commit()
     # @TODO: using SQL set page's create time and user id to the values from point_page_mappings
 
+    break
     print
 
 print 'total: ', count
@@ -168,7 +169,32 @@ waiting_time_count_cur.execute(
         ' GROUP BY hw_page_id'
 )
 db.commit()
-# @TODO: update median values
+
+print 'Update median waiting time...'
+
+waiting_time_all_cur = db.cursor(MySQLdb.cursors.DictCursor)
+waiting_time_all_cur.execute(
+    "SELECT hw_page_id, GROUP_CONCAT(hw_waiting_time ORDER BY hw_waiting_time SEPARATOR ';') AS waiting_times" +
+        ' FROM hitchwiki_en.hw_waiting_time' +
+        ' GROUP BY hw_page_id'
+)
+for waiting_time_group in waiting_time_all_cur.fetchall():
+    waiting_times = waiting_time_group['waiting_times'].split(';')
+    count = len(waiting_times)
+    if count & 1: # odd number of waiting times; median is the middle number
+        median = int(waiting_times[(count - 1) / 2])
+    else: # even number of waiting times; median is the mean value of the two middle numbers
+        middle1 = float(waiting_times[count / 2 - 1])
+        middle2 = float(waiting_times[count / 2])
+        median = (middle1 + middle2) / 2
+
+    waiting_time_median_cur = db.cursor()
+    waiting_time_median_cur.execute((
+        "UPDATE hitchwiki_en.hw_waiting_time_avg" +
+            ' SET hw_average_waiting_time = %f ' +
+            ' WHERE hw_page_id = %d'
+    ) % (median, waiting_time_group['hw_page_id']))
+    db.commit()
 
 print 'Import spot ratings...'
 
