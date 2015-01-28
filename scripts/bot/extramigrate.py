@@ -52,7 +52,8 @@ comments_cur.execute(
     " SELECT c.id, c.fk_user, ppm.page_id, DATE_FORMAT(c.datetime, '%Y%m%d%H%i%S'), c.comment" +
         ' FROM hitchwiki_maps.t_comments AS c' +
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
-            ' ON ppm.point_id = c.fk_place'
+            ' ON ppm.point_id = c.fk_place' +
+        ' WHERE ppm.page_id IS NOT NULL' # import comments only for imported spots
 )
 db.commit()
 
@@ -76,6 +77,49 @@ comment_count_cur.execute(
 )
 db.commit()
 
+print 'Truncate spot ratings table...'
+
+ratings_del_cur = db.cursor()
+ratings_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings'
+)
+db.commit()
+
+print 'Import spot ratings...'
+
+ratings_cur = db.cursor()
+ratings_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings' +
+        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
+    " SELECT r.id, r.fk_user, ppm.page_id, DATE_FORMAT(r.datetime, '%Y%m%d%H%i%S'), 6 - r.rating" +
+        ' FROM hitchwiki_maps.t_ratings AS r' +
+        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
+            ' ON ppm.point_id = r.fk_point' +
+        ' WHERE r.rating <> 0' + # ignore "none" ratings
+            ' AND ppm.page_id IS NOT NULL' # import ratings only for imported spots
+)
+db.commit()
+
+print 'Truncate spot rating aggregates (avg, count) table...'
+
+ratings_avg_del_cur = db.cursor()
+ratings_avg_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings_avg'
+)
+db.commit()
+
+print 'Update average rating and rating count for each page...'
+
+rating_avg_cur = db.cursor()
+rating_avg_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
+        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
+    ' SELECT hw_page_id, COUNT(*), AVG(hw_rating)' +
+        ' FROM hitchwiki_en.hw_ratings' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
+
 print 'Truncate waiting times table...'
 
 waiting_times_del_cur = db.cursor()
@@ -93,7 +137,8 @@ waiting_times_cur.execute(
     " SELECT w.id, w.fk_user, ppm.page_id, DATE_FORMAT(w.datetime, '%Y%m%d%H%i%S'), w.waitingtime" +
         ' FROM hitchwiki_maps.t_waitingtimes AS w' +
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
-            ' ON ppm.point_id = w.fk_point'
+            ' ON ppm.point_id = w.fk_point' +
+        ' WHERE ppm.page_id IS NOT NULL' # import waiting times only for imported spots
 )
 db.commit()
 
@@ -142,45 +187,3 @@ for waiting_time_group in waiting_time_all_cur.fetchall():
             ' WHERE hw_page_id = %d'
     ) % (median, waiting_time_group['hw_page_id']))
     db.commit()
-
-print 'Truncate spot ratings table...'
-
-ratings_del_cur = db.cursor()
-ratings_del_cur.execute(
-    'TRUNCATE hitchwiki_en.hw_ratings'
-)
-db.commit()
-
-print 'Import spot ratings...'
-
-ratings_cur = db.cursor()
-ratings_cur.execute(
-    'INSERT INTO hitchwiki_en.hw_ratings' +
-        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
-    " SELECT r.id, r.fk_user, ppm.page_id, DATE_FORMAT(r.datetime, '%Y%m%d%H%i%S'), 6 - r.rating" +
-        ' FROM hitchwiki_maps.t_ratings AS r' +
-        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
-            ' ON ppm.point_id = r.fk_point' +
-        ' WHERE r.rating <> 0'
-)
-db.commit()
-
-print 'Truncate spot rating aggregates (avg, count) table...'
-
-ratings_avg_del_cur = db.cursor()
-ratings_avg_del_cur.execute(
-    'TRUNCATE hitchwiki_en.hw_ratings_avg'
-)
-db.commit()
-
-print 'Update average rating and rating count for each page...'
-
-rating_avg_cur = db.cursor()
-rating_avg_cur.execute(
-    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
-        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
-    ' SELECT hw_page_id, COUNT(*), AVG(hw_rating)' +
-        ' FROM hitchwiki_en.hw_ratings' +
-        ' GROUP BY hw_page_id'
-)
-db.commit()
