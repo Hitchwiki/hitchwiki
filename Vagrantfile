@@ -21,6 +21,6 @@ Vagrant.configure("2") do |config|
   # Run the import_dev.sh file to configure our environment for development
   config.vm.provision :shell, :path => "scripts/vagrant_bootstrap.sh"
 
-  config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
+  config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
 
 end
