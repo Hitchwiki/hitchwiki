@@ -46,15 +46,15 @@ db.commit()
 print 'Import spot comments...'
 
 comments_cur = db.cursor()
-comments_cur.execute(
+comments_cur.execute((
     'INSERT INTO hitchwiki_en.hw_comments' +
         ' (hw_comment_id, hw_user_id, hw_page_id, hw_timestamp, hw_commenttext)' +
-    " SELECT c.id, c.fk_user, ppm.page_id, DATE_FORMAT(c.datetime, '%Y%m%d%H%i%S'), c.comment" +
+    " SELECT c.id, COALESCE(c.fk_user, %s), ppm.page_id, DATE_FORMAT(c.datetime, '%%Y%%m%%d%%H%%i%%S'), c.comment" +
         ' FROM hitchwiki_maps.t_comments AS c' +
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
             ' ON ppm.point_id = c.fk_place' +
         ' WHERE ppm.page_id IS NOT NULL' # import comments only for imported spots
-)
+) % (dummy_user_id))
 db.commit()
 
 print 'Truncate comment counts table...'
@@ -88,16 +88,16 @@ db.commit()
 print 'Import spot ratings...'
 
 ratings_cur = db.cursor()
-ratings_cur.execute(
+ratings_cur.execute((
     'INSERT INTO hitchwiki_en.hw_ratings' +
         ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
-    " SELECT r.id, r.fk_user, ppm.page_id, DATE_FORMAT(r.datetime, '%Y%m%d%H%i%S'), 6 - r.rating" +
+    " SELECT r.id, COALESCE(r.fk_user, %s), ppm.page_id, DATE_FORMAT(r.datetime, '%%Y%%m%%d%%H%%i%%S'), 6 - r.rating" +
         ' FROM hitchwiki_maps.t_ratings AS r' +
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
             ' ON ppm.point_id = r.fk_point' +
         ' WHERE r.rating <> 0' + # ignore "none" ratings
             ' AND ppm.page_id IS NOT NULL' # import ratings only for imported spots
-)
+) % (dummy_user_id))
 db.commit()
 
 print 'Truncate spot rating aggregates (avg, count) table...'
@@ -114,7 +114,7 @@ rating_avg_cur = db.cursor()
 rating_avg_cur.execute(
     'INSERT INTO hitchwiki_en.hw_ratings_avg' +
         ' (hw_page_id, hw_count_rating, hw_average_rating)' +
-    ' SELECT hw_page_id, COUNT(*), AVG(hw_rating)' +
+    ' SELECT hw_page_id, COUNT(*), CAST(AVG(hw_rating) AS DECIMAL(5, 4))' +
         ' FROM hitchwiki_en.hw_ratings' +
         ' GROUP BY hw_page_id'
 )
@@ -131,15 +131,15 @@ db.commit()
 print 'Import spot waiting times...'
 
 waiting_times_cur = db.cursor()
-waiting_times_cur.execute(
+waiting_times_cur.execute((
     'INSERT INTO hitchwiki_en.hw_waiting_time' +
         ' (hw_waiting_time_id, hw_user_id, hw_page_id, hw_timestamp, hw_waiting_time)' +
-    " SELECT w.id, w.fk_user, ppm.page_id, DATE_FORMAT(w.datetime, '%Y%m%d%H%i%S'), w.waitingtime" +
+    " SELECT w.id, COALESCE(w.fk_user, %s), ppm.page_id, DATE_FORMAT(w.datetime, '%%Y%%m%%d%%H%%i%%S'), w.waitingtime" +
         ' FROM hitchwiki_maps.t_waitingtimes AS w' +
         ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
             ' ON ppm.point_id = w.fk_point' +
         ' WHERE ppm.page_id IS NOT NULL' # import waiting times only for imported spots
-)
+) % (dummy_user_id))
 db.commit()
 
 print 'Truncate waiting time aggregates (min, max, avg, count) table...'
@@ -150,29 +150,20 @@ waiting_times_avg_del_cur.execute(
 )
 db.commit()
 
-print 'Update min waiting time, max waiting time and waiting time count for each page...'
+print 'Update min, max and median waiting times, and their count for each page...'
 
-waiting_time_count_cur = db.cursor()
-waiting_time_count_cur.execute(
-    'INSERT INTO hitchwiki_en.hw_waiting_time_avg' +
-        ' (hw_page_id, hw_count_waiting_time, hw_min_waiting_time, hw_max_waiting_time)' +
-    ' SELECT hw_page_id, COUNT(*), MIN(hw_waiting_time), MAX(hw_waiting_time)' +
-        ' FROM hitchwiki_en.hw_waiting_time' +
-        ' GROUP BY hw_page_id'
-)
-db.commit()
-
-print 'Update median waiting times...'
-
+# Tricky to find the median on the database side, so do it in client code
 waiting_time_all_cur = db.cursor(MySQLdb.cursors.DictCursor)
 waiting_time_all_cur.execute(
-    "SELECT hw_page_id, GROUP_CONCAT(hw_waiting_time ORDER BY hw_waiting_time SEPARATOR ';') AS waiting_times" +
+    "SELECT hw_page_id, COUNT(*) AS count_wt, MIN(hw_waiting_time) AS min_wt, MAX(hw_waiting_time) AS max_wt," +
+            " GROUP_CONCAT(hw_waiting_time ORDER BY hw_waiting_time SEPARATOR ';') AS waiting_times" +
         ' FROM hitchwiki_en.hw_waiting_time' +
         ' GROUP BY hw_page_id'
 )
-for waiting_time_group in waiting_time_all_cur.fetchall():
-    waiting_times = waiting_time_group['waiting_times'].split(';')
+for wt_group in waiting_time_all_cur.fetchall():
+    waiting_times = wt_group['waiting_times'].split(';')
     count = len(waiting_times)
+
     if count & 1: # odd number of waiting times; median is the middle number
         median = int(waiting_times[(count - 1) / 2])
     else: # even number of waiting times; median is the mean value of the two middle numbers
@@ -182,8 +173,8 @@ for waiting_time_group in waiting_time_all_cur.fetchall():
 
     waiting_time_median_cur = db.cursor()
     waiting_time_median_cur.execute((
-        "UPDATE hitchwiki_en.hw_waiting_time_avg" +
-            ' SET hw_average_waiting_time = %f ' +
-            ' WHERE hw_page_id = %d'
-    ) % (median, waiting_time_group['hw_page_id']))
+        "INSERT INTO hitchwiki_en.hw_waiting_time_avg" +
+            ' (hw_page_id, hw_average_waiting_time, hw_count_waiting_time, hw_min_waiting_time, hw_max_waiting_time)' +
+            ' VALUES (%d, %f, %d, %d, %d)'
+    ) % (wt_group['hw_page_id'], median, wt_group['count_wt'], wt_group['min_wt'], wt_group['max_wt']))
     db.commit()
