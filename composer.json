@@ -447,6 +447,18 @@
           "type": "zip"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "SpamBlacklist",
+        "version": "1.24.1",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/SpamBlacklist-REL1_24-9649127.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {
@@ -492,7 +504,8 @@
     "LocalisationUpdate": "*",
     "Interwiki": "*",
     "ConfirmEdit": "*",
-    "AddBodyClass": "*"
+    "AddBodyClass": "*",
+    "SpamBlacklist": "*"
   },
   "require-dev": {
   },
