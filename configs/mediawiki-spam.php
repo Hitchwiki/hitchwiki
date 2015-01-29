@@ -82,11 +82,32 @@ foreach ( $arr as $key => $value ) {
  * ConfirmEdit - ReCaptcha
  * http://www.mediawiki.org/wiki/Extension:ConfirmEdit#ReCaptcha
  */
+/*
 if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"]["recaptchaprivatekey"]) ) {
    require_once("{$IP}/extensions/ConfirmEdit/ReCaptcha.php");
    $wgCaptchaClass = 'ReCaptcha';
-   $wgReCaptchaPublicKey = $hwConfig["general"]["recaptchapublickey"];
-   $wgReCaptchaPrivateKey = $hwConfig["general"]["recaptchaprivatekey"];
+   $wgReCaptchaPublicKey = $hwConfig["spam"]["recaptchapublickey"];
+   $wgReCaptchaPrivateKey = $hwConfig["spam"]["recaptchaprivatekey"];
+}
+*/
+
+/*
+ * Google ReCaptcha
+ * https://www.mediawiki.org/wiki/Extension:ReCaptcha
+ * https://github.com/vedmaka/Mediawiki-reCaptcha
+ *
+ * https://github.com/Hitchwiki/hitchwiki/issues/66
+ */
+if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"]["recaptchaprivatekey"]) ) {
+
+  // Extension itself is installed via Composer
+  $wgReCaptchaPublicKey = $hwConfig["spam"]["recaptchapublickey"];
+  $wgReCaptchaPrivateKey = $hwConfig["spam"]["recaptchaprivatekey"];
+
+  // Disable creating users via API
+  // Currently it wouldn't work anyway due this captcha extension doesn't support it (01-2015)
+  // https://github.com/vedmaka/Mediawiki-reCaptcha/issues/4
+  $wgAPIModules['createaccount'] = 'ApiDisabled';
 }
 
 /*

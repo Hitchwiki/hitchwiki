@@ -99,12 +99,14 @@ echo "Installing Mediawiki..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
 cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname $HW__db__database --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
 
-# Install SemanticMediawiki extensions
+# Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
+# Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
 # (Less headache to do this here instead of our composer.json)
 php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
 php composer.phar require --no-progress mediawiki/semantic-maps "*"
+php composer.phar require --no-progress mediawiki/recaptcha "@dev"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
