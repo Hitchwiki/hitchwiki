@@ -28,8 +28,7 @@ Edit the page to see the template text.
 ! Currency:
 | [[Currency::{{{Currency|}}}]]
 |-
-! [[Hitchwiki:Hitchability|Hitchability]]:
-| <rate/>
+| colspan="2" class="hw-country-ratings"| <rate></rate>
 |-
 ! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
 |}

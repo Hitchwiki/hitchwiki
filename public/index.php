@@ -3,7 +3,7 @@
  * Hitchwiki Start Page
  */
 
-$hwLangConfig = parse_ini_file("../configs/dev/languages.ini", true);
+$hwLangConfig = parse_ini_file("../configs/languages.ini", true);
 
 echo "<h1>Hitchwiki</h1>";
 
