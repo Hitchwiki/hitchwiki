@@ -30,15 +30,11 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
   echo "Cloning MediaWiki... (this might take a while)"
   cd "$ROOTDIR/public"
-  git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
-
-  # Use branches for versions, eg. REL1_24
-  cd "$WIKIDIR"
-  git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
+  git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Get Vector skin
   cd "$WIKIDIR/skins"
-  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
   cd Vector
 fi
 
@@ -85,9 +81,8 @@ php composer.phar install --no-dev --no-progress
 # Install VisualEditor (yeah no composer here...)
 echo ""
 echo "Installing VisualEditor..."
-git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
+git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
 cd "$WIKIDIR/extensions/VisualEditor"
-# Use branches for versions, eg. REL1_24
 git submodule update --init
 
 # Install MediaWiki
