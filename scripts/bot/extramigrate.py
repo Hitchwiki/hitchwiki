@@ -78,7 +78,7 @@ comment_count_cur.execute(
 )
 db.commit()
 
-print 'Truncate spot ratings table...'
+print 'Truncate spot (and country) ratings table...'
 
 ratings_del_cur = db.cursor()
 ratings_del_cur.execute(
@@ -179,3 +179,50 @@ for wt_group in waiting_time_all_cur.fetchall():
             ' VALUES (%d, %f, %d, %d, %d)'
     ) % (wt_group['hw_page_id'], median, wt_group['count_wt'], wt_group['min_wt'], wt_group['max_wt']))
     db.commit()
+
+# Don't do this, not to lose freshly imported spot ratings
+# print 'Truncate spot (and country) ratings table...'
+
+# ratings_del_cur = db.cursor()
+# ratings_del_cur.execute(
+#     'TRUNCATE hitchwiki_en.hw_ratings'
+# )
+# db.commit()
+
+print 'Import country ratings...'
+
+ratings_cur = db.cursor()
+ratings_cur.execute((
+    'INSERT INTO hitchwiki_en.hw_ratings' +
+        ' (old_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
+    " SELECT r.id, COALESCE(u.user_id, %s), p.page_id, DATE_FORMAT(r.timestamp, '%%Y%%m%%d%%H%%i%%S'), r.rating" + # country ratings are not inverted
+        ' FROM hitchwiki_rate.ratings AS r' +
+        ' LEFT JOIN hitchwiki_maps.countryinfo_ext AS c' +
+            ' ON c.bad_alpha2 = r.country' +
+        ' INNER JOIN hitchwiki_en.page AS p' + # *all* ratings should have an existing corresponding country page
+            ' ON p.page_title COLLATE latin1_bin = c.wiki_name' +
+                ' AND p.page_namespace = 0'
+        ' LEFT JOIN hitchwiki_en.user AS u' +
+            ' ON u.user_name = r.user'
+) % (dummy_user_id))
+db.commit()
+
+print 'Truncate country (and spot) rating aggregates (avg, count) table...'
+
+ratings_avg_del_cur = db.cursor()
+ratings_avg_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings_avg'
+)
+db.commit()
+
+print 'Update average rating and rating count for each page...'
+
+rating_avg_cur = db.cursor()
+rating_avg_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
+        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
+    ' SELECT hw_page_id, COUNT(*), CAST(AVG(hw_rating) AS DECIMAL(5, 4))' +
+        ' FROM hitchwiki_en.hw_ratings' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
