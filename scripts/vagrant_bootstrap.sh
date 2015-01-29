@@ -130,7 +130,8 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
-bash "$SCRIPTDIR/import_pages.sh"
+cd "$ROOTDIR"
+bash scripts/import_pages.sh
 
 # Import interwiki table
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
