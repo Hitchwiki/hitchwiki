@@ -40,6 +40,7 @@ $wgMetaNamespace = $hwConfig["general"]["metanamespace"];
 $hwDebug = ($hwConfig['general']['debug']) ? true : false;
 $hwCache = ($hwConfig['general']['cache']) ? true : false;
 
+# Enable debugging only on dev environment
 if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
 
   // Enable error reporting
@@ -71,10 +72,6 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
   foreach ( array( 'exception', 'runJobs', 'JobQueueRedis' ) as $logGroup ) {
     $wgDebugLogGroups[$logGroup] = "{$logDir}/mediawiki-{$logGroup}.log";
   }
-
-  # Disable caching
-  $wgEnableParserCache = $hwCache;
-  $wgCachePages = $hwCache;
 }
 
 ## Setup $hwLang
@@ -151,6 +148,11 @@ $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 ## Experimental charset support for MySQL 5.0.
 $wgDBmysql5 = true;
 
+# Basic MW caching
+$wgEnableParserCache = $hwCache;
+$wgCachePages = $hwCache;
+$wgResourceLoaderMaxage['unversioned'] = 1;
+
 ## Shared memory settings
 ## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
 ## https://www.mediawiki.org/wiki/Memcached
@@ -162,7 +164,6 @@ if($hwCache) {
   $wgMemCachedTimeout = 5000000;
   $wgMemCachedInstanceSize = 2000;
   $wgMemCachedServers = array('127.0.0.1:11211');
-  $wgResourceLoaderMaxage['unversioned'] = 1;
 }
 else {
   $wgMainCacheType = CACHE_NONE;
