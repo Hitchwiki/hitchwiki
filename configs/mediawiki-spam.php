@@ -31,7 +31,7 @@ $wgEmailConfirmToEdit = true;
 $wgGroupPermissions['*']['edit'] = false;
 // Allow only certain users to post urls
 $wgAutopromote["advanced"] = array(APCOND_EDITCOUNT, 1);
-$wgAutoConfirmAge = 60*60*24;
+$wgAutoConfirmAge = 60*60*24; //24h
 $wgAutoConfirmCount = 1;
 
 /*
@@ -48,6 +48,7 @@ if( !empty($hwConfig["spam"]["stopforumspamkey"]) ) {
  * ConfirmEdit
  * https://www.mediawiki.org/wiki/Extension:ConfirmEdit
  */
+/*
 require_once("{$IP}/extensions/ConfirmEdit/ConfirmEdit.php");
 $wgCaptchaTriggers['edit']          = false;
 $wgCaptchaTriggers['create']        = false;
@@ -56,6 +57,7 @@ $wgCaptchaTriggers['createaccount'] = true;
 $wgCaptchaTriggers['badlogin']      = true;
 $wgCaptchaTriggersOnNamespace[NS_TALK]['addurl'] = false;
 //$wgCaptchaTriggersOnNamespace[NS_PROJECT]['edit'] = false;
+*/
 
 /*
  * ConfirmEdit - QuestyCaptcha
