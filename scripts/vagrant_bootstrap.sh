@@ -38,10 +38,8 @@ if [ ! -d "$WIKIDIR/.git" ]; then
 
   # Get Vector skin
   cd "$WIKIDIR/skins"
-  git clone https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
   cd Vector
-  # Use branches for versions, eg. REL1_24
-  git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 fi
 
 # Clone MW skin(s)
@@ -87,10 +85,9 @@ php composer.phar install --no-dev --no-progress
 # Install VisualEditor (yeah no composer here...)
 echo ""
 echo "Installing VisualEditor..."
-git clone https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
+git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
 cd "$WIKIDIR/extensions/VisualEditor"
 # Use branches for versions, eg. REL1_24
-git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git submodule update --init
 
 # Install MediaWiki
@@ -138,7 +135,7 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
-bash $SCRIPTDIR/import_pages.sh
+bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
