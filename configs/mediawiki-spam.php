@@ -86,8 +86,8 @@ foreach ( $arr as $key => $value ) {
 if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"]["recaptchaprivatekey"]) ) {
    require_once("{$IP}/extensions/ConfirmEdit/ReCaptcha.php");
    $wgCaptchaClass = 'ReCaptcha';
-   $wgReCaptchaPublicKey = $hwConfig["general"]["recaptchapublickey"];
-   $wgReCaptchaPrivateKey = $hwConfig["general"]["recaptchaprivatekey"];
+   $wgReCaptchaPublicKey = $hwConfig["spam"]["recaptchapublickey"];
+   $wgReCaptchaPrivateKey = $hwConfig["spam"]["recaptchaprivatekey"];
 }
 */
 
@@ -101,8 +101,8 @@ if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"][
 if( !empty($hwConfig["spam"]["recaptchapublickey"]) && !empty($hwConfig["spam"]["recaptchaprivatekey"]) ) {
 
   // Extension itself is installed via Composer
-  $wgReCaptchaPublicKey = $hwConfig["general"]["recaptchapublickey"];
-  $wgReCaptchaPrivateKey = $hwConfig["general"]["recaptchaprivatekey"];
+  $wgReCaptchaPublicKey = $hwConfig["spam"]["recaptchapublickey"];
+  $wgReCaptchaPrivateKey = $hwConfig["spam"]["recaptchaprivatekey"];
 
   // Disable creating users via API
   // Currently it wouldn't work anyway due this captcha extension doesn't support it (01-2015)
