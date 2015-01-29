@@ -30,7 +30,7 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
   echo "Cloning MediaWiki... (this might take a while)"
   cd "$ROOTDIR/public"
-  git clone https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
+  git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Use branches for versions, eg. REL1_24
   cd "$WIKIDIR"
@@ -38,10 +38,8 @@ if [ ! -d "$WIKIDIR/.git" ]; then
 
   # Get Vector skin
   cd "$WIKIDIR/skins"
-  git clone https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
   cd Vector
-  # Use branches for versions, eg. REL1_24
-  git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 fi
 
 # Clone MW skin(s)
@@ -87,10 +85,9 @@ php composer.phar install --no-dev --no-progress
 # Install VisualEditor (yeah no composer here...)
 echo ""
 echo "Installing VisualEditor..."
-git clone https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
+git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
 cd "$WIKIDIR/extensions/VisualEditor"
 # Use branches for versions, eg. REL1_24
-git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
 git submodule update --init
 
 # Install MediaWiki
@@ -99,18 +96,21 @@ echo "Installing Mediawiki..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
 cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname $HW__db__database --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
 
-# Install SemanticMediawiki extensions
+# Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
+# Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
 # (Less headache to do this here instead of our composer.json)
 php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
 php composer.phar require --no-progress mediawiki/semantic-maps "*"
+php composer.phar require --no-progress mediawiki/recaptcha "@dev"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
 
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
+cd "$WIKIDIR"
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 # Install assets for HWMaps
@@ -136,7 +136,7 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
-bash $SCRIPTDIR/import_pages.sh
+bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
