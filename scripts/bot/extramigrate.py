@@ -32,7 +32,8 @@ db = MySQLdb.connect(
     host=settings.get('db', 'host'),
     user=settings.get('db', 'username'),
     passwd=settings.get('db', 'password'),
-    db=settings.get('db', 'database')
+    db=settings.get('db', 'database'),
+    charset='utf8'
 )
 
 print 'Truncate comments table...'

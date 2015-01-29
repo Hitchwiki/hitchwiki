@@ -33,22 +33,28 @@ db = MySQLdb.connect(
     host=settings.get('db', 'host'),
     user=settings.get('db', 'username'),
     passwd=settings.get('db', 'password'),
-    db=settings.get('db', 'database')
+    db=settings.get('db', 'database'),
+    charset='utf8'
 )
 
 # Create a temporary (old) point_id <-> (new) page_id mappings table
 table_cur = db.cursor()
-table_cur.execute(
-    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
-)
-table_cur.execute(
-    'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
-        ' point_id integer NOT NULL PRIMARY KEY,' +
-        ' page_id integer NOT NULL UNIQUE,' +
-        ' user_id integer DEFAULT NULL,' +
-        ' datetime datetime DEFAULT NULL'
-    ')'
-)
+#table_cur.execute(
+#    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
+#)
+try:
+    table_cur.execute(
+        'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
+            ' point_id integer NOT NULL PRIMARY KEY,' +
+            ' page_id integer NOT NULL UNIQUE,' +
+            ' user_id integer DEFAULT NULL,' +
+            ' datetime datetime DEFAULT NULL'
+        ')'
+    )
+except MySQLdb.Error, e:
+    if e.args[0] != 1050:
+        raise
+    # otherwise, error code 1050: table already exists; we just move on
 
 # Fetch points and their English description from the old DB
 points_cur = db.cursor(MySQLdb.cursors.DictCursor)
@@ -63,7 +69,10 @@ sql = (
             # " ) AS description" # most recent English description
             " '' AS description"
         " FROM hitchwiki_maps.t_points AS p" +
-        " WHERE p.type = 1" # ignore type = 2 (probably trip/event points)
+        " LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm" +
+            " ON ppm.point_id = p.id" +
+        " WHERE p.type = 1" + # ignore type = 2 (probably trip/event points)
+            " AND ppm.point_id IS NULL" # ignore spots that have already been migrated
 )
 points_cur.execute(sql)
 
