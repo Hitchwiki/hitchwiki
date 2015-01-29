@@ -52,3 +52,6 @@ mylang = 'en'
 usernames['hitchwiki']['en'] = u'Hitchhiker'
 
 put_throttle = 0
+
+del ConfigParser
+del settings
