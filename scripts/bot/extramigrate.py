@@ -36,15 +36,16 @@ db = MySQLdb.connect(
     charset='utf8'
 )
 
-print 'Truncate comments table...'
+print 'hw_comments: truncate...'
 
 comments_del_cur = db.cursor()
 comments_del_cur.execute(
     'TRUNCATE hitchwiki_en.hw_comments'
 )
 db.commit()
+print '--> affected rows: %d' % (comments_del_cur.rowcount)
 
-print 'Import spot comments...'
+print 'hw_comments: import...'
 
 comments_cur = db.cursor()
 comments_cur.execute((
@@ -57,16 +58,18 @@ comments_cur.execute((
         ' WHERE ppm.page_id IS NOT NULL' # import comments only for imported spots
 ) % (dummy_user_id))
 db.commit()
+print '--> affected rows: %d' % (comments_cur.rowcount)
 
-print 'Truncate comment counts table...'
+print 'hw_comments_count: truncate...'
 
 comments_count_del_cur = db.cursor()
 comments_count_del_cur.execute(
     'TRUNCATE hitchwiki_en.hw_comments_count'
 )
 db.commit()
+print '--> affected rows: %d' % (comments_count_del_cur.rowcount)
 
-print 'Update comment count for each page...'
+print 'hw_comments_count: recalculate...'
 
 comment_count_cur = db.cursor()
 comment_count_cur.execute(
@@ -77,59 +80,20 @@ comment_count_cur.execute(
         ' GROUP BY hw_page_id'
 )
 db.commit()
+print '--> affected rows: %d' % (comment_count_cur.rowcount)
 
-print 'Truncate spot (and country) ratings table...'
+print ''
 
-ratings_del_cur = db.cursor()
-ratings_del_cur.execute(
-    'TRUNCATE hitchwiki_en.hw_ratings'
-)
-db.commit()
-
-print 'Import spot ratings...'
-
-ratings_cur = db.cursor()
-ratings_cur.execute((
-    'INSERT INTO hitchwiki_en.hw_ratings' +
-        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
-    " SELECT r.id, COALESCE(r.fk_user, %s), ppm.page_id, DATE_FORMAT(r.datetime, '%%Y%%m%%d%%H%%i%%S'), 6 - r.rating" +
-        ' FROM hitchwiki_maps.t_ratings AS r' +
-        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
-            ' ON ppm.point_id = r.fk_point' +
-        ' WHERE r.rating <> 0' + # ignore "none" ratings
-            ' AND ppm.page_id IS NOT NULL' # import ratings only for imported spots
-) % (dummy_user_id))
-db.commit()
-
-print 'Truncate spot rating aggregates (avg, count) table...'
-
-ratings_avg_del_cur = db.cursor()
-ratings_avg_del_cur.execute(
-    'TRUNCATE hitchwiki_en.hw_ratings_avg'
-)
-db.commit()
-
-print 'Update average rating and rating count for each page...'
-
-rating_avg_cur = db.cursor()
-rating_avg_cur.execute(
-    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
-        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
-    ' SELECT hw_page_id, COUNT(*), CAST(AVG(hw_rating) AS DECIMAL(5, 4))' +
-        ' FROM hitchwiki_en.hw_ratings' +
-        ' GROUP BY hw_page_id'
-)
-db.commit()
-
-print 'Truncate waiting times table...'
+print 'hw_waiting_time: truncate...'
 
 waiting_times_del_cur = db.cursor()
 waiting_times_del_cur.execute(
     'TRUNCATE hitchwiki_en.hw_waiting_time'
 )
 db.commit()
+print '--> affected rows: %d' % (waiting_times_del_cur.rowcount)
 
-print 'Import spot waiting times...'
+print 'hw_waiting_time: import...'
 
 waiting_times_cur = db.cursor()
 waiting_times_cur.execute((
@@ -142,16 +106,18 @@ waiting_times_cur.execute((
         ' WHERE ppm.page_id IS NOT NULL' # import waiting times only for imported spots
 ) % (dummy_user_id))
 db.commit()
+print '--> affected rows: %d' % (waiting_times_cur.rowcount)
 
-print 'Truncate waiting time aggregates (min, max, avg, count) table...'
+print 'hw_waiting_time_avg: truncate...'
 
 waiting_times_avg_del_cur = db.cursor()
 waiting_times_avg_del_cur.execute(
     'TRUNCATE hitchwiki_en.hw_waiting_time_avg'
 )
 db.commit()
+print '--> affected rows: %d' % (waiting_times_avg_del_cur.rowcount)
 
-print 'Update min, max and median waiting times, and their count for each page...'
+print 'hw_waiting_time_avg: recalculate (slow)...'
 
 # Tricky to find the median on the database side, so do it in client code
 waiting_time_all_cur = db.cursor(MySQLdb.cursors.DictCursor)
@@ -179,17 +145,70 @@ for wt_group in waiting_time_all_cur.fetchall():
             ' VALUES (%d, %f, %d, %d, %d)'
     ) % (wt_group['hw_page_id'], median, wt_group['count_wt'], wt_group['min_wt'], wt_group['max_wt']))
     db.commit()
+print '--> affected rows: ~ %d' % (waiting_time_all_cur.rowcount)
+
+print ''
+
+print 'hw_ratings: truncate...'
+
+ratings_del_cur = db.cursor()
+ratings_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings'
+)
+db.commit()
+print '--> affected rows: %d' % (ratings_del_cur.rowcount)
+
+print 'hw_ratings: import (for spots)...'
+
+ratings_cur = db.cursor()
+ratings_cur.execute((
+    'INSERT INTO hitchwiki_en.hw_ratings' +
+        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
+    " SELECT r.id, COALESCE(r.fk_user, %s), ppm.page_id, DATE_FORMAT(r.datetime, '%%Y%%m%%d%%H%%i%%S'), 6 - r.rating" +
+        ' FROM hitchwiki_maps.t_ratings AS r' +
+        ' LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm' +
+            ' ON ppm.point_id = r.fk_point' +
+        ' WHERE r.rating <> 0' + # ignore "none" ratings
+            ' AND ppm.page_id IS NOT NULL' # import ratings only for imported spots
+) % (dummy_user_id))
+db.commit()
+print '--> affected rows: %d' % (ratings_cur.rowcount)
+
+print 'hw_ratings_avg: truncate...'
+
+ratings_avg_del_cur = db.cursor()
+ratings_avg_del_cur.execute(
+    'TRUNCATE hitchwiki_en.hw_ratings_avg'
+)
+db.commit()
+print '--> affected rows: %d' % (ratings_avg_del_cur.rowcount)
+
+print 'hw_ratings_avg: recalculate...'
+
+rating_avg_cur = db.cursor()
+rating_avg_cur.execute(
+    'INSERT INTO hitchwiki_en.hw_ratings_avg' +
+        ' (hw_page_id, hw_count_rating, hw_average_rating)' +
+    ' SELECT hw_page_id, COUNT(*), CAST(AVG(hw_rating) AS DECIMAL(5, 4))' +
+        ' FROM hitchwiki_en.hw_ratings' +
+        ' GROUP BY hw_page_id'
+)
+db.commit()
+print '--> affected rows: %d' % (rating_avg_cur.rowcount)
+
+print ''
 
 # Don't do this, not to lose freshly imported spot ratings
-# print 'Truncate spot (and country) ratings table...'
+# print 'hw_ratings: truncate...'
 
 # ratings_del_cur = db.cursor()
 # ratings_del_cur.execute(
 #     'TRUNCATE hitchwiki_en.hw_ratings'
 # )
 # db.commit()
+# print '--> affected rows: %d' % (ratings_del_cur.rowcount)
 
-print 'Import country ratings...'
+print 'hw_ratings: import (for countries)...'
 
 ratings_cur = db.cursor()
 ratings_cur.execute((
@@ -206,16 +225,18 @@ ratings_cur.execute((
             ' ON u.user_name = r.user'
 ) % (dummy_user_id))
 db.commit()
+print '--> affected rows: %d' % (ratings_cur.rowcount)
 
-print 'Truncate country (and spot) rating aggregates (avg, count) table...'
+print 'hw_ratings_avg: truncate...'
 
 ratings_avg_del_cur = db.cursor()
 ratings_avg_del_cur.execute(
     'TRUNCATE hitchwiki_en.hw_ratings_avg'
 )
 db.commit()
+print '--> affected rows: %d' % (ratings_avg_del_cur.rowcount)
 
-print 'Update average rating and rating count for each page...'
+print 'hw_ratings_avg: recalculate...'
 
 rating_avg_cur = db.cursor()
 rating_avg_cur.execute(
@@ -226,3 +247,4 @@ rating_avg_cur.execute(
         ' GROUP BY hw_page_id'
 )
 db.commit()
+print '--> affected rows: %d' % (rating_avg_cur.rowcount)
