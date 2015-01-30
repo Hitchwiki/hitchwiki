@@ -44,6 +44,20 @@ fi
 cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_maps
 echo ""
 
+echo "Drop hitchwiki_rate database and recreate it..."
+mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_rate"
+mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_rate CHARACTER SET utf8 COLLATE utf8_general_ci"
+echo ""
+
+echo "Import old Hitchwiki Rate SQL dump..."
+DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_rate.sql"
+if [ ! -f "$DUMPFILE" ]; then
+    echo "File $DUMPFILE not found"
+    exit 1
+fi
+cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_rate
+echo ""
+
 echo "Update MediaWiki..."
 cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$MWCONFFILE"
