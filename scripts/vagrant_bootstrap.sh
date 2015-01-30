@@ -39,7 +39,6 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   # Get Vector skin
   cd "$WIKIDIR/skins"
   git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
-  cd Vector
 fi
 
 # Clone MW skin(s)
@@ -83,12 +82,15 @@ cp -f "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
 php composer.phar install --no-dev --no-progress
 
 # Install VisualEditor (yeah no composer here...)
-echo ""
-echo "Installing VisualEditor..."
-git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git "$WIKIDIR/extensions/VisualEditor"
-cd "$WIKIDIR/extensions/VisualEditor"
-# Use branches for versions, eg. REL1_24
-git submodule update --init
+if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
+  echo ""
+  echo "Installing VisualEditor..."
+  cd "$WIKIDIR/extensions/"
+  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+  cd VisualEditor
+  # Use branches for versions, eg. REL1_24
+  git submodule update --init
+fi
 
 # Install MediaWiki
 echo ""
