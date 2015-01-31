@@ -27,6 +27,7 @@ site = pywikibot.Site()
 
 settings = ConfigParser.ConfigParser()
 settings.read('../../configs/settings.ini')
+api_url = 'http://' + settings.get('general', 'domain') + '/en/api.php'
 dummy_user_id = 0
 
 db = MySQLdb.connect(
@@ -96,6 +97,22 @@ for point in points_cur.fetchall() :
     else:
         description = ''
 
+    # Request nearby city from the API
+    params = {
+        'action': 'hwfindnearbycityapi',
+        'format': 'json',
+        'lat': point['lat'],
+        'lng': point['lon']
+    }
+    r = requests.get(api_url, params=params)
+    obj = json.loads(r.text)
+    print obj
+    if len(obj['cities']) != 0:
+        cities = ','.join(city['name'] for city in obj['cities'])
+    else:
+        cities = ''
+    print cities
+
     # Create MediaWiki page for the spot
     title = 'Spot %s (%s %s)' % (point['point_id'], point['lat'], point['lon'])
     print title
@@ -103,7 +120,7 @@ for point in points_cur.fetchall() :
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
         ("|Description=%s\n" % description) +
-        "|Cities=\n" +
+        ("|Cities=%s\n" % cities) +
         "|Country=\n" +
         "|CardinalDirection=\n" +
         "|CitiesDirection=\n" +
