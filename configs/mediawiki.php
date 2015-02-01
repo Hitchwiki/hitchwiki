@@ -333,7 +333,7 @@ if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   require_once "$IP/extensions/SemanticMaps/SemanticMaps.php";
   require_once "$IP/extensions/SemanticForms/SemanticForms.php";
   require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
-  require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
+  //require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
 
   // Sets whether help information on the edit page is displayed
   $smwgEnabledEditPageHelp = false;
