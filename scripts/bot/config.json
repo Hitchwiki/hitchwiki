@@ -1,6 +1,7 @@
 {
     "score_threshold": 24,
     "blacklist": [
+        "Tarp",
         "Police",
         "Statistics",
         "West Coast",
