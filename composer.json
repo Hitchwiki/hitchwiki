@@ -458,8 +458,6 @@
     "HWWaitingTime": "@dev",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
-    "mediawiki/recaptcha": "@dev",
-    "mediawiki/semantic-watchlist": "*",
     "BetaFeatures": "*",
     "VectorBeta": "*",
     "AntiSpoof": "*",

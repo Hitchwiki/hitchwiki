@@ -1,0 +1,54 @@
+<ul id="ticker">
+<li><h1>[[Hitchwiki:About|The Guide to Hitchhiking the World!]]</h1>
+<div class="ingress">Hitchwiki is a collaborative website for gathering information about [[hitchhiking]] and other ways of extremely cheap transport.Feel free to [[Help:Contents|share your knowledge]] with us!</div>
+<span class="first_links">[[:Category:General info|General info]] &nbsp;•&nbsp; [[Top Tips]] &nbsp;•&nbsp; [[First time hitchhiking|First time]] &nbsp;•&nbsp; [[Hitchhiker's safety|Safety]]  &nbsp;•&nbsp; [[Where to hitchhike]]  &nbsp;•&nbsp; [[Picking up hitchhikers]]</span>
+</li>
+</ul>
+
+<div class="frontpage_col"><div class="col_content">
+
+<div class="frontpage_ptg frontpage_box">
+== [[Places to go|<i class="fa fa-lg fa-road"></i> Places to go]] ==
+{{places-to-go}}
+</div>
+
+<div class="frontpage_news frontpage_box">
+== [[News|<i class="fa fa-lg fa-bullhorn"></i> News]] ==
+{{news}}
+'''[[News|Old news...]]'''
+</div>
+</div></div><div class="frontpage_col"><div class="col_content">
+<div class="frontpage_events frontpage_box">
+== [[Events|<i class="fa fa-lg fa-thumbs-up"></i> Events]] <small class="frontpage-meta-links plainlinks pull-right text-muted">[{{fullurl:Template:Events|action=edit}} <i class="fa fa-plus"></i> add new]</small>==
+{{events}}
+'''[[Events|Past events...]]'''
+</div>
+
+<div class="frontpage_potm frontpage_box">
+== [[Template:PotM|<i class="fa fa-lg fa-camera-retro"></i> Picture of the Moment]] <small class="frontpage-meta-links plainlinks pull-right text-muted">[{{fullurl:Template:PotM|action=edit}} <i class="fa fa-plus"></i> add new]</small> ==
+{{PotM}}
+</div>
+
+</div></div>
+
+<small style="text-align:center;display:block;clear:both;margin:20px 0;">So far we have '''[[Special:Statistics|{{NUMBEROFARTICLES}}]]''' articles in English, written and edited by [[hitchhiker]]s around the globe.</small>
+
+__NOTOC__ __NOEDITSECTION__
+[[bg:Начална страница]]
+[[de:Hauptseite]]
+[[es:Página Principal]]
+[[fi:Etusivu]]
+[[fr:Accueil]]
+[[he:עמוד ראשי]]
+[[it:Pagina_principale]]
+[[lt:Pagrindinis puslapis]]
+[[nl:Hoofdpagina]]
+[[pl:Strona główna]]
+[[pt:Página principal]]
+[[ro:Pagina principală]]
+[[ru:Главная страница]]
+[[tr:Ana sayfa]]
+[[zh:首页]]
+[[hr:]]
+[[trash:Main Page]]
+[[nomad:Main Page]]
