@@ -1,5 +1,6 @@
 MediaWiki:Sidebar
 MediaWiki:Common.js
+MediaWiki:Common.css
 Template:Country
 Template:City
 Template:Spot
