@@ -170,6 +170,11 @@ else {
 }
 
 
+$wgExtraLanguageNames['nomad'] = 'Nomadwiki';
+$wgExtraLanguageNames['trash'] = 'Trashwiki';
+$wgExtraLanguageNames['wikipedia'] = 'Wikipedia';
+$wgExtraLanguageNames['wikivoyage'] = 'Wikivoyage';
+
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
 # ImageMagick is required by UploadWizard extension
