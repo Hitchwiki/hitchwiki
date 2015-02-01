@@ -35,7 +35,7 @@ count = 0
 for page in gen:
     if not page.isRedirectPage() and page.title() not in disamb_pages:
         print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
-        print 'http://hitchwiki.org/en/' + page.title(asUrl=True)
+        print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
 
         entity = None
         properties = None
