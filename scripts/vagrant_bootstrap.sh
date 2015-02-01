@@ -105,6 +105,7 @@ php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
 php composer.phar require --no-progress mediawiki/semantic-maps "*"
+php composer.phar require --no-progress mediawiki/semantic-watchlist "~1.0"
 php composer.phar require --no-progress mediawiki/recaptcha "@dev"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
