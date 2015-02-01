@@ -37,6 +37,11 @@ for page in gen:
         print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
         print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
 
+        # Uncomment to resume from speciffic point
+	#if count < 3055:
+        #    count += 1
+        #    continue
+
         entity = None
         properties = None
 
@@ -121,8 +126,11 @@ for page in gen:
 
         if entity:
             smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
+            smw_code = smw_code.decode('utf-8')
             print smw_code
-            page.text = smw_code + "\n" + page.text
+            #print repr(page.text)
+            #print 'smv', repr(smw_code)  
+            page.text = smw_code + page.text
             page.save()
         else:
             print '-'
