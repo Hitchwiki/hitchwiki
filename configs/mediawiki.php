@@ -146,7 +146,7 @@ $wgDBprefix = $hwConfig["db"]["prefix"];
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 
 ## Experimental charset support for MySQL 5.0.
-$wgDBmysql5 = true;
+$wgDBmysql5 = false;
 
 # Basic MW caching
 $wgEnableParserCache = $hwCache;
