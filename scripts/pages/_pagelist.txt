@@ -14,3 +14,4 @@ Category:Cities
 Category:Countries
 Category:Spots
 Category:Areas
+Main_Page
