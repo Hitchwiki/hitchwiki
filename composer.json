@@ -223,18 +223,6 @@
     {
       "type": "package",
       "package": {
-        "name": "SemanticWatchlist",
-        "version": "0.2.2",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/SemanticMediaWiki/SemanticWatchlist/archive/0.2.2.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "BetaFeatures",
         "version": "0.1",
         "type": "mediawiki-extension",
@@ -471,9 +459,9 @@
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
     "mediawiki/recaptcha": "@dev",
+    "mediawiki/semantic-watchlist": "*",
     "BetaFeatures": "*",
     "VectorBeta": "*",
-    "SemanticWatchlist": "*",
     "AntiSpoof": "*",
     "AbuseFilter": "*",
     "GeoData":  "*",
