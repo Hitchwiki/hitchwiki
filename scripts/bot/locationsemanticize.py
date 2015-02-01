@@ -35,7 +35,7 @@ count = 0
 for page in gen:
     if not page.isRedirectPage() and page.title() not in disamb_pages:
         print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
-        print 'http://hitchwiki.org/en/' + page.title(asUrl=True)
+        print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
 
         entity = None
         properties = None
@@ -120,12 +120,13 @@ for page in gen:
                             properties['Type'] = 'Airport'
 
         if entity:
-            print "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
+            smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
+            print smw_code
+            page.text = smw_code + "\n" + page.text
+            page.save()
         else:
             print '-'
         print
-        #page.text = page.text.replace('foo', 'bar')
-        #page.save('Replacing "foo" with "bar"')  # Saves the page
         count += 1
 
 print 'total: ', count
