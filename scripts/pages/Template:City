@@ -5,31 +5,36 @@ It should be called in the following format:
 {{City
 |Location=latitude, longitude
 |Country=
-|Licence Plate=
+|LicencePlate=
 |Population=
-|Major Roads=
+|MajorRoads=
+|Hitchbase=
+|Links=
+|
 |PublicTransportationURL=
 }}
 </pre>
 Edit the page to see the template text.
 </noinclude><includeonly>
 {| class="infobox mw-collapsible"
-! colspan="2" class="infobox-h1" | <div><i class="fa fa-star"></i> '''{{PAGENAME}}''' <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span></div>
+! colspan="2" class="infobox-h1" | <div>{{#if: {{{symbol|}}} | [[File:{{{symbol}}}|x20px]] | <i class="fa fa-2x fa-star"></i> }} '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
-|-
+{{#if: {{{Population|}}} | |-
 ! Population:
-| {{{Population|}}}
-|-
+| {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
+{{#if: {{{MajorRoads|}}} | |-
 ! Major roads:
-| {{#arraymap:{{{Major roads|}}}|,|x|[[Major roads::x]]}}
-|-
+| {{#arraymap:{{{MajorRoads|}}}|,|x|[[MajorRoads::x]]}} }}
+{{#if: {{{LicencePlate|}}} | |-
 ! Licence Plate:
-| {{{Licence Plate|}}}
-|-
+| '''{{{LicencePlate|}}}''' }}
+{{#if: {{{Hitchbase|}}} | |-
+! More info:
+{{!}} [http://hitchbase.com/ergebnisse.php?LANG=eng&abfrage%5Bstartort%5D={{{Hitchbase}}} Hitchbase] {{#if: {{{Links|}}} | {{{Links}}} }} | {{#if: {{{Links|}}} | ! More info:
+{{!}} {{{Links}}} }} }}
 | colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
 |}
-<!-- {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}} -->
 <hwmap></hwmap>
 [[Category:Cities]]
 [[wikivoyage:{{PAGENAME}}]]
@@ -37,4 +42,5 @@ __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-city}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <div id="spot-edit-form-wrap">{{#forminput:form=Spot|size=|default value=|button text=Continue|page name=|query string=Spot[Location]=&Spot[Country]=&Spot[Cities]=|popup}}</div>
+{{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|city}} }}
 </includeonly>

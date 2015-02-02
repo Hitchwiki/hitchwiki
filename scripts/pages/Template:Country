@@ -15,22 +15,22 @@ Edit the page to see the template text.
 ! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
-|-
+{{#if: {{{Languages|}}} | |-
 ! [[Language]]:
-| [[Languages::{{{Languages|}}}]]
-|-
+| [[Languages::{{{Languages|}}}]] }}
+{{#if: {{{Capital|}}} | |-
 ! Capital:
-| {{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}}
-|-
+| {{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}} }}
+{{#if: {{{Population|}}} | |-
 ! Population:
-| [[Population::{{{Population|}}}]]
-|-
+| {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
+{{#if: {{{Currency|}}} | |-
 ! Currency:
-| [[Currency::{{{Currency|}}}]]
+| [[Currency::{{{Currency|}}}]] }}
 |-
 | colspan="2" class="hw-country-ratings"| <rate></rate>
 |-
-! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
+! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{CountryCode|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{CountryCode}}} BeWelcome] }}
 |}
 
 == Cities ==
@@ -49,5 +49,5 @@ Edit the page to see the template text.
 [[trash:{{PAGENAME}}]]
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-country}}
-{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
+{{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|country}} }}
 </includeonly>
