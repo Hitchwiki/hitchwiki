@@ -13,7 +13,7 @@ Edit the page to see the template text.
 [[Type::{{{Type|}}}]]
 {{{text|}}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
-<hwmap></hwmap>
+<hw-map></hw-map>
 [[Category:Areas]]
 __NOEDITSECTION__
 </includeonly>
