@@ -17,7 +17,7 @@ It should be called in the following format:
 Edit the page to see the template text.
 </noinclude><includeonly>
 {| class="infobox mw-collapsible"
-! colspan="2" class="infobox-h1" | <div>{{#if: {{{symbol|}}} | [[File:{{{symbol}}}|x20px]] | <i class="fa fa-2x fa-star"></i> }} '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
+! colspan="2" class="infobox-h1" | <div>{{#if: {{{symbol|}}} | [[File:{{{symbol}}}|x16px|link=]] | <i class="fa fa-star"></i> }} '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
 {{#if: {{{Population|}}} | |-
