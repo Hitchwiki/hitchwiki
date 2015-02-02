@@ -35,7 +35,7 @@ Edit the page to see the template text.
 {{!}} {{{Links}}} }} }}
 | colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
 |}
-<hwmap></hwmap>
+<hw-map></hw-map>
 [[Category:Cities]]
 [[wikivoyage:{{PAGENAME}}]]
 __NOEDITSECTION__
