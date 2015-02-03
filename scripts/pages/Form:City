@@ -68,9 +68,6 @@ __NOEDITSECTION__
 |-
 ! Links:
 | {{{field|Links}}}
-|-
-! Country code:
-| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland.}}
 |}
 {| class="wikitable hw-form-location floatleft"
 |-

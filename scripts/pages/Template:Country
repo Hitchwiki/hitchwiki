@@ -28,6 +28,9 @@ Edit the page to see the template text.
 ! Currency:
 | [[Currency::{{{Currency|}}}]] }}
 |-
+! CountryCode:
+| [[CountryCode::{{{CountryCode|}}}]] }}
+|-
 | colspan="2" class="hw-country-ratings"| <hw-rate></hw-rate>
 |-
 ! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{CountryCode|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{CountryCode}}} BeWelcome] }}

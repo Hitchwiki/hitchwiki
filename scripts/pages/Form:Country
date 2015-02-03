@@ -32,6 +32,9 @@ __NOEDITSECTION__
 ! Location
 |-
 | {{{field|Location|input type=map|height=250|width=100%|autozoom=off|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
+|-
+! Country code:
+| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland.}}
 |}
 </div>
 </div>
