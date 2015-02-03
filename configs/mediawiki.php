@@ -287,10 +287,10 @@ $wgHiddenPrefs[] = 'visualeditor-enable';
 // URL to the Parsoid instance
 // MUST NOT end in a slash due to Parsoid bug
 // Use port 8142 if you use the Debian package
-$wgVisualEditorParsoidURL = 'http://hitchwiki.dev:8142';
+$wgVisualEditorParsoidURL = 'http://' . $hwConfig["general"]["domain"] . ':8142';
 // Interwiki prefix to pass to the Parsoid instance
 // Parsoid will be called as $url/$prefix/$pagename
-$wgVisualEditorParsoidPrefix = 'hitchwiki.dev';
+$wgVisualEditorParsoidPrefix = $hwConfig["general"]["domain"];
 
 // WikiEditor (code)
 // https://www.mediawiki.org/wiki/Extension:WikiEditor

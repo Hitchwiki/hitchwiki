@@ -18,14 +18,59 @@ __NOEDITSECTION__
 ! Country:
 | {{{field|Countries|input type=tokens|values from category=Countries}}}
 |-
+! Native name:
+| {{{field|NativeName}}}
+|-
 ! Population:
 | {{{field|Population}}}
 |-
 ! Licence Plate:
-| {{{field|Population}}}
+| {{{field|LicencePlate}}}
 |-
 ! Major Roads:
-| {{{field|MajorRoads|input type=tokens|values from category=Road}}}{{#info:Road code e.g. "A1" or "E68"}}
+| {{{field|MajorRoads|input type=tokens|values from category=Road}}}{{#info:Road code e.g. "A1 (Germany)" or "E68"}}
+|-
+! Symbol:
+| {{{field|Symbol}}}
+|-
+! State:
+| {{{field|State}}}
+|-
+! State symbol:
+| {{{field|StateSymbol}}}{{#info:Image file name.}}
+|-
+! Region:
+| {{{field|Region}}}
+|-
+! State symbol:
+| {{{field|RegionSymbol}}}{{#info:Image file name.}}
+|-
+! Subdivision type:
+| {{{field|SubdivisionType}}}
+|-
+! Subdivision name:
+| {{{field|SubdivisionName}}}
+|-
+! Subdivision symbol:
+| {{{field|SubdivisionSymbol}}}{{#info:Image file name.}}
+|-
+! Subdivision 2 type:
+| {{{field|Subdivision2Type}}}
+|-
+! Subdivision 2 name:
+| {{{field|Subdivision2Name}}}
+|-
+! Subdivision 2 symbol:
+| {{{field|Subdivision2Symbol}}}{{#info:Image file name.}}
+|-
+! Hitchbase:
+| {{{field|Hitchbase}}}
+|-
+! Links:
+| {{{field|Links}}}
+|-
+! Country code:
+| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland.}}
 |}
 {| class="wikitable hw-form-location floatleft"
 |-

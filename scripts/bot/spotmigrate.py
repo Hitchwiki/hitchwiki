@@ -96,6 +96,7 @@ for point in points_cur.fetchall() :
         description = descr_cur.fetchone()['description']
     else:
         description = ''
+    description = description.encode('latin1') # we're getting fake utf-8 values from the db
 
     # Request nearby city from the API
     params = {

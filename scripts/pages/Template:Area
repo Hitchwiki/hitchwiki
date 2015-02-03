@@ -2,7 +2,7 @@
 This is the "Area" template.
 It should be called in the following format:
 <pre>
-{{City
+{{Area
 |Location=latitude, longitude
 |Type=Region, Road, Airport, Border Crossing, or Continent
 |text=
@@ -13,7 +13,7 @@ Edit the page to see the template text.
 [[Type::{{{Type|}}}]]
 {{{text|}}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
-<hwmap></hwmap>
+<hw-map></hw-map>
 [[Category:Areas]]
 __NOEDITSECTION__
 </includeonly>
