@@ -96,7 +96,7 @@ for point in points_cur.fetchall() :
     if descr_cur.rowcount != 0:
         description = descr_cur.fetchone()['description']
     else:
-        description = ''
+        description = u''
     description = fix_text(description) # we're getting crappily encoded utf-8 values from the db
 
     # Request nearby city from the API
