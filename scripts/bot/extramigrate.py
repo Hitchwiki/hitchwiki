@@ -220,7 +220,8 @@ ratings_cur.execute((
             ' ON c.bad_alpha2 = r.country' +
         ' INNER JOIN hitchwiki_en.page AS p' + # *all* ratings should have an existing corresponding country page
             ' ON p.page_title COLLATE latin1_bin = c.wiki_name' +
-                ' AND p.page_namespace = 0'
+                ' AND p.page_namespace = 0' +
+                ' AND p.page_is_redirect = 0' +
         ' LEFT JOIN hitchwiki_en.user AS u' +
             ' ON u.user_name = r.user'
 ) % (dummy_user_id))
