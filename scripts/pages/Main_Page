@@ -1,38 +1,31 @@
-<ul id="ticker">
-<li><h1>[[Hitchwiki:About|The Guide to Hitchhiking the World!]]</h1>
-<div class="ingress">Hitchwiki is a collaborative website for gathering information about [[hitchhiking]] and other ways of extremely cheap transport.Feel free to [[Help:Contents|share your knowledge]] with us!</div>
-<span class="first_links">[[:Category:General info|General info]] &nbsp;•&nbsp; [[Top Tips]] &nbsp;•&nbsp; [[First time hitchhiking|First time]] &nbsp;•&nbsp; [[Hitchhiker's safety|Safety]]  &nbsp;•&nbsp; [[Where to hitchhike]]  &nbsp;•&nbsp; [[Picking up hitchhikers]]</span>
-</li>
-</ul>
-
-<div class="frontpage_col"><div class="col_content">
-
-<div class="frontpage_ptg frontpage_box">
-== [[Places to go|<i class="fa fa-lg fa-road"></i> Places to go]] ==
-{{places-to-go}}
+<div class="hw-mainpage-header">
+<h1 class="hw-mainpage-title">[[Hitchwiki:About|The Guide to Hitchhiking the World!]]</h1>
+<div class="hw-mainpage-tagline">Hitchwiki is a collaborative website for gathering information about [[hitchhiking]] and other ways of extremely cheap transport.Feel free to [[Help:Contents|share your knowledge]] with us!</div>
+<div class="hw-mainpage-links">[[:Category:General info|General info]] &nbsp;•&nbsp; [[Top Tips]] &nbsp;•&nbsp; [[First time hitchhiking|First time]] &nbsp;•&nbsp; [[Hitchhiker's safety|Safety]]  &nbsp;•&nbsp; [[Where to hitchhike]]  &nbsp;•&nbsp; [[Picking up hitchhikers]]</div>
 </div>
 
-<div class="frontpage_news frontpage_box">
+<div class="row"><div class="col-xs-12 col-sm-6">
+== [[Places to go|<i class="fa fa-lg fa-road"></i> Places to go]] ==
+{{places-to-go}}
+
 == [[News|<i class="fa fa-lg fa-bullhorn"></i> News]] ==
 {{news}}
 '''[[News|Old news...]]'''
-</div>
-</div></div><div class="frontpage_col"><div class="col_content">
-<div class="frontpage_events frontpage_box">
+</div><div class="col-xs-12 col-sm-6">
 == [[Events|<i class="fa fa-lg fa-thumbs-up"></i> Events]] <small class="frontpage-meta-links plainlinks pull-right text-muted">[{{fullurl:Template:Events|action=edit}} <i class="fa fa-plus"></i> add new]</small>==
 {{events}}
 '''[[Events|Past events...]]'''
-</div>
 
-<div class="frontpage_potm frontpage_box">
-== [[Template:PotM|<i class="fa fa-lg fa-camera-retro"></i> Picture of the Moment]] <small class="frontpage-meta-links plainlinks pull-right text-muted">[{{fullurl:Template:PotM|action=edit}} <i class="fa fa-plus"></i> add new]</small> ==
-{{PotM}}
+<div class="hw-projects">
+[[Image:Trashwiki-logo.svg|right|80px|link=http://trashwiki.org]]
+[[Image:Nomadwiki-logo.png|right|80px|link=http://nomadwiki.org]]
+[[Image:Trustroots.png|right|80px|link=https://www.trustroots.org]]
 </div>
-
 </div></div>
 
-<small style="text-align:center;display:block;clear:both;margin:20px 0;">So far we have '''[[Special:Statistics|{{NUMBEROFARTICLES}}]]''' articles in English, written and edited by [[hitchhiker]]s around the globe.</small>
+<div class="hw-mainpage-footer">So far we have '''[[Special:Statistics|{{NUMBEROFARTICLES}}]]''' articles in English, written and edited by [[hitchhiker]]s around the globe.</div>
 
+{{#addbodyclass:hw-home}}
 __NOTOC__ __NOEDITSECTION__
 [[bg:Начална страница]]
 [[de:Hauptseite]]
