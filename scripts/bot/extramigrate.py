@@ -213,8 +213,8 @@ print 'hw_ratings: import (for countries)...'
 ratings_cur = db.cursor()
 ratings_cur.execute((
     'INSERT INTO hitchwiki_en.hw_ratings' +
-        ' (hw_rating_id, hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
-    " SELECT r.id, COALESCE(u.user_id, %s), p.page_id, DATE_FORMAT(r.timestamp, '%%Y%%m%%d%%H%%i%%S'), r.rating" + # country ratings are not inverted
+        ' (hw_user_id, hw_page_id, hw_timestamp, hw_rating)' +
+    " SELECT COALESCE(u.user_id, %s), p.page_id, DATE_FORMAT(r.timestamp, '%%Y%%m%%d%%H%%i%%S'), r.rating" + # country ratings are not inverted
         ' FROM hitchwiki_rate.ratings AS r' +
         ' LEFT JOIN hitchwiki_maps.countryinfo_ext AS c' +
             ' ON c.bad_alpha2 = r.country' +
