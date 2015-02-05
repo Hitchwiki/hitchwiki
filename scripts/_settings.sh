@@ -17,8 +17,8 @@
 # among others
 #
 # Usage:
-#   "source scripts/path_resolve.sh" # settings.sh relies on path variables being set
-#   "source scripts/settings.sh"
+#   "source scripts/_path_resolve.sh" # settings.sh relies on path variables being set
+#   "source scripts/_settings.sh"
 #
 
 # SCRIPTDIR can be set outside this script as well

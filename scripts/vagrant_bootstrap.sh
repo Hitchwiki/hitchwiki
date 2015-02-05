@@ -14,7 +14,7 @@ WIKIDIR="$ROOTDIR/public/wiki"
 cd "$ROOTDIR"
 
 # Makes sure we have settings.ini and "Bash ini parser"
-source "$SCRIPTDIR/settings.sh"
+source "$SCRIPTDIR/_settings.sh"
 
 # Download Composer
 # https://www.mediawiki.org/wiki/Composer

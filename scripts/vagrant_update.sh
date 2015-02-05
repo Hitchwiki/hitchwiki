@@ -12,7 +12,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     echo "Aborting."
     exit 1
 fi
-source "scripts/path_resolve.sh"
+source "scripts/_path_resolve.sh"
 
 # Run update script inside Vagrant
 vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/update.sh\""

@@ -11,7 +11,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     exit 1
 fi
 
-source "scripts/path_resolve.sh"
+source "scripts/_path_resolve.sh"
 
 echo "Importing Semantic content..."
 

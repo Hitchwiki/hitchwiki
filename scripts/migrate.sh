@@ -13,8 +13,8 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     exit 1
 fi
 
-source "scripts/path_resolve.sh"
-source "$SCRIPTDIR/settings.sh"
+source "scripts/_path_resolve.sh"
+source "$SCRIPTDIR/_settings.sh"
 
 echo "Drop $HW__db__database database and recreate it..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"

@@ -11,8 +11,8 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     exit 1
 fi
 
-source "scripts/path_resolve.sh"
-source "$SCRIPTDIR/settings.sh"
+source "scripts/_path_resolve.sh"
+source "$SCRIPTDIR/_settings.sh"
 
 echo "Exporting database into SQL dump, this might take a while..."
 cd "$DUMPSDIR"

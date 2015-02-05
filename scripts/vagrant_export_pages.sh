@@ -13,7 +13,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     exit 1
 fi
 
-source "scripts/path_resolve.sh"
+source "scripts/_path_resolve.sh"
 
 # Scripts rely on working directory being the root directory of this git repository
 if [ -z "${1+x}" ]; then
