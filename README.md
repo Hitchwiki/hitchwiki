@@ -72,7 +72,7 @@ bash scripts/vagrant_import_pages.sh
 
 ### Update
 1. Pull latest changes: `git pull origin master`
-2. Run update script: `bash ./scripts/update.sh`
+2. Run update script: `bash scripts/vagrant_update.sh`
 
 ## Vagrant box
 
