@@ -20,5 +20,5 @@ echo ""
 # Let's roll...
 vagrant plugin install vagrant-hostmanager
 
-# This will go trough vagrant_bootstrap.sh on first run
+# This will go trough bootstrap_vagrant.sh on first run
 vagrant up

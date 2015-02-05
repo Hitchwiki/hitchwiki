@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "hitchwiki.dev"
 
   # Run the import_dev.sh file to configure our environment for development
-  config.vm.provision :shell, :path => "scripts/vagrant_bootstrap.sh"
+  config.vm.provision :shell, :path => "scripts/bootstrap_vagrant.sh"
 
   config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
 
