@@ -15,20 +15,20 @@ Edit the page to see the template text.
 ! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
-{{#if: {{{Languages|}}} | |-
-! [[Language]]:
+|-
+{{#if: {{{Languages|}}} | ! [[Language]]:
 | [[Languages::{{{Languages|}}}]] }}
-{{#if: {{{Capital|}}} | |-
-! Capital:
+|-
+{{#if: {{{Capital|}}} | ! Capital:
 | {{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}} }}
-{{#if: {{{Population|}}} | |-
-! Population:
+|-
+{{#if: {{{Population|}}} | ! Population:
 | {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
-{{#if: {{{Currency|}}} | |-
-! Currency:
+|-
+{{#if: {{{Currency|}}} | ! Currency:
 | [[Currency::{{{Currency|}}}]] }}
 |-
-! CountryCode:
+{{#if: {{{CountryCode|}}} | ! CountryCode:
 | [[CountryCode::{{{CountryCode|}}}]] }}
 |-
 | colspan="2" class="hw-country-ratings"| <hw-rate></hw-rate>

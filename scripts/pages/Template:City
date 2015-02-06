@@ -20,17 +20,17 @@ Edit the page to see the template text.
 ! colspan="2" class="infobox-h1" | <div>{{#if: {{{symbol|}}} | [[File:{{{symbol}}}|x16px|link=]] | <i class="fa fa-star"></i> }} '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
-{{#if: {{{Population|}}} | |-
-! Population:
+|-
+{{#if: {{{Population|}}} | ! Population:
 | {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
-{{#if: {{{MajorRoads|}}} | |-
-! Major roads:
+|-
+{{#if: {{{MajorRoads|}}} | ! Major roads:
 | {{#arraymap:{{{MajorRoads|}}}|,|x|[[MajorRoads::x]]}} }}
-{{#if: {{{LicencePlate|}}} | |-
-! Licence Plate:
+|-
+{{#if: {{{LicencePlate|}}} | ! Licence Plate:
 | '''{{{LicencePlate|}}}''' }}
-{{#if: {{{Hitchbase|}}} | |-
-! More info:
+|-
+{{#if: {{{Hitchbase|}}} | ! More info:
 {{!}} [http://hitchbase.com/ergebnisse.php?LANG=eng&abfrage%5Bstartort%5D={{{Hitchbase}}} Hitchbase] {{#if: {{{Links|}}} | {{{Links}}} }} | {{#if: {{{Links|}}} | ! More info:
 {{!}} {{{Links}}} }} }}
 | colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{BW|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{BW}}} BeWelcome] }}
