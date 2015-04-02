@@ -30,15 +30,15 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
   echo "Cloning MediaWiki... (this might take a while)"
   cd "$ROOTDIR/public"
-  git clone -b $HW__general_mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
+  git clone -b $HW__general__mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Use branches for versions, eg. REL1_24
   cd "$WIKIDIR"
-  git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
+  git checkout -b $HW__general__mw_branch origin/$HW__general__mw_branch
 
   # Get Vector skin
   cd "$WIKIDIR/skins"
-  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  git clone -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
 fi
 
 # Clone MW skin(s)
@@ -86,7 +86,7 @@ if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
   echo ""
   echo "Installing VisualEditor..."
   cd "$WIKIDIR/extensions/"
-  git clone -b $HW__general_mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+  git clone -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
   cd VisualEditor
   # Use branches for versions, eg. REL1_24
   git submodule update --init
