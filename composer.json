@@ -143,7 +143,7 @@
         "version": "1.24.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/CheckUser-REL1_24-530e1e3.tar.gz",
+          "url": "https://extdist.wmflabs.org/dist/extensions/CheckUser-REL1_24-ef6c841.tar.gz",
           "type": "tar"
         }
       }
@@ -287,7 +287,7 @@
         "version": "1.24.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/MobileFrontend-REL1_24-011e6c1.tar.gz",
+          "url": "https://extdist.wmflabs.org/dist/extensions/MobileFrontend-REL1_24-154cfe0.tar.gz",
           "type": "tar"
         }
       }
