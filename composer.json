@@ -119,7 +119,7 @@
         "version": "1.24.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_24-5c7b96c.tar.gz",
+          "url": "https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_24-d17397a.tar.gz",
           "type": "tar"
         }
       }
@@ -263,7 +263,7 @@
         "version": "1.24.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Echo-REL1_24-0b8c699.tar.gz",
+          "url": "https://extdist.wmflabs.org/dist/extensions/Echo-REL1_24-064c4cc.tar.gz",
           "type": "tar"
         }
       }
