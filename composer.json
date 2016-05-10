@@ -167,7 +167,7 @@
         "version": "1.24.1",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "http://sites.google.com/site/rutismwextensions/RecentChangesCleanup.zip",
+          "url": "https://sites.google.com/site/rutismwextensions/RecentChangesCleanup.zip",
           "type": "zip"
         }
       }
