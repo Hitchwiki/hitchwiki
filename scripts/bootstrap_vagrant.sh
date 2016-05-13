@@ -30,7 +30,7 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
   echo "Cloning MediaWiki... (this might take a while)"
   cd "$ROOTDIR/public"
-  git clone -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
+  git clone -b $HW__general__mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
 
   # Use branches for versions, eg. REL1_24
   cd "$WIKIDIR"
