@@ -84,7 +84,8 @@ cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db
 # Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
 # Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
 # (Less headache to do this here instead of our composer.json)
-echo "--> php composer.phar..."
+echo ""
+echo "Install several MW extensions using Composer..."
 php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
@@ -94,24 +95,35 @@ php composer.phar require --no-progress mediawiki/recaptcha "@dev"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
+echo ""
+echo "Point Mediawiki configuration to Hitchwiki configuration file..."
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
 
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
+echo ""
+echo "Pre-populate the antispoof (MW extension) table with your wiki's existing usernames..."
 cd "$WIKIDIR"
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 # Install assets for HWMaps
+echo ""
+echo "Install assets for HWMaps..."
 cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
 
 # Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
+echo ""
+echo "Install assets for HitchwikiVector & HWMap extensions..."
 cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
 
 # Install CheckUser
+echo ""
+echo "Install CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
 cd "$WIKIDIR"
 
 # Create bot account
+echo ""
 echo "Create bot account..."
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
@@ -120,22 +132,26 @@ echo "Create another dummy account..."
 php maintenance/createAndPromote.php Hitchhiker autobahn
 
 # Confirm emails for all created users
+echo ""
 echo "Confirm emails for all created users..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
+echo ""
 echo "Import Semantic pages..."
 bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
+echo ""
 echo "Import interwiki table..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 
 
 # Install Parsoid
 # https://www.mediawiki.org/wiki/Parsoid/Setup
+echo ""
 echo "Install Parsoid..."
 sudo apt-key advanced --keyserver pgp.mit.edu --recv-keys 90E9F83F22250DD7
 sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediawiki main"
@@ -152,6 +168,8 @@ sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediaw
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 
 # Restart Parsoid to get new settings affect
+echo ""
+echo "Restart Parsoid to get new settings affect..."
 sudo service parsoid restart
 
 # And we're done!
