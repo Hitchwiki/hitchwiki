@@ -49,9 +49,9 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
     ini_set( 'display_errors', 1 );
   }
 
-  // Show the debug toolbar if 'debug' is set on the request, either as a
+  // Show the debug toolbar if `hw_debug` is set on the request, either as a
   // parameter or a cookie.
-  if ( !empty( $_REQUEST['debug'] ) ) {
+  if ( !empty( $_REQUEST['hw_debug'] ) ) {
     $wgDebugToolbar = true;
   }
 

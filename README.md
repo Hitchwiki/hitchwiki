@@ -67,7 +67,7 @@ bash scripts/vagrant_import_pages.sh
 
 ### Debug
 * Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
-* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable debug = 1.
+* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug = 1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
 
 ### Update
