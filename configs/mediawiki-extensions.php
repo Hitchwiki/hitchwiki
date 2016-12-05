@@ -141,9 +141,9 @@ $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
  * Adds some features into Vector theme
  * https://www.mediawiki.org/wiki/Extension:VectorBeta
  */
-#require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
-#require_once "$IP/extensions/VectorBeta/VectorBeta.php";
-#require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
+wfLoadExtension( 'BetaFeatures' );
+wfLoadExtension( 'VectorBeta' );
+require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
 $wgBetaFeaturesWhitelist = array('betafeatures-vector-typography-update', 'betafeatures-vector-fixedheader');
 $wgBetaFeaturesWhitelistLoggedIn = array('betafeatures-vector-compact-personal-bar');
 $wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
