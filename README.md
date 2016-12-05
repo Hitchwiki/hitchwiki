@@ -10,10 +10,9 @@ hitch out of big cities, how to cover long distances, maps and many
 more tips.
 
 ## How to help
-This version is [currently under heavy development](https://love.hitchwiki.net/)
-in Turkey Dec 2014—Feb 2015 by [@simison](https://github.com/simison), [@Remigr](https://github.com/Remigr/) and [@omelnyk](https://github.com/omelnyk/).
+This version is currently under heavy development in Vilnius, 5.—16.12.2016 by [@simison](https://github.com/simison), [@Remigr](https://github.com/Remigr/) and [@omelnyk](https://github.com/omelnyk/).
 
-_[Contact us](http://hitchwiki.org/developers) if you want to join the effort!_
+_[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
 Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
 
