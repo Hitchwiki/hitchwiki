@@ -192,7 +192,7 @@ $wgEventLoggingFile = "{$logDir}/events.log";
  * UploadWizard
  * https://www.mediawiki.org/wiki/Extension:UploadWizard
  */
-require_once "$IP/extensions/UploadWizard/UploadWizard.php";
+wfLoadExtension('UploadWizard');
 $wgUploadWizardConfig = array(
   'debug' => $hwDebug,
   #'autoCategory' => 'Uploaded with UploadWizard',
