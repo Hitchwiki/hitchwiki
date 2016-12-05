@@ -347,7 +347,7 @@
     "EventLogging": "@dev",
     "HeaderTabs": "@dev",
     "AddBodyClass": "@dev",
-    "mediawiki/maps": "~3.0"
+    "mediawiki/maps": "~4.0"
   },
   "require-dev": {
   },
