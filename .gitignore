@@ -22,6 +22,7 @@ logs
 /scripts/vendor/bash_ini_parser
 /configs/settings.ini
 /dumps/
+*~
 
 # Admin tools
 /public/phpmyadmin
