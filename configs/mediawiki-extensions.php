@@ -39,27 +39,74 @@ $wgDefaultUserOptions['wikieditor-preview'] = 1;
 $wgDefaultUserOptions['wikieditor-publish'] = 1;
 
 
-require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
-require_once "$IP/extensions/GeoData/GeoData.php";
-require_once "$IP/extensions/ExternalData/ExternalData.php";
-require_once "$IP/extensions/MultimediaViewer/MultimediaViewer.php";
-require_once "$IP/extensions/ApiSandbox/ApiSandbox.php";
-require_once "$IP/extensions/OAuth/OAuth.php";
-require_once "$IP/extensions/HeaderTabs/HeaderTabs.php";
+/**
+ * GeoCrumbs
+ * https://www.mediawiki.org/wiki/Extension:GeoCrumbs
+ */
+wfLoadExtension('GeoCrumbs');
+
+/**
+ * GeoData
+ * https://www.mediawiki.org/wiki/Extension:GeoData
+ */
+wfLoadExtension('GeoData');
+
+/**
+ * ExternalData
+ * https://www.mediawiki.org/wiki/Extension:ExternalData
+ */
+wfLoadExtension('ExternalData');
+
+/**
+ * MultimediaViewer
+ * https://www.mediawiki.org/wiki/Extension:MultimediaViewer
+ */
+wfLoadExtension('MultimediaViewer');
+$wgMediaViewerEnableByDefaultForAnonymous = true;
+$wgMediaViewerEnableByDefault = true;
+
+/**
+ * OAuth
+ * The OAuth extension implements OAuth 1.0a
+ * https://www.mediawiki.org/wiki/Extension:OAuth
+ */
+wfLoadExtension('OAuth');
+
+/**
+ * HeaderTabs
+ * https://www.mediawiki.org/wiki/Extension:Header_Tabs
+ */
+wfLoadExtension('HeaderTabs');
+
+/**
+ * AddBodyClass
+ * https://www.mediawiki.org/wiki/Extension:AddBodyClass
+ * Rather unmaintained extension.
+ * We should see if functionality of this extension is
+ * redundant now, or perhaps we can do it ourselves.
+ */
 require_once "$IP/extensions/AddBodyClass/AddBodyClass.php";
 
-# Define "Special:AdminLinks" page, that holds links meant to be helpful for wiki administrators
+/**
+ * AdminLinks
+ * Define "Special:AdminLinks" page, that holds links meant to be helpful for wiki administrators
+ * https://www.mediawiki.org/wiki/Extension:AdminLinks
+ */
 require_once "$IP/extensions/AdminLinks/AdminLinks.php";
 $wgGroupPermissions['my-group']['adminlinks'] = true;
 
-# This can be disabled after http://hitchwiki.org/en/MediaWiki:Sitenotice is no more needed.
-# http://www.mediawiki.org/wiki/Extension:DismissableSiteNotice
+/**
+ * DismissableSiteNotice
+ * This can be disabled after http://hitchwiki.org/en/MediaWiki:Sitenotice is no more needed.
+ * http://www.mediawiki.org/wiki/Extension:DismissableSiteNotice
+ */
 require_once "$IP/extensions/DismissableSiteNotice/DismissableSiteNotice.php";
 
-# Semantic MediaWiki extensions
-# These were installed via composer directly at MediaWiki folder and Composer takes care loading them
-# https://semantic-mediawiki.org/wiki/Help:Installation#Installation
-
+/**
+ * Semantic MediaWiki extensions
+ * These were installed via composer directly at MediaWiki folder and Composer takes care loading them
+ * https://semantic-mediawiki.org/wiki/Help:Installation#Installation
+ */
 //require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
 if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   enableSemantics();
@@ -72,55 +119,73 @@ if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
   // Sets whether help information on the edit page is displayed
   $smwgEnabledEditPageHelp = false;
 
-
   // You can have the set of values used for autocompletion in forms be cached, which may
   // improve performance. To do that, add something like the following to LocalSettings.php:
   $sfgCacheAutocompleteValues = true;
   $sfgAutocompleteCacheTimeout = 60 * 60 * 24; // 1 day (in seconds)
 }
 
+/**
+ * ParserFunctions
+ */
 # Enable old string functions (needed at our semantic templates)
 require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
 $wgPFEnableStringFunctions = true;
 
-# Interwiki links (nomadwiki, trashwiki etc)
-# - Grant sysops permissions to edit interwiki data
-# - See Database settings to understand how Interwiki settings are shared between wikis
+/**
+ * Interwiki links (nomadwiki, trashwiki etc)
+ * - Grant sysops permissions to edit interwiki data
+ * - See Database settings to understand how Interwiki settings are shared between wikis
+ */
 require_once "$IP/extensions/Interwiki/Interwiki.php";
 $wgGroupPermissions['sysop']['interwiki'] = true;
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
 #$wgGroupPermissions['developer']['interwiki'] = true;
 
-# Recent changes cleanup
-# https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
+/**
+ * Recent changes cleanup
+ * https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
+ */
 // require_once "$IP/extensions/RecentChangesCleanup/RecentChangesCleanup.php";
 // $wgAvailableRights[] = 'recentchangescleanup';
 // $wgGroupPermissions['sysop']['recentchangescleanup'] = true;
 // $wgGroupPermissions['recentchangescleanup']['recentchangescleanup'] = true;
 
-# CheckUser
-# https://www.mediawiki.org/wiki/Extension:CheckUser
-# Requires install, see scripts/vagrant_bootstrap.sh
+/**
+ * CheckUser
+ * https://www.mediawiki.org/wiki/Extension:CheckUser
+ * Requires install, see scripts/vagrant_bootstrap.sh
+ */
 #require_once "$IP/extensions/CheckUser/CheckUser.php";
 #$wgGroupPermissions['sysop']['checkuser'] = true;
 
-# Preventing confusable usernames from being created.
-# It blocks the creation of accounts with mixed-script,
-# confusing and similar usernames.
-# https://www.mediawiki.org/wiki/Extension:AntiSpoof
-# Requires install, see scripts/vagrant_bootstrap.sh
+/**
+ * AntiSpoof
+ * Preventing confusable usernames from being created.
+ * It blocks the creation of accounts with mixed-script,
+ * confusing and similar usernames.
+ * https://www.mediawiki.org/wiki/Extension:AntiSpoof
+ * Requires install, see scripts/vagrant_bootstrap.sh
+ */
 require_once "$IP/extensions/AntiSpoof/AntiSpoof.php";
 $wgSharedTables[] = 'spoofuser';
 
-# Provides a special page to allow administrators to do a global string
-# find-and-replace on both the text and titles of the wiki's content pages.
+/**
+ * ReplaceText
+ * Provides a special page to allow administrators to do a global string
+ * find-and-replace on both the text and titles of the wiki's content pages.
+ * https://www.mediawiki.org/wiki/Extension:Replace_Text
+ */
 require_once "$IP/extensions/ReplaceText/ReplaceText.php";
 $wgGroupPermissions['bureaucrat']['replacetext'] = true;
 
-# Allow privileged users to set specific controls on actions by users,
-# such as edits, and create automated reactions for certain behaviors.
-# https://www.mediawiki.org/wiki/Extension:AbuseFilter
+/**
+ * AbuseFilter
+ * Allow privileged users to set specific controls on actions by users,
+ * such as edits, and create automated reactions for certain behaviors.
+ * https://www.mediawiki.org/wiki/Extension:AbuseFilter
+ */
 require_once "$IP/extensions/AbuseFilter/AbuseFilter.php";
 $wgGroupPermissions['sysop']['abusefilter-modify'] = true;
 $wgGroupPermissions['*']['abusefilter-log-detail'] = true;
@@ -138,8 +203,14 @@ $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
 
 /**
- * Adds some features into Vector theme
+ * Adds some new features to MediaWiki and Vector theme
+ * https://www.mediawiki.org/wiki/Beta_Features
+ * https://www.mediawiki.org/wiki/Extension:BetaFeatures
  * https://www.mediawiki.org/wiki/Extension:VectorBeta
+ *
+ * Features are forced to be enabled to everyone using
+ * https://github.com/Hitchwiki/BetaFeatureEverywhere
+ * ...since by default users would need to opt-in to beta features.
  */
 wfLoadExtension( 'BetaFeatures' );
 wfLoadExtension( 'VectorBeta' );
@@ -172,6 +243,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
 
 /**
  * Rename user
+ * https://www.mediawiki.org/wiki/Extension:Renameuser
  */
 require_once "$IP/extensions/Renameuser/Renameuser.php";
 $wgGroupPermissions['sysop']['renameuser'] = true;
@@ -218,8 +290,8 @@ $wgExtensionFunctions[] = function() {
  * Hitchwiki extensions
  * https://github.com/Hitchwiki/
  */
-require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
-require_once "$IP/extensions/HWMap/HWMap.php";
-require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php";
-require_once "$IP/extensions/HWRatings/HWRatings.php";
-require_once "$IP/extensions/HWComments/HWComments.php";
+require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php"; // Customized theme based on `Vector` theme
+require_once "$IP/extensions/HWMap/HWMap.php"; // Hitchwiki Maps (see `/Special:HWMap` page)
+require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php"; // Waiting time -feature
+require_once "$IP/extensions/HWRatings/HWRatings.php"; // "Hithability" ratings -feature
+require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
