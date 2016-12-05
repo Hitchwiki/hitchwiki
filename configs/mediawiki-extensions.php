@@ -166,7 +166,6 @@ $wgLocalisationUpdateDirectory = "$IP/cache";
  * Enables some features required by VectorBeta such as Special:MobileMenu
  * https://www.mediawiki.org/wiki/Extension:MobileFrontend
  */
-// require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
 require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
 $wgMFAutodetectMobileView = true;
 $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
