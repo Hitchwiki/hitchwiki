@@ -145,12 +145,12 @@ wfLoadExtension( 'BetaFeatures' );
 wfLoadExtension( 'VectorBeta' );
 require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
 $wgBetaFeaturesWhitelist = array('betafeatures-vector-typography-update', 'betafeatures-vector-fixedheader');
-$wgBetaFeaturesWhitelistLoggedIn = array('betafeatures-vector-compact-personal-bar');
-$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
+$wgBetaFeaturesWhitelistLoggedIn = array(); // array('betafeatures-vector-compact-personal-bar');
+#$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
 $wgDefaultUserOptions['betafeatures-vector-typography-update'] = '1';
 $wgDefaultUserOptions['betafeatures-vector-fixedheader'] = '1';
 $wgVectorBetaTypography = true;
-$wgVectorBetaPersonalBar = true;
+$wgVectorBetaPersonalBar = false;
 $wgVectorBetaWinter = true;
 
 
