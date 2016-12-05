@@ -273,11 +273,11 @@ require_once "$IP/skins/Vector/Vector.php";
 
 /***** Extensions ******************************************************************************************/
 
-#
-# VisualEditor
-# https://www.mediawiki.org/wiki/Extension:VisualEditor
-#
-require_once "$IP/extensions/VisualEditor/VisualEditor.php";
+/**
+ * VisualEditor
+ * https://www.mediawiki.org/wiki/Extension:VisualEditor
+ */
+wfLoadExtension('VisualEditor');
 // Enable by default for everybody
 $wgDefaultUserOptions['visualeditor-enable'] = 1;
 // Don't allow users to disable it
@@ -292,8 +292,11 @@ $wgVisualEditorParsoidURL = 'http://' . $hwConfig["general"]["domain"] . ':8142'
 // Parsoid will be called as $url/$prefix/$pagename
 $wgVisualEditorParsoidPrefix = $hwConfig["general"]["domain"];
 
-// WikiEditor (code)
-// https://www.mediawiki.org/wiki/Extension:WikiEditor
+
+/**
+ * WikiEditor (code)
+ * https://www.mediawiki.org/wiki/Extension:WikiEditor
+ */
 require_once "$IP/extensions/WikiEditor/WikiEditor.php";
 # Enables use of WikiEditor by default but still allow users to disable it in preferences
 $wgDefaultUserOptions['usebetatoolbar'] = 1;
@@ -304,7 +307,6 @@ $wgDefaultUserOptions['wikieditor-preview'] = 1;
 $wgDefaultUserOptions['wikieditor-publish'] = 1;
 
 
-require_once "$IP/extensions/CustomData/CustomData.php"; // CustomData is needed by GeoCrumbs
 require_once "$IP/extensions/GeoCrumbs/GeoCrumbs.php";
 require_once "$IP/extensions/GeoData/GeoData.php";
 require_once "$IP/extensions/ExternalData/ExternalData.php";
@@ -360,10 +362,10 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
 
 # Recent changes cleanup
 # https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
-require_once "$IP/extensions/RecentChangesCleanup/RecentChangesCleanup.php";
-$wgAvailableRights[] = 'recentchangescleanup';
-$wgGroupPermissions['sysop']['recentchangescleanup'] = true;
-$wgGroupPermissions['recentchangescleanup']['recentchangescleanup'] = true;
+// require_once "$IP/extensions/RecentChangesCleanup/RecentChangesCleanup.php";
+// $wgAvailableRights[] = 'recentchangescleanup';
+// $wgGroupPermissions['sysop']['recentchangescleanup'] = true;
+// $wgGroupPermissions['recentchangescleanup']['recentchangescleanup'] = true;
 
 # CheckUser
 # https://www.mediawiki.org/wiki/Extension:CheckUser
@@ -396,17 +398,20 @@ $wgGroupPermissions['sysop']['abusefilter-private'] = true;
 $wgGroupPermissions['sysop']['abusefilter-modify-restricted'] = true;
 $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 
-# Echo
-# https://www.mediawiki.org/wiki/Extension:Echo
+/**
+ * Echo
+ * https://www.mediawiki.org/wiki/Extension:Echo
+ */
 #require_once "$IP/extensions/Echo/Echo.php";
 $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
 
-# Adds some features into Vector theme
-# https://www.mediawiki.org/wiki/Extension:VectorBeta
-require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
-require_once "$IP/extensions/VectorBeta/VectorBeta.php";
-require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
-
+/**
+ * Adds some features into Vector theme
+ * https://www.mediawiki.org/wiki/Extension:VectorBeta
+ */
+#require_once "$IP/extensions/BetaFeatures/BetaFeatures.php";
+#require_once "$IP/extensions/VectorBeta/VectorBeta.php";
+#require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
 $wgBetaFeaturesWhitelist = array('betafeatures-vector-typography-update', 'betafeatures-vector-fixedheader');
 $wgBetaFeaturesWhitelistLoggedIn = array('betafeatures-vector-compact-personal-bar');
 $wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
@@ -416,31 +421,45 @@ $wgVectorBetaTypography = true;
 $wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
 
-# LocalisationUpdate
-# https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+
+/**
+ * LocalisationUpdate
+ * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+ */
 require_once "$IP/extensions/LocalisationUpdate/LocalisationUpdate.php";
 $wgLocalisationUpdateDirectory = "$IP/cache";
 
-# Enables some features required by VectorBeta such as Special:MobileMenu
-# https://www.mediawiki.org/wiki/Extension:MobileFrontend
-require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
+
+/**
+ * Enables some features required by VectorBeta such as Special:MobileMenu
+ * https://www.mediawiki.org/wiki/Extension:MobileFrontend
+ */
+// require_once "$IP/extensions/Mantle/Mantle.php"; // MobileFrontend requires Mantle
 require_once "$IP/extensions/MobileFrontend/MobileFrontend.php";
 $wgMFAutodetectMobileView = true;
 $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 35 × 22 px
 
-# Rename user
+/**
+ * Rename user
+ */
 require_once "$IP/extensions/Renameuser/Renameuser.php";
 $wgGroupPermissions['sysop']['renameuser'] = true;
 
-# EventLogging
-# Required by $wgVectorBetaPersonalBar
-# https://www.mediawiki.org/wiki/Extension:EventLogging
+
+/**
+ * EventLogging
+ * Required by $wgVectorBetaPersonalBar
+ * https://www.mediawiki.org/wiki/Extension:EventLogging
+ */
 require_once "$IP/extensions/EventLogging/EventLogging.php";
 $wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
 $wgEventLoggingFile = "{$logDir}/events.log";
 
-# UploadWizard
-# https://www.mediawiki.org/wiki/Extension:UploadWizard
+
+/**
+ * UploadWizard
+ * https://www.mediawiki.org/wiki/Extension:UploadWizard
+ */
 require_once "$IP/extensions/UploadWizard/UploadWizard.php";
 $wgUploadWizardConfig = array(
   'debug' => $hwDebug,
@@ -464,10 +483,10 @@ $wgExtensionFunctions[] = function() {
 };
 
 
-#
-# Hitchwiki extensions
-# https://github.com/Hitchwiki/
-#
+/**
+ * Hitchwiki extensions
+ * https://github.com/Hitchwiki/
+ */
 require_once "$IP/extensions/HitchwikiVector/HitchwikiVector.php";
 require_once "$IP/extensions/HWMap/HWMap.php";
 require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php";

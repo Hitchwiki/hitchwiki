@@ -28,67 +28,50 @@ fi
 # Clone MW Core
 if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
-  echo "Cloning MediaWiki... (this might take a while)"
+  echo "Download MediaWiki archive..."
   cd "$ROOTDIR/public"
-  git clone -b $HW__general__mw_branch --single-branch https://gerrit.wikimedia.org/r/p/mediawiki/core.git wiki
-
-  # Use branches for versions, eg. REL1_24
-  cd "$WIKIDIR"
-  git checkout -b $HW__general__mw_branch origin/$HW__general__mw_branch
-
-  # Get Vector skin
-  cd "$WIKIDIR/skins"
-  git clone -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
+  curl -sS -O https://releases.wikimedia.org/mediawiki/$HW__general__mw_version_minor/mediawiki-$HW__general__mw_version_patch.tar.gz
+  echo "Extract MediaWiki archive..."
+  tar -zxf mediawiki-$HW__general__mw_version_patch.tar.gz
+  mv mediawiki-$HW__general__mw_version_patch wiki
+  rm mediawiki-$HW__general__mw_version_patch.tar.gz
 fi
 
-# Clone MW skin(s)
-#if [ ! -d "$WIKIDIR/skins/Vector" ]; then
-#  cd "$WIKIDIR/skins"
-#  git clone https://gerrit.wikimedia.org/r/p/mediawiki/skins/Vector.git
-#fi
-
-## Download and extract
-#if [ ! -f mediawiki-$WIKIVERSION.tar.gz ]; then
-#  curl --silent -O http://releases.wikimedia.org/mediawiki/$WIKIVERSIONBRANCH/mediawiki-$WIKIVERSION.tar.gz > /dev/null;
-#fi
-#tar xzf mediawiki-$WIKIVERSION.tar.gz -C $ROOTDIR/public;
-##rm mediawiki-$WIKIVERSION.tar.gz;
-#mv -i $ROOTDIR/public/mediawiki-$WIKIVERSION $WIKIDIR;
-
 # Install Hitchwiki dependencies now that we have /wiki directory
+#   If you encounter issues with this (i.e. missing extensions),
+#   add `-vvv` to this command to see detailed output.
 echo ""
 echo "Installing Hitchwiki dependencies..."
 cd "$ROOTDIR"
-php composer.phar install --no-progress
+php composer.phar install --no-progress --no-interaction
+
+
 
 # Prepare databases
+echo "Prepare databases..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
 mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
 #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
 
 
 # Install APC
-sudo apt-get -y install php-apc
-sudo /etc/init.d/apache2 restart
+# TODO: https://www.digitalocean.com/community/questions/how-to-install-alternative-php-cache-apc-on-ubuntu-14-04
+#echo ""
+#echo "Install APC..."
+#sudo apt-get -y install php-apc
+#echo ""
+#echo "Restart Apache..."
+#sudo /etc/init.d/apache2 restart
 
-# Rename config prior to install script so it can pass
-#mv LocalSettings.php LocalSettings.php~
-
-# Install MediaWiki dependencies
-echo ""
-echo "Installing Mediawiki dependencies..."
-cd "$WIKIDIR"
-cp -f "$ROOTDIR/composer.phar" "$WIKIDIR/composer.phar"
-php composer.phar install --no-dev --no-progress
-
-# Install VisualEditor (yeah no composer here...)
+# Install VisualEditor
+# (yeah no composer here...)
 if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
   echo ""
   echo "Installing VisualEditor..."
   cd "$WIKIDIR/extensions/"
-  git clone -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+  git clone --depth=1 --single-branch -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
   cd VisualEditor
-  # Use branches for versions, eg. REL1_24
+  echo "Get Visual editor git submodules..."
   git submodule update --init
 fi
 
@@ -101,6 +84,7 @@ cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db
 # Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
 # Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
 # (Less headache to do this here instead of our composer.json)
+echo "--> php composer.phar..."
 php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
@@ -117,10 +101,10 @@ cd "$WIKIDIR"
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 # Install assets for HWMaps
-cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false
+cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
 
 # Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
-cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false
+cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
 
 # Install CheckUser
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
@@ -128,25 +112,31 @@ cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 cd "$WIKIDIR"
 
 # Create bot account
+echo "Create bot account..."
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
 # Create another dummy account
+echo "Create another dummy account..."
 php maintenance/createAndPromote.php Hitchhiker autobahn
 
 # Confirm emails for all created users
+echo "Confirm emails for all created users..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
 # Import Semantic pages
+echo "Import Semantic pages..."
 bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
+echo "Import interwiki table..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 
 
 # Install Parsoid
 # https://www.mediawiki.org/wiki/Parsoid/Setup
+echo "Install Parsoid..."
 gpg --keyserver keys.gnupg.net --recv-keys 5C927F7C
 gpg -a --export 5C927F7C | sudo apt-key add -
 sudo echo "" >> /etc/apt/sources.list

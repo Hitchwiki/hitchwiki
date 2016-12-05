@@ -44,11 +44,11 @@
       "type": "package",
       "package": {
         "name": "AntiSpoof",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/AntiSpoof-REL1_24-a99ed84.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AntiSpoof/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -56,11 +56,11 @@
       "type": "package",
       "package": {
         "name": "AbuseFilter",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/AbuseFilter-REL1_24-782f0f8.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AbuseFilter/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -68,11 +68,11 @@
       "type": "package",
       "package": {
         "name": "GeoData",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/GeoData-REL1_24-6b01042.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoData/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -80,11 +80,11 @@
       "type": "package",
       "package": {
         "name": "SemanticFormsInputs",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/SemanticFormsInputs-REL1_24-4ff1557.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-SemanticFormsInputs/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -92,23 +92,11 @@
       "type": "package",
       "package": {
         "name": "DismissableSiteNotice",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/DismissableSiteNotice-REL1_24-1c10322.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "CustomData",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/CustomData-REL1_24-d8f758e.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-DismissableSiteNotice/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -116,11 +104,11 @@
       "type": "package",
       "package": {
         "name": "OAuth",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/OAuth-REL1_24-d17397a.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-OAuth/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -128,11 +116,11 @@
       "type": "package",
       "package": {
         "name": "GeoCrumbs",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/GeoCrumbs-REL1_24-5ac5727.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoCrumbs/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -140,11 +128,11 @@
       "type": "package",
       "package": {
         "name": "CheckUser",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/CheckUser-REL1_24-ef6c841.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-CheckUser/archive/REL1_28.zip",
+          "type": "zip"
         }
       }
     },
@@ -152,22 +140,10 @@
       "type": "package",
       "package": {
         "name": "ExternalData",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/ExternalData-REL1_24-ec1e7db.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "RecentChangesCleanup",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://sites.google.com/site/rutismwextensions/RecentChangesCleanup.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ExternalData/archive/REL1_28.zip",
           "type": "zip"
         }
       }
@@ -176,262 +152,10 @@
       "type": "package",
       "package": {
         "name": "TorBlock",
-        "version": "1.24.1",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/TorBlock-REL1_24-5bad703.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "ApiSandbox",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/ApiSandbox-REL1_24-a57a230.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "MultimediaViewer",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/MultimediaViewer-REL1_24-7ba92a7.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "AdminLinks",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/AdminLinks-REL1_24-59036bd.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "BetaFeatures",
-        "version": "0.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/BetaFeatures-REL1_24-1f70525.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "VectorBeta",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/VectorBeta-REL1_24-4a282a0.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "ReplaceText",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/ReplaceText-REL1_24-1c436b4.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "Echo",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Echo-REL1_24-064c4cc.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "StopForumSpam",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/StopForumSpam-REL1_24-5a7ff21.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "MobileFrontend",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/MobileFrontend-REL1_24-154cfe0.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "Mantle",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Mantle-REL1_24-8fa4c6e.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "UploadWizard",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/UploadWizard-REL1_24-f173a1d.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "EventLogging",
-        "version": "0.8",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/EventLogging-REL1_24-753e5b8.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "WikiEditor",
-        "version": "0.4.0",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/WikiEditor-REL1_24-b13e25d.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "HeaderTabs",
-        "version": "1.0.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/HeaderTabs-REL1_24-307b16c.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "Renameuser",
-        "version": "1.24.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Renameuser-REL1_24-7cb2e39.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "ParserFunctions",
-        "version": "1.6.0",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/ParserFunctions-REL1_24-738403b.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "Nuke",
-        "version": "1.2.0",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Nuke-REL1_24-7bd1aa8.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "LocalisationUpdate",
-        "version": "1.3.0",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/LocalisationUpdate-REL1_24-ab2dd5b.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "Interwiki",
-        "version": "3.0",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/Interwiki-REL1_24-2699c3f.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "ConfirmEdit",
-        "version": "1.3",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/ConfirmEdit-REL1_24-3813252.tar.gz",
-          "type": "tar"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "AddBodyClass",
-        "version": "1.1",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/p12tic/AddBodyClass/archive/1.1.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-TorBlock/archive/REL1_28.zip",
           "type": "zip"
         }
       }
@@ -439,59 +163,191 @@
     {
       "type": "package",
       "package": {
-        "name": "SpamBlacklist",
-        "version": "1.24.1",
+        "name": "ApiSandbox",
+        "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://extdist.wmflabs.org/dist/extensions/SpamBlacklist-REL1_24-9649127.tar.gz",
-          "type": "tar"
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ApiSandbox/archive/REL1_26.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "MultimediaViewer",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AdminLinks",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AdminLinks/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "BetaFeatures",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-BetaFeatures/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "VectorBeta",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-VectorBeta/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "ReplaceText",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ReplaceText/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "Echo",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-Echo/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "StopForumSpam",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-StopForumSpam/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "MobileFrontend",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MobileFrontend/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "UploadWizard",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-UploadWizard/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "EventLogging",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-EventLogging/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "HeaderTabs",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-HeaderTabs/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AddBodyClass",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/p12tic/AddBodyClass/archive/1.1.zip",
+          "type": "zip"
         }
       }
     }
   ],
   "require": {
-    "php": ">=5.3.2",
-    "psr/log": "1.0.0",
     "HWMap": "@dev",
     "HWRatings": "@dev",
     "HWComments": "@dev",
     "HWWaitingTime": "@dev",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
-    "BetaFeatures": "*",
-    "VectorBeta": "*",
-    "AntiSpoof": "*",
-    "AbuseFilter": "*",
-    "GeoData":  "*",
-    "SemanticFormsInputs":  "*",
-    "OAuth":  "*",
-    "DismissableSiteNotice": "*",
-    "GeoCrumbs": "*",
-    "ExternalData": "*",
-    "RecentChangesCleanup": "*",
-    "TorBlock": "*",
-    "ApiSandbox": "*",
-    "MultimediaViewer": "*",
-    "AdminLinks": "*",
-    "ReplaceText": "*",
-    "CustomData": "*",
-    "CheckUser": "*",
-    "Echo": "*",
-    "StopForumSpam": "*",
-    "MobileFrontend": "*",
-    "Mantle": "*",
-    "UploadWizard": "*",
-    "EventLogging": "*",
-    "WikiEditor": "*",
-    "HeaderTabs": "*",
-    "Renameuser": "*",
-    "ParserFunctions": "*",
-    "Nuke": "*",
-    "LocalisationUpdate": "*",
-    "Interwiki": "*",
-    "ConfirmEdit": "*",
-    "AddBodyClass": "*",
-    "SpamBlacklist": "*"
+    "BetaFeatures": "@dev",
+    "VectorBeta": "@dev",
+    "AntiSpoof": "@dev",
+    "AbuseFilter": "@dev",
+    "GeoData":  "@dev",
+    "SemanticFormsInputs":  "@dev",
+    "OAuth":  "@dev",
+    "DismissableSiteNotice": "@dev",
+    "GeoCrumbs": "@dev",
+    "ExternalData": "@dev",
+    "TorBlock": "@dev",
+    "ApiSandbox": "@dev",
+    "MultimediaViewer": "@dev",
+    "AdminLinks": "@dev",
+    "ReplaceText": "@dev",
+    "CheckUser": "@dev",
+    "Echo": "@dev",
+    "StopForumSpam": "@dev",
+    "MobileFrontend": "@dev",
+    "UploadWizard": "@dev",
+    "EventLogging": "@dev",
+    "HeaderTabs": "@dev",
+    "AddBodyClass": "@dev",
+    "mediawiki/maps": "~3.0"
   },
   "require-dev": {
   },
