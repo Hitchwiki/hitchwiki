@@ -202,6 +202,23 @@ $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
 #require_once "$IP/extensions/Echo/Echo.php";
 $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
 
+
+/**
+ * EventLogging
+ * Required by original `$wgVectorBetaPersonalBar` of
+ * https://www.mediawiki.org/wiki/Extension:VectorBeta
+ *
+ * ...but since that was buggy and anyway not needed,
+ * we forked that unmaintained extension and removed this feature.
+ * Thus this isn't needed anymore
+ * Fork: https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta
+ *
+ * https://www.mediawiki.org/wiki/Extension:EventLogging
+ */
+// require_once "$IP/extensions/EventLogging/EventLogging.php";
+// $wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
+// $wgEventLoggingFile = "{$logDir}/events.log";
+
 /**
  * Adds some new features to MediaWiki and Vector theme
  * https://www.mediawiki.org/wiki/Beta_Features
@@ -212,16 +229,16 @@ $wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
  * https://github.com/Hitchwiki/BetaFeatureEverywhere
  * ...since by default users would need to opt-in to beta features.
  */
-wfLoadExtension( 'BetaFeatures' );
-wfLoadExtension( 'VectorBeta' );
+wfLoadExtension('BetaFeatures');
+wfLoadExtension('HWVectorBeta');
 require_once "$IP/extensions/BetaFeatureEverywhere/BetaFeatureEverywhere.php";
 $wgBetaFeaturesWhitelist = array('betafeatures-vector-typography-update', 'betafeatures-vector-fixedheader');
-$wgBetaFeaturesWhitelistLoggedIn = array(); // array('betafeatures-vector-compact-personal-bar');
-#$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
+$wgBetaFeaturesWhitelistLoggedIn = array('betafeatures-vector-compact-personal-bar');
+$wgDefaultUserOptions['betafeatures-vector-compact-personal-bar'] = '1';
 $wgDefaultUserOptions['betafeatures-vector-typography-update'] = '1';
 $wgDefaultUserOptions['betafeatures-vector-fixedheader'] = '1';
 $wgVectorBetaTypography = true;
-$wgVectorBetaPersonalBar = false;
+$wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
 
 
@@ -247,16 +264,6 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
  */
 require_once "$IP/extensions/Renameuser/Renameuser.php";
 $wgGroupPermissions['sysop']['renameuser'] = true;
-
-
-/**
- * EventLogging
- * Required by $wgVectorBetaPersonalBar
- * https://www.mediawiki.org/wiki/Extension:EventLogging
- */
-require_once "$IP/extensions/EventLogging/EventLogging.php";
-$wgEventLoggingBaseUri = 'http://'.$hwConfig["general"]["domain"].':8080/event.gif';
-$wgEventLoggingFile = "{$logDir}/events.log";
 
 
 /**

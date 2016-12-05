@@ -37,6 +37,10 @@
       "type": "git"
     },
     {
+      "url": "https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta.git",
+      "type": "git"
+    },
+    {
       "url": "https://github.com/Hitchwiki/HWWaitingTime-extension",
       "type": "git"
     },
@@ -211,18 +215,6 @@
     {
       "type": "package",
       "package": {
-        "name": "VectorBeta",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-VectorBeta/archive/REL1_28.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "ReplaceText",
         "version": "@dev",
         "type": "mediawiki-extension",
@@ -325,7 +317,7 @@
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
     "BetaFeatures": "@dev",
-    "VectorBeta": "@dev",
+    "HWVectorBeta": "@dev",
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",
     "GeoData":  "@dev",
