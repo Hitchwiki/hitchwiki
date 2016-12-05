@@ -137,19 +137,17 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/co
 # Install Parsoid
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 echo "Install Parsoid..."
-gpg --keyserver keys.gnupg.net --recv-keys 5C927F7C
-gpg -a --export 5C927F7C | sudo apt-key add -
-sudo echo "" >> /etc/apt/sources.list
-sudo echo "## Parsoid for MediaWiki" >> /etc/apt/sources.list
-sudo echo "## https://www.mediawiki.org/wiki/Parsoid/Setup" >> /etc/apt/sources.list
-sudo echo "deb [arch=amd64] http://parsoid.wmflabs.org:8080/deb wmf-production main" >> /etc/apt/sources.list
+sudo apt-key advanced --keyserver pgp.mit.edu --recv-keys 90E9F83F22250DD7
+sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediawiki main"
+sudo apt-get install apt-transport-https
 sudo apt-get update && sudo apt-get install parsoid
 
 # Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
+echo ""
+echo "Setup Parsoid configs..."
 localsettingsjs=$(<"$SCRIPTDIR/configs/parsoid_localsettings.js")
 sudo mkdir -p /etc/mediawiki/parsoid/
 sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
-
 
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 
