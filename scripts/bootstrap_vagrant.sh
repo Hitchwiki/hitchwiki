@@ -102,11 +102,11 @@ echo ""
 echo "Install several MW extensions using Composer..."
 cd "$WIKIDIR"
 cp "$ROOTDIR"/composer.phar .
-php composer.phar require --no-progress mediawiki/semantic-media-wiki "@dev"
-php composer.phar require --no-progress mediawiki/page-forms "@dev"
-php composer.phar require --no-progress mediawiki/maps "@dev"
-php composer.phar require --no-progress mediawiki/semantic-watchlist "@dev"
-php composer.phar require --no-progress mediawiki/recaptcha "@dev"
+php composer.phar require --no-progress --update-no-dev mediawiki/semantic-media-wiki "2.4.3"
+php composer.phar require --no-progress --update-no-dev mediawiki/page-forms "4.0.2"
+php composer.phar require --no-progress --update-no-dev mediawiki/maps "4.0.3"
+php composer.phar require --no-progress --update-no-dev mediawiki/semantic-watchlist "1.1.0"
+#php composer.phar require --no-progress --update-no-dev mediawiki/recaptcha "*"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 
