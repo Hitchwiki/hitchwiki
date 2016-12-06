@@ -11,50 +11,41 @@ SCRIPTDIR="$ROOTDIR/scripts"
 WIKIFOLDER="wiki"
 WIKIDIR="$ROOTDIR/public/$WIKIFOLDER"
 
-
 # Make sure we're at right directory
 cd "$ROOTDIR"
-
 
 # Makes sure we have settings.ini and "Bash ini parser"
 source "$SCRIPTDIR/_settings.sh"
 
 
-# Download Composer
-# https://www.mediawiki.org/wiki/Composer
-if [ ! -f composer.phar ]; then
-  echo ""
-  echo "Downloading Composer..."
-  curl -sS https://getcomposer.org/installer | php
-  echo ""
-fi
-
-
-# Clone MW Core
-if [ ! -d "$WIKIDIR/.git" ]; then
-  echo ""
-  echo "Download MediaWiki $HW__general__mw_version_patch archive..."
-  cd "$ROOTDIR/public"
-  curl -sS -O https://releases.wikimedia.org/mediawiki/$HW__general__mw_version_minor/mediawiki-$HW__general__mw_version_patch.tar.gz
-  echo "Extract MediaWiki archive..."
-  tar -zxf mediawiki-$HW__general__mw_version_patch.tar.gz
-  mv mediawiki-$HW__general__mw_version_patch $WIKIFOLDER
-  rm mediawiki-$HW__general__mw_version_patch.tar.gz
-
-  echo ""
-  echo "Create cache directories..."
-  mkdir -p "$WIKIDIR/cache"
-  mkdir -p "$WIKIDIR/images/cache"
-fi
-
-
-# Install Hitchwiki dependencies now that we have /wiki directory
-#   If you encounter issues with this (i.e. missing extensions),
-#   add `-vvv` to this command to see detailed output.
 echo ""
-echo "Installing Hitchwiki dependencies..."
+echo "Upgrade Composer"
+composer self-update
+
+
+echo ""
+echo "Download MediaWiki using Composer..."
 cd "$ROOTDIR"
-php composer.phar install --no-progress --no-interaction
+composer install --no-autoloader --no-dev --no-progress --no-interaction
+
+
+echo ""
+echo "Create cache directories..."
+mkdir -p "$WIKIDIR/cache"
+mkdir -p "$WIKIDIR/images/cache"
+
+
+echo ""
+echo "Ensure correct permissions for cache folders..."
+chown www-data:www-data $WIKIDIR/cache
+chown www-data:www-data $WIKIDIR/images/cache
+
+
+echo ""
+echo "Download basic MediaWiki extensions using Composer..."
+cd "$WIKIDIR"
+cp "$CONFDIR/composer.local.json" .
+composer update -vvv --no-dev --no-progress --no-interaction
 
 
 # Prepare databases
@@ -76,44 +67,42 @@ mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__datab
 
 # Install VisualEditor
 # (yeah no composer here...)
-if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
-  if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
-    echo ""
-    echo "Installing VisualEditor..."
-    cd "$WIKIDIR/extensions/"
-    git clone --depth=1 --single-branch -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-    cd VisualEditor
-    echo "Get Visual editor git submodules..."
-    git submodule update --init
-  fi
-fi
+#if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
+#  echo ""
+#  echo "Installing VisualEditor..."
+#  cd "$WIKIDIR/extensions/"
+#  git clone --depth=1 --single-branch -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+#  cd VisualEditor
+#  echo "Get Visual editor git submodules..."
+#  git submodule update --init
+#fi
 
-# Install MediaWiki
+
+# Setup MediaWiki
 echo ""
-echo "Running Mediawiki install script..."
+echo "Running Mediawiki setup script..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname $HW__db__database --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
-
-
-# Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
-# Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
-# (Less headache to do this here instead of our composer.json)
-echo ""
-echo "Install several MW extensions using Composer..."
 cd "$WIKIDIR"
-cp "$ROOTDIR"/composer.phar .
-php composer.phar require --no-progress mediawiki/semantic-media-wiki "@dev"
-php composer.phar require --no-progress mediawiki/page-forms "@dev"
-php composer.phar require --no-progress mediawiki/maps "@dev"
-php composer.phar require --no-progress mediawiki/semantic-watchlist "@dev"
-php composer.phar require --no-progress mediawiki/recaptcha "@dev"
-php maintenance/update.php --quick --conf "$CONFPATH"
-
+php maintenance/install.php --conf "$CONFPATH" /
+                            --dbuser $HW__db__username /
+                            --dbpass $HW__db__password /
+                            --dbname $HW__db__database /
+                            --dbtype mysql /
+                            --pass autobahn /
+                            --scriptpath /wiki /
+                            --lang en "$HW__general__sitename" hitchwiki
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 echo ""
 echo "Point Mediawiki configuration to Hitchwiki configuration file..."
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
+
+
+echo ""
+echo "Setup SemanticMediaWiki"
+touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
+cd "$WIKIDIR"
+php maintenance/update.php --quick --conf "$CONFPATH"
 
 
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
@@ -124,30 +113,32 @@ php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 
 # Install assets for HWMaps
-echo ""
-echo "Install assets for HWMaps..."
-cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
+#echo ""
+#echo "Install assets for HWMaps..."
+#cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
 
 
 # Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
-echo ""
-echo "Install assets for HitchwikiVector & HWMap extensions..."
-cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
-
+#echo ""
+#echo "Install assets for HitchwikiVector & HWMap extensions..."
+#cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
 
 # Install CheckUser
 echo ""
-echo "Install CheckUser..."
+echo "Setup CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
 cd "$WIKIDIR"
 
-
-# Create users
+# Create bot account
 echo ""
-echo "Create users..."
-cd "$ROOTDIR"
-bash "$SCRIPTDIR/create_users.sh"
+echo "Create bot account..."
+php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
+
+
+# Create another dummy account
+echo "Create another dummy account..."
+php maintenance/createAndPromote.php Hitchhiker autobahn
 
 
 # Import Semantic pages
@@ -181,12 +172,12 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
   sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
 
   sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
-
-  # Restart Parsoid to get new settings affect
-  echo ""
-  echo "Restart Parsoid to get new settings affect..."
-  sudo service parsoid restart
 fi
+
+# Restart Parsoid to get new settings affect
+echo ""
+echo "Restart Parsoid to get new settings affect..."
+sudo service parsoid restart
 
 
 # And we're done!
