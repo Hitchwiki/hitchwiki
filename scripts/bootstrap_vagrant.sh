@@ -99,6 +99,8 @@ cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db
 # (Less headache to do this here instead of our composer.json)
 echo ""
 echo "Install several MW extensions using Composer..."
+cd "$WIKIDIR"
+cp "$ROOTDIR"/composer.phar .
 php composer.phar require --no-progress mediawiki/semantic-media-wiki "~2.0"
 php composer.phar require --no-progress mediawiki/semantic-forms "~3.0"
 php composer.phar require --no-progress mediawiki/maps "~3.0"
