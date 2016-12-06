@@ -39,11 +39,8 @@
           "type": "zip"
         },
         "scripts": {
-          "post-package-install": [
-            "echo 1 && git submodule update --init"
-          ],
-          "post-install-cmd:": [
-            "echo 2 && git submodule update --init"
+          "post-install-cmd": [
+            "git submodule update --init"
           ]
         }
       }

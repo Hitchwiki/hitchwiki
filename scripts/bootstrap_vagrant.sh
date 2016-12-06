@@ -47,6 +47,22 @@ cd "$WIKIDIR"
 cp "$CONFDIR/composer.local.json" .
 composer update --no-dev --no-progress --no-interaction
 
+# Run some post-install scripts for a few extensions
+echo ""
+echo "Run post-install-cmd for HWMap extension..."
+cd "$WIKIDIR"
+composer run-script post-install-cmd -d ./extensions/HWMap
+
+echo ""
+echo "Run post-install-cmd for HitchwikiVector extension..."
+cd "$WIKIDIR"
+composer run-script post-install-cmd -d ./extensions/HitchwikiVector
+
+echo ""
+echo "Get git submodules for VisualEditor extension..."
+cd "$WIKIDIR/extensions/VisualEditor"
+git submodule update --init
+
 
 # Prepare databases
 echo "Prepare databases..."
@@ -63,19 +79,6 @@ mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__datab
 #echo ""
 #echo "Restart Apache..."
 #sudo /etc/init.d/apache2 restart
-
-
-# Install VisualEditor
-# (yeah no composer here...)
-#if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
-#  echo ""
-#  echo "Installing VisualEditor..."
-#  cd "$WIKIDIR/extensions/"
-#  git clone --depth=1 --single-branch -b $HW__general__mw_branch https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-#  cd VisualEditor
-#  echo "Get Visual editor git submodules..."
-#  git submodule update --init
-#fi
 
 
 # Setup MediaWiki
@@ -107,42 +110,16 @@ cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 
-# Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
-echo ""
-echo "Pre-populate the antispoof (MW extension) table with your wiki's existing usernames..."
-cd "$WIKIDIR"
-php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
-
-
-# Run post-install scripts for several of our own extensions
-# These are not run automatically so we'll just manually invoke them.
-# https://github.com/composer/composer/issues/1193
-cd "$WIKIDIR"
-echo ""
-echo "Run post install script for HWMap extension..."
-composer run-script post-install-cmd -d ./extensions/HWMap/
-echo ""
-echo "Run post install script for HitchwikiVector extension..."
-composer run-script post-install-cmd -d ./extensions/HitchwikiVector/
-
-
 # Install CheckUser
 echo ""
 echo "Setup CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
-cd "$WIKIDIR"
 
-
-# Create bot account
+# Create users
 echo ""
-echo "Create bot account..."
-php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
-
-
-# Create another dummy account
-echo "Create another dummy account..."
-php maintenance/createAndPromote.php Hitchhiker autobahn
+echo "Create users"
+bash "$SCRIPTDIR/create_users.sh"
 
 
 # Import Semantic pages
