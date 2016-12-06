@@ -28,7 +28,7 @@ fi
 # Clone MW Core
 if [ ! -d "$WIKIDIR/.git" ]; then
   echo ""
-  echo "Download MediaWiki archive..."
+  echo "Download MediaWiki $HW__general__mw_version_patch archive..."
   cd "$ROOTDIR/public"
   curl -sS -O https://releases.wikimedia.org/mediawiki/$HW__general__mw_version_minor/mediawiki-$HW__general__mw_version_patch.tar.gz
   echo "Extract MediaWiki archive..."
@@ -46,7 +46,6 @@ cd "$ROOTDIR"
 php composer.phar install --no-progress --no-interaction
 
 
-
 # Prepare databases
 echo "Prepare databases..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
@@ -62,6 +61,7 @@ mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__datab
 #echo ""
 #echo "Restart Apache..."
 #sudo /etc/init.d/apache2 restart
+
 
 # Install VisualEditor
 # (yeah no composer here...)
@@ -141,6 +141,7 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 # Import Semantic pages
 echo ""
 echo "Import Semantic pages..."
+echo "$SCRIPTDIR/import_pages.sh"
 bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
