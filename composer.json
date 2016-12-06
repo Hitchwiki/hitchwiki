@@ -83,18 +83,6 @@
     {
       "type": "package",
       "package": {
-        "name": "SemanticFormsInputs",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-SemanticFormsInputs/archive/REL1_28.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "DismissableSiteNotice",
         "version": "@dev",
         "type": "mediawiki-extension",
@@ -321,7 +309,6 @@
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",
     "GeoData":  "@dev",
-    "SemanticFormsInputs":  "@dev",
     "OAuth":  "@dev",
     "DismissableSiteNotice": "@dev",
     "GeoCrumbs": "@dev",
@@ -338,8 +325,7 @@
     "UploadWizard": "@dev",
     "EventLogging": "@dev",
     "HeaderTabs": "@dev",
-    "AddBodyClass": "@dev",
-    "mediawiki/maps": "~4.0"
+    "AddBodyClass": "@dev"
   },
   "require-dev": {
   },
