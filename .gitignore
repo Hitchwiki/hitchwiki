@@ -3,6 +3,7 @@
 # Composer
 composer.phar
 composer.lock
+public/composer
 
 # Vagrant/Scotchbox
 scotch-box
