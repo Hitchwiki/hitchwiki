@@ -48,16 +48,18 @@ cp "$CONFDIR/composer.local.json" .
 composer update --no-dev --no-progress --no-interaction
 
 # Run some post-install scripts for a few extensions
+# These are not run automatically so we'll just manually invoke them.
+# https://github.com/composer/composer/issues/1193
+cd "$WIKIDIR"
 echo ""
 echo "Run post-install-cmd for HWMap extension..."
-cd "$WIKIDIR"
 composer run-script post-install-cmd -d ./extensions/HWMap
-
 echo ""
 echo "Run post-install-cmd for HitchwikiVector extension..."
-cd "$WIKIDIR"
 composer run-script post-install-cmd -d ./extensions/HitchwikiVector
 
+# VisualEditor requires submodules
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
 echo ""
 echo "Get git submodules for VisualEditor extension..."
 cd "$WIKIDIR/extensions/VisualEditor"
