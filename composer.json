@@ -21,7 +21,7 @@
       "package": {
         "name": "wiki",
         "version": "1.28.0",
-        "type": "mediawiki-extension",
+        "type": "project",
         "dist": {
           "url": "https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.28.0.tar.gz",
           "type": "tar"
