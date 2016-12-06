@@ -8,7 +8,8 @@ ROOTDIR="/var/www"
 CONFDIR="$ROOTDIR/configs"
 CONFPATH="$CONFDIR/mediawiki.php"
 SCRIPTDIR="$ROOTDIR/scripts"
-WIKIDIR="$ROOTDIR/public/wiki"
+WIKIFOLDER="wiki"
+WIKIDIR="$ROOTDIR/public/$WIKIFOLDER"
 
 # Make sure we're at right directory
 cd "$ROOTDIR"
@@ -33,8 +34,13 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   curl -sS -O https://releases.wikimedia.org/mediawiki/$HW__general__mw_version_minor/mediawiki-$HW__general__mw_version_patch.tar.gz
   echo "Extract MediaWiki archive..."
   tar -zxf mediawiki-$HW__general__mw_version_patch.tar.gz
-  mv mediawiki-$HW__general__mw_version_patch wiki
+  mv mediawiki-$HW__general__mw_version_patch $WIKIFOLDER
   rm mediawiki-$HW__general__mw_version_patch.tar.gz
+
+  echo ""
+  echo "Create cache directories..."
+  mkdir -p "$WIKIDIR/cache"
+  mkdir -p "$WIKIDIR/images/cache"
 fi
 
 # Install Hitchwiki dependencies now that we have /wiki directory
