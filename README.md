@@ -73,6 +73,9 @@ bash scripts/vagrant_import_pages.sh
 1. Pull latest changes: `git pull origin master`
 2. Run update script: `bash scripts/vagrant_update.sh`
 
+### Re-Install
+2. Run re-install script: `bash scripts/re_install.sh`
+
 ## Vagrant box
 
 We're using [Scotchbox](http://box.scotch.io/).
