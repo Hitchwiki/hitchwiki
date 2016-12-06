@@ -246,9 +246,8 @@ $wgVectorBetaWinter = true;
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
-require_once "$IP/extensions/LocalisationUpdate/LocalisationUpdate.php";
+wfLoadExtension( 'LocalisationUpdate' );
 $wgLocalisationUpdateDirectory = "$IP/cache";
-
 
 /**
  * Enables some features required by VectorBeta such as Special:MobileMenu
