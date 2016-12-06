@@ -147,7 +147,7 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 # Import Semantic pages
 echo ""
 echo "Import Semantic pages..."
-echo "$SCRIPTDIR/import_pages.sh"
+cd "$ROOTDIR"
 bash "$SCRIPTDIR/import_pages.sh"
 
 # Import interwiki table
