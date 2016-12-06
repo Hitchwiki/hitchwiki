@@ -14,6 +14,7 @@ export_db.sh | export database of the English Hitchwiki from an SQL dump
 export_pages.sh | export Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
 import_pages.sh | import Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
 install.sh | install Hitchwiki inside a Vagrant box
+re-install.sh | wipe out old files & vagrant box, then run install script
 migrate.sh | export DB from old Hitchwiki SQL dumps; bring it up to date with MediaWiki version
 permissions.sh | set correct file permissions
 pull_hw_extensions.sh | pull custom MediaWiki extensions and update their assets
