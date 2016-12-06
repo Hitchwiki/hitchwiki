@@ -1,0 +1,340 @@
+{
+  "repositories": [
+    {
+      "url": "https://github.com/Hitchwiki/HitchwikiVector-extension.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWMap-extension.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWRatings-extension",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWComments-extension",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/BetaFeatureEverywhere.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta.git",
+      "type": "git"
+    },
+    {
+      "url": "https://github.com/Hitchwiki/HWWaitingTime-extension",
+      "type": "git"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "VisualEditor",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-VisualEditor/archive/REL1_28.zip",
+          "type": "zip"
+        },
+        "scripts": {
+          "post-package-install": [
+            "echo 1 && git submodule update --init"
+          ],
+          "post-install-cmd:": [
+            "echo 2 && git submodule update --init"
+          ]
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AntiSpoof",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AntiSpoof/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AbuseFilter",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AbuseFilter/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "GeoData",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoData/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "DismissableSiteNotice",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-DismissableSiteNotice/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "OAuth",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-OAuth/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "GeoCrumbs",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoCrumbs/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "CheckUser",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-CheckUser/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "ExternalData",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ExternalData/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "TorBlock",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-TorBlock/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "ApiSandbox",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ApiSandbox/archive/REL1_26.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "MultimediaViewer",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AdminLinks",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AdminLinks/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "BetaFeatures",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-BetaFeatures/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "ReplaceText",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ReplaceText/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "Echo",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-Echo/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "StopForumSpam",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-StopForumSpam/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "MobileFrontend",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MobileFrontend/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "UploadWizard",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-UploadWizard/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "EventLogging",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-EventLogging/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "HeaderTabs",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-HeaderTabs/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "AddBodyClass",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/p12tic/AddBodyClass/archive/1.1.zip",
+          "type": "zip"
+        }
+      }
+    }
+  ],
+  "require": {
+    "HWMap": "@dev",
+    "HWRatings": "@dev",
+    "HWComments": "@dev",
+    "HWWaitingTime": "@dev",
+    "HWVectorBeta": "@dev",
+    "HitchwikiVector": "@dev",
+    "BetaFeatureEverywhere": "@dev",
+    "BetaFeatures": "@dev",
+    "VisualEditor": "@dev",
+    "AntiSpoof": "@dev",
+    "AbuseFilter": "@dev",
+    "GeoData":  "@dev",
+    "OAuth": "@dev",
+    "DismissableSiteNotice": "@dev",
+    "GeoCrumbs": "@dev",
+    "ExternalData": "@dev",
+    "TorBlock": "@dev",
+    "ApiSandbox": "@dev",
+    "MultimediaViewer": "@dev",
+    "AdminLinks": "@dev",
+    "ReplaceText": "@dev",
+    "CheckUser": "@dev",
+    "Echo": "@dev",
+    "StopForumSpam": "@dev",
+    "MobileFrontend": "@dev",
+    "UploadWizard": "@dev",
+    "EventLogging": "@dev",
+    "HeaderTabs": "@dev",
+    "AddBodyClass": "@dev",
+    "mediawiki/semantic-media-wiki": "2.4.3",
+    "mediawiki/page-forms": "4.0.2",
+    "mediawiki/maps": "4.0.3",
+    "mediawiki/semantic-watchlist": "1.1.0"
+  },
+  "minimum-stability": "dev"
+}

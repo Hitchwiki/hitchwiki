@@ -19,20 +19,17 @@ source "scripts/_settings.sh"
 
 echo ""
 echo "Update Hitchwiki dependencies..."
-php composer.phar update
-
-echo ""
-echo "Update MediaWiki dependencies..."
 cd "$WIKIDIR"
-git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
-git pull
-php composer.phar update
+rm "$WIKIDIR/composer.local.json"
+cp "$CONFDIR/composer.local.json" .
+composer update --no-progress --no-interaction
 
-echo ""
-echo "Update Vector skin..."
-cd "$WIKIDIR/skins/Vector"
-git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
-git pull
+#echo ""
+#echo "Update MediaWiki dependencies..."
+#cd "$WIKIDIR"
+#git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
+#git pull
+#php composer.phar update
 
 echo ""
 echo "Update VisualEditor..."
