@@ -107,13 +107,11 @@ require_once "$IP/extensions/DismissableSiteNotice/DismissableSiteNotice.php";
  * These were installed via composer directly at MediaWiki folder and Composer takes care loading them
  * https://semantic-mediawiki.org/wiki/Help:Installation#Installation
  */
-//require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
 if(file_exists("$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php")) {
+  require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
   enableSemantics();
   require_once "$IP/extensions/Maps/Maps.php";
-  require_once "$IP/extensions/SemanticMaps/SemanticMaps.php";
-  require_once "$IP/extensions/SemanticForms/SemanticForms.php";
-  require_once "$IP/extensions/SemanticFormsInputs/SemanticFormsInputs.php";
+  require_once "$IP/extensions/PageForms/PageForms.php";
   require_once "$IP/extensions/SemanticWatchlist/SemanticWatchlist.php";
 
   // Sets whether help information on the edit page is displayed
