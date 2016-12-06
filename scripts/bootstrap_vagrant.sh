@@ -143,23 +143,11 @@ cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 cd "$WIKIDIR"
 
 
-# Create bot account
+# Create users
 echo ""
-echo "Create bot account..."
-php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
-
-
-# Create another dummy account
-echo "Create another dummy account..."
-php maintenance/createAndPromote.php Hitchhiker autobahn
-
-
-# Confirm emails for all created users
-echo ""
-echo "Confirm emails for all created users..."
-mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+echo "Create users..."
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/create_users.sh"
 
 
 # Import Semantic pages
