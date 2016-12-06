@@ -11,11 +11,14 @@ SCRIPTDIR="$ROOTDIR/scripts"
 WIKIFOLDER="wiki"
 WIKIDIR="$ROOTDIR/public/$WIKIFOLDER"
 
+
 # Make sure we're at right directory
 cd "$ROOTDIR"
 
+
 # Makes sure we have settings.ini and "Bash ini parser"
 source "$SCRIPTDIR/_settings.sh"
+
 
 # Download Composer
 # https://www.mediawiki.org/wiki/Composer
@@ -25,6 +28,7 @@ if [ ! -f composer.phar ]; then
   curl -sS https://getcomposer.org/installer | php
   echo ""
 fi
+
 
 # Clone MW Core
 if [ ! -d "$WIKIDIR/.git" ]; then
@@ -42,6 +46,7 @@ if [ ! -d "$WIKIDIR/.git" ]; then
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
 fi
+
 
 # Install Hitchwiki dependencies now that we have /wiki directory
 #   If you encounter issues with this (i.e. missing extensions),
@@ -81,11 +86,13 @@ if [ ! -d "$WIKIDIR/extensions/VisualEditor" ]; then
   git submodule update --init
 fi
 
+
 # Install MediaWiki
 echo ""
-echo "Installing Mediawiki..."
+echo "Running Mediawiki install script..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
 cd "$WIKIDIR" && php maintenance/install.php --conf "$CONFPATH" --dbuser $HW__db__username --dbpass $HW__db__password --dbname $HW__db__database --dbtype mysql --pass autobahn --scriptpath /wiki --lang en "$HW__general__sitename" hitchwiki
+
 
 # Install SemanticMediawiki extensions https://www.semantic-mediawiki.org/
 # Install reCaptcha https://github.com/vedmaka/Mediawiki-reCaptcha
@@ -100,10 +107,12 @@ php composer.phar require --no-progress mediawiki/semantic-watchlist "~1.0"
 php composer.phar require --no-progress mediawiki/recaptcha "@dev"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
+
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 echo ""
 echo "Point Mediawiki configuration to Hitchwiki configuration file..."
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
+
 
 # Pre-populate the antispoof (MW extension) table with your wiki's existing usernames
 echo ""
@@ -111,15 +120,18 @@ echo "Pre-populate the antispoof (MW extension) table with your wiki's existing 
 cd "$WIKIDIR"
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
+
 # Install assets for HWMaps
 echo ""
 echo "Install assets for HWMaps..."
 cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
 
+
 # Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
 echo ""
 echo "Install assets for HitchwikiVector & HWMap extensions..."
 cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
+
 
 # Install CheckUser
 echo ""
@@ -128,14 +140,17 @@ cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
 cd "$WIKIDIR"
 
+
 # Create bot account
 echo ""
 echo "Create bot account..."
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
+
 # Create another dummy account
 echo "Create another dummy account..."
 php maintenance/createAndPromote.php Hitchhiker autobahn
+
 
 # Confirm emails for all created users
 echo ""
@@ -144,11 +159,13 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user 
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
 
+
 # Import Semantic pages
 echo ""
 echo "Import Semantic pages..."
 cd "$ROOTDIR"
 bash "$SCRIPTDIR/import_pages.sh"
+
 
 # Import interwiki table
 echo ""
@@ -165,6 +182,7 @@ sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediaw
 sudo apt-get install apt-transport-https
 sudo apt-get update && sudo apt-get install parsoid
 
+
 # Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
 echo ""
 echo "Setup Parsoid configs..."
@@ -174,10 +192,12 @@ sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediaw
 
 sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 
+
 # Restart Parsoid to get new settings affect
 echo ""
 echo "Restart Parsoid to get new settings affect..."
 sudo service parsoid restart
+
 
 # And we're done!
 
