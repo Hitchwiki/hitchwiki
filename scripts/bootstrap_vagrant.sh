@@ -114,16 +114,17 @@ cd "$WIKIDIR"
 php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 
-# Install assets for HWMaps
-#echo ""
-#echo "Install assets for HWMaps..."
-#cd "$WIKIDIR/extensions/HWMap" && bower install --config.interactive=false --allow-root
+# Run post-install scripts for several of our own extensions
+# These are not run automatically so we'll just manually invoke them.
+# https://github.com/composer/composer/issues/1193
+cd "$WIKIDIR"
+echo ""
+echo "Run post install script for HWMap extension..."
+composer run-script post-install-cmd -d ./extensions/HWMap/
+echo ""
+echo "Run post install script for HitchwikiVector extension..."
+composer run-script post-install-cmd -d ./extensions/HitchwikiVector/
 
-
-# Install assets for HitchwikiVector & HWMap extensions (should be done by composer but fails sometimes)
-#echo ""
-#echo "Install assets for HitchwikiVector & HWMap extensions..."
-#cd "$WIKIDIR/extensions/HitchwikiVector" && bower install --config.interactive=false --allow-root
 
 # Install CheckUser
 echo ""
@@ -131,6 +132,7 @@ echo "Setup CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
 cd "$WIKIDIR"
+
 
 # Create bot account
 echo ""
