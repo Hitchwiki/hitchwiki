@@ -96,16 +96,18 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
   echo "Install VisualEditor extension..."
   cd "$WIKIDIR/extensions"
   git clone \
-      -b $HW__general__mw_branch  \
-      --depth=1  \
-      --single-branch  \
-      --recurse-submodules  \
-      https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
+      -b $HW__general__mw_branch \
+      --depth=1 \
+      --single-branch \
+      --recurse-submodules \
+      https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git \
       VisualEditor;
+else
+  echo ""
+  echo "Skipped Installing VisualEditor extension."
+fi
 echo ""
 echo "-------------------------------------------------------------------------"
-fi
-
 
 # Stop Maps extension from setting up a {{#coordinates}} parser function hook
 # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
@@ -222,9 +224,12 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
   echo ""
   echo "Call Parsoid install script..."
   bash "$SCRIPTDIR/install_parsoid.sh"
+else
   echo ""
-  echo "-------------------------------------------------------------------------"
+  echo "Skipped calling Parsoid install script."
 fi
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 
