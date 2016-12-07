@@ -24,13 +24,6 @@ rm "$WIKIDIR/composer.local.json"
 cp "$CONFDIR/composer.local.json" .
 composer update --no-progress --no-interaction
 
-#echo ""
-#echo "Update MediaWiki dependencies..."
-#cd "$WIKIDIR"
-#git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
-#git pull
-#php composer.phar update
-
 echo ""
 echo "Update VisualEditor..."
 cd "$WIKIDIR/extensions/VisualEditor"
