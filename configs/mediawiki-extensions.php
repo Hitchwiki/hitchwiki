@@ -30,7 +30,7 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
  * WikiEditor (code)
  * https://www.mediawiki.org/wiki/Extension:WikiEditor
  */
-require_once "$IP/extensions/WikiEditor/WikiEditor.php";
+wfLoadExtension('WikiEditor');
 # Enables use of WikiEditor by default but still allow users to disable it in preferences
 $wgDefaultUserOptions['usebetatoolbar'] = 1;
 $wgDefaultUserOptions['usebetatoolbar-cgd'] = 1;
@@ -101,7 +101,7 @@ $wgGroupPermissions['my-group']['adminlinks'] = true;
  * This can be disabled after http://hitchwiki.org/en/MediaWiki:Sitenotice is no more needed.
  * http://www.mediawiki.org/wiki/Extension:DismissableSiteNotice
  */
-require_once "$IP/extensions/DismissableSiteNotice/DismissableSiteNotice.php";
+wfLoadExtension('DismissableSiteNotice');
 
 /**
  * Semantic MediaWiki extensions
@@ -131,7 +131,7 @@ if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
  * ParserFunctions
  */
 # Enable old string functions (needed at our semantic templates)
-require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
+wfLoadExtension('ParserFunctions');
 $wgPFEnableStringFunctions = true;
 
 /**
@@ -139,7 +139,7 @@ $wgPFEnableStringFunctions = true;
  * - Grant sysops permissions to edit interwiki data
  * - See Database settings to understand how Interwiki settings are shared between wikis
  */
-require_once "$IP/extensions/Interwiki/Interwiki.php";
+wfLoadExtension('Interwiki');
 $wgGroupPermissions['sysop']['interwiki'] = true;
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
@@ -159,7 +159,7 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
  * https://www.mediawiki.org/wiki/Extension:CheckUser
  * Requires install, see scripts/vagrant_bootstrap.sh
  */
-#require_once "$IP/extensions/CheckUser/CheckUser.php";
+#wfLoadExtension('CheckUser');
 #$wgGroupPermissions['sysop']['checkuser'] = true;
 
 /**
@@ -179,7 +179,7 @@ $wgSharedTables[] = 'spoofuser';
  * find-and-replace on both the text and titles of the wiki's content pages.
  * https://www.mediawiki.org/wiki/Extension:Replace_Text
  */
-require_once "$IP/extensions/ReplaceText/ReplaceText.php";
+wfLoadExtension('ReplaceText');
 $wgGroupPermissions['bureaucrat']['replacetext'] = true;
 
 /**
@@ -248,7 +248,7 @@ $wgVectorBetaWinter = true;
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
-wfLoadExtension( 'LocalisationUpdate' );
+wfLoadExtension('LocalisationUpdate');
 $wgLocalisationUpdateDirectory = "$IP/cache";
 
 /**
@@ -263,7 +263,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
  * Rename user
  * https://www.mediawiki.org/wiki/Extension:Renameuser
  */
-require_once "$IP/extensions/Renameuser/Renameuser.php";
+wfLoadExtension('Renameuser');
 $wgGroupPermissions['sysop']['renameuser'] = true;
 
 
@@ -289,7 +289,7 @@ $wgApiFrameOptions = 'SAMEORIGIN';
 $wgUploadNavigationUrl = '/'.$hwLang.'/Special:UploadWizard';
 // This modifies the sidebar's "Upload file" link - probably in other places as well. More at Manual:$wgUploadNavigationUrl.
 $wgExtensionFunctions[] = function() {
-  $GLOBALS['wgUploadNavigationUrl'] = SpecialPage::getTitleFor( 'UploadWizard' )->getLocalURL();
+  $GLOBALS['wgUploadNavigationUrl'] = SpecialPage::getTitleFor('UploadWizard')->getLocalURL();
   return true;
 };
 
