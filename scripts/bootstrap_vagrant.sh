@@ -78,17 +78,19 @@ composer run-script post-install-cmd -d ./extensions/HitchwikiVector
 # Install VisualEditor
 # Since it requires submodules, we don't install this using composer
 # https://www.mediawiki.org/wiki/Extension:VisualEditor
-echo ""
-echo "Install VisualEditor extension..."
-cd "$WIKIDIR/extensions"
-git clone \
-    -b $HW__general__mw_branch  \
-    --depth=1  \
-    --single-branch  \
-    --recurse-submodules  \
-    #--shallow-submodules  \
-    https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
-    VisualEditor;
+if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
+  echo ""
+  echo "Install VisualEditor extension..."
+  cd "$WIKIDIR/extensions"
+  git clone \
+      -b $HW__general__mw_branch  \
+      --depth=1  \
+      --single-branch  \
+      --recurse-submodules  \
+      https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
+      VisualEditor;
+fi
+
 
 # Stop Maps extension from setting up a {{#coordinates}} parser function hook
 # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
