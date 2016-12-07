@@ -90,6 +90,14 @@ git clone \
     https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
     VisualEditor;
 
+# Stop Maps extension from setting up a {{#coordinates}} parser function hook
+# that conflicts with GeoData extensions's {{#coordinates}} parser function hook
+#
+# We are using GeoData's function in templates to index articles with spatial info
+#
+# TODO: any solution that is cleaner than this temporary dirty hack..
+sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
+sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/bootstrap_vagrant.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
 
 # Prepare databases
 echo "Prepare databases..."
