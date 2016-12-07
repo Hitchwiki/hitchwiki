@@ -88,16 +88,19 @@ echo ""
 echo "Running Mediawiki setup script..."
 # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
 cd "$WIKIDIR"
+# Runs Mediawiki install script:
+# - sets up wiki in one language ("en")
+# - creates one admin user "hitchwiki" with password "authobahn"
 php maintenance/install.php --conf "$CONFPATH" \
                             --dbuser $HW__db__username \
                             --dbpass $HW__db__password \
                             --dbname $HW__db__database \
                             --dbtype mysql \
-                            --pass autobahn \ # admin pass
+                            --pass autobahn \
                             --scriptpath /$WIKIFOLDER \
                             --lang en \
-                            "$HW__general__sitename" \ # site name
-                            hitchwiki; # admin name
+                            "$HW__general__sitename" \
+                            hitchwiki;
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 echo ""
