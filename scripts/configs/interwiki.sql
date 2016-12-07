@@ -33,7 +33,6 @@ INSERT INTO `interwiki` (`iw_prefix`, `iw_url`, `iw_api`, `iw_wikiid`, `iw_local
 ('fi', 'http://hitchwiki.org/fi/$1', '', '', 1, 0),
 ('fr', 'http://hitchwiki.org/fr/$1', '', '', 1, 0),
 ('he', 'http://hitchwiki.org/he/$1', '', '', 1, 0),
-('hitchingit', 'http://www.hitching.it/$1', '', '', 0, 0),
 ('hr', 'http://hitchwiki.org/hr/$1', '', '', 1, 0),
 ('it', 'http://hitchwiki.org/it/$1', '', '', 1, 0),
 ('lt', 'http://hitchwiki.org/lt/$1', '', '', 1, 0),
