@@ -49,14 +49,16 @@ cd "$WIKIDIR"
 php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v
 echo ""
 
-echo "Update assets for HWMap..."
-cd "$WIKIDIR/extensions/HWMap"
-bower update --config.interactive=false --allow-root
-
+# Run some post-install scripts for a few extensions
+# These are not run automatically so we'll just manually invoke them.
+# https://github.com/composer/composer/issues/1193
+cd "$WIKIDIR"
 echo ""
-echo "Update assets for HitchwikiVector..."
-cd "$WIKIDIR/extensions/HitchwikiVector"
-bower update --config.interactive=false --allow-root
+echo "Run post-install-cmd for HWMap extension..."
+composer run-script post-install-cmd -d ./extensions/HWMap
+echo ""
+echo "Run post-install-cmd for HitchwikiVector extension..."
+composer run-script post-install-cmd -d ./extensions/HitchwikiVector
 
 echo ""
 echo "Fetch latest localisation files..." # Update locales
