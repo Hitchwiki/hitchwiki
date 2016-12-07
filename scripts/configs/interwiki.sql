@@ -49,7 +49,7 @@ INSERT INTO `interwiki` (`iw_prefix`, `iw_url`, `iw_api`, `iw_wikiid`, `iw_local
 ('share', 'http://sharewiki.org/en/$1', '', '', 0, 0),
 ('tr', 'http://hitchwiki.org/tr/$1', '', '', 1, 0),
 ('trash', 'http://trashwiki.org/en/$1', '', '', 0, 0),
-('trustroots', 'https://www.trustroots.org/#!/search?location=$1', '', '', 0, 0),
+('trustroots', 'https://www.trustroots.org/search?location=$1', '', '', 0, 0),
 ('wikihow', 'http://www.wikihow.com/$1', '', '', 0, 0),
 ('wikipedia', 'https://en.wikipedia.org/wiki/$1', '', '', 0, 0),
 ('wikitravel', 'http://en.wikivoyage.org/wiki/$1', '', '', 0, 0),
