@@ -195,6 +195,7 @@ echo "-------------------------------------------------------------------------"
 # Create bot users
 echo ""
 echo "Create users"
+cd "$ROOTDIR"
 bash "$SCRIPTDIR/create_users.sh"
 echo ""
 echo "-------------------------------------------------------------------------"
