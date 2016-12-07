@@ -76,3 +76,8 @@ bash $SCRIPTDIR/import_pages.sh
 echo "Import interwiki table..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 echo ""
+
+#Create basic users
+cd "$ROOTDIR"
+bash $SCRIPTDIR/create_users.sh
+
