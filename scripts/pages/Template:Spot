@@ -24,7 +24,7 @@ It should be called in the following format:
 
 {{{Description|}}}
 
-{{#coordinates:{{#explode:{{{Location|}}}|, |0}},{{#explode:{{{Location|}}}|, |1}}|primary}}
+{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 
 {{#default_form::spot}}
 [[Category:Spots]]
