@@ -96,10 +96,11 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
   echo "Install VisualEditor extension..."
   cd "$WIKIDIR/extensions"
   git clone \
-      -b $HW__general__mw_branch \
-      --depth=1 \
+      --branch $HW__general__mw_branch \
       --single-branch \
+      --depth=1 \
       --recurse-submodules \
+      --quiet \
       https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git \
       VisualEditor;
 else
