@@ -30,8 +30,8 @@ sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediaw
 
 echo ""
 echo "Install Parsoid using apt-get..."
-sudo apt-get install apt-transport-https
-sudo apt-get update -y
+sudo apt-get install -y --no-install-recommends apt-transport-https
+sudo apt-get -qq update
 sudo apt-get install -y --no-install-recommends parsoid
 
 # Copy our settings for Parsoid
