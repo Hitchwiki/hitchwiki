@@ -18,8 +18,23 @@ cd "$ROOTDIR"
 source "$SCRIPTDIR/_settings.sh"
 
 
+# Fixes possible "warning: Setting locale failed." errors
+export LC_ALL="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+
+
+# Vagrant SCOTCH BOX (https://box.scotch.io/) has git 1.9
+# and we want 2+ for shallow submodules
 echo ""
-echo "Upgrade Composer"
+echo "Upgrade git to v2"
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get -qq update
+sudo apt-get -y install git
+git --version
+
+
+echo ""
+echo "Upgrade Composer to latest version..."
 composer self-update
 
 
@@ -47,6 +62,7 @@ cd "$WIKIDIR"
 cp "$CONFDIR/composer.local.json" .
 composer update --no-dev --no-progress --no-interaction
 
+
 # Run some post-install scripts for a few extensions
 # These are not run automatically so we'll just manually invoke them.
 # https://github.com/composer/composer/issues/1193
@@ -58,12 +74,21 @@ echo ""
 echo "Run post-install-cmd for HitchwikiVector extension..."
 composer run-script post-install-cmd -d ./extensions/HitchwikiVector
 
-# VisualEditor requires submodules
+
+# Install VisualEditor
+# Since it requires submodules, we don't install this using composer
 # https://www.mediawiki.org/wiki/Extension:VisualEditor
 echo ""
-echo "Get git submodules for VisualEditor extension..."
-cd "$WIKIDIR/extensions/VisualEditor"
-git submodule update --init
+echo "Install VisualEditor extension..."
+cd "$WIKIDIR/extensions"
+git clone \
+    -b $HW__general__mw_branch  \
+    --depth=1  \
+    --single-branch  \
+    --recurse-submodules  \
+    --shallow-submodules  \
+    https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
+    VisualEditor;
 
 
 # Prepare databases

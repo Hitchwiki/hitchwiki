@@ -31,23 +31,6 @@
     {
       "type": "package",
       "package": {
-        "name": "VisualEditor",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-VisualEditor/archive/REL1_28.zip",
-          "type": "zip"
-        },
-        "scripts": {
-          "post-install-cmd": [
-            "git submodule update --init"
-          ]
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "AntiSpoof",
         "version": "@dev",
         "type": "mediawiki-extension",
@@ -307,7 +290,6 @@
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",
     "BetaFeatures": "@dev",
-    "VisualEditor": "@dev",
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",
     "GeoData":  "@dev",
