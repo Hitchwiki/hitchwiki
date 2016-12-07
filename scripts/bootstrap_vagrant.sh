@@ -107,37 +107,43 @@ cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.p
 
 echo ""
 echo "Setup SemanticMediaWiki"
+# Mediawiki config file has a check for this file:
+# basically these extensions are not included in MediaWiki
+# before this file exists, because it would cause errors during
+# installation process.
 touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
 cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$CONFPATH"
 
 
-# Install CheckUser
+# Setup CheckUser
 echo ""
 echo "Setup CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
 
 
-# Create users
+# Create bot users
 echo ""
 echo "Create users"
 bash "$SCRIPTDIR/create_users.sh"
 
 
-# Import Semantic pages
+# Import Semantic pages, main navigation etc
 echo ""
-echo "Import Semantic pages..."
+echo "Import Semantic templates and other MediaWiki special pages..."
 cd "$ROOTDIR"
 bash "$SCRIPTDIR/import_pages.sh"
 
 
 # Import interwiki table
+# https://www.mediawiki.org/wiki/Extension:Interwiki
 echo ""
 echo "Import interwiki table..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 
 
 # Install Parsoid
+# Parsoid is a Node application required by VisualEditor extension
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
   echo ""

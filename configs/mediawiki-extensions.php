@@ -105,8 +105,11 @@ require_once "$IP/extensions/DismissableSiteNotice/DismissableSiteNotice.php";
 
 /**
  * Semantic MediaWiki extensions
- * These were installed via composer directly at MediaWiki folder and Composer takes care loading them
  * https://semantic-mediawiki.org/wiki/Help:Installation#Installation
+ *
+ * `SemanticMediaWikiEnabled` file is created during first `vagrant up` command
+ * from `./scripts/bootstrap_vagrant.sh` file. It's to ensure we don't load them
+ * too early in process and cause DB errors.
  */
 if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
   require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
