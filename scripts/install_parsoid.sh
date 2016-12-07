@@ -52,6 +52,3 @@ sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
 echo ""
 echo "Restart Parsoid to get new settings affect..."
 sudo service parsoid restart
-
-echo ""
-echo "-------------------------------------------------------------------------"

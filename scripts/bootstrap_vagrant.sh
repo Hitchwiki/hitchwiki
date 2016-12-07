@@ -31,29 +31,39 @@ sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -qq update
 sudo apt-get -y install git
 git --version
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
 echo "Upgrade Composer to latest version..."
 composer self-update
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
 echo "Download MediaWiki using Composer..."
 cd "$ROOTDIR"
 composer install --no-autoloader --no-dev --no-progress --no-interaction
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
 echo "Create cache directories..."
 mkdir -p "$WIKIDIR/cache"
 mkdir -p "$WIKIDIR/images/cache"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
 echo "Ensure correct permissions for cache folders..."
 chown www-data:www-data $WIKIDIR/cache
 chown www-data:www-data $WIKIDIR/images/cache
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
@@ -61,6 +71,8 @@ echo "Download basic MediaWiki extensions using Composer..."
 cd "$WIKIDIR"
 cp "$CONFDIR/composer.local.json" .
 composer update --no-dev --no-progress --no-interaction
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Run some post-install scripts for a few extensions
@@ -73,7 +85,8 @@ composer run-script post-install-cmd -d ./extensions/HWMap
 echo ""
 echo "Run post-install-cmd for HitchwikiVector extension..."
 composer run-script post-install-cmd -d ./extensions/HitchwikiVector
-
+echo ""
+echo "-------------------------------------------------------------------------"
 
 # Install VisualEditor
 # Since it requires submodules, we don't install this using composer
@@ -89,6 +102,8 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
       --recurse-submodules  \
       https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
       VisualEditor;
+echo ""
+echo "-------------------------------------------------------------------------"
 fi
 
 
@@ -98,14 +113,20 @@ fi
 # We are using GeoData's function in templates to index articles with spatial info
 #
 # TODO: any solution that is cleaner than this temporary dirty hack..
+echo ""
+echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
 sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
 sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/bootstrap_vagrant.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 # Prepare databases
 echo "Prepare databases..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
 mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
 #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Install APC
@@ -136,11 +157,15 @@ php maintenance/install.php --conf "$CONFPATH" \
                             --lang en \
                             "$HW__general__sitename" \
                             hitchwiki;
+echo ""
+echo "-------------------------------------------------------------------------"
 
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 echo ""
 echo "Point Mediawiki configuration to Hitchwiki configuration file..."
 cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 echo ""
@@ -152,18 +177,24 @@ echo "Setup SemanticMediaWiki"
 touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
 cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$CONFPATH"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Setup CheckUser
 echo ""
 echo "Setup CheckUser..."
 cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Create bot users
 echo ""
 echo "Create users"
 bash "$SCRIPTDIR/create_users.sh"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Import Semantic pages, main navigation etc
@@ -171,6 +202,8 @@ echo ""
 echo "Import Semantic templates and other MediaWiki special pages..."
 cd "$ROOTDIR"
 bash "$SCRIPTDIR/import_pages.sh"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Import interwiki table
@@ -178,6 +211,8 @@ bash "$SCRIPTDIR/import_pages.sh"
 echo ""
 echo "Import interwiki table..."
 mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
+echo ""
+echo "-------------------------------------------------------------------------"
 
 
 # Install Parsoid
@@ -187,6 +222,8 @@ if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that exc
   echo ""
   echo "Call Parsoid install script..."
   bash "$SCRIPTDIR/install_parsoid.sh"
+  echo ""
+  echo "-------------------------------------------------------------------------"
 fi
 
 
@@ -195,7 +232,7 @@ fi
 
 echo ""
 echo ""
-echo "---------------------------------------------------------------------"
+echo "-------------------------------------------------------------------------"
 echo ""
 echo "Hitchwiki is now installed!"
 echo ""
