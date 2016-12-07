@@ -86,7 +86,7 @@ git clone \
     --depth=1  \
     --single-branch  \
     --recurse-submodules  \
-    --shallow-submodules  \
+    #--shallow-submodules  \
     https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git  \
     VisualEditor;
 
