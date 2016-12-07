@@ -175,26 +175,10 @@ mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/co
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
   echo ""
-  echo "Install Parsoid..."
-  sudo apt-key advanced --keyserver pgp.mit.edu --recv-keys 90E9F83F22250DD7
-  sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediawiki main"
-  sudo apt-get install apt-transport-https
-  sudo apt-get update && sudo apt-get install parsoid
-
-  # Copy our settings for Parsoid (replace hitchwiki.dev domain with domain variable from settings.ini)
-  echo ""
-  echo "Setup Parsoid configs..."
-  localsettingsjs=$(<"$SCRIPTDIR/configs/parsoid_localsettings.js")
-  sudo mkdir -p /etc/mediawiki/parsoid/
-  sudo echo "${localsettingsjs//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/localsettings.js
-
-  sudo /bin/cp -f "$SCRIPTDIR/configs/parsoid_initscript" /etc/default/parsoid
+  echo "Call Parsoid install script..."
+  bash "$SCRIPTDIR/install_parsoid.sh"
 fi
 
-# Restart Parsoid to get new settings affect
-echo ""
-echo "Restart Parsoid to get new settings affect..."
-sudo service parsoid restart
 
 
 # And we're done!
