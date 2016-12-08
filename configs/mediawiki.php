@@ -113,14 +113,21 @@ $wgFavicon = $wgScriptPath . "/../favicon.png";
 ## UPO means: this is also a user preference option
 
 $wgEnableEmail = true;
-$wgEnableUserEmail = true; # UPO
+$wgEnableUserEmail = false; # UPO
 
 $wgEmergencyContact = "contact@" . $hwConfig["general"]["domain"];
 $wgPasswordSender = "noreply@" . $hwConfig["general"]["domain"];
 
-$wgEnotifUserTalk = false; # UPO
-$wgEnotifWatchlist = false; # UPO
-$wgEmailAuthentication = true;
+// For a detailed description of the following switches see
+// http://meta.wikimedia.org/Enotif and http://meta.wikimedia.org/Eauthent
+// There are many more options for fine tuning available see
+// /includes/DefaultSettings.php
+// UPO means: this is also a user preference option
+$wgEnotifUserTalk            = true; // UPO
+$wgEnotifWatchlist           = true; // UPO
+$wgEmailAuthentication       = true;
+$wgEnotifRevealEditorAddress = false;
+$wgEnotifFromEditor          = false;
 
 ## Use SMTP to send out emails
 ## https://www.mediawiki.org/wiki/Manual:$wgSMTP
@@ -146,6 +153,7 @@ $wgDBpassword = $hwConfig["db"]["password"];
 ## Mainly for Users and Interwiki extension
 ## By default shares 'users' and 'user_properties' tables
 $wgSharedDB = $hwConfig["db"]["database"];
+$wgSharedSchema = false;
 $wgSharedPrefix = $hwConfig["db"]["prefix"];
 ## https://www.mediawiki.org/wiki/Extension:Interwiki#Global_interwikis
 $wgSharedTables[] = "interwiki";
@@ -164,7 +172,10 @@ $wgDBmysql5 = false;
 # Basic MW caching
 $wgEnableParserCache = $hwCache;
 $wgCachePages = $hwCache;
-$wgResourceLoaderMaxage['unversioned'] = 1;
+$wgResourceLoaderMaxage['unversioned'] = array(
+	'server' => $hwCache ? 30 : 0, // minutes
+	'client' => $hwCache ? 30 : 0, // minutes
+);
 
 ## Shared memory settings
 ## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
@@ -187,6 +198,8 @@ $wgExtraLanguageNames['nomad'] = 'Nomadwiki';
 $wgExtraLanguageNames['trash'] = 'Trashwiki';
 $wgExtraLanguageNames['wikipedia'] = 'Wikipedia';
 $wgExtraLanguageNames['wikivoyage'] = 'Wikivoyage';
+$wgExtraLanguageNames['trustroots'] = 'Trustroots';
+$wgExtraLanguageNames['bewelcome'] = 'BeWelcome';
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
@@ -202,6 +215,14 @@ $wgGenerateThumbnailOnParse = false;
 
 $wgUploadPath       = $wgScriptPath . "/images/" . $hwLang;
 $wgUploadDirectory  = $IP . "/images/" . $hwLang;
+
+if($hwLang != 'en') {
+  // $wgUseSharedUploads            = true;
+  $wgSharedUploadPath            = $wgUploadPath;
+  $wgSharedUploadDirectory       = $wgUploadDirectory;
+  $wgHashedSharedUploadDirectory = true;
+  $wgSharedUploadDBname          = $hwConfig["db"]["database"];
+}
 
 # Allowed file extensions for uploading files
 $wgFileExtensions = array(
@@ -270,6 +291,8 @@ $wgGroupPermissions['*']['edit'] = false;
 $wgEnableAPI = true;
 $wgEnableWriteAPI = true;
 
+// Disable creating users via API
+$wgAPIModules['createaccount'] = 'ApiDisabled';
 
 /***** Vector skin ******************************************************************************************/
 
