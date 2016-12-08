@@ -1,7 +1,9 @@
 #!/bin/bash
 
+#
 # Parsoid is NodeJS service used by VisualEditor
 # https://www.mediawiki.org/wiki/Parsoid/Setup
+#
 
 echo ""
 echo "INSTALLING PARSOID..."

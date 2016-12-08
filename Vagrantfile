@@ -21,8 +21,9 @@ Vagrant.configure("2") do |config|
   # Run Mailcatcher on every `vagrant up`
   config.vm.provision "shell", inline: "/home/vagrant/.rbenv/shims/mailcatcher --http-ip=0.0.0.0", run: "always"
 
-  # Run the import_dev.sh file to configure our environment for development
-  config.vm.provision :shell, :path => "scripts/bootstrap_vagrant.sh" # , :args => ["--no-visualeditor"]
+  # Install Hitchwiki with all of its dependencies
+  # Uncomment the last part if you don't want to install VisualEditor & Parsoid
+  config.vm.provision :shell, :path => "scripts/server_install.sh" # , :args => ["--no-visualeditor"]
 
   config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
 

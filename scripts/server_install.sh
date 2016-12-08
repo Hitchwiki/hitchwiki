@@ -130,7 +130,7 @@ echo "-------------------------------------------------------------------------"
 echo
 echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
 sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
-sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/bootstrap_vagrant.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
+sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
 echo
 echo "-------------------------------------------------------------------------"
 

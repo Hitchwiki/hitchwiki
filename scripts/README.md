@@ -11,15 +11,15 @@ _settings.sh | set config variables (database, site name, etc.); usage: _"source
 
 Script | Purpose
 ------------ | -------------
-bootstrap_vagrant.sh | install script to be run inside Vagrant upon first boot
+create_users.sh | create Hitchwiki (admin), Hitchhiker and Hitchbot users
 export_db.sh | export database of the English Hitchwiki from an SQL dump
 export_pages.sh | export Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
 import_pages.sh | import Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
-install.sh | install Hitchwiki inside a Vagrant box
-re-install.sh | wipe out old files & vagrant box, then run install script
+install_parsoid.sh | install Parsoid NodeJS service used by VisualEditor
 migrate.sh | export DB from old Hitchwiki SQL dumps; bring it up to date with MediaWiki version
 permissions.sh | set correct file permissions
 pull_hw_extensions.sh | pull custom MediaWiki extensions and update their assets
+server_install.sh | install script to be run on the server or upon first boot by Vagrant
 update.sh | update MediaWiki, its database, extensions and assets
 
 ### Vagrant helper scripts:
@@ -40,4 +40,4 @@ Install/reinstall scripts for the Vagrant box:
 Script | Purpose
 ------------ | -------------
 vagrant/install.sh | download scotchbox image, and set up a Vagrant box with hitchwiki
-vagrant/reinstall.sh | remove installed files, destroy Vagrant machine and run vagrant/install.sh
+vagrant/reinstall.sh | wipe out old files & vagrant box, then run install script

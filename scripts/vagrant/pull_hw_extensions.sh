@@ -15,5 +15,5 @@ fi
 
 source "scripts/_path_resolve.sh"
 
-# Run permissions script inside Vagrant
+# Run pull_hw_extensions script inside Vagrant
 vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/pull_hw_extensions.sh\""
