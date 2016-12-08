@@ -258,29 +258,41 @@ $wgEnableAPI = true;
 $wgEnableWriteAPI = true;
 
 
-/***** Skins ******************************************************************************************/
+/***** Vector skin ******************************************************************************************/
 
-## Default skin: you can change the default skin. Use the internal symbolic
-## names, ie 'vector', 'monobook':
+// Hitchwiki is largely relying on Vector skin so other skins are
+// not even included. We also have a few extensions expanding functionality and
+// look, see "HitchwikiVector" and "HWVectorBeta" from `/extensions` folder.
+
+## Default skin. Use the internal symbolic.
 $wgDefaultSkin = "vector";
 
-# Enabled skins
-#require_once "$IP/skins/CologneBlue/CologneBlue.php";
-#require_once "$IP/skins/Modern/Modern.php";
-#require_once "$IP/skins/MonoBook/MonoBook.php";
-require_once "$IP/skins/Vector/Vector.php";
+wfLoadSkin('Vector');
+
+// Search form look.
+// true = use an icon search button
+// false = use Go & Search buttons
+$wgVectorUseSimpleSearch = true;
+
+// Watch and unwatch as an icon rather than a link.
+// true = use an icon watch/unwatch button
+// false = use watch/unwatch text link
+$wgVectorUseIconWatch = true;
+
+// Experimental setting to make Vector slightly more responsive. Not ready for production purposes and false by default.
+// true = Use responsiveness to improve usability in narrow viewports
+// false = No responsiveness
+$wgVectorResponsive = false;
 
 
 /***** Extensions ******************************************************************************************/
 
-#
-# Settings for MediaWiki extensions
-#
+// Settings for MediaWiki extensions
 require_once "mediawiki-extensions.php";
 
-#
-# Settings for preventing spam on MediaWiki
-#
+
+// Settings for preventing spam on MediaWiki
+// You can turn these on/off from `/configs/settings.ini`
 if($hwConfig["spam"]["spamprotection"]) {
   require_once "mediawiki-spam.php";
 }
