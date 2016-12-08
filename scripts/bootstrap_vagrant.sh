@@ -110,6 +110,7 @@ fi
 echo ""
 echo "-------------------------------------------------------------------------"
 
+
 # Stop Maps extension from setting up a {{#coordinates}} parser function hook
 # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
 #
@@ -163,6 +164,7 @@ php maintenance/install.php --conf "$CONFPATH" \
 echo ""
 echo "-------------------------------------------------------------------------"
 
+
 # Config file is stored elsewhere, require it from MW's LocalSettings.php
 echo ""
 echo "Point Mediawiki configuration to Hitchwiki configuration file..."
@@ -172,14 +174,22 @@ echo "-------------------------------------------------------------------------"
 
 
 echo ""
-echo "Setup SemanticMediaWiki"
-# Mediawiki config file has a check for this file:
-# basically these extensions are not included in MediaWiki
-# before this file exists, because it would cause errors during
-# installation process.
+echo "Setup database for several extensions (SemanticMediaWiki, AntiSpoof etc)..."
+# Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+# basically SMW extensions are not included in MediaWiki before this
+# file exists, because it would cause errors when running
+# `maintenance/install.php`.
 touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
 cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$CONFPATH"
+echo ""
+echo "-------------------------------------------------------------------------"
+
+
+echo ""
+echo "Pre-populate the AntiSpoof extension's table..."
+cd "$WIKIDIR"
+php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 echo ""
 echo "-------------------------------------------------------------------------"
 
