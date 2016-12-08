@@ -122,6 +122,19 @@ $wgEnotifUserTalk = false; # UPO
 $wgEnotifWatchlist = false; # UPO
 $wgEmailAuthentication = true;
 
+## Use SMTP to send out emails
+## https://www.mediawiki.org/wiki/Manual:$wgSMTP
+if(isset($hwConfig["smtp"]) && $hwConfig["smtp"]["enabled"] === true) {
+  $wgSMTP = array(
+    'host'     => $hwConfig["smtp"]["host"],      // could also be an IP address. Where the SMTP server is located
+    'IDHost'   => $hwConfig["general"]["domain"], // Generally this will be the domain name of your website (aka mywiki.org)
+    'port'     => $hwConfig["smtp"]["port"],      // Port to use when connecting to the SMTP server
+    'auth'     => $hwConfig["smtp"]["auth"],      // Should we use SMTP authentication (true or false)
+    'username' => $hwConfig["smtp"]["username"],  // Username to use for SMTP authentication (if being used)
+    'password' => $hwConfig["smtp"]["password"]   // Password to use for SMTP authentication (if being used)
+  );
+}
+
 ## Database settings
 $wgDBtype     = "mysql";
 $wgDBserver   = $hwConfig["db"]["host"];

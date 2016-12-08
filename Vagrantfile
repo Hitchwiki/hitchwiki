@@ -18,6 +18,9 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.hostname = "hitchwiki.dev"
 
+  # Run Mailcatcher on every `vagrant up`
+  config.vm.provision "shell", inline: "/home/vagrant/.rbenv/shims/mailcatcher --http-ip=0.0.0.0", run: "always"
+
   # Run the import_dev.sh file to configure our environment for development
   config.vm.provision :shell, :path => "scripts/bootstrap_vagrant.sh" # , :args => ["--no-visualeditor"]
 

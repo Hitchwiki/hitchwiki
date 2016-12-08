@@ -36,6 +36,16 @@ echo "-------------------------------------------------------------------------"
 
 
 echo "\n"
+echo "Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime..."
+sudo pear install mail
+sudo pear install Net_SMTP
+sudo pear install Auth_SASL
+sudo pear install mail_mime
+echo "\n"
+echo "-------------------------------------------------------------------------"
+
+
+echo "\n"
 echo "Upgrade Composer to latest version..."
 composer self-update
 echo "\n"
