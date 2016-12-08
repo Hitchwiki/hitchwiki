@@ -296,3 +296,23 @@ require_once "mediawiki-extensions.php";
 if($hwConfig["spam"]["spamprotection"]) {
   require_once "mediawiki-spam.php";
 }
+
+
+/***** CLI * Settings when running in command line mode ****************************************************/
+
+if ($wgCommandLineMode) {
+  if (isset($_SERVER) && array_key_exists('REQUEST_METHOD', $_SERVER)) {
+    die("This script must be run from the command line\n");
+  }
+
+  /**
+   * Temporarity clear out shared tables when running `maintenance/update.php`
+   *
+   * As of Mediawiki 1.21, `$wgSharedTables` must be temporarily cleared during
+   * upgrade. Otherwise, the shared tables are not touched at all (neither tables
+   * with `$wgSharedPrefix`, nor those with `$wgDBprefix`), which may lead to
+   * failed upgrade.
+   * https://www.mediawiki.org/wiki/Manual:$wgSharedTables#Upgrading
+   */
+  $wgSharedTables = array();
+}
