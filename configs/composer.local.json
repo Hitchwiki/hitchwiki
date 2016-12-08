@@ -79,18 +79,6 @@
     {
       "type": "package",
       "package": {
-        "name": "OAuth",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-OAuth/archive/REL1_28.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "GeoCrumbs",
         "version": "@dev",
         "type": "mediawiki-extension",
@@ -305,7 +293,6 @@
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",
     "GeoData":  "@dev",
-    "OAuth": "@dev",
     "DismissableSiteNotice": "@dev",
     "GeoCrumbs": "@dev",
     "ExternalData": "@dev",

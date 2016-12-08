@@ -67,13 +67,6 @@ $wgMediaViewerEnableByDefaultForAnonymous = true;
 $wgMediaViewerEnableByDefault = true;
 
 /**
- * OAuth
- * The OAuth extension implements OAuth 1.0a
- * https://www.mediawiki.org/wiki/Extension:OAuth
- */
-wfLoadExtension('OAuth');
-
-/**
  * HeaderTabs
  * https://www.mediawiki.org/wiki/Extension:Header_Tabs
  */
