@@ -1,11 +1,9 @@
 #!/bin/bash
 
 #
-# Shorthand to run migrate.sh inside the Vagrant box
+# Shorthand to run scripts/permissions.sh inside the Vagrant box
 #
-# On not Vagrant-based setups (eg. production), directly invoke migrate.sh instead
-#
-# [!] Existing database will be dropped, so use with caution
+# On not Vagrant-based setups (eg. production), directly invoke scripts/permissions.sh instead
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
@@ -17,5 +15,5 @@ fi
 
 source "scripts/_path_resolve.sh"
 
-# Run migrate script inside Vagrant
-vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/migrate.sh\""
+# Run permissions script inside Vagrant
+vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/permissions.sh\""

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #
-# Shorthand to reinstall Vagrant system
+# Shorthand to run scripts/update.sh inside the Vagrant box
 #
-# TODO: similar script for non-Vagrant setup
+# On not Vagrant-based setups (eg. production), directly invoke scripts/update.sh instead
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
@@ -12,16 +12,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     echo "Aborting."
     exit 1
 fi
-
 source "scripts/_path_resolve.sh"
 
-set -e
-clear
-
-echo
-echo "Removing previous files and Vagrant machine..."
-
-rm -fr "$ROOTDIR/composer.lock"
-rm -fr "$WIKIDIR"
-vagrant destroy
-bash "$SCRIPTDIR/install.sh"
+# Run update script inside Vagrant
+vagrant ssh -c "cd \"$VAGRANT_ROOTDIR\" && bash \"$VAGRANT_SCRIPTDIR/update.sh\""

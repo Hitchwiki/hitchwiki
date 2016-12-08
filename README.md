@@ -26,7 +26,7 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Type `bash scripts/install.sh`.
+2. Type `bash scripts/vagrant/install.sh`. Make sure not to leave out the `vagrant/` part.
 3. Install will ask for your password to add "hitchwiki.dev" to your hosts file.
 To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead,
 set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile) and copy `configs/settings-example.ini` to `configs/settings.ini` and change domain also from there before installing.
@@ -54,14 +54,14 @@ When you're ready to begin working again, just run `vagrant up`.
 ### Export Semantic structure
 If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
 ```bash
-bash scripts/vagrant_export_pages.sh
+bash scripts/vagrant/export_pages.sh
 ```
 
 ### Import Semantic structure
 
 This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`. It can be done by running:
 ```bash
-bash scripts/vagrant_import_pages.sh
+bash scripts/vagrant/import_pages.sh
 ```
 
 ### Debug
@@ -71,10 +71,10 @@ bash scripts/vagrant_import_pages.sh
 
 ### Update
 1. Pull latest changes: `git pull origin master`
-2. Run update script: `bash scripts/vagrant_update.sh`
+2. Run update script: `bash scripts/vagrant/update.sh`
 
 ### Re-Install
-2. Run re-install script: `bash scripts/re_install.sh`
+2. Run re-install script: `bash scripts/vagrant/reinstall.sh`
 
 ## Vagrant box
 

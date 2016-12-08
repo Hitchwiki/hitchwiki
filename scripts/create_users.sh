@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Hitchwiki basic users creation script. Useful if the dataase got drooooped.
+# Hitchwiki basic users creation script. Useful if the database got droooopped.
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
     echo "ERROR: Bad working directory ($(pwd))."
