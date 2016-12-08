@@ -1,3 +1,5 @@
+Scripts have to be run from the root folder of the repository.
+
 ### Bash include scripts:
 
 Script | Purpose
@@ -22,9 +24,11 @@ update.sh | update MediaWiki, its database, extensions and assets
 
 ### Vagrant helper scripts:
 
+Convenience shortcuts to run the above scripts without logging into the Vagrant box.
+
 Script | Purpose
 ------------ | -------------
-vagrant_export_pages.sh | run _export_pages.sh_ inside a Vagrant box
-vagrant_import_pages.sh | run _import_pages.sh_ inside a Vagrant box
-vagrant_migrate.sh | run _migrate.sh_ inside a Vagrant box
-vagrant_update.sh | run _update.sh_ inside a Vagrant box
+vagrant/export_pages.sh | tell Vagrant to  run _export_pages.sh_ inside the virtual machine
+vagrant/import_pages.sh | tell Vagrant to run  _import_pages.sh_ inside the virtual machine
+vagrant/migrate.sh | tell vagrant to run _migrate.sh_ inside the virtual machine
+vagrant/update.sh | tell Vagrant to run _update.sh_ inside the virtual machine
