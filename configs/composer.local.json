@@ -279,6 +279,18 @@
           "type": "zip"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "RevisionSlider",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://github.com/wikimedia/mediawiki-extensions-RevisionSlider/archive/REL1_28.zip",
+          "type": "zip"
+        }
+      }
     }
   ],
   "require": {
@@ -310,6 +322,7 @@
     "EventLogging": "@dev",
     "HeaderTabs": "@dev",
     "AddBodyClass": "@dev",
+    "RevisionSlider": "@dev",
     "mediawiki/semantic-media-wiki": "2.4.3",
     "mediawiki/page-forms": "4.0.2",
     "mediawiki/maps": "4.0.3",
