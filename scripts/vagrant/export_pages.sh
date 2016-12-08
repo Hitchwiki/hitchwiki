@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #
-# Shorthand to run export_pages.sh inside the Vagrant box
+# Shorthand to run scripts/export_pages.sh inside the Vagrant box
 #
-# On not Vagrant-based setups (eg. production), directly invoke export_pages.sh instead
+# On not Vagrant-based setups (eg. production), directly invoke scripts/export_pages.sh instead
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree

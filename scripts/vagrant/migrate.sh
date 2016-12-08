@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #
-# Shorthand to run migrate.sh inside the Vagrant box
+# Shorthand to run scripts/migrate.sh inside the Vagrant box
 #
-# On not Vagrant-based setups (eg. production), directly invoke migrate.sh instead
+# On not Vagrant-based setups (eg. production), directly invoke scripts/migrate.sh instead
 #
 # [!] Existing database will be dropped, so use with caution
 #

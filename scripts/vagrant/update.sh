@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #
-# Shorthand to run update.sh inside the Vagrant box
+# Shorthand to run scripts/update.sh inside the Vagrant box
 #
-# On not Vagrant-based setups (eg. production), directly invoke update.sh instead
+# On not Vagrant-based setups (eg. production), directly invoke scripts/update.sh instead
 #
 
 if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree

@@ -24,4 +24,4 @@ echo "Removing previous files and Vagrant machine..."
 rm -fr "$ROOTDIR/composer.lock"
 rm -fr "$WIKIDIR"
 vagrant destroy
-bash "$SCRIPTDIR/install.sh"
+bash "$SCRIPTDIR/vagrant/install.sh"
