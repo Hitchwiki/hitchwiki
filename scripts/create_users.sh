@@ -29,6 +29,7 @@ echo "Create bot account..."
 php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
 
 # Create another dummy account
+echo ""
 echo "Create another dummy account..."
 php maintenance/createAndPromote.php Hitchhiker autobahn
 
