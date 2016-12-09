@@ -96,6 +96,9 @@ echo
 echo "Run post-install-cmd for HitchwikiVector extension..."
 composer run-script post-install-cmd -d ./extensions/HitchwikiVector
 echo
+echo "Run post-install-cmd for HWRatings extension..."
+composer run-script post-install-cmd -d ./extensions/HWRatings
+echo
 echo "-------------------------------------------------------------------------"
 
 # Install VisualEditor
