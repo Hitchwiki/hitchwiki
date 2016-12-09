@@ -9,9 +9,9 @@
 # extensions, use update.sh (or its wrapper vagrant_update.sh) instead
 #
 
-echo ""
+echo
 echo "One script to pull 'em all..."
-echo ""
+echo
 
 cd "$(dirname $0)/.."
 
@@ -43,5 +43,20 @@ git pull origin master
 cd ../HWWaitingTime
 git pull origin master
 
-echo ""
+
+cd ../../
+echo
+echo "Run post-install-cmd for HWMap extension..."
+composer run-script post-update-cmd -d ./extensions/HWMap
+echo
+echo "Run post-install-cmd for HitchwikiVector extension..."
+composer run-script post-update-cmd -d ./extensions/HitchwikiVector
+echo
+echo "Run post-install-cmd for HWRatings extension..."
+composer run-script post-update-cmd -d ./extensions/HWRatings
+echo
+echo "-------------------------------------------------------------------------"
+
+
+echo
 echo "All done!"

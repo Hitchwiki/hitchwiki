@@ -55,10 +55,13 @@ echo "-------------------------------------------------------------------------"
 cd "$WIKIDIR"
 echo
 echo "Run post-install-cmd for HWMap extension..."
-composer run-script post-install-cmd -d ./extensions/HWMap
+composer run-script post-update-cmd -d ./extensions/HWMap
 echo
 echo "Run post-install-cmd for HitchwikiVector extension..."
-composer run-script post-install-cmd -d ./extensions/HitchwikiVector
+composer run-script post-update-cmd -d ./extensions/HitchwikiVector
+echo
+echo "Run post-install-cmd for HWRatings extension..."
+composer run-script post-update-cmd -d ./extensions/HWRatings
 echo
 echo "-------------------------------------------------------------------------"
 
