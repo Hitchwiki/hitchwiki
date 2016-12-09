@@ -20,15 +20,15 @@ _cd_ into this folder before running the chosen command.
 
 ```bash
 # Annotate place articles with geographical semantic templates
-python pywikibot-core/pwb.py locationsemanticize.py
+python pywikibot-core/pwb.py migrate/article.py
 ```
 
 ```bash
 # Turn spots from the old DB into semantic MediaWiki articles
-python pywikibot-core/pwb.py spotmigrate.py
+python pywikibot-core/pwb.py migrate/spotmigrate.py
 ```
 
 ```bash
 # Migrate comments, ratings and waiting times from the old DB into the new DB
-python pywikibot-core/pwb.py extramigrate.py
+python pywikibot-core/pwb.py migrate/extramigrate.py
 ```

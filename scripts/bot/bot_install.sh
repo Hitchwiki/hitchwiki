@@ -4,7 +4,17 @@
 # Install bot's dependencies
 #
 
-WIKIBOTDIR="./"
+if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
+    echo "ERROR: Bad working directory ($(pwd))."
+    echo "Scripts have to be run from the root directory of the hitchwiki repository."
+    echo "Aborting."
+    exit 1
+fi
+
+source "scripts/_path_resolve.sh"
+source "$SCRIPTDIR/_settings.sh"
+
+WIKIBOTDIR="$SCRIPTDIR/bot"
 
 sudo apt-get install python-pip python-dev libmysqlclient-dev
 sudo pip install MySQL-python requests httplib2 ftfy
