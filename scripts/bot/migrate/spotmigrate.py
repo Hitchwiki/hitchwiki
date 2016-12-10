@@ -16,6 +16,12 @@
 # for future use by other migration scripts (eg. to migrate comments)
 #
 
+# Allow imports from parent dir
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
 import pywikibot
 import json, requests, urllib
 import hashlib

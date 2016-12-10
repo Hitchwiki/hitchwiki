@@ -4,6 +4,12 @@
 # This script handles the first three
 #
 
+# Allow imports from parent dir
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
 import pywikibot
 from pywikibot import pagegenerators
 
@@ -129,7 +135,7 @@ for page in gen:
             smw_code = smw_code.decode('utf-8')
             print smw_code
             #print repr(page.text)
-            #print 'smv', repr(smw_code)  
+            #print 'smv', repr(smw_code)
             page.text = smw_code + page.text
             page.save()
         else:
