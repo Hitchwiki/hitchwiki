@@ -13,8 +13,8 @@ fi
 
 source "scripts/_path_resolve.sh"
 
-chown -R www-data:www-data .
-chmod -R g+rw .
+chown -R www-data:www-data "$ROOTDIR"
+chmod -R g+rw "$ROOTDIR"
 
-chown -R www-data:www-data public/wiki/images
-chmod -R ug+rw public/wiki/images
+chown -R www-data:www-data "$WIKIDIR/images"
+chmod -R ug+rw "$WIKIDIR/images"
