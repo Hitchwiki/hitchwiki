@@ -4,8 +4,8 @@ Scripts have to be run from the root folder of the repository.
 
 Script | Purpose
 ------------ | -------------
-_path_resolve.sh | set path variables; usage: _"source scripts/path_resolve.sh"_ in bash scripts
-_settings.sh | set config variables (database, site name, etc.); usage: _"source scripts/settings.sh"_
+_path_resolve.sh | set path variables; usage: _"source scripts/_path_resolve.sh"_ in bash scripts
+_settings.sh | set config variables (database, site name, etc.); usage: _"source scripts/_settings.sh"_
 
 ### Generic scripts:
 
@@ -16,9 +16,10 @@ export_db.sh | export database of the English Hitchwiki from an SQL dump
 export_pages.sh | export Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
 import_pages.sh | import Hitchwiki pages related to Semantic MediaWiki (forms, templates, etc.)
 install_parsoid.sh | install Parsoid NodeJS service used by VisualEditor
-migrate.sh | export DB from old Hitchwiki SQL dumps; bring it up to date with MediaWiki version
+migrate.sh | export old Hitchwiki SQL dumps and images; bring it up to date with the new Semantic MW-based setup
 permissions.sh | set correct file permissions
 pull_hw_extensions.sh | pull custom MediaWiki extensions and update their assets
+run_mw_jobs.sh | process MediaWiki job queue
 server_install.sh | install script to be run on the server or upon first boot by Vagrant
 update.sh | update MediaWiki, its database, extensions and assets
 
