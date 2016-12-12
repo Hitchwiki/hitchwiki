@@ -91,7 +91,7 @@ $wgGroupPermissions['my-group']['adminlinks'] = true;
 
 /**
  * DismissableSiteNotice
- * This can be disabled after http://hitchwiki.org/en/MediaWiki:Sitenotice is no more needed.
+ * This can be disabled after /en/MediaWiki:Sitenotice is no more needed.
  * http://www.mediawiki.org/wiki/Extension:DismissableSiteNotice
  */
 wfLoadExtension('DismissableSiteNotice');
@@ -301,3 +301,4 @@ require_once "$IP/extensions/HWMap/HWMap.php"; // Hitchwiki Maps (see `/Special:
 require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php"; // Waiting time -feature
 require_once "$IP/extensions/HWRatings/HWRatings.php"; // "Hithability" ratings -feature
 require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
+wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms extension

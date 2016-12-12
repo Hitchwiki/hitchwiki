@@ -29,6 +29,10 @@
       "type": "git"
     },
     {
+      "url": "https://github.com/Hitchwiki/HWLocationInput-extension",
+      "type": "git"
+    },
+    {
       "type": "package",
       "package": {
         "name": "AntiSpoof",
@@ -286,6 +290,7 @@
     "HWRatings": "@dev",
     "HWComments": "@dev",
     "HWWaitingTime": "@dev",
+    "HWLocationInput": "@dev",
     "HWVectorBeta": "@dev",
     "HitchwikiVector": "@dev",
     "BetaFeatureEverywhere": "@dev",

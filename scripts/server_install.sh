@@ -102,6 +102,9 @@ echo
 echo "Run post-install-cmd for HWRatings extension..."
 composer run-script post-install-cmd -d ./extensions/HWRatings
 echo
+echo "Run post-install-cmd for HWLocationInput extension..."
+composer run-script post-install-cmd -d ./extensions/HWLocationInput
+echo
 echo "-------------------------------------------------------------------------"
 
 # Install VisualEditor

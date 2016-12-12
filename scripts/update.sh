@@ -63,6 +63,9 @@ echo
 echo "Run post-update-cmd for HWRatings extension..."
 composer run-script post-update-cmd -d ./extensions/HWRatings
 echo
+echo "Run post-update-cmd for HWLocationInput extension..."
+composer run-script post-update-cmd -d ./extensions/HWLocationInput
+echo
 echo "-------------------------------------------------------------------------"
 
 echo
