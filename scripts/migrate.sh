@@ -130,5 +130,8 @@ echo "Drop no longer needed hitchwiki_rate database..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_rate"
 echo
 
+# Process MediaWiki job queue (it gets massive after editing all the articles using migrate bot)
+bash "$SCRIPTDIR/run_mw_jobs.sh"
+
 echo "Done! Grrrreat success."
 echo

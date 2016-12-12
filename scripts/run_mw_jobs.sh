@@ -1,7 +1,11 @@
 #!/bin/bash
 
 #
-# Constantly process MediaWiki job queue until interruped
+# Process MediaWiki job queue: https://www.mediawiki.org/wiki/Manual:Job_queue
+#
+# If --infinite-loop flag is passed, job queue will be processed over and over
+# until interrupted, with a pause in between. Useful when this script is run
+# simultaneously with a massive editing operation using a bot
 #
 # [!] Puts server under heavy pressure; use with caution
 #
@@ -15,11 +19,19 @@ fi
 
 source "scripts/_path_resolve.sh"
 
-echo "Process MediaWiki job queue till eternity..."
-echo
-
 cd "$WIKIDIR"
-while true; do
-	php maintenance/runJobs.php
-	sleep 10
-done
+
+if [[ $* == *--infinite-loop* ]]; then
+  echo "Process MediaWiki job queue till eternity..."
+  echo
+
+  while true; do
+    php maintenance/runJobs.php
+    sleep 10
+  done
+else
+  echo "Process MediaWiki job queue..."
+  echo
+
+  php maintenance/runJobs.php
+fi
