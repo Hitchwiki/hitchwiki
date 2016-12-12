@@ -1,22 +1,25 @@
 #!/bin/bash
 
+#
 # Hitchwiki installation script
+#
+# To set up Hitchwiki inside a Vagrant box, use scripts/vagrant/install.sh instead
+#
 
+if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
+    echo "ERROR: Bad working directory ($(pwd))."
+    echo "Scripts have to be run from the root directory of the hitchwiki repository."
+    echo "Aborting."
+    exit 1
+fi
 
-# Paths
-ROOTDIR="/var/www"
-CONFDIR="$ROOTDIR/configs"
-CONFPATH="$CONFDIR/mediawiki.php"
-SCRIPTDIR="$ROOTDIR/scripts"
-WIKIFOLDER="wiki"
-WIKIDIR="$ROOTDIR/public/$WIKIFOLDER"
-
-# Make sure we're at right directory
-cd "$ROOTDIR"
+source "scripts/_path_resolve.sh"
 
 # Makes sure we have settings.ini and "Bash ini parser"
 source "$SCRIPTDIR/_settings.sh"
 
+# Make sure we're at right directory
+cd "$ROOTDIR"
 
 # Fixes possible "warning: Setting locale failed." errors
 export LC_ALL="en_US.UTF-8"
@@ -165,7 +168,7 @@ cd "$WIKIDIR"
 # Runs Mediawiki install script:
 # - sets up wiki in one language ("en")
 # - creates one admin user "hitchwiki" with password "authobahn"
-php maintenance/install.php --conf "$CONFPATH" \
+php maintenance/install.php --conf "$MWCONFFILE" \
                             --dbuser $HW__db__username \
                             --dbpass $HW__db__password \
                             --dbname $HW__db__database \
@@ -195,7 +198,7 @@ echo "Setup database for several extensions (SemanticMediaWiki, AntiSpoof etc)..
 # `maintenance/install.php`.
 touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
 cd "$WIKIDIR"
-php maintenance/update.php --quick --conf "$CONFPATH"
+php maintenance/update.php --quick --conf "$MWCONFFILE"
 echo
 echo "-------------------------------------------------------------------------"
 

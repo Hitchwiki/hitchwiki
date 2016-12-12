@@ -26,7 +26,8 @@ MWCONFFILE="$CONFDIR/mediawiki.php"
 SCRIPTDIR="$ROOTDIR/scripts"
 PAGESDIR="$SCRIPTDIR/pages"
 DUMPSDIR="$ROOTDIR/dumps"
-WIKIDIR="$ROOTDIR/public/wiki"
+WIKIFOLDER="wiki"
+WIKIDIR="$ROOTDIR/public/$WIKIFOLDER"
 
 #
 # Canonical paths to important directories and files inside the Vagrant box
