@@ -17,13 +17,18 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
   $wgHiddenPrefs[] = 'visualeditor-enable';
   // OPTIONAL: Enable VisualEditor's experimental code features
   #$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
-  // URL to the Parsoid instance
-  // MUST NOT end in a slash due to Parsoid bug
-  // Use port 8142 if you use the Debian package
-  $wgVisualEditorParsoidURL = 'http://' . $hwConfig["general"]["domain"] . ':8142';
-  // Interwiki prefix to pass to the Parsoid instance
-  // Parsoid will be called as $url/$prefix/$pagename
-  $wgVisualEditorParsoidPrefix = $hwConfig["general"]["domain"];
+
+  // Use $wgVirtualRestConfig instead of individual config vars to be future-proof:
+  // https://www.mediawiki.org/wiki/Topic:Rbnlhxzcs7xumz3a
+  $wgVirtualRestConfig['modules']['parsoid'] = array(
+          // URL to the Parsoid instance
+          // Use port 8142 if you use the Debian package
+          'url' => 'http://' . $hwConfig["general"]["domain"] . ':8142',
+          // Parsoid "domain"
+          'domain' => $hwConfig["general"]["domain"],
+          // Parsoid "prefix"
+          'prefix' => $hwConfig["general"]["domain"]
+  );
 }
 
 /**
