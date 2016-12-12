@@ -29,7 +29,7 @@ echo "-------------------------------------------------------------------------"
 echo
 echo "Update VisualEditor..."
 cd "$WIKIDIR/extensions/VisualEditor"
-git checkout -b $HW__general_mw_branch origin/$HW__general_mw_branch
+git checkout -b $HW__general__mw_branch origin/$HW__general__mw_branch
 git pull
 git submodule update --init
 echo
