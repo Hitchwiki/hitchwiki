@@ -214,14 +214,6 @@ echo
 echo "-------------------------------------------------------------------------"
 
 
-# Setup CheckUser
-echo
-echo "Setup CheckUser..."
-cd "$WIKIDIR/extensions/CheckUser" && php install.php && cd "$WIKIDIR"
-echo
-echo "-------------------------------------------------------------------------"
-
-
 # Create bot users
 echo
 echo "Create users"
