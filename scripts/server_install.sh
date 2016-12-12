@@ -252,6 +252,7 @@ echo "-------------------------------------------------------------------------"
 if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
   echo
   echo "Call Parsoid install script..."
+  cd "$ROOTDIR"
   bash "$SCRIPTDIR/install_parsoid.sh"
 else
   echo
