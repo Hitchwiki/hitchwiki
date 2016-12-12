@@ -54,13 +54,13 @@ echo "-------------------------------------------------------------------------"
 # https://github.com/composer/composer/issues/1193
 cd "$WIKIDIR"
 echo
-echo "Run post-install-cmd for HWMap extension..."
+echo "Run post-update-cmd for HWMap extension..."
 composer run-script post-update-cmd -d ./extensions/HWMap
 echo
-echo "Run post-install-cmd for HitchwikiVector extension..."
+echo "Run post-update-cmd for HitchwikiVector extension..."
 composer run-script post-update-cmd -d ./extensions/HitchwikiVector
 echo
-echo "Run post-install-cmd for HWRatings extension..."
+echo "Run post-update-cmd for HWRatings extension..."
 composer run-script post-update-cmd -d ./extensions/HWRatings
 echo
 echo "-------------------------------------------------------------------------"
