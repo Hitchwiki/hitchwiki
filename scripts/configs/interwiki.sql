@@ -1,5 +1,3 @@
--- Generation Time: Jan 19, 2015 at 10:14 AM
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -55,10 +53,6 @@ INSERT INTO `interwiki` (`iw_prefix`, `iw_url`, `iw_api`, `iw_wikiid`, `iw_local
 ('wikitravel', 'http://en.wikivoyage.org/wiki/$1', '', '', 0, 0),
 ('wikivoyage', 'https://en.wikivoyage.org/wiki/$1', '', '', 0, 0),
 ('zh', 'http://hitchwiki.org/zh/$1', '', '', 1, 0);
-
---
--- Indexes for dumped tables
---
 
 --
 -- Indexes for table `interwiki`
