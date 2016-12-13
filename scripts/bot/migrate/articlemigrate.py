@@ -131,7 +131,9 @@ for page in gen:
 
                     if geonames_result['fcl'] == 'A' and 'fcode' in geonames_result and geonames_result['fcode'] in ['PCL', 'PCLI', 'PCLF']: # {{Country}}
                         entity = 'Country'
+
                         properties.update({
+                            'CountryCode': geonames_result["countryCode"],
                             'Population': geonames_result['population'],
                             'Capital': '',
                             'Currency': ''
