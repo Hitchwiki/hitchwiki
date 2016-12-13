@@ -8,6 +8,9 @@
 /**
  * VisualEditor
  * https://www.mediawiki.org/wiki/Extension:VisualEditor
+ *
+ * Problems with this Extension? See:
+ * https://www.mediawiki.org/wiki/Extension:VisualEditor#Troubleshooting
  */
 if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
   wfLoadExtension('VisualEditor');
@@ -29,6 +32,17 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
           // Parsoid "prefix"
           'prefix' => $hwConfig["general"]["domain"]
   );
+
+  // Extra settings for VisualEditor
+  // https://www.mediawiki.org/wiki/Extension:VisualEditor#Complete_list_of_configuration_options
+
+  // If showing two edit tabs, where to put the VisualEditor edit tab in
+  // relation to the system (or WikiEditor) one:
+  $wgVisualEditorTabPosition = 'before'; // before|after
+
+  // Whether to show the "welcome to the beta" dialog the first time a
+  // user uses VisualEditor:
+  $wgVisualEditorShowBetaWelcome = false;
 }
 
 /**
