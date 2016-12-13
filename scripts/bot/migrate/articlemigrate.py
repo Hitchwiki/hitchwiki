@@ -29,7 +29,7 @@ with open('config.json') as config_file:
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 map_code_regex = '<map[^>]+>'
-infobox_regex = '{{infobox.*}}'
+infobox_regex = '(?i){{infobox.*}}'
 
 geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
 google_geocode = GoogleGeocode('./.cache')
@@ -132,7 +132,7 @@ for page in gen:
                             entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
-                                'AdmDivision': geonames_result['adminName1'],
+                                'AdministrativeDivision': geonames_result['adminName1'],
                                 'Population': geonames_result['population'],
                                 'LicensePlate': '',
                                 'MajorRoads': ''
