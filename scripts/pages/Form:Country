@@ -39,13 +39,14 @@
 |-
 ! Location
 |-
-| {{{field|Location|input type=HW_Location|height=250px|width=100%|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
+| {{{field|Location|input type=HW_Location|height=250px|width=100%|zoom=2}}}
 |-
 ! Country code:
 | {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland.}}
 |}
 </div>
 </div>
+{{{field|BoundingBox|list|hidden}}}
 {{{end template}}}<div class="clearfix editOptions">{{{standard input|summary}}}
 <div class="editCheckboxes">{{{standard input|minor edit}}} {{{standard input|watch}}}</div>
 <div class="editButtons">{{{standard input|save|label=Save country}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}</div>
