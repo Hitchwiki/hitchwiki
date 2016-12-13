@@ -5,14 +5,16 @@
 </noinclude><includeonly>{{{info|add title=Add spot|edit title=Edit spot}}}
 <div id="wikiPreview" class="hw-spot-preview"></div><nowiki />
 <div class="hw-spot-form"><nowiki />
-{{{for template|Spot}}}<div class="row"><div class="col-xs-12"><nowiki />
+{{{for template|Spot}}}
+<div class="row"><div class="col-xs-6"><nowiki />
 '''Description'''<nowiki />
-{{{field|Description|input type=textarea}}}<nowiki />
-</div></div>
-<div class="row"><div class="col-xs-6 hw-spot-add-cardinal">
+{{{field|Description|input type=textarea|editor=wikieditor|rows=5|class=hw-spot-add-description}}}<nowiki />
+
 '''Cardinal direction'''<nowiki />
-{{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only}}}<nowiki />
+{{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only|class=hw-spot-add-cardinal}}}<nowiki />
 </div><div class="col-xs-6"><nowiki />
+'''Location'''<nowiki />
+{{{field|Location|input type=HW_Location|height=200px|width=100%|zoom=15}}}<nowiki />
 
 '''City'''<nowiki />
 {{{field|Cities|values from category=Cities}}}<nowiki />
@@ -21,11 +23,12 @@
 {{{field|CitiesDirection|list|values from category=Cities}}}<nowiki />
 
 '''Major roads'''<nowiki />
-{{{field|RoadsDirection|list}}}<nowiki />
-</div></div>{{{field|Location|hidden}}}{{{field|Country|hidden}}}
+{{{field|RoadsDirection|list|values from category=Roads}}}<nowiki />
+
+</div></div>{{{field|Country|hidden}}}{{#addbodyclass:hwmap-spot-add}}
 {{{end template}}}</div><!--/hw-spot-form--><nowiki />
 <div class="editOptions clearfix"><nowiki />
 <div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}</div><nowiki />
 <div class="editCheckboxes">{{{standard input|watch}}}</div><nowiki />
-</div>{{#addbodyclass:hwmap-spot-add}}</includeonly>
+</div></includeonly>
 __NOEDITSECTION__
