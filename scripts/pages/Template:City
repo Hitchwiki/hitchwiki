@@ -37,7 +37,7 @@ Some documentation to help to understand how this template is built:
 {{#if: {{{LicencePlate|}}} | ! Licence plate:
 | '''{{{LicencePlate|}}}''' }}
 |-
-| colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] or [[:bewelcome:{{urlencode:{{PAGENAME}}}} BeWelcome]]
+| colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]] or [[:bewelcome:{{urlencode:{{PAGENAME}}}}|BeWelcome]]
 |}
 <hw-map></hw-map>
 [[Category:Cities]]
