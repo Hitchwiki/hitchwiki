@@ -37,6 +37,7 @@ Edit the page to see the template text.
 |}
 <hw-map></hw-map>
 [[Category:Cities]]
+{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
 [[wikivoyage:{{PAGENAME}}]]
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-city}}
