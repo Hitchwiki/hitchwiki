@@ -29,6 +29,7 @@ with open('config.json') as config_file:
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 map_code_regex = '<map[^>]+>'
+infobox_regex = '{{infobox.*}}'
 
 geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
 google_geocode = GoogleGeocode('./.cache')
@@ -55,9 +56,10 @@ for page in gen:
         # remove <map /> tags from page text
         new_text = page.text
         new_text = re.sub(map_code_regex, '', new_text)
-        lendiff = len(new_text) - len(page.text)
+        new_text = re.sub(infobox_regex, '', new_text, flags=re.DOTALL)
+        lendiff = len(page.text) - len(new_text)
         if lendiff:
-            print ('# removed <map /> tags: %d characters' % lendiff)
+            print ('# removed <map /> tags and infoboxes: %d characters' % lendiff)
 
         if re.match(motorway_regex, page.title()): # {Area Type=Road} (no relevant info in GeoNames DB)
             google_data = google_geocode.lookup(page.title())
@@ -96,6 +98,18 @@ for page in gen:
                     properties = {
                         'Location': '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
                     }
+
+                    # Move all the text on top of the first header to the Semantic template
+                    if new_text.startswith("=="):
+                        first_header_pos = 0
+                    else:
+                        first_header_pos = new_text.find("\n==")
+                        if first_header_pos == -1:
+                            first_header_pos = len(new_text)
+                    introduction = new_text[0:first_header_pos]
+                    new_text = new_text[first_header_pos:]
+
+                    properties['Introduction'] = introduction
 
                     google_data = google_geocode.lookup(page.title())
                     if google_data['results']:
