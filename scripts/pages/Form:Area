@@ -28,7 +28,7 @@ __NOEDITSECTION__
 |-
 ! Location
 |-
-| {{{field|Location|input type=HW_Location|height=250|width=100%|autozoom=off|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
+| {{{field|Location|input type=HW_Location|height=250px|width=100%|autozoom=off|zoom=2}}}{{{field|BoundingBox|list|hidden}}}
 |}
 </div>
 </div>
