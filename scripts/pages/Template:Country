@@ -10,6 +10,11 @@ It should be called in the following format:
 }}
 </pre>
 Edit the page to see the template text.
+
+Some documentation to help to understand how this template is built:
+- https://www.semantic-mediawiki.org/wiki/Help:Semantic_templates
+- https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions
+
 </noinclude><includeonly>
 {| class="infobox mw-collapsible"
 ! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
