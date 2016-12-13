@@ -27,9 +27,6 @@ Edit the page to see the template text.
 {{#if: {{{LicencePlate|}}} | ! Licence Plate:
 | '''{{{LicencePlate|}}}''' }}
 |-
-{{#if: {{{Hitchbase|}}} | ! More info:
-{{!}} [http://hitchbase.com/ergebnisse.php?LANG=eng&abfrage%5Bstartort%5D={{{Hitchbase}}} Hitchbase] {{#if: {{{Links|}}} | {{{Links}}} }} | {{#if: {{{Links|}}} | ! More info:
-{{!}} {{{Links}}} }} }}
 | colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] or [[:bewelcome:{{urlencode:{{PAGENAME}}}} BeWelcome]]
 |}
 <hw-map></hw-map>
