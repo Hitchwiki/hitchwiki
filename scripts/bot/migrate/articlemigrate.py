@@ -52,7 +52,8 @@ db = MySQLdb.connect(
     charset='utf8'
 )
 
-table_cur = db.cursor()
+try: # Not using CREATE TABLE IF EXISTS to avoid MySQL warning if indeed exists
+    table_cur = db.cursor()
     table_cur.execute(
         'CREATE TABLE IF NOT EXISTS hitchwiki_migrate.migrated_articles (' +
             ' page_id integer NOT NULL PRIMARY KEY' +
@@ -68,6 +69,7 @@ for page in gen:
     if not page.isRedirectPage() and page.title() not in disamb_pages:
         print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
         print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
+        print
 
         # Uncomment to resume from speciffic point
 	#if count < 3055:
@@ -85,7 +87,10 @@ for page in gen:
                 ' WHERE page_id = %s'
         ) % (pageid))
         if table_cur.rowcount != 0:
-            print "Skipping (already migrated)...\n"
+            print "Skip: already migrated"
+            print
+            print "-------------------------------------------------------------------------------"
+            print
             count += 1
             continue
 
@@ -101,14 +106,15 @@ for page in gen:
         for infobox in infoboxes:
             curly_braces = re.findall('{{', infobox)
             if len(curly_braces) > 1:
-                print "Error: page contains an infobox with a nested template; skip removing infoboxes"
+                print "Error: infobox with nested template; skip cutting"
+                print
             else:
                 new_text = re.sub(infobox_regex, '', new_text, flags=re.DOTALL)
         lendiff = len(page.text) - len(new_text)
-        if lendiff:
-            print ('# removed <map /> tags (and infoboxes): %d characters' % lendiff)
 
         if re.match(motorway_regex, page.title()): # {Area Type=Road} (no relevant info in GeoNames DB)
+            print 'Use {{Area Type=Road}} template'
+            print
             google_data = google_geocode.lookup(page.title())
             if google_data['results'] and 'route' in google_data['results'][0]['types']:
                 location = google_data['results'][0]['geometry']['location']
@@ -123,6 +129,8 @@ for page in gen:
                     'Countries': country
                 }
         elif re.match(border_regex, page.title()): # {Area Type=Border crossing} (no relevant info in GeoNames DB)
+            print 'Use {{Area Type=Border crossing}} template'
+            print
             google_data = google_geocode.lookup(page.title())
             if google_data['results']:
                 location = google_data['results'][0]['geometry']['location']
@@ -169,12 +177,16 @@ for page in gen:
                         properties['Bbox'] = ''
 
                     if geonames_result['fcl'] == 'A' and 'fcode' in geonames_result and geonames_result['fcode'] in ['PCL', 'PCLI', 'PCLF']: # {{Country}}
+                        print 'Use {{Country}} template'
+                        print
+
                         entity = 'Country'
 
                         # look for Capital in the removed Infoboxes
                         capital_lists = re.findall('(\|capital\s*=\s*)(.*)', page.text)
                         if len(capital_lists) > 1:
-                            print 'Error: more than one capital field definition found'
+                            print 'Error: multiple "capital" definitions; ignore all'
+                            print
                         elif len(capital_lists) == 1:
                             capital = capital_lists[0][1].strip()
                             capital = re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', capital))).strip()
@@ -184,7 +196,8 @@ for page in gen:
                         # look for Languages in the removed Infoboxes
                         language_lists = re.findall('(\|language\s*=\s*)(.*)', page.text)
                         if len(language_lists) > 1:
-                            print 'Error: more than one language list found'
+                            print 'Error: multiple "language" definitions; ignore all'
+                            print
                         elif len(language_lists) == 1:
                             languages = language_lists[0][1].strip()
                         else:
@@ -193,7 +206,8 @@ for page in gen:
                         # look for Currency in the removed Infoboxes
                         currency_lists = re.findall('(\|currency\s*=\s*)(.*)', page.text)
                         if len(currency_lists) > 1:
-                            print 'Error: more than one currency field definition found'
+                            print 'Error: multiple "currency" definitions; ignore all'
+                            print
                         elif len(currency_lists) == 1:
                             currency = currency_lists[0][1].strip()
                         else:
@@ -207,10 +221,16 @@ for page in gen:
                             'Currency': currency
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
+                            print 'Use {{City}} template'
+                            print
+
+                            entity = 'City'
+
                             # look for MajorRoads in the removed Infoboxes
                             motorway_lists = re.findall('(\|motorways\s*=\s*)(.*)', page.text)
                             if len(motorway_lists) > 1:
-                                print 'Error: more than one motorway list found'
+                                print 'Error: multiple "motorways" definitions; ignore all'
+                                print
                             elif len(motorway_lists) == 1:
                                 motorways = ", ".join([
                                     re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', motorway))).strip()
@@ -223,7 +243,8 @@ for page in gen:
                             # look for LicensePlate in the removed Infoboxes
                             plate_lists = re.findall('(\|plate\s*=\s*)(.*)', page.text)
                             if len(plate_lists) > 1:
-                                print 'Error: more than one license plate list found'
+                                print 'Error: multiple "plate" definitions; ignore all'
+                                print
                             elif len(plate_lists) == 1:
                                 plate = plate_lists[0][1].strip()
                                 if plate == '-':
@@ -231,7 +252,6 @@ for page in gen:
                             else:
                                 plate = ''
 
-                            entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
                                 'AdministrativeDivision': geonames_result['adminName1'],
@@ -242,6 +262,9 @@ for page in gen:
                     else: # {{Area}}
                         properties['Countries'] = geonames_result['countryName']
                         if geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'CONT': # continent
+                            print 'Use {{Area Type=Continent}} template'
+                            print
+
                             entity = 'Area'
                             properties['Type'] = 'Continent'
                         elif (
@@ -249,9 +272,15 @@ for page in gen:
                             or (geonames_result['fcl'] == 'T' and geonames_result['fcode'] in ['ISL', 'ISLS']) # island(s)
                             or (geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'RGN')  # region
                         ):
+                            print 'Use {{Area Type=Region}} template'
+                            print
+
                             entity = 'Area'
                             properties['Type'] = 'Region'
                         elif geonames_result['fcl'] == 'S' and geonames_result['fcode'] == 'AIRP': # airport
+                            print 'Use {{Area Type=Airport}} template'
+                            print
+
                             entity = 'Area'
                             properties['Type'] = 'Airport'
 
@@ -282,8 +311,10 @@ for page in gen:
                 raise
 
         else:
-            print '-'
+            print 'Skip: not a location'
+        print
+        print "-------------------------------------------------------------------------------"
         print
         count += 1
 
-print 'total: ', count
+print 'Total: ', count
