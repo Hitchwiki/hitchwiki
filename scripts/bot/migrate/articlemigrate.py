@@ -155,18 +155,18 @@ for page in gen:
                             if len(plate_lists) > 1:
                                 print 'Error: more than one license plate list found'
                             elif len(plate_lists) == 1:
-                                plates = plate_lists[0][1].strip()
-                                if plates == '-':
-                                    plates = ''
+                                plate = plate_lists[0][1].strip()
+                                if plate == '-':
+                                    plate = ''
                             else:
-                                plates = ''
+                                plate = ''
 
                             entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
                                 'AdministrativeDivision': geonames_result['adminName1'],
                                 'Population': geonames_result['population'],
-                                'LicensePlate': license_plate,
+                                'LicensePlate': plate,
                                 'MajorRoads': motorways
                             })
                     else: # {{Area}}
