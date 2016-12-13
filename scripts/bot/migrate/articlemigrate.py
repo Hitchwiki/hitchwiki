@@ -53,9 +53,9 @@ for page in gen:
         properties = None
 
         # remove <map /> tags from page text
-        new_page_text = page.text
-        new_page_text = re.sub(map_code_regex, '', new_text)
-        lendiff = len(new_page_text) - len(page.text)
+        new_text = page.text
+        new_text = re.sub(map_code_regex, '', new_text)
+        lendiff = len(new_text) - len(page.text)
         if lendiff:
             print ('# removed <map /> tags: %d characters' % lendiff)
 
@@ -142,11 +142,11 @@ for page in gen:
             smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
             smw_code = smw_code.decode('utf-8')
             print smw_code
-            #print repr(new_page_text)
+            #print repr(new_text)
             #print 'smv', repr(smw_code)
-            new_page_text = smw_code + new_page_text
-            
-            page.text = new_page_text
+            new_text = smw_code + new_text
+
+            page.text = new_text
             page.save()
         else:
             print '-'
