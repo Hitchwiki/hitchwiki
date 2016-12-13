@@ -3,6 +3,7 @@ This is the "Area" template.
 It should be called in the following format:
 <pre>
 {{Area
+|Countries=
 |Location=latitude, longitude
 |Type=Region, Road, Airport, Border Crossing, or Continent
 |text=
@@ -15,5 +16,6 @@ Edit the page to see the template text.
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <hw-map></hw-map>
 [[Category:Areas]]
+{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
 __NOEDITSECTION__
 </includeonly>
