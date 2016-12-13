@@ -135,7 +135,7 @@ for page in gen:
                                 print 'Error: more than one motorway list found'
                             elif len(motorway_lists) == 1:
                                 motorways = ", ".join([
-                                    re.sub('\[\[', '', re.sub('\|.*', '', motorway)).strip()
+                                    re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', motorway))).strip()
                                     for motorway
                                     in motorway_lists[0][1].split(',')
                                 ])
