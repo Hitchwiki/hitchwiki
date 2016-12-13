@@ -142,11 +142,30 @@ for page in gen:
                         else:
                             capital = ''
 
+                        # look for Languages in the removed Infoboxes
+                        language_lists = re.findall('(\|language\s*=\s*)(.*)', page.text)
+                        if len(language_lists) > 1:
+                            print 'Error: more than one language list found'
+                        elif len(language_lists) == 1:
+                            languages = language_lists[0][1].strip()
+                        else:
+                            languages = ''
+
+                        # look for Currency in the removed Infoboxes
+                        currency_lists = re.findall('(\|currency\s*=\s*)(.*)', page.text)
+                        if len(currency_lists) > 1:
+                            print 'Error: more than one currency field definition found'
+                        elif len(currency_lists) == 1:
+                            currency = currency_lists[0][1].strip()
+                        else:
+                            currency = ''
+
                         properties.update({
                             'CountryCode': geonames_result["countryCode"],
                             'Population': geonames_result['population'],
                             'Capital': capital,
-                            'Currency': ''
+                            'Languages': languages,
+                            'Currency': currency
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
                             # look for MajorRoads in the removed Infoboxes
