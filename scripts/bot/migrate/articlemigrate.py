@@ -118,6 +118,7 @@ for page in gen:
                             entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
+                                'AdmDivision': geonames_result['adminName1'],
                                 'Population': geonames_result['population'],
                                 'LicensePlate': '',
                                 'MajorRoads': ''
