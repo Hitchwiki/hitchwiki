@@ -130,7 +130,7 @@ for page in gen:
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
                             # looks for MajorRoads and LicensePlate in the removed Infobox
-                            motorway_lists = re.findall('(|motorways\s*=\s*)', page.text)
+                            motorway_lists = re.findall('(\|motorways\s*=\s*)(.*)', page.text)
                             if len(motorway_lists) > 1:
                                 print 'Error: more than one motorway list found'
                             elif len(motorway_lists) == 1:
