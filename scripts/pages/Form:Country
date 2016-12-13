@@ -1,8 +1,10 @@
 <noinclude>
 =Add new country to Hitchwiki=
 
-{{#forminput:form=Country|Placeholder=Country name|autocomplete on category=Cities}}
-<small>If a country with that name already exists, you will be sent to a form to edit that page.</small>
+***Note:*** most of the countries should already have a page in Hitchwiki. Please use [[Special:Search search]] to double check that country doesn't exist yet. Try different names and variations, thank you!
+
+{{#forminput:form=Country|Placeholder=Country name|autocomplete on category=Countries}}
+<small>If a country with that name already exists, you will be sent to edit that article.</small>
 
 </noinclude><includeonly>
 {{{info|add title=Add country|edit title=Edit country}}}
