@@ -137,7 +137,7 @@ for page in gen:
                             'Currency': ''
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
-                            # looks for MajorRoads and LicensePlate in the removed Infobox
+                            # look for MajorRoads in the removed Infoboxes
                             motorway_lists = re.findall('(\|motorways\s*=\s*)(.*)', page.text)
                             if len(motorway_lists) > 1:
                                 print 'Error: more than one motorway list found'
@@ -150,12 +150,23 @@ for page in gen:
                             else:
                                 motorways = ''
 
+                            # look for LicensePlate in the removed Infoboxes
+                            plate_lists = re.findall('(\|plate\s*=\s*)(.*)', page.text)
+                            if len(plate_lists) > 1:
+                                print 'Error: more than one license plate list found'
+                            elif len(plate_lists) == 1:
+                                plates = plate_lists[0][1].strip()
+                                if plates == '-':
+                                    plates = ''
+                            else:
+                                plates = ''
+
                             entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
                                 'AdministrativeDivision': geonames_result['adminName1'],
                                 'Population': geonames_result['population'],
-                                'LicensePlate': '',
+                                'LicensePlate': license_plate,
                                 'MajorRoads': motorways
                             })
                     else: # {{Area}}
