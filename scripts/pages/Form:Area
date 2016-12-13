@@ -7,7 +7,6 @@ Pages for locations such as airport, road, continent, border crossing, or region
 {{#forminput:form=Area|Placeholder=Area name|autocomplete on category=Areas}}
 <small>If an area with that name already exists, you will be sent to a form to edit that page.</small>
 
-__NOEDITSECTION__
 </noinclude><includeonly>
 {{{info|add title=Add area|edit title=Edit area}}}
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
@@ -42,3 +41,4 @@ __NOEDITSECTION__
 <div class="editButtons">{{{standard input|save|label=Save area}}} {{{standard input|preview}}} {{{standard input|changes}}} {{{standard input|cancel}}}</div>
 </div>
 </includeonly>
+__NOEDITSECTION__
