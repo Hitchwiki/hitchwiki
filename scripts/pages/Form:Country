@@ -32,6 +32,9 @@
 ! License plate:
 | {{{field|LicensePlate}}}
 |-
+! Country code <small class="plainlinks">([[:wikipedia:ISO_3166-1_alpha-2|ISO "ALPHA-2 Code]])</small>:
+| {{{field|CountryCode}}}
+|-
 ! Population:
 | {{{field|Population}}}
 |}

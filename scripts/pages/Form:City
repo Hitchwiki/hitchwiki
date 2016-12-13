@@ -37,45 +37,6 @@ Please use [[Special:Search search]] to double check that city article doesn't e
 |-
 ! Administrative division:
 | {{{field|AdministrativeDivision}}}
-|-
-! Symbol:
-| {{{field|Symbol}}}
-|-
-! State:
-| {{{field|State}}}
-|-
-! State symbol:
-| {{{field|StateSymbol}}}{{#info:Image file name.}}
-|-
-! Region:
-| {{{field|Region}}}
-|-
-! State symbol:
-| {{{field|RegionSymbol}}}{{#info:Image file name.}}
-|-
-! Subdivision type:
-| {{{field|SubdivisionType}}}
-|-
-! Subdivision name:
-| {{{field|SubdivisionName}}}
-|-
-! Subdivision symbol:
-| {{{field|SubdivisionSymbol}}}{{#info:Image file name.}}
-|-
-! Subdivision 2 type:
-| {{{field|Subdivision2Type}}}
-|-
-! Subdivision 2 name:
-| {{{field|Subdivision2Name}}}
-|-
-! Subdivision 2 symbol:
-| {{{field|Subdivision2Symbol}}}{{#info:Image file name.}}
-|-
-! Hitchbase:
-| {{{field|Hitchbase}}}
-|-
-! Links:
-| {{{field|Links}}}
 |}
 {| class="wikitable hw-form-location floatleft"
 |-

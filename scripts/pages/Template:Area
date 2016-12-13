@@ -6,7 +6,7 @@ It should be called in the following format:
 |Countries=
 |Location=latitude, longitude
 |Type=Region, Road, Airport, Border Crossing, or Continent
-|text=
+|Introduction=
 }}
 </pre>
 Edit the page to see the template text.

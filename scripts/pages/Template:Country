@@ -7,6 +7,9 @@ It should be called in the following format:
 |Capital=
 |Currency=
 |Population=
+|LicensePlate=
+|CountryCode=
+|Introduction=
 }}
 </pre>
 Edit the page to see the template text.
