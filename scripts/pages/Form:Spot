@@ -28,3 +28,4 @@
 <div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|preview}}} {{{standard input|cancel}}}</div><nowiki />
 <div class="editCheckboxes">{{{standard input|watch}}}</div><nowiki />
 </div>{{#addbodyclass:hwmap-spot-add}}</includeonly>
+__NOEDITSECTION__
