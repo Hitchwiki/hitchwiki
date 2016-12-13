@@ -28,6 +28,7 @@ with open('config.json') as config_file:
 
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
+map_code_regex = '<map[^>]+>'
 
 geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
 google_geocode = GoogleGeocode('./.cache')
@@ -50,6 +51,13 @@ for page in gen:
 
         entity = None
         properties = None
+
+        # remove <map /> tags from page text
+        new_page_text = page.text
+        new_page_text = re.sub(map_code_regex, '', new_text)
+        lendiff = len(new_page_text) - len(page.text)
+        if lendiff:
+            print ('# removed <map /> tags: %d characters' % lendiff)
 
         if re.match(motorway_regex, page.title()): # {Area Type=Road} (no relevant info in GeoNames DB)
             google_data = google_geocode.lookup(page.title())
@@ -134,9 +142,11 @@ for page in gen:
             smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
             smw_code = smw_code.decode('utf-8')
             print smw_code
-            #print repr(page.text)
+            #print repr(new_page_text)
             #print 'smv', repr(smw_code)
-            page.text = smw_code + page.text
+            new_page_text = smw_code + new_page_text
+            
+            page.text = new_page_text
             page.save()
         else:
             print '-'
