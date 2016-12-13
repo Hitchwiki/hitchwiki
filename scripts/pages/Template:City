@@ -18,6 +18,7 @@ Some documentation to help to understand how this template is built:
 - https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions
 
 </noinclude><includeonly>
+{{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
 {| class="infobox mw-collapsible"
 ! colspan="2" class="infobox-h1" | <div>{{#if: {{{symbol|}}} | [[File:{{{symbol}}}|x16px|link=]] | <i class="fa fa-star"></i> }} '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
 |-

@@ -10,7 +10,11 @@ Please use [[Special:Search search]] to double check that city article doesn't e
 {{{info|add title=Add city|edit title=Edit city}}}
 <div id="wikiPreview" style="display: none; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #AAAAAA;"></div>
 {{{for template|City}}}
-<div class="clearfix">{{{standard input|free text|editor=wikieditor|rows=15}}}</div>
+===Introduction===
+{{{field|Introduction|input type=textarea|editor=wikieditor|rows=5}}}
+<div class="clearfix"></div>
+===Other information===
+{{{standard input|free text|editor=wikieditor|rows=15}}}
 <div class="hw-form-semantics toccolours mw-collapsible mw-collapsed">
 <h4 class="hw-form-semantics-section">City details</h4>
 <div class="mw-collapsible-content">

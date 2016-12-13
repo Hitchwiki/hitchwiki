@@ -16,6 +16,7 @@ Some documentation to help to understand how this template is built:
 - https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions
 
 </noinclude><includeonly>
+{{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
 {| class="infobox mw-collapsible"
 ! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
 |-

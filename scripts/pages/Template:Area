@@ -17,6 +17,7 @@ Some documentation to help to understand how this template is built:
 
 </noinclude><includeonly>
 [[Type::{{{Type|}}}]]
+{{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
 {{{text|}}}
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <hw-map></hw-map>
