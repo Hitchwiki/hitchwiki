@@ -24,6 +24,9 @@ Some documentation to help to understand how this template is built:
 |-
 | colspan="2" class="infobox-h2" | '''Information'''
 |-
+{{#if: {{{AdministrativeDivision|}}} | ! Administrative division:
+| '''{{{AdministrativeDivision|}}}''' }}
+|-
 {{#if: {{{Population|}}} | ! Population:
 | {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
 |-

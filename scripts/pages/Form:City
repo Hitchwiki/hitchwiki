@@ -35,6 +35,9 @@ Please use [[Special:Search search]] to double check that city article doesn't e
 ! Major Roads:
 | {{{field|MajorRoads|input type=tokens|values from category=Road}}}{{#info:Road code e.g. "A1 (Germany)" or "E68"}}
 |-
+! Administrative division:
+| {{{field|AdministrativeDivision}}}
+|-
 ! Symbol:
 | {{{field|Symbol}}}
 |-
