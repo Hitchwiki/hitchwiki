@@ -129,13 +129,26 @@ for page in gen:
                             'Currency': ''
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
+                            # looks for MajorRoads and LicensePlate in the removed Infobox
+                            motorway_lists = re.findall('(|motorways\s*=\s*)', page.text)
+                            if len(motorway_lists) > 1:
+                                print 'Error: more than one motorway list found'
+                            elif len(motorway_lists) == 1:
+                                motorways = ", ".join([
+                                    re.sub('\[\[', '', re.sub('\|.*', '', motorway)).strip()
+                                    for motorway
+                                    in motorway_lists[0][1].split(',')
+                                ])
+                            else:
+                                motorways = ''
+
                             entity = 'City'
                             properties.update({
                                 'Country': geonames_result['countryName'],
                                 'AdministrativeDivision': geonames_result['adminName1'],
                                 'Population': geonames_result['population'],
                                 'LicensePlate': '',
-                                'MajorRoads': ''
+                                'MajorRoads': motorways
                             })
                     else: # {{Area}}
                         properties['Countries'] = geonames_result['countryName']
