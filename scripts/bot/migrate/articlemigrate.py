@@ -16,6 +16,7 @@ from pywikibot import pagegenerators
 import re
 import json
 import ConfigParser
+from difflib import unified_diff
 
 from lib.geonames import GeoNames
 from lib.googlegeocode import GoogleGeocode
@@ -219,10 +220,13 @@ for page in gen:
         if entity:
             smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
             smw_code = smw_code.decode('utf-8')
-            print smw_code
+            #print smw_code
             #print repr(new_text)
             #print 'smv', repr(smw_code)
             new_text = smw_code + new_text
+
+            diff = unified_diff(page.text.splitlines(1), new_text.splitlines(1))
+            print ''.join(diff)
 
             page.text = new_text
             page.save()
