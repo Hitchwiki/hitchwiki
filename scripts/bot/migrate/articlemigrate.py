@@ -29,7 +29,7 @@ with open('config.json') as config_file:
 motorway_regex = '[A-Z]?-?\d+\s*(\((\w|\s)+\))'
 border_regex = '.*border (crossing|checkpoint)'
 map_code_regex = '<map[^>]+>'
-infobox_regex = '(?i){{infobox.*}}'
+infobox_regex = '(?i){{infobox.*?}}'
 
 geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
 google_geocode = GoogleGeocode('./.cache')
@@ -56,10 +56,18 @@ for page in gen:
         # remove <map /> tags from page text
         new_text = page.text
         new_text = re.sub(map_code_regex, '', new_text)
-        new_text = re.sub(infobox_regex, '', new_text, flags=re.DOTALL)
+
+        # remove infoboxes from page text
+        infoboxes = re.findall(infobox_regex, new_text, flags=re.DOTALL)
+        for infobox in infoboxes:
+            curly_braces = re.findall('{{', infobox)
+            if len(curly_braces) > 1:
+                print "Error: page contains an infobox with a nested template; skip removing infoboxes"
+            else:
+                new_text = re.sub(infobox_regex, '', new_text, flags=re.DOTALL)
         lendiff = len(page.text) - len(new_text)
         if lendiff:
-            print ('# removed <map /> tags and infoboxes: %d characters' % lendiff)
+            print ('# removed <map /> tags (and infoboxes): %d characters' % lendiff)
 
         if re.match(motorway_regex, page.title()): # {Area Type=Road} (no relevant info in GeoNames DB)
             google_data = google_geocode.lookup(page.title())
