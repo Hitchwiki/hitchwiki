@@ -3,6 +3,9 @@
 # There are 4 location templates: Area, City, Country, Spot (all can be found in /scripts/pages/)
 # This script handles the first three
 #
+# Also, it creates a table hitchwiki_migrate.migrated_articles containing ids
+# of pages that have already been migrated
+#
 
 # Allow imports from parent dir
 import os,sys,inspect
@@ -16,6 +19,7 @@ from pywikibot import pagegenerators
 import re
 import json
 import ConfigParser
+import MySQLdb
 from difflib import unified_diff
 
 from lib.geonames import GeoNames
@@ -40,6 +44,25 @@ gen = pagegenerators.AllpagesPageGenerator(site=site)
 disamb_cat = pywikibot.Category(site, 'Disambiguation')
 disamb_pages = [article.title() for article in disamb_cat.articles()]
 
+db = MySQLdb.connect(
+    host=settings.get('db', 'host'),
+    user=settings.get('db', 'username'),
+    passwd=settings.get('db', 'password'),
+    db=settings.get('db', 'database'),
+    charset='utf8'
+)
+
+table_cur = db.cursor()
+    table_cur.execute(
+        'CREATE TABLE IF NOT EXISTS hitchwiki_migrate.migrated_articles (' +
+            ' page_id integer NOT NULL PRIMARY KEY' +
+        ')'
+    )
+except MySQLdb.Error, e:
+    if e.args[0] != 1050:
+        raise
+    # otherwise, error code 1050: table already exists; we just move on
+
 count = 0
 for page in gen:
     if not page.isRedirectPage() and page.title() not in disamb_pages:
@@ -50,6 +73,21 @@ for page in gen:
 	#if count < 3055:
         #    count += 1
         #    continue
+
+        # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
+        page.get()
+        pageid = page._pageid
+
+        table_cur = db.cursor()
+        table_cur.execute((
+            'SELECT 1' +
+                ' FROM hitchwiki_migrate.migrated_articles' +
+                ' WHERE page_id = %s'
+        ) % (pageid))
+        if table_cur.rowcount != 0:
+            print "Skipping (already migrated)...\n"
+            count += 1
+            continue
 
         entity = None
         properties = None
@@ -229,7 +267,20 @@ for page in gen:
             print ''.join(diff)
 
             page.text = new_text
-            page.save()
+
+            try:
+                page.save()
+
+                # Insert page_id into article migration logging table
+                table_cur = db.cursor()
+                table_cur.execute(
+                    'INSERT INTO hitchwiki_migrate.migrated_articles (page_id)' +
+                        " VALUES (%s)" % (pageid)
+                )
+                db.commit()
+            except:
+                raise
+
         else:
             print '-'
         print

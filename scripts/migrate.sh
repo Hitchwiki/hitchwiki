@@ -74,6 +74,11 @@ fi
 cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_rate
 echo
 
+echo "Drop hitchwiki_migrate database and recreate it..."
+mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_migrate"
+mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_migrate CHARACTER SET utf8 COLLATE utf8_general_ci"
+echo
+
 echo "Update MediaWiki..."
 cd "$WIKIDIR"
 php maintenance/update.php --quick --conf "$MWCONFFILE"
