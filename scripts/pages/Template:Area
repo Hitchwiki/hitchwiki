@@ -23,6 +23,6 @@ Some documentation to help to understand how this template is built:
 <hw-map></hw-map>
 [[Category:Areas]]
 {{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
-{{#ifeq: {{{Type|}}} | Roads | [[Category:Roads]] | }}
+{{#if: {{{Type|}}} | [[Category:{{{Type|}}}s]] | }}
 __NOEDITSECTION__
 </includeonly>
