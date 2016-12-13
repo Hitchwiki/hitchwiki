@@ -30,6 +30,9 @@ Some documentation to help to understand how this template is built:
 {{#if: {{{Population|}}} | ! Population:
 | {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
 |-
+{{#if: {{{LicensePlate|}}} | ! License plate:
+| [[LicensePlate::{{{LicensePlate|}}}]] }}
+|-
 {{#if: {{{Currency|}}} | ! Currency:
 | [[Currency::{{{Currency|}}}]] }}
 |-

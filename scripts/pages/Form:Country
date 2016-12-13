@@ -24,6 +24,9 @@ __NOEDITSECTION__
 ! Languages:
 | {{{field|Languages}}}
 |-
+! License plate:
+| {{{field|LicensePlate}}}
+|-
 ! Population:
 | {{{field|Population}}}
 |}
