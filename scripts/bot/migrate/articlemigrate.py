@@ -132,10 +132,20 @@ for page in gen:
                     if geonames_result['fcl'] == 'A' and 'fcode' in geonames_result and geonames_result['fcode'] in ['PCL', 'PCLI', 'PCLF']: # {{Country}}
                         entity = 'Country'
 
+                        # look for Capital in the removed Infoboxes
+                        capital_lists = re.findall('(\|capital\s*=\s*)(.*)', page.text)
+                        if len(capital_lists) > 1:
+                            print 'Error: more than one capital field definition found'
+                        elif len(capital_lists) == 1:
+                            capital = capital_lists[0][1].strip()
+                            capital = re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', capital))).strip()
+                        else:
+                            capital = ''
+
                         properties.update({
                             'CountryCode': geonames_result["countryCode"],
                             'Population': geonames_result['population'],
-                            'Capital': '',
+                            'Capital': capital,
                             'Currency': ''
                         })
                     elif geonames_result['fcl'] == 'P': # {{City}}
