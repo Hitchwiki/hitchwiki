@@ -107,10 +107,15 @@ except MySQLdb.Error, e:
     # otherwise, error code 1050: table already exists; we just move on
 
 count = 0
+unprocessed_count = 0
 for page in gen:
-    print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
-    print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
-    print
+    try:
+        print '#%d. %s' % (count + 1, page.title().encode('utf-8'))
+        print 'http://' + settings.get('general', 'domain') + '/en/' + page.title(asUrl=True)
+        print
+    except:
+        unprocessed_count += 1
+        continue
 
     if page.isRedirectPage():
         print "Skip: redirect page"
@@ -251,7 +256,7 @@ for page in gen:
                                 print 'Warning: multiple "capital" definitions; ignore all'
                                 print
                             elif len(capital_lists) == 1:
-                                capital = capital_lists[0][1].strip()
+                                capital = unicode(capital_lists[0][1].strip())
                                 capital = re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', capital))).strip() # extract page title from page link, if needed
                             else:
                                 capital = ''
@@ -332,18 +337,25 @@ for page in gen:
                         # ======================================================
 
                         else:
-                            properties['Countries'] = geonames_result['countryName']
+                            try:
+                                properties['Countries'] = geonames_result['countryName']
+                            except:
+                                print 'Warning: undeterminable country'
+                                print
 
                             # ==================================================
                             # ========== {{Area Type=Continent}} ===============
                             # ==================================================
 
-                            if geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'CONT': # continent
-                                print 'Use {{Area Type=Continent}} template'
+                            if page.title() == 'Europe' or (geonames_result['fcl'] == 'L' and geonames_result['fcode'] == 'CONT'): # continent
+                                #print 'Use {{Area Type=Continent}} template'
+                                #print
+
+                                print 'Warning: continent; hated by pywikibot'
                                 print
 
-                                entity = 'Area'
-                                properties['Type'] = 'Continent'
+                                #entity = 'Area'
+                                #properties['Type'] = 'Continent'
 
                             # ==================================================
                             # ========== {{Area Type=Region}} ==================
@@ -381,7 +393,7 @@ for page in gen:
 
                 # Show what's being changed
                 diff = unified_diff(page.text.splitlines(1), new_text.splitlines(1))
-                print ''.join(diff)
+                print u''.join(diff)
 
                 try:
                     page.text = new_text
@@ -405,4 +417,5 @@ for page in gen:
     print
     count += 1
 
-print 'Total:', count
+print 'Total:', (count + unprocessed_count)
+print 'Unprocessed count:', unprocessed_count

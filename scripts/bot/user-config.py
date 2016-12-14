@@ -51,6 +51,8 @@ mylang = 'hitchwiki'
 # family , you can use '*'
 usernames[family][mylang] = u'Hitchbot'
 
+max_retries = 2
+
 put_throttle = 0
 
 del ConfigParser
