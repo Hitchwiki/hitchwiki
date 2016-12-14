@@ -18,3 +18,6 @@ chmod -R g+rw "$ROOTDIR"
 
 chown -R www-data:www-data "$WIKIDIR/images"
 chmod -R ug+rw "$WIKIDIR/images"
+
+chown -R www-data:www-data "$WIKIDIR/cache"
+chmod -R ug+rw "$WIKIDIR/cache"

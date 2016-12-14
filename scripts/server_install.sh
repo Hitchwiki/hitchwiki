@@ -73,8 +73,8 @@ echo "-------------------------------------------------------------------------"
 
 echo
 echo "Ensure correct permissions for cache folders..."
-chown www-data:www-data $WIKIDIR/cache
-chown www-data:www-data $WIKIDIR/images/cache
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/permissions.sh"
 echo
 echo "-------------------------------------------------------------------------"
 

@@ -36,3 +36,7 @@ else
 fi
 cd "$WIKIBOTDIR/pywikibot-core"
 git submodule update --init
+
+cd "$WIKIBOTDIR" # pywikibot's requirement
+chown $USER:$USER "user-config.py"
+chmod ga-rx "user-config.py"
