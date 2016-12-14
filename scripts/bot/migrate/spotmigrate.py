@@ -6,7 +6,7 @@
 #
 # into wiki articles in the new setup based on Semantic MediaWiki
 #
-# Also, creates a table hitchwiki_maps.point_page_mappings containing:
+# Also, creates hitchwiki_migrate.migrated_spots table containing:
 #
 # - point_id -- primary key of a spot (point) in the old DB;
 # - page_id -- ID of the newly created MediaWiki article with spot info;
@@ -47,12 +47,8 @@ db = MySQLdb.connect(
 
 # Create a temporary (old) point_id <-> (new) page_id mappings table
 table_cur = db.cursor()
-#table_cur.execute(
-#    'DROP TABLE IF EXISTS hitchwiki_maps.point_page_mappings'
-#)
-try:
     table_cur.execute(
-        'CREATE TABLE hitchwiki_maps.point_page_mappings (' +
+        'CREATE TABLE hitchwiki_migrate.migrated_spots (' +
             ' point_id integer NOT NULL PRIMARY KEY,' +
             ' page_id integer NOT NULL UNIQUE,' +
             ' user_id integer DEFAULT NULL,' +
@@ -77,7 +73,7 @@ sql = (
             # " ) AS description" # most recent English description
             " '' AS description"
         " FROM hitchwiki_maps.t_points AS p" +
-        " LEFT JOIN hitchwiki_maps.point_page_mappings AS ppm" +
+        " LEFT JOIN hitchwiki_migrate.migrated_spots AS ppm" +
             " ON ppm.point_id = p.id" +
         " WHERE p.type = 1" + # ignore type = 2 (probably trip/event points)
             " AND ppm.point_id IS NULL" # ignore spots that have already been migrated
@@ -153,14 +149,15 @@ for point in points_cur.fetchall() :
     else:
         datetime = "NULL"
 
-    # Insert into (old) point_id and (new) page_id into the temporary mappings table
+    # Insert (old) point_id and (new) page_id into spot migration logging table
     table_cur = db.cursor()
     table_cur.execute(
-        'INSERT INTO hitchwiki_maps.point_page_mappings (point_id, page_id, user_id, datetime)' +
+        'INSERT INTO hitchwiki_migrate.migrated_spots (point_id, page_id, user_id, datetime)' +
             " VALUES (%s, %s, %s, %s)" % (point['point_id'], pageid, user_id, datetime)
     )
     db.commit()
-    # @TODO: using SQL set page's create time and user id to the values from point_page_mappings
+
+    # @TODO: using SQL set page's create time and user id to the values from migrated_spots
 
     print
 
