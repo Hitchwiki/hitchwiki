@@ -76,12 +76,6 @@ wfLoadExtension('GeoCrumbs');
 wfLoadExtension('GeoData');
 
 /**
- * ExternalData
- * https://www.mediawiki.org/wiki/Extension:ExternalData
- */
-#wfLoadExtension('ExternalData');
-
-/**
  * MultimediaViewer
  * https://www.mediawiki.org/wiki/Extension:MultimediaViewer
  */
