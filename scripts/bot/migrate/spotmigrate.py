@@ -22,26 +22,34 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-import pywikibot
-import json, requests, urllib
-import hashlib
-import os.path
-import ConfigParser
-import MySQLdb
-from ftfy import fix_text
 import signal
 import sys
+import os.path
 
-def signal_handler(signal, frame):
-    print 'Exit: Ctrl+C pressed'
-    sys.exit(0)
+import pywikibot
 
-signal.signal(signal.SIGINT, signal_handler)
+import requests
+import urllib
+import hashlib
+
+import json
+import ConfigParser
+
+import MySQLdb
+
+from ftfy import fix_text
 
 print
 
+# Handle Ctrl+C gracefully
+def signal_handler(signal, frame):
+    print 'Exit: Ctrl+C pressed'
+    sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
+
 site = pywikibot.Site()
 
+# Load wiki settings
 settings = ConfigParser.ConfigParser()
 settings.read('../../configs/settings.ini')
 api_url = 'http://' + settings.get('general', 'domain') + '/en/api.php'
@@ -55,8 +63,8 @@ db = MySQLdb.connect(
     charset='utf8'
 )
 
-# Create a temporary (old) point_id <-> (new) page_id mappings table
-try:
+# Create (old) point_id <-> (new) page_id  migration mappings table
+try: # Not using CREATE TABLE IF EXISTS to avoid MySQL warning if indeed exists
     table_cur = db.cursor()
     table_cur.execute(
         'CREATE TABLE hitchwiki_migrate.migrated_spots (' +
@@ -93,7 +101,7 @@ points_cur.execute(sql)
 
 count = points_cur.rowcount
 for point in points_cur.fetchall() :
-    title = 'Spot %s' % (point['point_id'])
+    title = 'Spot %s' % (point['point_id']) # point_id is a primary key, so the title is guaranteed to be unique
 
     print title
     print 'http://' + settings.get('general', 'domain') + '/en/' + title.replace(' ', '_') # works for simple titles
@@ -102,89 +110,86 @@ for point in points_cur.fetchall() :
     if point['page_id']: # old point with id = point_id has already got a corresponding article with id = page_id
         print 'Skip: already migrated'
         print
-        print "-------------------------------------------------------------------------------"
+    else:
+        # Fetch latest English description for the spot
+        descr_cur = db.cursor(MySQLdb.cursors.DictCursor)
+        descr_cur.execute((
+            'SELECT description' +
+                ' FROM hitchwiki_maps.t_points_descriptions' +
+                ' WHERE fk_point = %s' +
+                    " AND language = 'en_UK'" +
+                ' ORDER BY datetime DESC' +
+                ' LIMIT 1'
+        ) % (point['point_id']))
+        if descr_cur.rowcount != 0:
+            description = descr_cur.fetchone()['description']
+        else:
+            description = u''
+        description = fix_text(description) # we're getting crappily encoded utf-8 values from the db
+
+        # Request spot's country and nearby big city from the API
+        params = {
+            'action': 'hwfindnearbycityapi',
+            'format': 'json',
+            'lat': point['lat'],
+            'lng': point['lon']
+        }
+        r = requests.get(api_url, params=params)
+        obj = json.loads(r.text)
+
+        if len(obj['cities']) != 0:
+            cities = ','.join(city['name'] for city in obj['cities']) # for "cities" plural think for eg. Ruhr area
+        else:
+            cities = ''
+        country = obj['country']
+
+        if not country:
+            print 'Warning: country lookup failed; use blank value'
+            print
+
+        # Create MediaWiki page for the spot
+        page = pywikibot.Page(site, title)
+        page.text = ( # no way to preserve user id ;(
+            "{{Spot\n" +
+            ("|Description=%s\n" % description) +
+            ("|Cities=%s\n" % cities) +
+            ("|Country=%s\n" % country) +
+            "|CardinalDirection=\n" +
+            "|CitiesDirection=\n" +
+            "|RoadsDirection=\n" +
+            ("|Location=%s, %s\n" % (point['lat'], point['lon'])) +
+            "}}"
+        )
+        print page.text
         print
-        continue
 
-    # Fetch latest English description for the spot
-    descr_cur = db.cursor(MySQLdb.cursors.DictCursor)
-    descr_cur.execute((
-        'SELECT description' +
-            ' FROM hitchwiki_maps.t_points_descriptions' +
-            ' WHERE fk_point = %s' +
-                " AND language = 'en_UK'" +
-            ' ORDER BY datetime DESC' +
-            ' LIMIT 1'
-    ) % (point['point_id']))
-    if descr_cur.rowcount != 0:
-        description = descr_cur.fetchone()['description']
-    else:
-        description = u''
-    description = fix_text(description) # we're getting crappily encoded utf-8 values from the db
-
-    # Request nearby city from the API
-    params = {
-        'action': 'hwfindnearbycityapi',
-        'format': 'json',
-        'lat': point['lat'],
-        'lng': point['lon']
-    }
-    r = requests.get(api_url, params=params)
-    obj = json.loads(r.text)
-
-    if len(obj['cities']) != 0:
-        cities = ','.join(city['name'] for city in obj['cities'])
-    else:
-        cities = ''
-    country = obj['country']
-
-    if not country:
-        print 'Error: country lookup failed; use blank value'
+        page.save()
         print
 
-    # Create MediaWiki page for the spot
-    page = pywikibot.Page(site, title)
-    page.text = ( # no way to preserve user id ;(
-        "{{Spot\n" +
-        ("|Description=%s\n" % description) +
-        ("|Cities=%s\n" % cities) +
-        ("|Country=%s\n" % country) +
-        "|CardinalDirection=\n" +
-        "|CitiesDirection=\n" +
-        "|RoadsDirection=\n" +
-        ("|Location=%s, %s\n" % (point['lat'], point['lon'])) +
-        "}}"
-    )
-    print page.text
-    print
+        # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
+        page.get()
+        pageid = page._pageid
 
-    page.save()
+        if point["user"]:
+            user_id = point["user"]
+        else:
+            user_id = dummy_user_id
 
-    # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
-    page.get()
-    pageid = page._pageid
+        if point["datetime"]:
+            datetime = "'" + str(point["datetime"]) + "'"
+        else:
+            datetime = "NULL"
 
-    if point["user"]:
-        user_id = point["user"]
-    else:
-        user_id = dummy_user_id
+        # Insert (old) point_id and (new) page_id into spot migration logging table
+        table_cur = db.cursor()
+        table_cur.execute(
+            'INSERT INTO hitchwiki_migrate.migrated_spots (point_id, page_id, user_id, datetime)' +
+                " VALUES (%s, %s, %s, %s)" % (point['point_id'], pageid, user_id, datetime)
+        )
+        db.commit()
 
-    if point["datetime"]:
-        datetime = "'" + str(point["datetime"]) + "'"
-    else:
-        datetime = "NULL"
+        # @TODO: using SQL set page's create time and user id to the values from migrated_spots
 
-    # Insert (old) point_id and (new) page_id into spot migration logging table
-    table_cur = db.cursor()
-    table_cur.execute(
-        'INSERT INTO hitchwiki_migrate.migrated_spots (point_id, page_id, user_id, datetime)' +
-            " VALUES (%s, %s, %s, %s)" % (point['point_id'], pageid, user_id, datetime)
-    )
-    db.commit()
-
-    # @TODO: using SQL set page's create time and user id to the values from migrated_spots
-
-    print
     print "-------------------------------------------------------------------------------"
     print
 
