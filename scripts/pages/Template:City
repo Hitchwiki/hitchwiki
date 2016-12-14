@@ -45,6 +45,6 @@ Some documentation to help to understand how this template is built:
 [[wikivoyage:{{PAGENAME}}]]
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-city}}
-<div id="spot-edit-form-wrap">{{#forminput:form=Spot|size=|default value=|button text=Continue|page name=|query string=Spot[Location]=&Spot[Country]=&Spot[Cities]=|popup}}</div>
+<div id="hw-spot-edit-form-wrap">{{#forminput:form=Spot|size=|default value=|button text=Continue|page name=|query string=Spot[Location]=&Spot[Country]=&Spot[Cities]=|popup}}</div>
 {{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|city}} }}
 </includeonly>
