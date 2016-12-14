@@ -158,7 +158,7 @@ for point in points_cur.fetchall() :
             "|CitiesDirection=\n" +
             "|RoadsDirection=\n" +
             ("|Location=%s, %s\n" % (point['lat'], point['lon'])) +
-            "}}"
+            "}}\n"
         )
         print page.text
         print

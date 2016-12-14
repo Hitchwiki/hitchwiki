@@ -97,7 +97,7 @@ for page in gen:
         print "Skip: redirect page"
         print
     elif page.title() in disamb_pages:
-        print "Skip: disabmiguation page"
+        print "Skip: disambiguation page"
         print
     else:
         # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
@@ -117,7 +117,7 @@ for page in gen:
             print
         else: # Keep goin'
             entity = None
-            properties = None
+            properties = {}
 
             # Remove <map /> tags from page text
             new_text = page.text
@@ -133,6 +133,19 @@ for page in gen:
                 else:
                     new_text = re.sub(infobox_code_regex, '', new_text, flags=re.DOTALL)
             lendiff = len(page.text) - len(new_text)
+
+            # Move all the text on top of the first header to the Semantic template
+            if new_text.startswith("=="):
+                first_header_pos = 0
+            else:
+                first_header_pos = new_text.find("\n==")
+                if first_header_pos == -1:
+                    first_header_pos = len(new_text)
+            introduction = new_text[0:first_header_pos]
+            new_text = new_text[first_header_pos:]
+
+            # All three relevant templates (City, Country and Area) contain Introduction property
+            properties['Introduction'] = introduction
 
             # ==================================================================
             # ========== {Area Type=Road} ======================================
@@ -150,12 +163,12 @@ for page in gen:
                     address = google_data['results'][0]['address_components']
                     country = next(component["long_name"] for component in address if "country" in component["types"])
                     entity = 'Area'
-                    properties = {
+                    properties.update({
                         'Type': 'Road',
                         'Location': '%s,%s' % (location['lat'], location['lng']),
                         'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                         'Countries': country
-                    }
+                    })
 
             # ==================================================================
             # ========== {Area Type=Border crossing} ===========================
@@ -173,12 +186,12 @@ for page in gen:
                     address = google_data['results'][0]['address_components']
                     country = next(component["long_name"] for component in address if "country" in component["types"])
                     entity = 'Area'
-                    properties = {
+                    properties.update({
                         'Type': 'Border Crossing',
                         'Location': '%s,%s' % (location['lat'], location['lng']),
                         'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                         'Countries': country
-                    }
+                    })
 
             # ==================================================================
 
@@ -190,22 +203,7 @@ for page in gen:
                     geonames_result = geonames_data['geonames'][0]
                     relevant = (page.title() in config['whitelist'] or geonames_result['score'] >= config['score_threshold'])
                     if relevant and page.title() not in config['blacklist']:
-                        properties = {
-                            'Location': '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
-                        }
-
-                        # Move all the text on top of the first header to the Semantic template
-                        if new_text.startswith("=="):
-                            first_header_pos = 0
-                        else:
-                            first_header_pos = new_text.find("\n==")
-                            if first_header_pos == -1:
-                                first_header_pos = len(new_text)
-                        introduction = new_text[0:first_header_pos]
-                        new_text = new_text[first_header_pos:]
-
-                        # All three relevant templates (City, Country and Area) contain Introduction property
-                        properties['Introduction'] = introduction
+                        properties['Location'] = '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
 
                         # Get bounding box
                         google_data = google_geocode.lookup(page.title())
@@ -358,7 +356,7 @@ for page in gen:
 
             if entity:
                 # Join property values to get Semantic template code (careful with Unicode); prepend it to the article
-                smw_code = "{{%s\n|%s\n}}" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
+                smw_code = "{{%s\n|%s\n}}\n" % (entity, "\n|".join(['%s=%s' % (unicode(k).encode('utf-8'), unicode(v).encode('utf-8')) for k, v in properties.items()]))
                 smw_code = smw_code.decode('utf-8')
                 new_text = smw_code + new_text
 
