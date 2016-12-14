@@ -300,7 +300,6 @@
     "GeoData":  "@dev",
     "DismissableSiteNotice": "@dev",
     "GeoCrumbs": "@dev",
-    "ExternalData": "@dev",
     "TorBlock": "@dev",
     "ApiSandbox": "@dev",
     "MultimediaViewer": "@dev",
