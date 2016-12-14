@@ -32,47 +32,66 @@ fi
 tar -xzf "$DUMPFILE" -C "$WIKIDIR"
 echo
 
-echo "Drop $HW__db__database database and recreate it..."
-mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
-mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
-echo
+DUMPFILE="$ROOTDIR/dumps/old-hitchwiki.sql"
+if [ -f $DUMPFILE ]; then # single SQL dump with all the databases
+    echo "Drop $HW__db__database database..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
+    echo
 
-echo "Import old English Hitchwiki SQL dump..."
-DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_en.sql"
-if [ ! -f "$DUMPFILE" ]; then
-    echo "File $DUMPFILE not found"
-    exit 1
+    echo "Drop hitchwiki_maps database..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_maps"
+    echo
+
+    echo "Drop hitchwiki_rate database..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_rate"
+    echo
+
+    echo "Import Hitchwiki multi-database dump..."
+    cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password
+    echo
+else # one SQL dump per each database
+    echo "Drop $HW__db__database database and recreate it..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
+    mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
+    echo
+
+    echo "Import hitchwiki_en SQL dump..."
+    DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_en.sql"
+    if [ ! -f "$DUMPFILE" ]; then
+        echo "File $DUMPFILE not found"
+        exit 1
+    fi
+    cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password $HW__db__database
+    echo
+
+    echo "Drop hitchwiki_maps database and recreate it..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_maps"
+    mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_maps CHARACTER SET utf8 COLLATE utf8_general_ci"
+    echo
+
+    echo "Import old hitchwiki_maps SQL dump..."
+    DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_maps.sql"
+    if [ ! -f "$DUMPFILE" ]; then
+        echo "File $DUMPFILE not found"
+        exit 1
+    fi
+    cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_maps
+    echo
+
+    echo "Drop hitchwiki_rate database and recreate it..."
+    mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_rate"
+    mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_rate CHARACTER SET utf8 COLLATE utf8_general_ci"
+    echo
+
+    echo "Import old hitchwiki_rate SQL dump..."
+    DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_rate.sql"
+    if [ ! -f "$DUMPFILE" ]; then
+        echo "File $DUMPFILE not found"
+        exit 1
+    fi
+    cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_rate
+    echo
 fi
-cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password $HW__db__database
-echo
-
-echo "Drop hitchwiki_maps database and recreate it..."
-mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_maps"
-mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_maps CHARACTER SET utf8 COLLATE utf8_general_ci"
-echo
-
-echo "Import old Hitchwiki Maps SQL dump..."
-DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_maps.sql"
-if [ ! -f "$DUMPFILE" ]; then
-    echo "File $DUMPFILE not found"
-    exit 1
-fi
-cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_maps
-echo
-
-echo "Drop hitchwiki_rate database and recreate it..."
-mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_rate"
-mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_rate CHARACTER SET utf8 COLLATE utf8_general_ci"
-echo
-
-echo "Import old Hitchwiki Rate SQL dump..."
-DUMPFILE="$ROOTDIR/dumps/old-hitchwiki_rate.sql"
-if [ ! -f "$DUMPFILE" ]; then
-    echo "File $DUMPFILE not found"
-    exit 1
-fi
-cat "$DUMPFILE" | mysql -u$HW__db__username -p$HW__db__password hitchwiki_rate
-echo
 
 echo "Drop hitchwiki_migrate database and recreate it..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_migrate"
@@ -116,7 +135,7 @@ echo
 # Run spot migrate bot
 echo "Run spot migrate bot: turn spots from the old hitchwiki_maps DB into Semantic MW articles (this might take a while)..."
 cd "$SCRIPTDIR/bot"
-python pywikibot-core/pwb.py migrate/articlemigrate.py
+python pywikibot-core/pwb.py migrate/spotmigrate.py
 echo
 
 # Run extra migrate bot
