@@ -111,24 +111,28 @@ for point in points_cur.fetchall() :
     }
     r = requests.get(api_url, params=params)
     obj = json.loads(r.text)
-    print obj
+    #print obj
     if len(obj['cities']) != 0:
         cities = ','.join(city['name'] for city in obj['cities'])
     else:
         cities = ''
+    country = obj['country']
     #print cities
 
     # Create MediaWiki page for the spot
     title = 'Spot %s (%s, %s)' % (point['point_id'], point['lat'], point['lon'])
     print title
+    print 'http://' + settings.get('general', 'domain') + '/en/' + title.replace(' ', '_') # works for simple titles
     print
+
+    country = geonames_data['geonames'][0]['countryName']
 
     page = pywikibot.Page(site, title)
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
         ("|Description=%s\n" % description) +
         ("|Cities=%s\n" % cities) +
-        "|Country=\n" +
+        ("|Country=%s\n" % country) +
         "|CardinalDirection=\n" +
         "|CitiesDirection=\n" +
         "|RoadsDirection=\n" +
