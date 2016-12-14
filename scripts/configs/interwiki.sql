@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS `interwiki` (
 --
 
 INSERT INTO `interwiki` (`iw_prefix`, `iw_url`, `iw_api`, `iw_wikiid`, `iw_local`, `iw_trans`) VALUES
-('bewelcome', 'https://www.bewelcome.org/search/members/text?search-can-host=1&search-distance=25&search-location=$1', '', '', 0, 0),
+('bewelcome', 'http://www.bewelcome.org/$1', '', '', 0, 0),
+('bewelcome-location', 'https://www.bewelcome.org/search/members/text?search-can-host=1&search-distance=25&search-location=$1', '', '', 0, 0),
 ('bg', 'http://hitchwiki.org/bg/$1', '', '', 1, 0),
 ('bw', 'http://www.bewelcome.org/$1', '', '', 0, 0),
 ('commons', 'http://commons.wikimedia.org/wiki/$1', '', '', 0, 0),

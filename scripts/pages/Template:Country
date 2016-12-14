@@ -45,7 +45,7 @@ Some documentation to help to understand how this template is built:
 |-
 | colspan="2" class="hw-country-ratings"| <hw-rate></hw-rate>
 |-
-! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}} Trustroots]] {{#if: {{{CountryCode|}}} | or [http://www.bewelcome.org/places/{{PAGENAMEE}}/{{{CountryCode}}} BeWelcome] }}
+! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]] {{#if: {{{CountryCode|}}} | or [[:bewelcome:/places/{{PAGENAMEE}}/{{{CountryCode}}}|BeWelcome]] }}
 |}
 
 == Cities ==
