@@ -79,7 +79,7 @@ wfLoadExtension('GeoData');
  * ExternalData
  * https://www.mediawiki.org/wiki/Extension:ExternalData
  */
-wfLoadExtension('ExternalData');
+#wfLoadExtension('ExternalData');
 
 /**
  * MultimediaViewer
