@@ -29,6 +29,16 @@ import os.path
 import ConfigParser
 import MySQLdb
 from ftfy import fix_text
+import signal
+import sys
+
+def signal_handler(signal, frame):
+    print 'Exit: Ctrl+C pressed'
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+print
 
 site = pywikibot.Site()
 
@@ -64,7 +74,7 @@ except MySQLdb.Error, e:
 # Fetch points and their English description from the old DB
 points_cur = db.cursor(MySQLdb.cursors.DictCursor)
 sql = (
-    "SELECT p.id AS point_id, p.user, p.lat, p.lon, p.datetime," +
+    "SELECT p.id AS point_id, p.user, p.lat, p.lon, p.datetime, ppm.page_id, " +
             # @TODO: fix performance issue; index is ignored :/ using a separate query for now
             # " ( SELECT d.description" +
             #     " FROM hitchwiki_maps.t_points_descriptions AS d" +
@@ -77,14 +87,24 @@ sql = (
         " LEFT JOIN hitchwiki_migrate.migrated_spots AS ppm" +
             " ON ppm.point_id = p.id" +
         " WHERE p.type = 1" + # ignore type = 2 (probably trip/event points)
-            " AND ppm.point_id IS NULL" # ignore spots that have already been migrated
+        " ORDER BY p.id" # consistent processing order
 )
 points_cur.execute(sql)
 
 count = points_cur.rowcount
 for point in points_cur.fetchall() :
-    #print point['point_id'], point['user'], point['lat'], point['lon'], point['description']
-    #description = point["description"]
+    title = 'Spot %s' % (point['point_id'])
+
+    print title
+    print 'http://' + settings.get('general', 'domain') + '/en/' + title.replace(' ', '_') # works for simple titles
+    print
+
+    if point['page_id']: # old point with id = point_id has already got a corresponding article with id = page_id
+        print 'Skip: already migrated'
+        print
+        print "-------------------------------------------------------------------------------"
+        print
+        continue
 
     # Fetch latest English description for the spot
     descr_cur = db.cursor(MySQLdb.cursors.DictCursor)
@@ -111,20 +131,18 @@ for point in points_cur.fetchall() :
     }
     r = requests.get(api_url, params=params)
     obj = json.loads(r.text)
-    #print obj
+
     if len(obj['cities']) != 0:
         cities = ','.join(city['name'] for city in obj['cities'])
     else:
         cities = ''
     country = obj['country']
-    #print cities
+
+    if not country:
+        print 'Error: country lookup failed; use blank value'
+        print
 
     # Create MediaWiki page for the spot
-    title = 'Spot %s (%s, %s)' % (point['point_id'], point['lat'], point['lon'])
-    print title
-    print 'http://' + settings.get('general', 'domain') + '/en/' + title.replace(' ', '_') # works for simple titles
-    print
-
     page = pywikibot.Page(site, title)
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
