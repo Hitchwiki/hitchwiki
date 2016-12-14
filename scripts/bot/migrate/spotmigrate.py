@@ -46,7 +46,8 @@ db = MySQLdb.connect(
 )
 
 # Create a temporary (old) point_id <-> (new) page_id mappings table
-table_cur = db.cursor()
+try:
+    table_cur = db.cursor()
     table_cur.execute(
         'CREATE TABLE hitchwiki_migrate.migrated_spots (' +
             ' point_id integer NOT NULL PRIMARY KEY,' +
@@ -115,11 +116,13 @@ for point in points_cur.fetchall() :
         cities = ','.join(city['name'] for city in obj['cities'])
     else:
         cities = ''
-    print cities
+    #print cities
 
     # Create MediaWiki page for the spot
-    title = 'Spot %s (%s %s)' % (point['point_id'], point['lat'], point['lon'])
+    title = 'Spot %s (%s, %s)' % (point['point_id'], point['lat'], point['lon'])
     print title
+    print
+
     page = pywikibot.Page(site, title)
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
@@ -133,6 +136,8 @@ for point in points_cur.fetchall() :
         "}}"
     )
     print page.text
+    print
+
     page.save()
 
     # Get page id (_pageid isn't to be relied upon, but thank Thor it works)
@@ -160,5 +165,7 @@ for point in points_cur.fetchall() :
     # @TODO: using SQL set page's create time and user id to the values from migrated_spots
 
     print
+    print "-------------------------------------------------------------------------------"
+    print
 
-print 'total: ', count
+print 'Total:', count

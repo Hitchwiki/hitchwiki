@@ -327,4 +327,4 @@ for page in gen:
         print
         count += 1
 
-print 'Total: ', count
+print 'Total:', count
