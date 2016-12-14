@@ -28,6 +28,14 @@ if ($wgCommandLineMode) {
   if (!ini_get( 'zlib.output_compression')) @ob_start('ob_gzhandler');
 }
 
+# Pick a random Geonames account username to be used for this page load
+# We're doing this to avoid request throttling especially during migration,
+# as Geonames API has 2000 req / hour limit
+
+if (array_key_exists('geonames_usernames', $hwConfig["vendor"])) {
+    $hwConfig["vendor"]["geonames_username"] = $hwConfig["vendor"]["geonames_usernames"][array_rand($hwConfig["vendor"]["geonames_usernames"])];
+}
+
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 

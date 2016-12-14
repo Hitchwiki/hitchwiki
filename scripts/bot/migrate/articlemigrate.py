@@ -17,6 +17,7 @@ sys.path.insert(0,parentdir)
 
 import sys
 import signal
+from subprocess import check_output
 
 import pywikibot
 from pywikibot import pagegenerators
@@ -55,8 +56,26 @@ settings.read('../../configs/settings.ini')
 with open('config.json') as config_file:
     config = json.load(config_file)
 
+# Python's ConfigParser doesn't like:
+#     geonames_username[] = hitchwiki
+#     geonames_username[] = hitchwiki2
+# list definition in settings.ini
+#
+# Resorting to a dirty hack..
+
+php_rand_geoname_user = """
+$hwConfig = parse_ini_file("../../configs/settings.ini", true);
+if (array_key_exists("geonames_usernames", $hwConfig["vendor"])) {
+    echo $hwConfig["vendor"]["geonames_usernames"][array_rand($hwConfig["vendor"]["geonames_usernames"])];
+}
+else {
+    echo $hwConfig["vendor"]["geonames_username"];
+}
+"""
+geonames_username = check_output(["php", "-r", php_rand_geoname_user]).strip()
+
 # Geonames geocoder wrapper
-geonames = GeoNames(settings.get('vendor', 'geonames_username'), './.cache')
+geonames = GeoNames(geonames_username, './.cache')
 
 # Google GeoCode limits number of lookups per day
 google_geocode = GoogleGeocode('./.cache')
