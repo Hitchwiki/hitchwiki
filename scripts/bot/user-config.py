@@ -44,7 +44,7 @@ family_files['hitchwiki'] = 'http://' + settings.get('general', 'domain') + '/en
 family = 'hitchwiki'
 
 # The language code of the site we're working on.
-mylang = 'en'
+mylang = 'hitchwiki'
 
 # The dictionary usernames should contain a username for each site where you
 # have a bot account. If you have a unique username for all languages of a

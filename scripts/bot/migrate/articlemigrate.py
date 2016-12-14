@@ -21,9 +21,19 @@ import json
 import ConfigParser
 import MySQLdb
 from difflib import unified_diff
+import signal
+import sys
 
 from lib.geonames import GeoNames
 from lib.googlegeocode import GoogleGeocode
+
+def signal_handler(signal, frame):
+    print 'Exit: Ctrl+C pressed'
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+print
 
 settings = ConfigParser.ConfigParser()
 settings.read('../../configs/settings.ini')
@@ -55,7 +65,7 @@ db = MySQLdb.connect(
 try: # Not using CREATE TABLE IF EXISTS to avoid MySQL warning if indeed exists
     table_cur = db.cursor()
     table_cur.execute(
-        'CREATE TABLE IF NOT EXISTS hitchwiki_migrate.migrated_articles (' +
+        'CREATE TABLE hitchwiki_migrate.migrated_articles (' +
             ' page_id integer NOT NULL PRIMARY KEY' +
         ')'
     )
