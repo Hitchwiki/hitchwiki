@@ -125,8 +125,6 @@ for point in points_cur.fetchall() :
     print 'http://' + settings.get('general', 'domain') + '/en/' + title.replace(' ', '_') # works for simple titles
     print
 
-    country = geonames_data['geonames'][0]['countryName']
-
     page = pywikibot.Page(site, title)
     page.text = ( # no way to preserve user id ;(
         "{{Spot\n" +
