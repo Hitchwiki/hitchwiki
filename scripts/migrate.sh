@@ -96,6 +96,11 @@ else # one SQL dump per each database
     echo
 fi
 
+echo "Ensure correct permissions for folders..."
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/permissions.sh"
+echo
+
 echo "Drop hitchwiki_migrate database and recreate it..."
 mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_migrate"
 mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE hitchwiki_migrate CHARACTER SET utf8 COLLATE utf8_general_ci"
