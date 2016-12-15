@@ -3,13 +3,13 @@ This is the "Spot" template.
 It should be called in the following format:
 <pre>
 {{Spot
-|Description=
+|Location=latitude, longitude
 |Cities=
+|Country=
 |CardinalDirection=
 |CitiesDirection=
 |RoadsDirection=
-|Location=latitude, longitude
-|Country=
+|Description=
 }}
 </pre>
 

@@ -5,10 +5,12 @@ It should be called in the following format:
 {{City
 |Location=latitude, longitude
 |Countries=
+|AdministrativeDivision=
+|MajorRoads=
 |NativeName=
 |LicencePlate=
 |Population=
-|MajorRoads=
+|Bbox=west, south, east, north
 |Introduction=
 }}
 </pre>

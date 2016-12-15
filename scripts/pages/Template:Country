@@ -2,13 +2,15 @@
 This is the "City" template.
 It should be called in the following format:
 <pre>
-{{City
+{{Country
 |Location=latitude, longitude
 |Capital=
+|Languages=
 |Currency=
 |Population=
-|LicensePlate=
+|LicencePlate=
 |CountryCode=
+|Bbox=west, south, east, north
 |Introduction=
 }}
 </pre>
@@ -34,8 +36,8 @@ Some documentation to help to understand how this template is built:
 {{#if: {{{Population|}}} | ! Population:
 | {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
 |-
-{{#if: {{{LicensePlate|}}} | ! License plate:
-| [[LicensePlate::{{{LicensePlate|}}}]] }}
+{{#if: {{{LicencePlate|}}} | ! Licence plate:
+| [[LicencePlate::{{{LicencePlate|}}}]] }}
 |-
 {{#if: {{{Currency|}}} | ! Currency:
 | [[Currency::{{{Currency|}}}]] }}

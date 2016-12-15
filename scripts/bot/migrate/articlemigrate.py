@@ -350,7 +350,7 @@ for page in gen:
                                 else:
                                     motorways = ''
 
-                                # look for LicensePlate in the removed Infoboxes
+                                # look for LicencePlate in the removed Infoboxes
                                 plate_lists = re.findall('(\|plate\s*=\s*)(.*)', page.text)
                                 if len(plate_lists) > 1:
                                     print 'Warning: multiple "plate" definitions; ignore all'
@@ -366,7 +366,7 @@ for page in gen:
                                     'Countries': geonames_result['countryName'],
                                     'AdministrativeDivision': geonames_result['adminName1'],
                                     'Population': geonames_result['population'],
-                                    'LicensePlate': plate,
+                                    'LicencePlate': plate,
                                     'MajorRoads': motorways
                                 })
 

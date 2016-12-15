@@ -5,7 +5,8 @@ It should be called in the following format:
 {{Area
 |Countries=
 |Location=latitude, longitude
-|Type=Region, Road, Airport, Border Crossing, or Continent
+|Type=Region OR Road OR Airport OR Border Crossing OR Continent
+|Bbox=west, south, east, north
 |Introduction=
 }}
 </pre>
