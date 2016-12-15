@@ -19,6 +19,9 @@ fi
 source "scripts/_path_resolve.sh"
 source "$SCRIPTDIR/_settings.sh"
 
+# Exit on error
+set -e
+
 echo "Remove existing Hitchwiki images folder..."
 rm -rf "$WIKIDIR/images"
 echo
@@ -125,6 +128,10 @@ bash "$SCRIPTDIR/create_users.sh"
 echo "Install dependencies of migrate bot..."
 bash "$SCRIPTDIR/bot/bot_install.sh"
 echo
+
+# Make terminal Unicode-friendly for migrate bot's output
+echo 'Set en_US.utf8 locale...'
+export LC_ALL='en_US.utf8'
 
 # Run article migrate bot
 echo "Run article migrate bot: annotate place articles with geographical Semantic MW templates (this might take a while)..."
