@@ -46,7 +46,20 @@ article_title_border_regex = '.*border (crossing|checkpoint)'
 
 # Article content
 map_link_regex = '<map[^>]+>'
-infobox_code_regex = '(?i){{infobox.*?}}'
+#infobox_code_regex = '(?i){{infobox.*?}}'
+infobox_code_regex = ('(?i)'
+    '' + '('
+        '{{infobox'
+            '('
+                '[^{}]*' # text-without-curly-brackets
+                '('
+                    '{{[^{}]*}}' # {{text}}
+                    '|'
+                    '{[^{}]*}' # {text}
+                ')' + '*'
+            ')' + '*'
+        '}}'
+    ')')
 
 # Load wiki settings
 settings = ConfigParser.ConfigParser()
@@ -150,12 +163,7 @@ for page in gen:
             # Remove infoboxes from page text
             infoboxes = re.findall(infobox_code_regex, new_text, flags=re.DOTALL)
             for infobox in infoboxes:
-                curly_braces = re.findall('{{', infobox)
-                if len(curly_braces) > 1:
-                    print "Warning: infobox with nested template; skip cutting"
-                    print
-                else:
-                    new_text = re.sub(infobox_code_regex, '', new_text, flags=re.DOTALL)
+                new_text = re.sub(infobox_code_regex, '', new_text, flags=re.DOTALL)
             lendiff = len(page.text) - len(new_text)
 
             # Move all the text on top of the first header to the Semantic template
@@ -305,12 +313,31 @@ for page in gen:
                                     print 'Warning: multiple "motorways" definitions; ignore all'
                                     print
                                 elif len(motorway_lists) == 1:
-                                    motorways = ", ".join([
+                                    motorways_parsed = [
                                         # extract page title from page link and remove visible alias, if needed
-                                        re.sub('\[\[', '', re.sub('\]\]', '', re.sub('\|.*', '', motorway))).strip()
+                                        re.sub('\[\[|{{', '', re.sub('\]\]|}}', '', re.sub('\|', '', re.sub('\|.*\]\]', '', motorway)))).strip()
                                         for motorway
-                                        in motorway_lists[0][1].split(',')
-                                    ])
+                                        in re.split(',|}}\s*{{',motorway_lists[0][1])
+                                    ]
+                                    motorways_renamed = [
+                                        'A' + motorway[8:] + ' (Germany)' if motorway.startswith('Autobahn')
+                                        else 'A' + motorway[3:] + ' (Austria)' if motorway.startswith('Aat')
+                                        else 'A' + motorway[3:] + ' (Belgium)' if motorway.startswith('Abe')
+                                        else 'A' + motorway[3:] + ' (France)' if motorway.startswith('Afr')
+                                        else 'A' + motorway[3:] + ' (Italy)' if motorway.startswith('Ait')
+                                        else 'A' + motorway[3:] + ' (Netherlands)' if motorway.startswith('Anl')
+                                        else 'A' + motorway[3:] + ' (Poland)' if motorway.startswith('Apl')
+                                        else 'A' + motorway[3:] + ' (Portugal)' if motorway.startswith('Apt')
+                                        else 'A' + motorway[3:] + ' (Romania)' if motorway.startswith('Aro')
+                                        else 'A' + motorway[3:] + ' (Spain)' if motorway.startswith('Aes')
+                                        else 'A' + motorway[3:] + ' (Switzerland)' if motorway.startswith('Ach')
+                                        else 'A' + motorway[3:] + ' (GB)' if motorway.startswith('Agb') # yeah, not very consistent
+                                        # other countries seem to be ok
+                                        else motorway
+                                        for motorway
+                                        in motorways_parsed
+                                    ]
+                                    motorways = ", ".join(motorways_renamed)
                                 else:
                                     motorways = ''
 
