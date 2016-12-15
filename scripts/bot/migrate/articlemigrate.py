@@ -363,7 +363,7 @@ for page in gen:
                                     plate = ''
 
                                 properties.update({
-                                    'Country': geonames_result['countryName'],
+                                    'Countries': geonames_result['countryName'],
                                     'AdministrativeDivision': geonames_result['adminName1'],
                                     'Population': geonames_result['population'],
                                     'LicensePlate': plate,
