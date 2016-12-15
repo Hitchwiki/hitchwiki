@@ -133,11 +133,19 @@ echo
 echo 'Set en_US.utf8 locale...'
 export LC_ALL='en_US.utf8'
 
+# Process MediaWiki job queue before replenishing it
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/run_mw_jobs.sh"
+
 # Run article migrate bot
 echo "Run article migrate bot: annotate place articles with geographical Semantic MW templates (this might take a while)..."
 cd "$SCRIPTDIR/bot"
 python pywikibot-core/pwb.py migrate/articlemigrate.py
 echo
+
+# Process MediaWiki job queue; it gets massive after article migration
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/run_mw_jobs.sh"
 
 # Run spot migrate bot
 echo "Run spot migrate bot: turn spots from the old hitchwiki_maps DB into Semantic MW articles (this might take a while)..."
@@ -145,11 +153,19 @@ cd "$SCRIPTDIR/bot"
 python pywikibot-core/pwb.py migrate/spotmigrate.py
 echo
 
+# Process MediaWiki job queue; it gets massive after spot migration
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/run_mw_jobs.sh"
+
 # Run extra migrate bot
 echo "Run extra migrate bot: copy comments, ratings and waiting times from the old DB tables into the new DB..."
 cd "$SCRIPTDIR/bot"
 python pywikibot-core/pwb.py migrate/extramigrate.py
 echo
+
+# Process MediaWiki job queue, just in case
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/run_mw_jobs.sh"
 
 # Drop hitchwiki_maps DB
 echo "Drop no longer needed hitchwiki_maps database..."
@@ -165,7 +181,8 @@ echo
 # mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS hitchwiki_migrate"
 # echo
 
-# Process MediaWiki job queue (it gets massive after editing all the articles using migrate bot)
+# Process MediaWiki job queue, just in case
+cd "$ROOTDIR"
 bash "$SCRIPTDIR/run_mw_jobs.sh"
 
 echo "Done! Grrrreat success."
