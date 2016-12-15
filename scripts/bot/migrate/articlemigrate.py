@@ -179,6 +179,15 @@ for page in gen:
             # All three relevant templates (City, Country and Area) contain Introduction property
             properties['Introduction'] = introduction
 
+            whitelisted = page.title() in config['articleWhitelist']
+            if whitelisted:
+                print "Notice: article whitelisted; ignore relevance threshold"
+                print
+            blacklisted = page.title() in config['articleBlacklist']
+            if blacklisted:
+                print 'Notice: article blacklisted; ignore relevance threshold'
+                print
+
             # ==================================================================
             # ========== {Area Type=Road} ======================================
             # ==================================================================
@@ -233,8 +242,8 @@ for page in gen:
                 geonames_data = geonames.lookup(page.title())
                 if geonames_data["totalResultsCount"] > 0:
                     geonames_result = geonames_data['geonames'][0]
-                    relevant = (page.title() in config['whitelist'] or geonames_result['score'] >= config['score_threshold'])
-                    if relevant and page.title() not in config['blacklist']:
+                    relevant = (whitelisted or geonames_result['score'] >= config['articleScoreThreshold'])
+                    if relevant and not blacklisted:
                         properties['Location'] = '%s,%s' % (geonames_result['lat'], geonames_result['lng'])
 
                         # Get bounding box

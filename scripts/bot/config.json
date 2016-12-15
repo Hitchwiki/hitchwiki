@@ -1,6 +1,6 @@
 {
-    "score_threshold": 24,
-    "blacklist": [
+    "articleScoreThreshold": 24,
+    "articleBlacklist": [
         "Tarp",
         "Police",
         "Statistics",
@@ -18,7 +18,7 @@
         "Spanish",
         "Sunday"
     ],
-    "whitelist": [
+    "articleWhitelist": [
         "Saltspring Island",
         "Tusheti",
         "Vancouver Island",
