@@ -128,3 +128,18 @@ _TODO_
 ## License
 Code [MIT](LICENSE.md)
 Contents [Creative Commons](http://creativecommons.org/licenses/by-sa/4.0/)
+
+## See also
+[Hitchwiki/HWMap-extension](https://github.com/Hitchwiki/HWMap-extension)
+
+[Hitchwiki/HWRatings-extension](https://github.com/Hitchwiki/HWRatings-extension)
+
+[Hitchwiki/HWWaitingTime-extension](https://github.com/Hitchwiki/HWWaitingTime-extension)
+
+[Hitchwiki/HWComments-extension](https://github.com/Hitchwiki/HWComments-extension)
+
+[Hitchwiki/HitchwikiVector-extension](https://github.com/Hitchwiki/HitchwikiVector-extension)
+
+[Hitchwiki/mediawiki-extensions-VectorBeta](https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta)
+
+[Hitchwiki/BetaFeatureEverywhere](https://github.com/Hitchwiki/BetaFeatureEverywhere)
