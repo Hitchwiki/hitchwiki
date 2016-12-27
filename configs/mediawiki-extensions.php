@@ -211,8 +211,8 @@ $wgGroupPermissions['sysop']['abusefilter-revert'] = true;
  * Echo
  * https://www.mediawiki.org/wiki/Extension:Echo
  */
-#require_once "$IP/extensions/Echo/Echo.php";
-$wgEchoAgentBlacklist = array( 'Hitchbot', 'Hitchwiki' );
+require_once "$IP/extensions/Echo/Echo.php";
+$wgEchoAgentBlacklist = array('Hitchbot', 'Hitchwiki');
 
 
 /**
