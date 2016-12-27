@@ -35,6 +35,14 @@ echo "-------------------------------------------------------------------------"
 
 
 echo
+echo "Upgrade Bower"
+sudo npm install -g bower
+bower --version
+echo
+echo "-------------------------------------------------------------------------"
+
+
+echo
 echo "Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime..."
 sudo pear install mail
 sudo pear install Net_SMTP
