@@ -23,6 +23,7 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 * Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
 * Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
 * Make sure you have [`git`](http://git-scm.com/) installed on your system.
+* No need to set up a VM manually, install script will take care of that.
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
