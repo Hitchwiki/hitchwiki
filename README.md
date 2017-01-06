@@ -39,13 +39,14 @@ After setup your virtual machine is running. Suspend the virtual machine by typi
 When you're ready to begin working again, just run `vagrant up`.
 
 #### Install script will do the following:
-* Setup Vagrant box
 * Install [Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin
+* Setup Vagrant box
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
 * Import pages from `./scripts/pages/`
 * Create three users
+* Install Parsoid
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
