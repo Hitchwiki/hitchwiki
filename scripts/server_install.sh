@@ -6,12 +6,8 @@
 # To set up Hitchwiki inside a Vagrant box, use scripts/vagrant/install.sh instead
 #
 
-if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the whole repository tree
-    echo "ERROR: Bad working directory ($(pwd))."
-    echo "Scripts have to be run from the root directory of the hitchwiki repository."
-    echo "Aborting."
-    exit 1
-fi
+# cd into root folder of the repo
+cd "/var/www"
 
 source "scripts/_path_resolve.sh"
 
