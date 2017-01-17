@@ -1,7 +1,7 @@
 * navigation
 ** mainpage|Home
 ** Special:HWMap|Map
-** Special:HWMap#add|New spot
+** Special:HWMap#hwmap-add|New spot
 ** Form:City|New city
 ** Special:UploadWizard|Add photo
 ** Special:UserLogin|createaccount
