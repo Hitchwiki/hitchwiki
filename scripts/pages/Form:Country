@@ -1,7 +1,7 @@
 <noinclude>
 =Add new country to Hitchwiki=
 
-***Note:*** most of the countries should already have a page in Hitchwiki. Please use [[Special:Search search]] to double check that country doesn't exist yet. Try different names and variations, thank you!
+***Note:*** most of the countries should already have a page in Hitchwiki. Please use [[Special:Search|search]] to double check that country doesn't exist yet. Try different names and variations, thank you!
 
 {{#forminput:form=Country|Placeholder=Country name|autocomplete on category=Countries}}
 <small>If a country with that name already exists, you will be sent to edit that article.</small>
@@ -32,8 +32,8 @@
 ! License plate:
 | {{{field|LicensePlate}}}
 |-
-! Country code <small class="plainlinks">([[:wikipedia:ISO_3166-1_alpha-2|ISO "ALPHA-2 Code]])</small>:
-| {{{field|CountryCode}}}
+! Country code:
+| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland. <small class="plainlinks">([[:wikipedia:ISO_3166-1_alpha-2|ISO "ALPHA-2 Code]])</small>}}
 |-
 ! Population:
 | {{{field|Population}}}
@@ -43,9 +43,6 @@
 ! Location
 |-
 | {{{field|Location|input type=HW_Location|height=250px|width=100%|zoom=2}}}
-|-
-! Country code:
-| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland.}}
 |}
 </div>
 </div>

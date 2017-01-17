@@ -1,7 +1,7 @@
 <noinclude>
 =Add new city to Hitchwiki=
 
-Please use [[Special:Search search]] to double check that city article doesn't exist yet. Try different names and variations, thank you!
+Please use [[Special:Search|search]] to double check that city article doesn't exist yet. Try different names and variations, thank you!
 
 {{#forminput:form=City|Placeholder=City name|autocomplete on category=Cities}}
 <small>If a city with that name already exists, you will be sent to a form to edit that city article.</small>
