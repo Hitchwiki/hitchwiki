@@ -317,7 +317,8 @@
     "mediawiki/semantic-media-wiki": "2.4.5",
     "mediawiki/page-forms": "4.0.2",
     "mediawiki/maps": "4.0.3",
-    "mediawiki/semantic-watchlist": "1.1.0"
+    "mediawiki/semantic-watchlist": "1.1.0",
+    "data-values/data-values": "^1.0"
   },
   "minimum-stability": "dev"
 }
