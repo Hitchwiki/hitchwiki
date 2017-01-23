@@ -68,12 +68,12 @@ composer run-script post-update-cmd -d ./extensions/HWLocationInput
 echo
 echo "-------------------------------------------------------------------------"
 
-echo
-echo "Fetch latest localisation files..." # Update locales
-cd "$WIKIDIR"
-php extensions/LocalisationUpdate/update.php
-echo
-echo "-------------------------------------------------------------------------"
+#echo
+#echo "Fetch latest localisation files..." # Update locales
+#cd "$WIKIDIR"
+#php extensions/LocalisationUpdate/update.php --quiet
+#echo
+#echo "-------------------------------------------------------------------------"
 
 # @TODO: ask if to import?
 # cd "$SCRIPTDIR"
