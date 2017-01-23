@@ -139,9 +139,10 @@ if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
 
 /**
  * ParserFunctions
+ * https://www.mediawiki.org/wiki/Extension:ParserFunctions
  */
-# Enable old string functions (needed at our semantic templates)
 wfLoadExtension('ParserFunctions');
+// Enable old string functions (needed at our semantic templates)
 $wgPFEnableStringFunctions = true;
 
 /**
@@ -167,7 +168,7 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
 /**
  * CheckUser
  * https://www.mediawiki.org/wiki/Extension:CheckUser
- * Requires install, see scripts/vagrant_bootstrap.sh
+ * Requires install, see scripts/server_install.sh
  */
 #wfLoadExtension('CheckUser');
 #$wgGroupPermissions['sysop']['checkuser'] = true;
@@ -178,7 +179,7 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
  * It blocks the creation of accounts with mixed-script,
  * confusing and similar usernames.
  * https://www.mediawiki.org/wiki/Extension:AntiSpoof
- * Requires install, see scripts/vagrant_bootstrap.sh
+ * Requires install, see scripts/server_install.sh
  */
 require_once "$IP/extensions/AntiSpoof/AntiSpoof.php";
 $wgSharedTables[] = 'spoofuser';
