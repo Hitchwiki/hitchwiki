@@ -18,7 +18,7 @@ source "scripts/_path_resolve.sh"
 source "scripts/_settings.sh"
 
 echo
-echo "Update Hitchwiki dependencies..."
+echo "Update Hitchwiki dependencies using `composer.local.json`..."
 cd "$WIKIDIR"
 rm "$WIKIDIR/composer.local.json"
 cp "$CONFDIR/composer.local.json" .
@@ -68,6 +68,8 @@ composer run-script post-update-cmd -d ./extensions/HWLocationInput
 echo
 echo "-------------------------------------------------------------------------"
 
+# Localisation update
+# https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
 #echo
 #echo "Fetch latest localisation files..." # Update locales
 #cd "$WIKIDIR"
@@ -75,10 +77,12 @@ echo "-------------------------------------------------------------------------"
 #echo
 #echo "-------------------------------------------------------------------------"
 
-# @TODO: ask if to import?
-# cd "$SCRIPTDIR"
-# bash ./scripts/import_pages.sh
-# echo ""
+echo
+echo "Import forms, templates etc..."
+cd "$SCRIPTDIR"
+bash ./scripts/import_pages.sh
+echo
+echo "-------------------------------------------------------------------------"
 
 echo
 echo "All done!"
