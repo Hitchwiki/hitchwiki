@@ -6,8 +6,8 @@
 <div id="wikiPreview" class="hw-spot-preview"></div><nowiki />
 <div class="hw-spot-form">{{{for template|Spot}}}<nowiki />
 <div class="hw-spot-form-column"><nowiki />
-<div class="hw-spot-form-section">'''Description''' {{{field|Description|input type=textarea|editor=wikieditor|rows=5|class=hw-spot-form-description}}}</div><nowiki />
-<div class="hw-spot-form-section">'''Cardinal direction''' {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only|class=hw-spot-form-cardinal}}}</div><nowiki />
+<div class="hw-spot-form-section">'''Description''' {{{field|Description|input type=textarea|editor=wikieditor|rows=10|class=hw-spot-form-description}}}</div><nowiki />
+<div class="hw-spot-form-section hw-spot-form-section-direction">'''Cardinal direction''' {{{field|CardinalDirection|list|input type=checkboxes|values=North,North West,West,South West,South,South East,East,North East|existing values only|class=hw-spot-form-cardinal}}}</div><nowiki />
 </div><!--/hw-spot-form-column--><nowiki />
 <div class="hw-spot-form-column"><nowiki />
 <div class="hw-spot-form-section">{{{field|Location|input type=HW_Location|height=200px|width=100%|zoom=15}}}</div><nowiki />
