@@ -1,7 +1,7 @@
 <noinclude>
 =Add new country to Hitchwiki=
 
-***Note:*** most of the countries should already have a page in Hitchwiki. Please use [[Special:Search|search]] to double check that country doesn't exist yet. Try different names and variations, thank you!
+'''Note:''' most of the countries should already have a page in Hitchwiki. Please use [[Special:Search|search]] to double check that country doesn't exist yet. Try different names and variations, thank you!
 
 {{#forminput:form=Country|Placeholder=Country name|autocomplete on category=Countries}}
 <small>If a country with that name already exists, you will be sent to edit that article.</small>
