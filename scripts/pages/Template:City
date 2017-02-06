@@ -38,13 +38,15 @@ Some documentation to help to understand how this template is built:
 |-
 {{#if: {{{LicencePlate|}}} | ! Licence plate:
 | '''{{{LicencePlate|}}}''' }}
-|-
-| colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]] or [[:bewelcome-location:{{urlencode:{{PAGENAME}}}}|BeWelcome]]
 |}
 <hw-map></hw-map>
 [[Category:Cities]]
 {{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
 [[wikivoyage:{{PAGENAME}}]]
+<ul id="hw-hospex">
+<li class="interlanguage-link interwiki-bewelcome">[[:bewelcome-location:{{urlencode:{{PAGENAME}}}}|BeWelcome]]</li>
+<li class="interlanguage-link interwiki-trustroots">[[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]]</li>
+</ul>
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-city}}
 <div id="hw-spot-edit-form-wrap">{{#forminput:form=Spot|size=|default value=|button text=Continue|page name=|query string=Spot[Location]=&Spot[Country]=&Spot[Cities]=|popup}}</div>

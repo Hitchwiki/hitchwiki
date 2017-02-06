@@ -45,9 +45,8 @@ Some documentation to help to understand how this template is built:
 {{#if: {{{CountryCode|}}} | ! CountryCode:
 | [[CountryCode::{{{CountryCode|}}}]] }}
 |-
-| colspan="2" class="hw-country-ratings"| <hw-rate></hw-rate>
-|-
-! colspan=2 {{!}} Meet fellow hitchhikers on [[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]] {{#if: {{{CountryCode|}}} | or [[:bewelcome:/places/{{PAGENAMEE}}/{{{CountryCode}}}|BeWelcome]] }}
+! Hitchability
+| <hw-country-rate></hw-country-rate>
 |}
 
 == Cities ==
@@ -65,6 +64,10 @@ Some documentation to help to understand how this template is built:
 [[wikivoyage:{{PAGENAME}}]]
 [[nomad:{{PAGENAME}}]]
 [[trash:{{PAGENAME}}]]
+<ul id="hw-hospex">
+{{#if: {{{CountryCode|}}} |<li class="interlanguage-link interwiki-bewelcome">[[:bewelcome:/places/{{PAGENAMEE}}/{{{CountryCode}}}|BeWelcome]]</li>}}
+<li class="interlanguage-link interwiki-trustroots">[[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]]</li>
+</ul>
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-country}}
 {{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|country}} }}

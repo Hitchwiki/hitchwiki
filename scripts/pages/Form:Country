@@ -33,7 +33,7 @@
 | {{{field|LicensePlate}}}
 |-
 ! Country code:
-| {{{field|CountryCode}}}{{#info:Two letter countrycode, e.g. "FI" for Finland. <small class="plainlinks">([[:wikipedia:ISO_3166-1_alpha-2|ISO "ALPHA-2 Code]])</small>}}
+| {{{field|CountryCode}}} <small class="plainlinks">Two letter countrycode, e.g. "FI" for Finland. ([[:wikipedia:ISO_3166-1_alpha-2|ISO "ALPHA-2 Code]])</small>
 |-
 ! Population:
 | {{{field|Population}}}
