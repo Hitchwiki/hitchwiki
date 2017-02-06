@@ -22,6 +22,14 @@ export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
 
+echo
+echo "Install helper tools"
+sudo apt-get -qq update
+sudo apt-get -y install unattended-upgrades fail2ban
+echo
+echo "-------------------------------------------------------------------------"
+
+
 # Vagrant SCOTCH BOX (https://box.scotch.io/) has git 1.9
 # and we want 2+ for shallow submodules
 echo
