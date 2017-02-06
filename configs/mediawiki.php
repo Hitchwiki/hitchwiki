@@ -164,8 +164,6 @@ $wgDBpassword = $hwConfig["db"]["password"];
 $wgSharedDB = $hwConfig["db"]["database"];
 $wgSharedSchema = false;
 $wgSharedPrefix = $hwConfig["db"]["prefix"];
-## https://www.mediawiki.org/wiki/Extension:Interwiki#Global_interwikis
-$wgSharedTables[] = "interwiki";
 ## https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
 $wgSharedTables[] = "user_groups";
 

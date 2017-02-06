@@ -155,6 +155,9 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
 #$wgGroupPermissions['developer']['interwiki'] = true;
+// Interwiki tables are shared between language versions
+// https://www.mediawiki.org/wiki/Extension:Interwiki#Global_interwikis
+$wgSharedTables[] = "interwiki";
 
 /**
  * Recent changes cleanup
