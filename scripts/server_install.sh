@@ -240,7 +240,8 @@ echo "-------------------------------------------------------------------------"
 # https://www.mediawiki.org/wiki/Extension:Interwiki
 echo
 echo "Import interwiki table..."
-mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
+cd "$ROOTDIR"
+bash "$SCRIPTDIR/import_interwiki.sh"
 echo
 echo "-------------------------------------------------------------------------"
 
