@@ -22,7 +22,7 @@ Pages for locations such as airport, road, continent, border crossing, or region
 {| class="formtable floatleft"
 |-
 ! Type
-| {{{field|Type|mandatory|default=Region|input type=radiobutton|values=Region,Road,Airport,Border Crossing,Continent}}}
+| {{{field|AreaType|mandatory|default=Region|input type=radiobutton|values=Region,Road,Airport,Border Crossing,Continent}}}
 |-
 ! Country
 | {{{field|Countries|input type=tokens|values from category=Countries}}}

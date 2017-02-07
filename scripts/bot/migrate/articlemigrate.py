@@ -205,7 +205,7 @@ for page in gen:
                     country = next(component["long_name"] for component in address if "country" in component["types"])
                     entity = 'Area'
                     properties.update({
-                        'Type': 'Road',
+                        'AreaType': 'Road',
                         'Location': '%s,%s' % (location['lat'], location['lng']),
                         'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                         'Countries': country
@@ -228,7 +228,7 @@ for page in gen:
                     country = next(component["long_name"] for component in address if "country" in component["types"])
                     entity = 'Area'
                     properties.update({
-                        'Type': 'Border Crossing',
+                        'AreaType': 'Border Crossing',
                         'Location': '%s,%s' % (location['lat'], location['lng']),
                         'Bbox': "%s,%s,%s,%s" % (viewport['southwest']['lng'], viewport['southwest']['lat'], viewport['northeast']['lng'], viewport['northeast']['lat']),
                         'Countries': country
@@ -391,7 +391,7 @@ for page in gen:
                                 print
 
                                 #entity = 'Area'
-                                #properties['Type'] = 'Continent'
+                                #properties['AreaType'] = 'Continent'
 
                             # ==================================================
                             # ========== {{Area Type=Region}} ==================
@@ -406,7 +406,7 @@ for page in gen:
                                 print
 
                                 entity = 'Area'
-                                properties['Type'] = 'Region'
+                                properties['AreaType'] = 'Region'
 
                             # ==================================================
                             # ========== {{Area Type=Airport}} =================
@@ -417,7 +417,7 @@ for page in gen:
                                 print
 
                                 entity = 'Area'
-                                properties['Type'] = 'Airport'
+                                properties['AreaType'] = 'Airport'
 
                             # ==================================================
 
