@@ -22,26 +22,16 @@ Some documentation to help to understand how this template is built:
 
 </noinclude><includeonly>
 {{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
-{| class="infobox mw-collapsible"
-! colspan="2" class="infobox-h1" | <div><i class="fa fa-star"></i> '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span>}}</div>
-|-
-| colspan="2" class="infobox-h2" | '''Information'''
-|-
-{{#if: {{{AdministrativeDivision|}}} | ! Administrative division:
-| '''{{{AdministrativeDivision|}}}''' }}
-|-
-{{#if: {{{Population|}}} | ! Population:
-| {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
-|-
-{{#if: {{{MajorRoads|}}} | ! Major roads:
-| {{#arraymap:{{{MajorRoads|}}}|,|x|[[MajorRoads::x]]}} }}
-|-
-{{#if: {{{LicencePlate|}}} | ! Licence plate:
-| '''{{{LicencePlate|}}}''' }}
-|}
+<table class="infobox mw-collapsible">
+<tr><th colspan="2" class="infobox-h1"><div><i class="fa fa-star"></i> '''{{PAGENAME}}''' {{#if: {{{Countries|}}} | <span class="infobox-h1-secondary">({{#arraymap:{{{Countries|}}}|,|x|[[In country::Countries::x]]}})</span> | }}</div></th></tr>
+{{#if: {{{AdministrativeDivision|}}} | <tr><th>Administrative division:</th><td>'''{{{AdministrativeDivision|}}}'''</td></tr> | }}
+{{#if: {{{Population|}}} | <tr><th>Population:</th><td>{{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }}</td></tr> | }}
+{{#if: {{{MajorRoads|}}} | <tr><th>Major roads:</th><td>{{#arraymap:{{{MajorRoads|}}}|,|x|[[MajorRoads::x]]}}</td></tr> | }}
+{{#if: {{{LicencePlate|}}} | <tr><th>Licence plate:</th><td>'''{{{LicencePlate|}}}'''</td></tr> | }}
+</table>
 <hw-map></hw-map>
 [[Category:Cities]]
-{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
+{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}} | }}
 [[wikivoyage:{{PAGENAME}}]]
 <ul id="hw-hospex">
 <li class="interlanguage-link interwiki-bewelcome">[[:bewelcome-location:{{urlencode:{{PAGENAME}}}}|BeWelcome]]</li>

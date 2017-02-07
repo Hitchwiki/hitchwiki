@@ -23,7 +23,8 @@ Some documentation to help to understand how this template is built:
 {{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}
 <hw-map></hw-map>
 [[Category:Areas]]
-{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}}}}
+{{#if: {{{Countries|}}} | {{#arraymap:{{{Countries|}}}|,|x|[[Category:Countries::x]]}} | }}
 {{#if: {{{Type|}}} | [[Category:{{{Type|}}}s]] | }}
+{{#addbodyclass:hwmap-page hw-page-area}}
 __NOEDITSECTION__
 </includeonly>

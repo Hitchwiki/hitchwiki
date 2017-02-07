@@ -1,5 +1,5 @@
 <noinclude>
-This is the "City" template.
+This is the "Country" template.
 It should be called in the following format:
 <pre>
 {{Country
@@ -21,33 +21,18 @@ Some documentation to help to understand how this template is built:
 - https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions
 
 </noinclude><includeonly>
+
 {{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
-{| class="infobox mw-collapsible"
-! colspan="2" class="infobox-h1" | <div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div>
-|-
-| colspan="2" class="infobox-h2" | '''Information'''
-|-
-{{#if: {{{Languages|}}} | ! [[Language]]:
-| [[Languages::{{{Languages|}}}]] }}
-|-
-{{#if: {{{Capital|}}} | ! Capital:
-| {{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}} }}
-|-
-{{#if: {{{Population|}}} | ! Population:
-| {{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }} }}
-|-
-{{#if: {{{LicencePlate|}}} | ! Licence plate:
-| [[LicencePlate::{{{LicencePlate|}}}]] }}
-|-
-{{#if: {{{Currency|}}} | ! Currency:
-| [[Currency::{{{Currency|}}}]] }}
-|-
-{{#if: {{{CountryCode|}}} | ! CountryCode:
-| [[CountryCode::{{{CountryCode|}}}]] }}
-|-
-! Hitchability
-| <hw-country-rate></hw-country-rate>
-|}
+<table class="infobox mw-collapsible">
+<tr><th colspan="2" class="infobox-h1"><div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div></th></tr>
+{{#if: {{{Languages|}}} |<tr><th>[[Language]]:</th><td>[[Languages::{{{Languages|}}}]]</td></tr>
+{{#if: {{{Capital|}}} | <tr><th>Capital:</th><td>{{#arraymap:{{{Capital|}}}|,|x|[[Capital::x]]}}</td></tr> | }}
+{{#if: {{{Population|}}} | <tr><th>Population:</th><td>{{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }}</td></tr> | }}
+{{#if: {{{LicencePlate|}}} | <tr><th>Licence plate:</th><td>[[LicencePlate::{{{LicencePlate|}}}]]</td></tr> | }}
+{{#if: {{{Currency|}}} | <tr><th>Currency:</th><td>[[Currency::{{{Currency|}}}]]</td></tr> | }}
+{{#if: {{{CountryCode|}}} | <tr><th>CountryCode:</th><td>[[CountryCode::{{{CountryCode|}}}]]</td></tr> | }}
+<tr><th>Hitchability</th><td><hw-country-rate></hw-country-rate></td></tr>
+</table>
 
 == Cities ==
 {{#ask: [[Category:Cities]] [[In country::{{PAGENAME}}]]
@@ -65,10 +50,10 @@ Some documentation to help to understand how this template is built:
 [[nomad:{{PAGENAME}}]]
 [[trash:{{PAGENAME}}]]
 <ul id="hw-hospex">
-{{#if: {{{CountryCode|}}} |<li class="interlanguage-link interwiki-bewelcome">[[:bewelcome:/places/{{PAGENAMEE}}/{{{CountryCode}}}|BeWelcome]]</li>}}
+{{#if: {{{CountryCode|}}} |<li class="interlanguage-link interwiki-bewelcome">[[:bewelcome:/places/{{PAGENAMEE}}/{{{CountryCode}}}|BeWelcome]]</li> | }}
 <li class="interlanguage-link interwiki-trustroots">[[:trustroots:{{urlencode:{{PAGENAME}}}}|Trustroots]]</li>
 </ul>
 __NOEDITSECTION__
 {{#addbodyclass:hwmap-page hw-page-country}}
-{{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|country}} }}
+{{#if: {{{Location|}}} | {{GeoHack|{{PAGENAME}}|{{#coordinates:primary|{{#explode:{{{Location|}}}|, |0}}|{{#explode:{{{Location|}}}|, |1}}}}|country}} | }}
 </includeonly>
