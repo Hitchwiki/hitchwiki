@@ -21,7 +21,6 @@ Some documentation to help to understand how this template is built:
 - https://www.mediawiki.org/wiki/Help:Extension:ParserFunctions
 
 </noinclude><includeonly>
-
 {{#if: {{{Introduction|}}} | {{{Introduction|}}} | }}
 <table class="infobox mw-collapsible">
 <tr><th colspan="2" class="infobox-h1"><div>[[File:Flag of {{PAGENAME}}.svg|30px|border|Flag of {{PAGENAME}}]] {{PAGENAME}}</div></th></tr>
@@ -35,12 +34,16 @@ Some documentation to help to understand how this template is built:
 </table>
 
 == Cities ==
-{{#ask: [[Category:Cities]] [[In country::{{PAGENAME}}]]
+{{#ask:
+ [[Category:Cities]]
+ [[In Country::{{PAGENAME}}]]
  | format=ul
 }}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/City|<i class="fa fa-plus-square"></i> Add another city]]</div>
 
 == Areas ==
-{{#ask: [[Category:Areas]] [[located in::{{PAGENAME}}]]
+{{#ask:
+ [[Category:Areas]]
+ [[located in::{{PAGENAME}}]]
  | format=ul
 }}<div class="hwbutton hwbutton-secondary hwbutton-small pull-right">[[Special:FormStart/Area|<i class="fa fa-plus-square"></i> Add another area]]</div>
 <hw-map></hw-map>
