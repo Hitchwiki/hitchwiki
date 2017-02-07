@@ -1,0 +1,35 @@
+<includeonly>{{#iferror:{{#expr:{{{1|}}}*0}}|{{{3|0}}}|{{{2|1}}}}}</includeonly><noinclude>
+
+=== Usage ===
+Returns <nowiki>{{{2|1}}} if {{{1}}} is numeric & {{{3|0}}}</nowiki> otherwise.
+
+==Examples==
+<table class="wikitable">
+<tr><th>code</th><th>result</th></tr>
+<tr><td><code><nowiki>{{Ifnumber|1}}</nowiki></code></td><td>1</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|one}}</nowiki></code></td><td>0</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|}}</nowiki></code></td><td>0</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|1|a number|not a number}}</nowiki></code></td><td>a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|one|a number|not a number}}</nowiki></code></td><td>not a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|1000|a number|not a number}}</nowiki></code></td><td>a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|10.00|a number|not a number}}</nowiki></code></td><td>a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|1,000|a number|not a number}}</nowiki></code></td><td>not a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|1,000.50|a number|not a number}}</nowiki></code></td><td>not a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|99 balloons|a number|not a number}}</nowiki></code></td><td>not a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|99.9999e10|a number|not a number}}</nowiki></code></td><td>a number</td></tr>
+<tr><td><code><nowiki>{{Ifnumber|{{{val|6.B2C}}}|number|value "{{{val|6.B2C}}}" not numeric}}</nowiki></code></td><td>value "6.B2C" not numeric</td></tr>
+</table>
+
+==Notes==
+This template will not recognize formatted numbers, which is by design since formatted numbers will break expression parsers.  To remove the formatting from a number, you can wrap the number first in <nowiki>{{formatnum:</nowiki> ''number'' <nowiki>|R}}</nowiki>.
+
+<table class="wikitable">
+<tr><th>code</th><th>result</th></tr>
+<tr><td><nowiki>{{</nowiki>{{BASEPAGENAME}}<nowiki>|1,000.50|a number|not a number}}</nowiki></td><td>{{ {{BASEPAGENAME}}|1,000.50|a number|not a number}}</td></tr>
+<tr><td><nowiki>{{</nowiki>{{BASEPAGENAME}}<nowiki>|{{formatnum:1,000.50|R}}|a number|not a number}}</nowiki></td><td>{{ {{BASEPAGENAME}}|{{formatnum:1,000.50|R}}|a number|not a number}}</td></tr>
+</table>
+
+[[Category:Templates]]
+[[Category:Mathematical function templates|{{BASEPAGENAME}}]]
+[[Category:If-then-else templates|{{BASEPAGENAME}}]]
+</noinclude>
