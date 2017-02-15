@@ -108,11 +108,25 @@ $wgCookieDomain     = $hwConfig["general"]["cookiedomain"];
 $wgLanguageCode = $hwLang;
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://" . $hwConfig["general"]["domain"];
+##
+## Since 1.18 MediaWiki also supports setting `$wgServer` to a protocol-relative
+## URL (e.g., //www.mediawiki.org). This is used for supporting both
+## HTTP and HTTPS with the same caches by using links that work under both
+## protocols. When doing this, `$wgCanonicalServer` can be used to set the
+## full URL including protocol that will be used in locations such as emails
+## that don't support protocol relative URLs.
+##
+## https://www.mediawiki.org/wiki/Manual:$wgServer
+## https://www.mediawiki.org/wiki/Manual:$wgCanonicalServer
+$wgServer = "//" . $hwConfig["general"]["domain"];
+$wgCanonicalServer = $hwConfig["general"]["protocol"] . "://" . $hwConfig["general"]["domain"];
+
+## If enabled with "true", output a `<link rel="canonical">`
+## tag on every page indicating the canonical server which should be used.
+$wgEnableCanonicalServerLink = true;
 
 ## The relative URL path to the skins directory
 $wgStylePath = $wgScriptPath . "/skins";
-
 
 ## The relative URL path to the logo and icons
 $wgLogo = $wgScriptPath . "/../wiki-logo.png";
