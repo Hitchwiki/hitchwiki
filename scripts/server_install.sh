@@ -60,6 +60,21 @@ echo
 echo "-------------------------------------------------------------------------"
 
 
+# Install self signed SSL certificate if command line flag `--ssl` is set
+# Remember to set `protocol` setting to `https` from `configs/settings.ini`
+if [[ $* == *--ssl* ]]; then
+  echo
+  echo "Setup self signed SSL certificate..."
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/cert_selfsigned.sh"
+else
+  echo
+  echo "Skipped installing self signed SSL certificate. "
+fi
+echo
+echo "-------------------------------------------------------------------------"
+
+
 echo
 echo "Upgrade Composer to latest version..."
 composer self-update
