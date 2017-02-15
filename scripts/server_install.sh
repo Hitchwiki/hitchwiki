@@ -23,6 +23,20 @@ export LANGUAGE="en_US.UTF-8"
 
 
 echo
+echo "Apache, MySQL, PHP & OpenSSL versions:"
+echo " "
+apache2 -version
+echo " "
+mysql -V
+echo " "
+php -v
+echo " "
+openssl version
+echo
+echo "-------------------------------------------------------------------------"
+
+
+echo
 echo "Install helper tools"
 sudo apt-get -qq update
 sudo apt-get -y install unattended-upgrades fail2ban
@@ -44,7 +58,7 @@ echo "-------------------------------------------------------------------------"
 
 echo
 echo "Upgrade Bower"
-sudo npm install -g bower
+sudo npm install --global --quiet bower
 bower --version
 echo
 echo "-------------------------------------------------------------------------"

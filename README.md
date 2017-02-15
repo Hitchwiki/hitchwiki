@@ -16,14 +16,13 @@ _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to j
 
 Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
 
-## Install and start hacking Hitchwiki
+## Install development environment and start hacking Hitchwiki
 
 ### Prerequisites
 * A GNU/Linux or OS X machine. Let us know if this works with Cygwin.
 * Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
 * Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
-* Make sure you have [`git`](http://git-scm.com/) installed on your system.
-* No need to set up a VM manually, install script will take care of that.
+* Make sure you have [`git`](http://git-scm.com/) installed on your system. (`git --version`)
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
@@ -45,8 +44,9 @@ When you're ready to begin working again, just run `vagrant up`.
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
 * Import pages from `./scripts/pages/`
-* Create three users
-* Install Parsoid
+* Create three users (see below)
+* Install Parsoid and VisualEditor
+*
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
@@ -56,27 +56,27 @@ When you're ready to begin working again, just run `vagrant up`.
 ### Export Semantic structure
 If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
 ```bash
-bash scripts/vagrant/export_pages.sh
+./scripts/vagrant/export_pages.sh
 ```
 
 ### Import Semantic structure
 
 This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`. It can be done by running:
 ```bash
-bash scripts/vagrant/import_pages.sh
+./scripts/vagrant/import_pages.sh
 ```
 
 ### Debug
 * Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
-* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug = 1`.
+* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
 
 ### Update
 1. Pull latest changes: `git pull origin master`
-2. Run update script: `bash scripts/vagrant/update.sh`
+2. Run update script: `./scripts/vagrant/update.sh`
 
 ### Re-Install
-2. Run re-install script: `bash scripts/vagrant/reinstall.sh`
+2. Run re-install script: `./scripts/vagrant/reinstall.sh`
 
 ## Vagrant box
 
@@ -86,6 +86,8 @@ We're using [Scotchbox](http://box.scotch.io/).
 ```bash
 vagrant ssh
 ```
+
+You're probably most interested in folder `/var/www/`
 
 ### Database access
 #### From the app
@@ -108,20 +110,9 @@ SSH User | vagrant
 SSH Password | vagrant
 
 ### Clean Vagrant box
-If for some reason you want to have clean Scotchbox, database and MediaWiki installed, run:
+If for some reason you want to have clean ScotchBox, database and MediaWiki installed, run:
 ```bash
 vagrant destroy && vagrant up
-```
-
-### Update Vagrant box
-Although not necessary, if you want to check for updates, just type:
-```bash
-vagrant box outdated
-```
-
-It will tell you if you are running the latest version or not of the box. If it says you aren't, simply run:
-```bash
-vagrant box update
 ```
 
 ## Setting up production environment
@@ -137,8 +128,9 @@ Our custom MediaWiki extensions:
 - [HWRatings-extension](https://github.com/Hitchwiki/HWRatings-extension)
 - [HWWaitingTime-extension](https://github.com/Hitchwiki/HWWaitingTime-extension)
 - [HWComments-extension](https://github.com/Hitchwiki/HWComments-extension)
+- [HWLocationInput-extension](https://github.com/Hitchwiki/HWLocationInput-extension)
 - [HitchwikiVector-extension](https://github.com/Hitchwiki/HitchwikiVector-extension)
 - [BetaFeatureEverywhere](https://github.com/Hitchwiki/BetaFeatureEverywhere)
 
 Our fork of an abandoned extension:
-- [mediawiki-extensions-VectorBeta](https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta)
+- [HWVectorBeta](https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta) (previously `VectorBeta`)
