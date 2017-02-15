@@ -1,9 +1,8 @@
-.DS_STORE
-
 # Composer
 composer.phar
 composer.lock
 public/composer
+public/bin
 
 # Vagrant/Scotchbox
 scotch-box
@@ -28,3 +27,6 @@ logs
 # Admin tools
 /public/phpmyadmin
 /public/sqlbuddy
+
+# OS
+.DS_STORE

@@ -118,7 +118,7 @@ wfLoadExtension('DismissableSiteNotice');
  * https://semantic-mediawiki.org/wiki/Help:Installation#Installation
  *
  * `SemanticMediaWikiEnabled` file is created during first `vagrant up` command
- * from `./scripts/bootstrap_vagrant.sh` file. It's to ensure we don't load them
+ * from `./scripts/server_install.sh` file. It's to ensure we don't load them
  * too early in process and cause DB errors.
  */
 if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {

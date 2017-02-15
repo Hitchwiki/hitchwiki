@@ -23,5 +23,5 @@ echo "Removing previous files and Vagrant machine..."
 
 rm -fr "$ROOTDIR/composer.lock"
 rm -fr "$WIKIDIR"
-vagrant destroy
+vagrant destroy --force # Do not ask for confirmation before destroying.
 bash "$SCRIPTDIR/vagrant/install.sh"
