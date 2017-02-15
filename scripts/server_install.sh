@@ -151,7 +151,7 @@ echo "-------------------------------------------------------------------------"
 # Install VisualEditor
 # Since it requires submodules, we don't install this using composer
 # https://www.mediawiki.org/wiki/Extension:VisualEditor
-if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
+if [[ $* == *--visualeditor* ]]; then # optional command line flag that includes VisualEditor/Parsoid installation
   echo
   echo "Install VisualEditor extension..."
   cd "$WIKIDIR/extensions"

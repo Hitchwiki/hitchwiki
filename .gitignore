@@ -17,10 +17,13 @@ mediawiki-*.tar.gz
 logs
 *.log
 
+# Local configs
+/configs/settings.ini
+/configs/vagrant.yaml
+
 # Other
 /public/google*.html
 /scripts/vendor/bash_ini_parser
-/configs/settings.ini
 /dumps/
 *~
 

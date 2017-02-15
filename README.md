@@ -26,13 +26,25 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 ### Install
 1. Clone the repo: `git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki`
-2. Type `bash scripts/vagrant/install.sh`. Make sure not to leave out the `vagrant/` part.
-3. Install will ask for your password to add "hitchwiki.dev" to your hosts file.
-To skip this and use [http://192.168.33.10/](http://192.168.33.10/) instead,
-set `config.hostmanager.enabled = false` at [Vagrant file](Vagrantfile) and copy `configs/settings-example.ini` to `configs/settings.ini` and change domain also from there before installing.
-You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo)
-to stop Vagrant asking for password each time.
-4. Open [http://hitchwiki.dev/](http://hitchwiki.dev/) in your browser.
+
+2. If you want to modify any settings before installation, copy files and do modifications to them:
+```bash
+cp configs/settings-example.ini configs/settings.ini
+cp configs/vagrant-example.yaml configs/vagrant.yaml
+```
+Some of the settings you can modify:
+- If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.ini`)
+- Domain (`hitchwiki.dev` by default) or develop using IP (`192.168.33.10` by default)
+
+3. Start installation:
+```bash
+./scripts/vagrant/install.sh
+```
+
+4. Install will ask for your password to add `hitchwiki.dev` to your `/etc/hosts` file.
+You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
+
+5. Open [http://hitchwiki.dev/](http://hitchwiki.dev/) in your browser. [*https*://hitchwiki.dev/](https://hitchwiki.dev/) works if you set `setup_ssl` to `true` from `configs/vagrant.yaml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just run `vagrant up`.
