@@ -33,7 +33,7 @@ if ($wgCommandLineMode) {
 # as Geonames API has 2000 req / hour limit
 
 if (array_key_exists('geonames_usernames', $hwConfig["vendor"])) {
-    $hwConfig["vendor"]["geonames_username"] = $hwConfig["vendor"]["geonames_usernames"][array_rand($hwConfig["vendor"]["geonames_usernames"])];
+  $hwConfig["vendor"]["geonames_username"] = $hwConfig["vendor"]["geonames_usernames"][array_rand($hwConfig["vendor"]["geonames_usernames"])];
 }
 
 ## Uncomment this to disable output compression
