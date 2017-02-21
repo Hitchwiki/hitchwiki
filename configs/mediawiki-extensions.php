@@ -121,7 +121,7 @@ wfLoadExtension('DismissableSiteNotice');
  * from `./scripts/server_install.sh` file. It's to ensure we don't load them
  * too early in process and cause DB errors.
  */
-if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
+if (file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
   require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
   enableSemantics();
   require_once "$IP/extensions/Maps/Maps.php";
@@ -130,6 +130,21 @@ if(file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
 
   // Sets whether help information on the edit page is displayed
   $smwgEnabledEditPageHelp = false;
+
+  // For red links not defined by #formredlink and not pointing to
+  // a form-associated namespace, you can have every such link point
+  // to a helper page, that lets the user choose which of the wiki's forms
+  // to use to create this page - or to use no form at all.
+  $wgPageFormsLinkAllRedLinksToForms = true;
+
+
+  // Renames the edit-with-form tab to just "Edit", and
+  // the traditional-editing tab, if it is visible, to "Edit source",
+  // in whatever language is being used.
+  $wgPageFormsRenameEditTabs = false;
+
+  // Renames only the traditional editing tab, to "Edit source".
+  $wgPageFormsRenameMainEditTab = true;
 
   // You can have the set of values used for autocompletion in forms be cached, which may
   // improve performance. To do that, add something like the following to LocalSettings.php:
