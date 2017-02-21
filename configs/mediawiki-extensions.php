@@ -323,3 +323,15 @@ require_once "$IP/extensions/HWWaitingTime/HWWaitingTime.php"; // Waiting time -
 require_once "$IP/extensions/HWRatings/HWRatings.php"; // "Hithability" ratings -feature
 require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
 wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms extension
+
+// Vendor configs for HW extensions
+// See `settings.ini`
+$hwGeonamesUsername = array_key_exists('geonames_username', $hwConfig['vendor']) ? $hwConfig['vendor']['geonames_username'] : false;
+$hwMapboxUsername = array_key_exists('mapbox_username', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_username'] : false;
+$hwMapboxAccessToken = array_key_exists('mapbox_access_token', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_access_token'] : false;
+$hwMapboxMapkeyStreets = array_key_exists('mapbox_mapkey_streets', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_streets'] : false;
+$hwMapboxMapkeySatellite = array_key_exists('mapbox_mapkey_satellite', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_satellite'] : false;
+
+// Default settings for HW extensions
+$hwDefaultCenter = array(48.6908333333, 9.14055555556); // `[(float) latitude, (float) longitude]` (Europe)
+$hwDefaultZoom = 5; // 1-22, smaller the integer the higher  thezoom level
