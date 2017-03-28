@@ -19,7 +19,7 @@ ErrorDocument 403 /errors/403.php
 FileETag None
 <IfModule mod_expires.c>
   ExpiresDefault "access plus 10 years"
-  <FilesMatch "\.(ico|cur|pdf|flv|jpe?g|JPG|png|PNG|gif|js|css|swf)$">
+  <FilesMatch "\.(ico|cur|pdf|flv|jpe?g|JPG|svg|SVG|png|PNG|gif|js|css|swf)$">
     ExpiresActive On
     ExpiresDefault "access plus 1 year"
   </FilesMatch>
@@ -30,37 +30,32 @@ FileETag None
 # SECURITY
 #
 #RewriteCond %{QUERY_STRING} \.\.\/ [NC,OR]
-#RewriteCond %{QUERY_STRING} ^.*\.(bash|git|hg|log|svn|swp|cvs) [NC,OR]
-#RewriteCond %{QUERY_STRING} etc/passwd [NC,OR]
+RewriteCond %{QUERY_STRING} ^.*\.(bash|git|hg|log|svn|swp|cvs) [NC,OR]
+RewriteCond %{QUERY_STRING} etc/passwd [NC,OR]
 #RewriteCond %{QUERY_STRING} boot\.ini [NC,OR]
 #RewriteCond %{QUERY_STRING} ftp\:  [NC,OR]
 #RewriteCond %{QUERY_STRING} http\:  [NC,OR]
 #RewriteCond %{QUERY_STRING} https\:  [NC,OR]
-#RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-#RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|%3D) [NC,OR]
-#RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [NC,OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|%3D) [NC,OR]
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(\[|\]|\(|\)|<|>|ê|"|;|\?|\*|=$).* [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(&#x22;|&#x27;|&#x3C;|&#x3E;|&#x5C;|&#x7B;|&#x7C;).* [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(%24&x).* [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(127\.0).* [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(%0|%A|%B|%C|%D|%E|%F).* [NC,OR]
 #RewriteCond %{QUERY_STRING} ^.*(globals|encode|localhost|loopback).* [NC,OR]
-#RewriteCond %{QUERY_STRING} ^.*(request|select|concat|insert|union|declare).* [NC]
-#RewriteCond %{QUERY_STRING} !^loggedout=true
-#RewriteCond %{QUERY_STRING} !^action=rp
-#RewriteCond %{HTTP_COOKIE} !^.*wordpress_logged_in_.*$
-#RewriteCond %{HTTP_REFERER} !^http://maps\.googleapis\.com(.*)$
+RewriteCond %{QUERY_STRING} ^.*(request|select|concat|insert|union|declare).* [NC]
 #RewriteRule ^(.*)$ - [F,L]
 
 # No directory listing
-#Options -Indexes
+Options -Indexes
 
 # Deny access to .gitignores
 <Files ".gitignore">
   Order deny,allow
   Deny from all
 </Files>
-
 
 #
 # COMMON REWRITES
@@ -71,9 +66,6 @@ RewriteBase /
 Options +FollowSymLinks
 
 RewriteRule ^robots.txt$ /robots.txt.php
-
-# Ensure working of static assets
-#RewriteRule ^/(load.php|wp-content|wp-includes|wp-admin|images|skins|stylesheets|config|forum|community|maps|translate|phrasebook-v2|phrasebook)/ - [L]
 
 # Don't allow access to .php~ files
 RewriteRule \.php~$ - [F,L]

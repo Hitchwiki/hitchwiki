@@ -29,7 +29,7 @@ Some documentation to help to understand how this template is built:
 {{#if: {{{Population|}}} | <tr><th>Population:</th><td>{{Ifnumber | {{{Population|}}} | {{formatnum:{{{Population|}}}}} | {{{Population|}}} }}</td></tr> | }}
 {{#if: {{{LicencePlate|}}} | <tr><th>Licence plate:</th><td>[[LicencePlate::{{{LicencePlate|}}}]]</td></tr> | }}
 {{#if: {{{Currency|}}} | <tr><th>Currency:</th><td>[[Currency::{{{Currency|}}}]]</td></tr> | }}
-{{#if: {{{CountryCode|}}} | <tr><th>CountryCode:</th><td>[[CountryCode::{{{CountryCode|}}}]]</td></tr> | }}
+{{#if: {{{CountryCode|}}} | <tr><th>Country code:</th><td>[[CountryCode::{{{CountryCode|}}}]]</td></tr> | }}
 <tr><th>Hitchability</th><td><hw-country-rate></hw-country-rate></td></tr>
 </table>
 

@@ -19,5 +19,6 @@
 <div class="editOptions clearfix"><nowiki />
 <div class="editButtons">{{{standard input|save|label=Save spot}}} {{{standard input|cancel}}}</div><nowiki />
 <div class="editCheckboxes">{{{standard input|watch}}}</div><nowiki />
+{{#addbodyclass:hw-form-spot}}
 </div></includeonly>
 __NOEDITSECTION__ __NOTOC__ __NOINDEX__
