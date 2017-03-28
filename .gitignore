@@ -3,6 +3,7 @@ composer.phar
 composer.lock
 public/composer
 public/bin
+node_modules/
 
 # Vagrant/Scotchbox
 scotch-box

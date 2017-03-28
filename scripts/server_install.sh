@@ -28,12 +28,14 @@ install_helper_tools
 upgrade_to_gitv2
 install_mail_support
 install_self_signed_ssl
-upgrade_dev_tools
+install_bower
+upgrade_composer
 create_db
 install_mediawiki
 install_mw_visual_editor
-solve_mw_maps_extension_bug
 setup_mediawiki
+install_parsoid
+set_permissions
 
 echo
 echo

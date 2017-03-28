@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -e
+# Makes sure we have settings.ini and "Bash ini parser"
+source "$SCRIPTDIR/_settings.sh"
+
 #
 # Hitchwiki installation functions helper
 #
@@ -8,7 +12,7 @@ print_lamp_versions()
 {
   echo
   echo "Apache, MySQL, PHP & OpenSSL versions:"
-  echo " "
+  echo " "install_helper_tools
   apache2 -version
   echo " "
   mysql -V
@@ -36,7 +40,7 @@ upgrade_to_gitv2()
   # and we want 2+ for shallow submodules
   echo
   echo "Upgrade git to v2"
-  sudo add-apt-repository -y ppa:git-core/ppa
+  # sudo add-apt-repository -y ppa:git-core/ppa #TODO: repository not existing anymore.
   sudo apt-get -qq update
   sudo apt-get -y install git
   git --version
@@ -72,15 +76,16 @@ install_self_signed_ssl(){
   echo "-------------------------------------------------------------------------"
 }
 
-upgrade_dev_tools()
-{
+install_bower(){
   echo
   echo "Upgrade Bower"
-  sudo npm install --global --quiet bower
+  npm install
   bower --version
   echo
   echo "-------------------------------------------------------------------------"
-
+}
+upgrade_composer()
+{
   echo
   echo "Upgrade Composer to latest version..."
   composer self-update
@@ -107,8 +112,7 @@ install_mediawiki(){
 
   echo
   echo "Ensure correct permissions for cache folders..."
-  cd "$ROOTDIR"
-  bash "$SCRIPTDIR/permissions.sh"
+  set_permissions
   echo
   echo "-------------------------------------------------------------------------"
 
@@ -129,6 +133,7 @@ install_mediawiki(){
   echo
   echo "Run post-install-cmd for HWMap extension..."
   composer run-script post-install-cmd -d ./extensions/HWMap
+  solve_mw_maps_extension_bug
   echo
   echo "Run post-install-cmd for HitchwikiVector extension..."
   composer run-script post-install-cmd -d ./extensions/HitchwikiVector
@@ -204,9 +209,8 @@ create_db(){
 #echo "Restart Apache..."
 #sudo /etc/init.d/apache2 restart
 
-setup_mediawiki(){
-
-
+pre_setup_mediawiki()
+{
   # Setup MediaWiki
   echo
   echo "Running Mediawiki setup script..."
@@ -224,10 +228,12 @@ setup_mediawiki(){
   --scriptpath /$WIKIFOLDER \
   --lang en \
   "$HW__general__sitename" \
-  hitchwiki;
+  hitchwiki
   echo
   echo "-------------------------------------------------------------------------"
+}
 
+setup_mediawiki(){
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
   echo
@@ -285,7 +291,13 @@ setup_mediawiki(){
   echo
   echo "-------------------------------------------------------------------------"
 
+  echo
+  echo "-------------------------------------------------------------------------"
 
+
+}
+
+install_parsoid(){
   # Install Parsoid
   # Parsoid is a Node application required by VisualEditor extension
   # https://www.mediawiki.org/wiki/Parsoid/Setup
@@ -298,9 +310,18 @@ setup_mediawiki(){
     echo
     echo "Skipped calling Parsoid install script."
   fi
-  echo
-  echo "-------------------------------------------------------------------------"
-
-
 }
-# And we're done!
+
+set_permissions()
+{
+  owners="${HW__general__webserver_user}:${HW__general__webserver_group}"
+
+  chown -R $owners "$ROOTDIR"
+  chmod -R g+rw "$ROOTDIR"
+
+  chown -R $owners "$WIKIDIR/images"
+  chmod -R ug+rw "$WIKIDIR/images"
+
+  chown -R $owners "$WIKIDIR/cache"
+  chmod -R ug+rw "$WIKIDIR/cache"
+}

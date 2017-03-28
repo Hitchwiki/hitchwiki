@@ -34,5 +34,10 @@
   },
   "config": {
     "vendor-dir": "public/"
+  },
+  "scripts": {
+    "install_vagrant": "scripts/vagrant/install.sh",
+    "install_local": "scripts/install.sh",
+    "clean": "scripts/clean.sh"
   }
 }

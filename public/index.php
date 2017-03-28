@@ -1,3 +1,4 @@
+oi
 <?php
 /*
  * Hitchwiki Start Page
