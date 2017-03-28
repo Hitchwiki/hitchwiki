@@ -229,6 +229,17 @@ pre_setup_mediawiki()
   --lang en \
   "$HW__general__sitename" \
   hitchwiki
+
+  echo "php maintenance/install.php --conf "$MWCONFFILE" \
+  --dbuser $HW__db__username \
+  --dbpass $HW__db__password \
+  --dbname $HW__db__database \
+  --dbtype mysql \
+  --pass autobahn \
+  --scriptpath /$WIKIFOLDER \
+  --lang en \
+  "$HW__general__sitename" \
+  hitchwiki"
   echo
   echo "-------------------------------------------------------------------------"
 }

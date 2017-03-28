@@ -1,4 +1,5 @@
 {
+  "private": true,
   "dependencies": {
     "bower": "^1.8.0"
   }
