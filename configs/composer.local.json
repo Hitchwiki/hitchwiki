@@ -283,6 +283,18 @@
           "type": "zip"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "RevisionSlider",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "https://extdist.wmflabs.org/dist/extensions/DebugMode-REL1_28-d078e90.tar.gz",
+          "type": "tar"
+        }
+      }
     }
   ],
   "require": {

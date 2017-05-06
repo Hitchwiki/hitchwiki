@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 # Include settings to any bash script
 #
 # Reads:
@@ -40,7 +41,7 @@ fi
 if [ ! -d "$SCRIPTDIR/vendor/bash_ini_parser" ]; then
   echo ""
   echo "Installing Bash ini parser..."
-  git clone https://github.com/rudimeier/bash_ini_parser.git "$SCRIPTDIR/vendor/bash_ini_parser"
+  git clone https://github.com/pmgouveia/bash_ini_parser.git "$SCRIPTDIR/vendor/bash_ini_parser"
 fi
 
 # Load parser
