@@ -33,11 +33,13 @@
     "wiki": "*"
   },
   "config": {
-    "vendor-dir": "public/"
+    "vendor-dir": "public/",
+    "process-timeout": 100000
   },
   "scripts": {
     "install_vagrant": "scripts/vagrant/install.sh",
     "install_local": "scripts/install.sh",
+    "build": "scripts/build.sh",
     "clean": "scripts/clean.sh"
   }
 }

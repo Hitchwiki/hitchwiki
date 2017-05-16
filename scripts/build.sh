@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Hitchwiki installation script
+# Hitchwiki build script
 #
 # Setting up hitchwiki in your local webserver
 #
@@ -22,14 +22,18 @@ export PATH=$PATH:$ROOTDIR/node_modules/.bin/
 
 source "scripts/install_funcs.sh"
 
-setup_debian
-install_bower
-install_mediawiki
+# Javascript
+# install_bower
+
+#php
+# install_mediawiki
+
+#php 
 install_mw_visual_editor
-create_db
+# create_db
 pre_setup_mediawiki
 setup_mediawiki
-install_parsoid
+# install_parsoid TODO: fix parsoid script...
 set_permissions
 
 echo

@@ -8,6 +8,12 @@ source "$SCRIPTDIR/_settings.sh"
 # Hitchwiki installation functions helper
 #
 
+setup_debian()
+{
+    sudo apt-get install php5-apcu
+    sudo apt-get install software-properties-common
+}
+
 print_lamp_versions()
 {
   echo
@@ -106,13 +112,6 @@ install_mediawiki(){
   echo "Create cache directories..."
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
-  echo
-  echo "-------------------------------------------------------------------------"
-
-
-  echo
-  echo "Ensure correct permissions for cache folders..."
-  set_permissions
   echo
   echo "-------------------------------------------------------------------------"
 
@@ -219,6 +218,19 @@ pre_setup_mediawiki()
   # Runs Mediawiki install script:
   # - sets up wiki in one language ("en")
   # - creates one admin user "hitchwiki" with password "authobahn"
+  ## runs with cat -, so that "set -x" doesn't detect the error of the exit code (then runs again, read below)
+  php maintenance/install.php --conf "$MWCONFFILE" \
+  --dbuser $HW__db__username \
+  --dbpass $HW__db__password \
+  --dbname $HW__db__database \
+  --dbtype mysql \
+  --pass autobahn \
+  --scriptpath /$WIKIFOLDER \
+  --lang en \
+  "$HW__general__sitename" \
+  hitchwiki | cat -
+  
+  ## runs a second time because, the first time always fails.
   php maintenance/install.php --conf "$MWCONFFILE" \
   --dbuser $HW__db__username \
   --dbpass $HW__db__password \
@@ -325,14 +337,21 @@ install_parsoid(){
 
 set_permissions()
 {
+  echo "Setting permissions... "
+      
   owners="${HW__general__webserver_user}:${HW__general__webserver_group}"
 
-  chown -R $owners "$ROOTDIR"
-  chmod -R g+rw "$ROOTDIR"
+  echo "Owners: $owners... "
+  echo "chown and chmod $ROOTDIR"
 
-  chown -R $owners "$WIKIDIR/images"
-  chmod -R ug+rw "$WIKIDIR/images"
+  sudo chown -R $owners "$ROOTDIR"
+  sudo chmod -R g+rw "$ROOTDIR"
 
-  chown -R $owners "$WIKIDIR/cache"
-  chmod -R ug+rw "$WIKIDIR/cache"
+  echo "chown and chmod $WIKIDIR/images"
+  sudo chown -R $owners "$WIKIDIR/images"
+  sudo chmod -R ug+rw "$WIKIDIR/images"
+
+  echo "chown and chmod $WIKIDIR/cache"
+  sudo chown -R $owners "$WIKIDIR/cache"
+  sudo chmod -R ug+rw "$WIKIDIR/cache"
 }
