@@ -8,42 +8,147 @@ source "$SCRIPTDIR/_settings.sh"
 # Hitchwiki installation functions helper
 #
 
-print_lamp_versions()
+update_system()
+{
+  echo "Update system & install helper tools"
+  sudo apt-get -qq update
+  sudo apt-get upgrade -y
+  echo "System updated"
+
+  echo "Install `unattended-upgrades`, `fail2ban`"
+  sudo apt-get -y install \
+    unattended-upgrades \
+    vim \
+    curl \
+    git \
+    imagemagick \
+    build-essential \
+    python-software-properties \
+    fail2ban;
+
+  echo "Do apt-get purge & autoremove"
+  sudo apt-get --purge autoremove -y
+  echo
+  echo "-------------------------------------------------------------------------"
+}
+
+print_versions()
 {
   echo
-  echo "Apache, MySQL, PHP & OpenSSL versions:"
-  echo " "install_helper_tools
+  echo "System versions:"
+  echo
   apache2 -version
-  echo " "
+  echo
   mysql -V
-  echo " "
+  echo
   php -v
-  echo " "
+  echo
+  npm --version
+  echo
+  node --version
+  echo
+  bower --version
+  echo
   openssl version
   echo
-  echo "-------------------------------------------------------------------------"
-}
-
-
-install_helper_tools()
-{
-  echo "Install helper tools"
-  sudo apt-get -qq update
-  sudo apt-get -y install unattended-upgrades fail2ban
+  composer --version
   echo
   echo "-------------------------------------------------------------------------"
 }
 
-upgrade_to_gitv2()
+install_mariadb()
 {
-  # Vagrant SCOTCH BOX (https://box.scotch.io/) has git 1.9
-  # and we want 2+ for shallow submodules
+  echo "Install MariaDB"
+  sudo apt-get -y install mariadb-server mariadb-client
+
+  echo "Secure MariaDB"
+  # `mysql_secure_installation` is interactive so doing the same directly in DB instead...
+  # https://gist.github.com/Mins/4602864#gistcomment-1299116
+  mysqladmin -u root password "$HW__db__password"
+  mysql -u$HW__db__username -p"$HW__db__password" -e "UPDATE mysql.user SET Password=PASSWORD('$HW__db__password') WHERE User='root'"
+  mysql -u$HW__db__username -p"$HW__db__password" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+  mysql -u$HW__db__username -p"$HW__db__password" -e "DELETE FROM mysql.user WHERE User=''"
+  mysql -u$HW__db__username -p"$HW__db__password" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
+  mysql -u$HW__db__username -p"$HW__db__password" -e "FLUSH PRIVILEGES"
+
   echo
-  echo "Upgrade git to v2"
-  # sudo add-apt-repository -y ppa:git-core/ppa #TODO: repository not existing anymore.
-  sudo apt-get -qq update
-  sudo apt-get -y install git
-  git --version
+  echo "-------------------------------------------------------------------------"
+}
+
+install_apache()
+{
+  echo "Install Apache"
+  sudo apt-get -y install apache2
+
+  echo "Enable SSL support in Apache"
+  sudo a2enmod ssl
+  # sudo a2ensite default-ssl
+
+  echo "Enable Mod Rewrite in Apache"
+  sudo a2enmod rewrite
+
+  echo "Allowing Apache override to all"
+  sudo sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+
+  echo "Restart Apache"
+  sudo service apache2 restart
+
+  echo
+  echo "-------------------------------------------------------------------------"
+}
+
+install_php()
+{
+  echo "Install PHP and extensions"
+  sudo apt-get -y install \
+    php7.0 \
+    libapache2-mod-php7.0 \
+    php7.0-mysql \
+    php7.0-curl \
+    php7.0-gd \
+    php7.0-intl \
+    php-pear \
+    php-imagick \
+    php7.0-imap \
+    php7.0-mcrypt \
+    php-memcache \
+    php7.0-pspell \
+    php7.0-recode \
+    php7.0-sqlite3 \
+    php7.0-tidy \
+    php7.0-xmlrpc \
+    php7.0-xsl \
+    php7.0-mbstring \
+    php-gettext;
+
+  echo "Install Opcache and APCu"
+  sudo apt-get -y install php7.0-opcache php-apcu
+
+  echo -e "Turn on PHP errors"
+  sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+  sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+
+  echo "Restart Apache"
+  sudo service apache2 restart
+
+  echo
+  echo "-------------------------------------------------------------------------"
+}
+
+install_phpmyadmin()
+{
+  echo "Install PHPMyAdmin"
+  sudo apt-get -y install phpmyadmin
+  echo
+  echo "-------------------------------------------------------------------------"
+}
+
+install_nodejs()
+{
+  echo "Install NodeJS"
+  # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+  curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  sudo apt-get install -y nodejs
   echo
   echo "-------------------------------------------------------------------------"
 }
@@ -55,12 +160,26 @@ install_mail_support()
   sudo pear install Net_SMTP
   sudo pear install Auth_SASL
   sudo pear install mail_mime
+
+  echo "Install Maildev for catching emails while developing"
+  # https://github.com/djfarrelly/MailDev
+  npm install -g maildev
+
+  echo "Setup Maildev to start on reboot"
+  # Automatically run maildev on start
+  sudo cp scripts/init_maildev.sh /etc/init.d/maildev
+  sudo chmod 755 /etc/init.d/maildev
+  ln -s /etc/init.d/maildev /etc/rc3.d/S99maildev
+
+  echo "Start Maildev"
+  sudo sh /etc/init.d/maildev
   echo
   echo "-------------------------------------------------------------------------"
 
 }
 
-install_self_signed_ssl(){
+install_self_signed_ssl()
+{
   # Install self signed SSL certificate if command line flag `--ssl` is set
   # Remember to set `protocol` setting to `https` from `configs/settings.ini`
   if [[ $* == *--ssl* ]]; then
@@ -76,24 +195,27 @@ install_self_signed_ssl(){
   echo "-------------------------------------------------------------------------"
 }
 
-install_bower(){
-  echo
-  echo "Upgrade Bower"
-  npm install
-  bower --version
-  echo
-  echo "-------------------------------------------------------------------------"
-}
-upgrade_composer()
+install_bower()
 {
   echo
-  echo "Upgrade Composer to latest version..."
-  composer self-update
+  echo "Install Bower"
+  npm install -g bower
   echo
   echo "-------------------------------------------------------------------------"
 }
 
-install_mediawiki(){
+install_composer()
+{
+  echo
+  echo "Install Composer"
+  curl --silent https://getcomposer.org/installer
+  mv composer.phar /usr/local/bin/composer
+  echo
+  echo "-------------------------------------------------------------------------"
+}
+
+install_mediawiki()
+{
   echo
   echo "Download MediaWiki using Composer..."
   cd "$ROOTDIR"
@@ -244,7 +366,8 @@ pre_setup_mediawiki()
   echo "-------------------------------------------------------------------------"
 }
 
-setup_mediawiki(){
+setup_mediawiki()
+{
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
   echo
@@ -301,14 +424,10 @@ setup_mediawiki(){
   bash "$SCRIPTDIR/import_interwiki.sh"
   echo
   echo "-------------------------------------------------------------------------"
-
-  echo
-  echo "-------------------------------------------------------------------------"
-
-
 }
 
-install_parsoid(){
+install_parsoid()
+{
   # Install Parsoid
   # Parsoid is a Node application required by VisualEditor extension
   # https://www.mediawiki.org/wiki/Parsoid/Setup
