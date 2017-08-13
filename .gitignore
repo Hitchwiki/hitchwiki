@@ -5,8 +5,8 @@ public/composer
 public/bin
 node_modules/
 
-# Vagrant/Scotchbox
-scotch-box
+# Vagrant/Ubuntu
+/html
 .vagrant
 
 # Wiki

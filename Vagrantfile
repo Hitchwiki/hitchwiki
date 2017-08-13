@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
   config.vm.network "private_network", ip: settings["private_network_ip"]
   config.vm.hostname = settings["hostname"]
 
