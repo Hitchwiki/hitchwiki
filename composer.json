@@ -20,10 +20,10 @@
       "type": "package",
       "package": {
         "name": "wiki",
-        "version": "1.28.0",
+        "version": "1.29.0",
         "type": "project",
         "dist": {
-          "url": "https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.28.0.tar.gz",
+          "url": "https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.29.0.tar.gz",
           "type": "tar"
         }
       }
@@ -37,7 +37,7 @@
   },
   "scripts": {
     "install_vagrant": "scripts/vagrant/install.sh",
-    "install_local": "scripts/install.sh",
+    "install_local": "scripts/install_local.sh",
     "clean": "scripts/clean.sh"
   }
 }

@@ -6,4 +6,4 @@
 # Description:       starts maildev using start-stop-daemon
 ### END INIT INFO
 
-maildev --smtp 25 --silent
+maildev --smtp 1025 --silent
