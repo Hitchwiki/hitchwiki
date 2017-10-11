@@ -273,6 +273,9 @@ install_mediawiki()
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
 
+  echo "Create dumps directory..."
+  sudo mkdir -p "$WIKIDIR/dumps"
+
   set_wiki_folder_permissions
 
   echo "Download basic MediaWiki extensions using Composer..."
