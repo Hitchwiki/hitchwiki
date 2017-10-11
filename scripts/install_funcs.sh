@@ -273,7 +273,7 @@ install_mediawiki()
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
 
-  set_permissions
+  set_wiki_folder_permissions
 
   echo "Download basic MediaWiki extensions using Composer..."
   cd "$WIKIDIR"
@@ -443,7 +443,7 @@ install_parsoid()
   print_divider
 }
 
-set_permissions()
+set_wiki_folder_permissions()
 {
   echo "Setting wiki folder permissions..."
 
