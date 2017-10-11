@@ -197,7 +197,7 @@ install_mail_support()
 
   echo "Install Maildev for catching emails while developing"
   # https://github.com/djfarrelly/MailDev
-  npm install -g -q maildev
+  npm install -g -q maildev@1.0.0-rc3
 
   echo "Setup Maildev to start on reboot"
   # Automatically run maildev on start
@@ -229,7 +229,7 @@ install_self_signed_ssl()
 install_bower()
 {
   echo "Install Bower"
-  npm install -g -q bower
+  npm install -g -q bower@~1.8
 
   print_divider
 }
