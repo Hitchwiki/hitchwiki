@@ -18,10 +18,8 @@ source "scripts/_path_resolve.sh"
 set -e
 clear
 
-echo
-echo "Removing previous files and Vagrant machine..."
+bash "$SCRIPTDIR/clear.sh"
 
-rm -fr "$ROOTDIR/composer.lock"
-rm -fr "$WIKIDIR"
 vagrant destroy --force # Do not ask for confirmation before destroying.
+
 bash "$SCRIPTDIR/vagrant/install.sh"
