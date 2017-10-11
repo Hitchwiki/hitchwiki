@@ -20,13 +20,16 @@ cd "$ROOTDIR"
 # Fixes possible "warning: Setting locale failed." errors
 export PATH=$PATH:$ROOTDIR/node_modules/.bin/
 
+# Fixes possible "warning: Setting locale failed." errors
+export LC_ALL="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
+
 source "scripts/install_funcs.sh"
 
 install_bower
+create_db
 install_mediawiki
 install_mw_visual_editor
-create_db
-pre_setup_mediawiki
 setup_mediawiki
 install_parsoid
 set_permissions
