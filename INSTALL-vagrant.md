@@ -3,7 +3,8 @@
 ### Prerequisites
 * A GNU/Linux or OS X machine. Let us know if this works with Cygwin.
 * Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
-* Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
+* Install [Vagrant](https://www.vagrantup.com/) >=1.8.2  ([docs](https://docs.vagrantup.com/v2/installation/))
+** if you are using vagrant 1.8.1 you need to patch it to avoid (this bug)[https://stackoverflow.com/questions/36811863/cant-install-vagrant-plugins-in-ubuntu-16-04]
 * Make sure you have [`git`](http://git-scm.com/) installed on your system. (`git --version`)
 
 ### Install
