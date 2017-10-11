@@ -16,7 +16,6 @@ rm -fr "$WIKIDIR"
 
 # Other folders or files created by installation
 rm -f "$ROOTDIR/composer.lock"
-rm -fr "$ROOTDIR/html"
 rm -fr "$ROOTDIR/public/composer"
 
 # Remove log files

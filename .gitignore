@@ -5,9 +5,11 @@ public/composer
 public/bin
 node_modules/
 
-# Vagrant/Ubuntu
-/html
+# Vagrant files
 .vagrant
+
+# Folder created by Apache installer
+/html
 
 # Wiki
 mediawiki-*.tar.gz
