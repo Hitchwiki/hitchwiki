@@ -23,7 +23,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/HWLocationInput-extension",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -35,7 +38,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/mediawiki-extensions-VectorBeta",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -47,7 +53,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/HitchwikiVector-extension",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -59,7 +68,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/BetaFeatureEverywhere",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -71,7 +83,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/HWComments-extension",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -83,7 +98,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/HWRatings-extension",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
@@ -95,7 +113,10 @@
         "type": "mediawiki-extension",
         "dist": {
           "url": "../../hw-mediawiki-extensions/HWMap-extension",
-          "type": "path"
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
         }
       }
     },
