@@ -72,7 +72,7 @@ install_mariadb()
 {
   echo "Add keys and repository for MariaDB"
   # https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-ams
-  sudo apt-get -qq install software-properties-common
+  sudo apt-get -qq install -y --allow-unauthenticated software-properties-common
   sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
   sudo add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main'
   sudo apt-get -qq update
@@ -83,7 +83,7 @@ install_mariadb()
 
   echo "Install MariaDB"
   export DEBIAN_FRONTEND=noninteractive
-  sudo apt-get -qq install -y mariadb-server
+  sudo apt-get -qq install -y --allow-unauthenticated mariadb-server
 
   echo "Secure MariaDB root user"
   # `mysql_secure_installation` is interactive so doing the same directly in DB instead...
@@ -266,7 +266,7 @@ install_mediawiki()
 
   echo "Download basic MediaWiki extensions using Composer..."
   cd "$WIKIDIR"
-  sudo cp "$CONFDIR/composer.local.json" .
+  sudo ln -s "$CONFDIR/composer.local.json" composer.local.json
   # composer update --no-dev --no-progress --no-interaction
   sudo composer update --no-dev --no-progress --no-interaction
 
@@ -458,7 +458,7 @@ set_permissions()
   HW_OWNERS="${HW__general__webserver_user}:${HW__general__webserver_group}"
 
   sudo chown -R $HW_OWNERS "$ROOTDIR"
-  sudo chmod -R g+rw "$ROOTDIR"
+  # sudo chmod -R g+rw "$ROOTDIR"
 
   sudo chown -R $HW_OWNERS "$WIKIDIR/images"
   sudo chmod -R ug+rw "$WIKIDIR/images"
