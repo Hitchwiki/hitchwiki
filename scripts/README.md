@@ -38,5 +38,5 @@ Install/reinstall scripts for the Vagrant box:
 
 Script | Purpose
 ------------ | -------------
-vagrant/install.sh | download scotchbox image, and set up a Vagrant box with hitchwiki
-vagrant/reinstall.sh | wipe out old files & vagrant box, then run install script
+vagrant/install.sh | download Vagrant box image, and set up a Vagrant box with Hitchwiki setup (Server software, Mediawiki and Mediawiki-extensions)
+vagrant/reinstall.sh | wipe out old files & Vagrant box, then run install script
