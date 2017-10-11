@@ -1,59 +1,102 @@
 {
   "repositories": [
     {
-      "url": "../../hw-mediawiki-extensions/HitchwikiVector-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWWaitingTime",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HWWaitingTime-extension",
+          "type": "path",
+          "options": {
+            "symlink": true
+          }
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/HWMap-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWLocationInput",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HWLocationInput-extension",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/HWRatings-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWVectorBeta",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/mediawiki-extensions-VectorBeta",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/HWComments-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HitchwikiVector",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HitchwikiVector-extension",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/BetaFeatureEverywhere",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "BetaFeatureEverywhere",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/BetaFeatureEverywhere",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/mediawiki-extensions-VectorBeta",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWComments",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HWComments-extension",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/HWWaitingTime-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWRatings",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HWRatings-extension",
+          "type": "path"
+        }
       }
     },
     {
-      "url": "../../hw-mediawiki-extensions/HWLocationInput-extension",
-      "type": "path",
-      "options": {
-        "symlink": true
+      "type": "package",
+      "package": {
+        "name": "HWMap",
+        "version": "@dev",
+        "type": "mediawiki-extension",
+        "dist": {
+          "url": "../../hw-mediawiki-extensions/HWMap-extension",
+          "type": "path"
+        }
       }
     },
     {
@@ -322,14 +365,14 @@
     }
   ],
   "require": {
-    "HWMap": "*",
-    "HWRatings": "*",
-    "HWComments": "*",
-    "HWWaitingTime": "*",
-    "HWLocationInput": "*",
-    "HWVectorBeta": "*",
-    "HitchwikiVector": "*",
-    "BetaFeatureEverywhere": "*",
+    "HWMap": "@dev",
+    "HWRatings": "@dev",
+    "HWComments": "@dev",
+    "HWWaitingTime": "@dev",
+    "HWLocationInput": "@dev",
+    "HWVectorBeta": "@dev",
+    "HitchwikiVector": "@dev",
+    "BetaFeatureEverywhere": "@dev",
     "BetaFeatures": "@dev",
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",

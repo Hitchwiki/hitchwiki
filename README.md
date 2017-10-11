@@ -36,8 +36,12 @@ The easiest and quickest way to get started is with Vagrant. Running through Vag
 Code [MIT](LICENSE.md)
 Contents [Creative Commons](http://creativecommons.org/licenses/by-sa/4.0/)
 
-## See also
-Our custom MediaWiki extensions:
+## Hitchwiki Mediawiki Extensions
+All Hitchwiki functionality is created on top of MediaWiki using extensions under `./hw-mediawiki-extensions`.
+
+These folders are symlinked to Mediawiki by Composer using [path repositories](https://getcomposer.org/doc/05-repositories.md#path).
+
+Previously our custom MediaWiki extension code was hosted at separate repositories:
 - [HWMap-extension](https://github.com/Hitchwiki/HWMap-extension)
 - [HWRatings-extension](https://github.com/Hitchwiki/HWRatings-extension)
 - [HWWaitingTime-extension](https://github.com/Hitchwiki/HWWaitingTime-extension)
@@ -45,6 +49,4 @@ Our custom MediaWiki extensions:
 - [HWLocationInput-extension](https://github.com/Hitchwiki/HWLocationInput-extension)
 - [HitchwikiVector-extension](https://github.com/Hitchwiki/HitchwikiVector-extension)
 - [BetaFeatureEverywhere](https://github.com/Hitchwiki/BetaFeatureEverywhere)
-
-Our fork of an abandoned extension:
-- [HWVectorBeta](https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta) (previously `VectorBeta`)
+- [HWVectorBeta](https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta) (Our fork of an abandoned extension, previously `VectorBeta`)
