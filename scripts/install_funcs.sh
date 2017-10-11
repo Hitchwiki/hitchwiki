@@ -8,6 +8,9 @@ set -e
 # Makes sure we have settings.ini and "Bash ini parser"
 source "$SCRIPTDIR/_settings.sh"
 
+OK_SYMBOL=✅
+SKIP_SYMBOL=🔀
+
 # Print divider between setup blocks
 print_divider()
 {
@@ -20,12 +23,12 @@ print_divider()
 
 update_system()
 {
-  echo "Update system"
+  echo "$OK_SYMBOL Update system"
   sudo apt-get -qq update
   sudo apt-get -qq upgrade -y
-  echo "System updated"
 
-  echo "Install helper tools"
+  echo " "
+  echo "$OK_SYMBOL Install helper tools"
   sudo apt-get -qq install -y \
     unattended-upgrades \
     vim \
@@ -38,7 +41,8 @@ update_system()
     python-software-properties \
     fail2ban;
 
-  echo "Do apt-get purge & autoremove"
+  echo " "
+  echo "$OK_SYMBOL Do apt-get purge & autoremove"
   sudo apt-get -qq --purge autoremove -y
 
   print_divider
@@ -46,7 +50,7 @@ update_system()
 
 print_versions()
 {
-  echo "System versions:"
+  echo "$OK_SYMBOL System versions:"
   echo " "
   echo " "
   echo "Apache version:"
@@ -78,22 +82,22 @@ print_versions()
 
 install_mariadb()
 {
-  echo "Add keys and repository for MariaDB"
+  echo "$OK_SYMBOL Add keys and repository for MariaDB"
   # https://downloads.mariadb.org/mariadb/repositories/#mirror=digitalocean-ams
   sudo apt-get -qq install -y --allow-unauthenticated software-properties-common
   sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
   sudo add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main'
   sudo apt-get -qq update
 
-  echo "Configure MariaDB installation not to prompt for passwords"
+  echo "$OK_SYMBOL Configure MariaDB installation not to prompt for passwords"
   sudo debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password "$HW__db__password
   sudo debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password "$HW__db__password
 
-  echo "Install MariaDB"
+  echo "$OK_SYMBOL Install MariaDB"
   export DEBIAN_FRONTEND=noninteractive
   sudo apt-get -qq install -y --allow-unauthenticated mariadb-server
 
-  echo "Secure MariaDB root user"
+  echo "$OK_SYMBOL Secure MariaDB root user"
   # `mysql_secure_installation` is interactive so doing the same directly in DB instead...
   # https://gist.github.com/Mins/4602864#gistcomment-1299116
   #mysqladmin -u $HW__db__username -p$HW__db__password password "$HW__db__password"
@@ -108,20 +112,20 @@ install_mariadb()
 
 install_apache()
 {
-  echo "Install Apache"
+  echo "$OK_SYMBOL Install Apache"
   sudo apt-get -qq install -y apache2
 
-  echo "Enable SSL support in Apache"
+  echo "$OK_SYMBOL Enable SSL support in Apache"
   sudo a2enmod ssl
   # sudo a2ensite default-ssl
 
-  echo "Enable Mod Rewrite in Apache"
+  echo "$OK_SYMBOL Enable Mod Rewrite in Apache"
   sudo a2enmod rewrite
 
-  echo "Allowing Apache override to all"
+  echo "$OK_SYMBOL Allowing Apache override to all"
   sudo sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
-  echo "Configure Apache to serve `./public` folder"
+  echo "$OK_SYMBOL Configure Apache to serve `./public` folder"
   cd /etc/apache2/sites-available
   sudo ln -s /var/www/configs/apache-hitchwiki.conf hitchwiki.conf
 
@@ -129,7 +133,7 @@ install_apache()
   sudo rm -f 000-default.conf
   sudo ln -s ../sites-available/hitchwiki.conf hitchwiki.conf
 
-  echo "Restart Apache"
+  echo "$OK_SYMBOL Restart Apache"
   sudo service apache2 restart
 
   # Clean out folder created by Apache installer
@@ -140,7 +144,7 @@ install_apache()
 
 install_php()
 {
-  echo "Install PHP and extensions"
+  echo "$OK_SYMBOL Install PHP and extensions"
   sudo apt-get -qq install -y \
     php7.0 \
     libapache2-mod-php7.0 \
@@ -164,11 +168,11 @@ install_php()
     php-apcu \
     php-gettext;
 
-  echo -e "Turn on PHP errors"
+  echo -e "$OK_SYMBOL Turn on PHP errors"
   sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
   sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 
-  echo "Restart Apache"
+  echo "$OK_SYMBOL Restart Apache"
   sudo service apache2 restart
 
   print_divider
@@ -176,7 +180,7 @@ install_php()
 
 install_phpmyadmin()
 {
-  echo "Configure PHPMyAdmin installation not to prompt for passwords"
+  echo "$OK_SYMBOL Configure PHPMyAdmin installation not to prompt for passwords"
   sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
   sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
   sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string $HW__db__username"
@@ -184,7 +188,7 @@ install_phpmyadmin()
   sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $HW__db__phpmyadmin_password"
   sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $HW__db__phpmyadmin_password"
 
-  echo "Install PHPMyAdmin"
+  echo "$OK_SYMBOL Install PHPMyAdmin"
   export DEBIAN_FRONTEND=noninteractive
   sudo apt-get -qq install -y phpmyadmin
 
@@ -196,7 +200,7 @@ install_phpmyadmin()
 
 install_nodejs()
 {
-  echo "Install NodeJS"
+  echo "$OK_SYMBOL Install NodeJS"
   # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get -qq install -y nodejs
@@ -206,7 +210,7 @@ install_nodejs()
 
 install_mail_support()
 {
-  echo "Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime..."
+  echo "$OK_SYMBOL Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime..."
   sudo pear install mail
   sudo pear install Net_SMTP
   sudo pear install Auth_SASL
@@ -214,17 +218,17 @@ install_mail_support()
 
   print_divider
 
-  echo "Install Maildev for catching emails while developing"
+  echo "$OK_SYMBOL Install Maildev for catching emails while developing"
   # https://github.com/djfarrelly/MailDev
   npm install -g -q maildev@1.0.0-rc3
 
-  echo "Setup Maildev to start on reboot"
+  echo "$OK_SYMBOL Setup Maildev to start on reboot"
   # Automatically run maildev on start
   sudo cp scripts/init_maildev.sh /etc/init.d/maildev
   sudo chmod 755 /etc/init.d/maildev
   ln -s /etc/init.d/maildev /etc/rc3.d/S99maildev
 
-  echo "Start Maildev"
+  echo "$OK_SYMBOL Start Maildev"
   sudo sh /etc/init.d/maildev &>/dev/null &
 
   print_divider
@@ -235,11 +239,11 @@ install_mail_support()
 install_self_signed_ssl()
 {
   if [[ $* == *--ssl* ]]; then
-    echo "Setup self signed SSL certificate..."
+    echo "$OK_SYMBOL Setup self signed SSL certificate..."
     cd "$ROOTDIR"
     bash "$SCRIPTDIR/cert_selfsigned.sh"
   else
-    echo "Skipped installing self signed SSL certificate. "
+    echo "$SKIP_SYMBOL Skipped installing self signed SSL certificate. "
   fi
 
   print_divider
@@ -247,7 +251,7 @@ install_self_signed_ssl()
 
 install_bower()
 {
-  echo "Install Bower"
+  echo "$OK_SYMBOL Install Bower"
   npm install -g -q bower@~1.8
 
   print_divider
@@ -255,7 +259,7 @@ install_bower()
 
 install_composer()
 {
-  echo "Install Composer"
+  echo "$OK_SYMBOL Install Composer"
   cd "$ROOTDIR"
 
   # https://getcomposer.org/download/
@@ -271,22 +275,22 @@ install_composer()
 
 install_mediawiki()
 {
-  echo "Download MediaWiki using Composer..."
+  echo "$OK_SYMBOL Download MediaWiki using Composer..."
   cd "$ROOTDIR"
   composer install --no-autoloader --no-dev --no-progress --no-interaction
 
   print_divider
 
-  echo "Create cache directories..."
+  echo "$OK_SYMBOL Create cache directories..."
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
 
-  echo "Create dumps directory..."
+  echo "$OK_SYMBOL Create dumps directory..."
   sudo mkdir -p "$WIKIDIR/dumps"
 
   set_wiki_folder_permissions
 
-  echo "Download basic MediaWiki extensions using Composer..."
+  echo "$OK_SYMBOL Download basic MediaWiki extensions using Composer..."
   cd "$WIKIDIR"
   sudo ln -s "$CONFDIR/composer.local.json" composer.local.json
   sudo composer update --no-dev --no-progress --no-interaction
@@ -297,21 +301,21 @@ install_mediawiki()
   # These are not run automatically so we'll just manually invoke them.
   # https://github.com/composer/composer/issues/1193
   cd "$WIKIDIR"
-  echo "Run post-install-cmd for HWMap extension..."
+  echo "$OK_SYMBOL Run post-install-cmd for HWMap extension..."
   composer run-script post-install-cmd -d ./extensions/HWMap
   # solve_mw_maps_extension_bug
   echo
-  echo "Run post-install-cmd for HitchwikiVector extension..."
+  echo "$OK_SYMBOL Run post-install-cmd for HitchwikiVector extension..."
   composer run-script post-install-cmd -d ./extensions/HitchwikiVector
   echo
-  echo "Run post-install-cmd for HWRatings extension..."
+  echo "$OK_SYMBOL Run post-install-cmd for HWRatings extension..."
   composer run-script post-install-cmd -d ./extensions/HWRatings
   echo
-  echo "Run post-install-cmd for HWLocationInput extension..."
+  echo "$OK_SYMBOL Run post-install-cmd for HWLocationInput extension..."
   composer run-script post-install-cmd -d ./extensions/HWLocationInput
 
   # Setup MediaWiki
-  echo "Running Mediawiki install script..."
+  echo "$OK_SYMBOL Running Mediawiki install script..."
   # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
   # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
   #
@@ -338,7 +342,7 @@ install_mediawiki()
 # https://www.mediawiki.org/wiki/Extension:VisualEditor
 install_mw_visual_editor()
 {
-  echo "Install VisualEditor extension..."
+  echo "$OK_SYMBOL Install VisualEditor extension..."
   cd "$WIKIDIR/extensions"
   git clone \
   --branch $HW__general__mw_branch \
@@ -370,7 +374,7 @@ solve_mw_maps_extension_bug()
 create_db()
 {
   # Prepare databases
-  echo "Prepare databases..."
+  echo "$OK_SYMBOL Prepare databases..."
   mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
   mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
   #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
@@ -382,20 +386,20 @@ setup_mediawiki()
 {
 
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
-  echo "Point Mediawiki configuration to Hitchwiki configuration file..."
+  echo "$OK_SYMBOL Point Mediawiki configuration to Hitchwiki configuration file..."
   cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
 
   print_divider
 
   # Import interwiki table
   # https://www.mediawiki.org/wiki/Extension:Interwiki
-  echo "Importing interwiki table..."
+  echo "$OK_SYMBOL Importing interwiki table..."
   cd "$ROOTDIR"
   mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 
   print_divider
 
-  echo "Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)..."
+  echo "$OK_SYMBOL Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)..."
   # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
   # basically SMW extensions are not included in MediaWiki before this
   # file exists, because it would cause errors when running
@@ -406,21 +410,21 @@ setup_mediawiki()
 
   print_divider
 
-  echo "Pre-populate the AntiSpoof extension's table..."
+  echo "$OK_SYMBOL Pre-populate the AntiSpoof extension's table..."
   cd "$WIKIDIR"
   php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
   print_divider
 
   # Create bot users
-  echo "Create users"
+  echo "$OK_SYMBOL Create MediaWiki users"
   cd "$ROOTDIR"
   bash "$SCRIPTDIR/create_users.sh"
 
   print_divider
 
   # Import Semantic pages, main navigation etc
-  echo "Import Semantic templates and other MediaWiki special pages..."
+  echo "$OK_SYMBOL Import Semantic templates and other MediaWiki special pages..."
   cd "$ROOTDIR"
   bash "$SCRIPTDIR/import_pages.sh"
 
@@ -432,7 +436,7 @@ setup_mediawiki()
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 install_parsoid()
 {
-  echo "In Parsoid install script..."
+  echo "$OK_SYMBOL Install Parsoid..."
   cd "$ROOTDIR"
   bash "$SCRIPTDIR/install_parsoid.sh"
 
@@ -441,7 +445,7 @@ install_parsoid()
 
 set_wiki_folder_permissions()
 {
-  echo "Setting wiki folder permissions..."
+  echo "$OK_SYMBOL Setting wiki folder permissions..."
 
   HW_OWNERS="${HW__general__webserver_user}:${HW__general__webserver_group}"
 
