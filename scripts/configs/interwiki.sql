@@ -3,6 +3,7 @@ SET time_zone = "+00:00";
 
 --
 -- Table structure for table `interwiki`
+-- Read more: https://www.mediawiki.org/wiki/Manual:Interwiki
 --
 
 DROP TABLE IF EXISTS `interwiki`;
