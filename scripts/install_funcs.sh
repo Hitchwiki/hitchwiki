@@ -179,7 +179,7 @@ install_nodejs()
 {
   echo "Install NodeJS"
   # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-  curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get -qq install -y nodejs
 
   print_divider
@@ -241,7 +241,8 @@ install_composer()
 
   # https://getcomposer.org/download/
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+  # Verification hash might change over time so we can't rely on it here...
+  # php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
   sudo php composer-setup.php --install-dir=/usr/local/bin # Intaller creates file `composer.phar`
   sudo ln -s /usr/local/bin/composer.phar /usr/local/bin/composer # Create symlink
   sudo rm composer-setup.php
@@ -305,10 +306,10 @@ install_mw_visual_editor()
     --depth=1 \
     --recurse-submodules \
     --quiet \
-    https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git \
+    https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git \
     VisualEditor;
   else
-    echo "Skipped Installing VisualEditor extension."
+    echo "Skipped Installing VisualEditor extension. To install it, use --visualeditor attribute."
   fi
 
   print_divider
@@ -322,8 +323,7 @@ solve_mw_maps_extension_bug()
   # We are using GeoData's function in templates to index articles with spatial info
   #
   # TODO: any solution that is cleaner than this temporary dirty hack..
-  echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
-  echo "...SKIPPING..."
+  #echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
   # sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
   # sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
 
@@ -438,7 +438,7 @@ setup_mediawiki()
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 install_parsoid()
 {
-  if [[ ! $* == *--no-visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
+  if [[ $* == *--visualeditor* ]]; then # optional command line flag that includes VisualEditor/Parsoid installation
     echo
     echo "Call Parsoid install script..."
     cd "$ROOTDIR"
@@ -457,14 +457,14 @@ set_permissions()
 
   HW_OWNERS="${HW__general__webserver_user}:${HW__general__webserver_group}"
 
-  chown -R $HW_OWNERS "$ROOTDIR"
-  chmod -R g+rw "$ROOTDIR"
+  sudo chown -R $HW_OWNERS "$ROOTDIR"
+  sudo chmod -R g+rw "$ROOTDIR"
 
-  chown -R $HW_OWNERS "$WIKIDIR/images"
-  chmod -R ug+rw "$WIKIDIR/images"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/images"
+  sudo chmod -R ug+rw "$WIKIDIR/images"
 
-  chown -R $HW_OWNERS "$WIKIDIR/cache"
-  chmod -R ug+rw "$WIKIDIR/cache"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/cache"
+  sudo chmod -R ug+rw "$WIKIDIR/cache"
 
   print_divider
 }

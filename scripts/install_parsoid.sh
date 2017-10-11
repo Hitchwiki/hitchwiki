@@ -25,23 +25,22 @@ export LC_ALL="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
 echo ""
-echo "Node version:"
-node --version # should be v0.8 or higher (0.10 or higher is preferred)
-
-echo ""
 echo "Import the repository gpg key: (key updated on July 27, 2016)"
-sudo apt-key advanced --keyserver pgp.mit.edu --recv-keys 90E9F83F22250DD7
+sudo apt-key advanced --keyserver keys.gnupg.net --recv-keys 90E9F83F22250DD7
 
 echo ""
 echo "Add the Wikimedia repository..."
+# Ubuntu
 sudo apt-add-repository "deb https://releases.wikimedia.org/debian jessie-mediawiki main"
-#sudo echo "deb https://releases.wikimedia.org/debian jessie-mediawiki main" > /etc/apt/sources.list.d/parsoid.list
+# Debian
+#echo "deb https://releases.wikimedia.org/debian jessie-mediawiki main" | sudo tee /etc/apt/sources.list.d/parsoid.list
 
 echo ""
 echo "Install Parsoid using apt-get..."
-sudo apt-get install -y --no-install-recommends apt-transport-https
+sudo apt-get -qq install -y --no-install-recommends apt-transport-https
 sudo apt-get -qq update
-sudo apt-get install -y --no-install-recommends parsoid
+sudo apt-get -qq install -y --no-install-recommends parsoid
+
 
 # Copy our settings for Parsoid
 echo ""
