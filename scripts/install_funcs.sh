@@ -47,22 +47,30 @@ update_system()
 print_versions()
 {
   echo "System versions:"
-  echo
+  echo " "
+  echo " "
+  echo "Apache version:"
   apache2 -version
-  echo
-  # MariaDB
+  echo " "
+  echo "MariaDB version:"
   mysql -V
-  echo
+  echo " "
+  echo "PHP version:"
   php -v
-  echo
+  echo " "
+  echo "NPM version:"
   npm --version
-  echo
+  echo " "
+  echo "Node.js version:"
   node --version
-  echo
+  echo " "
+  echo "Bower version:"
   bower --version
-  echo
+  echo " "
+  echo "OpenSSL version:"
   openssl version
-  echo
+  echo " "
+  echo "Composer version:"
   composer --version
 
   print_divider
@@ -366,16 +374,7 @@ pre_setup_mediawiki()
   "$HW__general__sitename" \
   hitchwiki
 
-  echo "php maintenance/install.php --conf "$MWCONFFILE" \
-  --dbuser $HW__db__username \
-  --dbpass $HW__db__password \
-  --dbname $HW__db__database \
-  --dbtype mysql \
-  --pass autobahn \
-  --scriptpath /$WIKIFOLDER \
-  --lang en \
-  "$HW__general__sitename" \
-  hitchwiki"
+  php maintenance/update.php --quick --conf "$MWCONFFILE"
 
   print_divider
 }
@@ -391,9 +390,9 @@ setup_mediawiki()
 
   # Import interwiki table
   # https://www.mediawiki.org/wiki/Extension:Interwiki
-  echo "Import interwiki table..."
+  echo "Importing interwiki table..."
   cd "$ROOTDIR"
-  bash "$SCRIPTDIR/import_interwiki.sh"
+  mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
 
   print_divider
 
