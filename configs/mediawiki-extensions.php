@@ -104,7 +104,7 @@ require_once "$IP/extensions/AddBodyClass/AddBodyClass.php";
  * https://www.mediawiki.org/wiki/Extension:AdminLinks
  */
 require_once "$IP/extensions/AdminLinks/AdminLinks.php";
-$wgGroupPermissions['my-group']['adminlinks'] = true;
+$wgGroupPermissions['sysop']['adminlinks'] = true;
 
 /**
  * DismissableSiteNotice
