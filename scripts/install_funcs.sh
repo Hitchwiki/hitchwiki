@@ -121,6 +121,14 @@ install_apache()
   echo "Allowing Apache override to all"
   sudo sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
+  echo "Configure Apache to serve `./public` folder"
+  cd /etc/apache2/sites-available
+  sudo ln -s /var/www/configs/apache-hitchwiki.conf hitchwiki.conf
+
+  cd /etc/apache2/sites-enabled
+  sudo rm -f 000-default.conf
+  sudo ln -s ../sites-available/hitchwiki.conf hitchwiki.conf
+
   echo "Restart Apache"
   sudo service apache2 restart
 
