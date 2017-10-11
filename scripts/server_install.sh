@@ -52,10 +52,8 @@ echo "Hitchwiki is now installed!"
 echo
 echo "Vagrant is up. Open http://$HW__general__domain/ in your browser."
 echo
-if [[ $* == *--visualeditor* ]]; then # optional command line flag that excludes VisualEditor/Parsoid from installation
-  echo "Parsoid is running. Open http://$HW__general__domain:8142 in your browser."
-  echo
-fi
+echo "Parsoid is running. Open http://$HW__general__domain:8142 in your browser."
+echo
 echo
 echo "Maildev is running, inspect emails in your browser http://$HW__general__domain:1080"
 echo
