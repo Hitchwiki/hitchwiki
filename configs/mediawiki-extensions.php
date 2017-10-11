@@ -273,12 +273,6 @@ $wgVectorBetaPersonalBar = true;
 $wgVectorBetaWinter = true;
 
 /**
- * RevisionSlider
- * https://www.mediawiki.org/wiki/Extension:RevisionSlider
- */
-wfLoadExtension('RevisionSlider');
-
-/**
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
