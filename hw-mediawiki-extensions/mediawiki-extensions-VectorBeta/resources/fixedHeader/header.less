@@ -1,0 +1,254 @@
+@import '../variables-beta';
+@import "../mixins";
+
+// FIXME: Fail.
+#mw-notification-area {
+	display: none !important;
+}
+
+#p-logo,
+body {
+	background-color: #fff;
+}
+
+#mw-head-base {
+	display: none;
+}
+
+#mw-page-base {
+	height: @header-height;
+	background: none;
+}
+
+#p-search {
+	position: absolute;
+	top: .35em;
+	font-size: 1em;
+	margin: 0;
+	width: 100%;
+	background-color: #FFF;
+
+	// FIXME: Reset original vector style. When upstream just remove the rule.
+	form {
+		margin: 0;
+	}
+}
+
+.mw-scrolled #p-logo,
+div#simpleSearch {
+	height: @header-height;
+}
+
+.mw-scrolled #p-logo {
+	left: 0;
+	top: 0;
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid @content-nav-divider-color;
+
+	a {
+		height: 2.2em;
+		width: 11em;
+		background-size: auto 2.2em;
+		background-position: center top;
+	}
+}
+
+
+// Change the border left of the content panes
+div.vectorTabs {
+	background: none;
+}
+
+#p-search .searchButton,
+div.vectorTabs,
+div#content {
+	border-left: 1px solid @content-nav-divider-color;
+}
+
+#p-cactions {
+	ul {
+		right: 0;
+	}
+}
+
+div#simpleSearch {
+	left: 0;
+	background: none;
+	margin: 0;
+	border: none;
+	border-bottom: 1px solid @content-nav-divider-color;
+	width: 100%;
+
+	#searchButton {
+		.icon("magnifying_glass_gray");
+		background-size: 24px auto;
+		position: absolute;
+		left: auto;
+		right: 0;
+		height: 100%;
+		padding: 0;
+		top: .3em;
+		width: 50px;
+
+		// FIXME: Kill image tag when upstream to core.
+		img {
+			display: none;
+		}
+	}
+
+	// FIXME: Doesn't need to be so specific
+	input#searchInput {
+		position: relative;
+		left: @header-height + .35em + .35em;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+	}
+}
+
+div#footer,
+#left-navigation,
+div#content,
+#p-search,
+#mw-panel {
+	left: 0;
+	margin-left: 0;
+}
+
+#p-tb,
+#p-logo,
+#p-personal,
+#mw-panel {
+	display: none;
+}
+
+.mw-navigation-enabled {
+	div#content {
+		border-left: none;
+	}
+
+	div#mw-panel {
+		border-left: solid 12px #252525;
+		display: block;
+		position: absolute;
+		width: 16em;
+		top: 0;
+		padding: 0;
+		bottom: 0;
+		background-color: #4E4E4E;
+		.box-sizing(border-box);
+
+		&.collapsible-nav {
+			.portal {
+				// FIXME: Argggghh importants
+				padding: 0 !important;
+				margin: 0 !important;
+
+				&.persistent .body {
+					margin: 0;
+				}
+			}
+		}
+
+		div.portal div.body ul {
+			li {
+				position: relative;
+				font-size: 1.2em;
+				text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+				border-bottom: 1px solid #3E3E3E;
+				a {
+					color: #FFF;
+					display: block;
+					padding: 13px 10px 11px 34px;
+				}
+			}
+		}
+	}
+
+	#mw-head,
+	div#content {
+		left: 16em;
+	}
+}
+
+#mw-main-menu-button {
+	position: absolute;
+	top: .35em;
+	left: 0;
+	background: none;
+	height: @header-height;
+	width: @header-height;
+	background-repeat: no-repeat;
+	-o-background-size: 24px auto;
+	-webkit-background-size: 24px auto;
+	-moz-background-size: 24px auto;
+	background-size: 24px auto;
+	.background-image-svg( "images/hamburger.svg", "images/hamburger.png" );
+	z-index: 1;
+	overflow: hidden;
+	text-indent: -999px;
+	background-position: 50% 50%;
+	border-right: 1px solid #CCC;
+	a {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+}
+
+// These are not needed when typography feature is enabled but just in case they are not...
+@media screen and (min-width: 982px) {
+	#p-logo {
+		left: 0;
+	}
+}
+
+@media screen and (min-width: 768px) {
+	div#content {
+		padding-left: @header-height;
+	}
+
+	#p-personal,
+	#p-search {
+		top: 0;
+		position: fixed;
+	}
+
+
+	#mw-main-menu-button {
+		display: none;
+	}
+
+	div#simpleSearch {
+		#searchButton {
+			left: 0;
+			right: auto;
+		}
+	}
+
+	div#footer,
+	#left-navigation,
+	div#content {
+		margin-left: @left-nav-width;
+	}
+
+	#p-search {
+		left: @left-nav-width;
+	}
+
+	.mw-scrolled {
+		#p-logo {
+			width: @left-nav-width;
+			position: fixed;
+		}
+	}
+
+	#p-logo,
+	#p-personal,
+	#mw-panel {
+		display: block;
+	}
+}

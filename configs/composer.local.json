@@ -1,36 +1,60 @@
 {
   "repositories": [
     {
-      "url": "https://github.com/Hitchwiki/HitchwikiVector-extension.git",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HitchwikiVector-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/HWMap-extension.git",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HWMap-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/HWRatings-extension",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HWRatings-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/HWComments-extension",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HWComments-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/BetaFeatureEverywhere.git",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/BetaFeatureEverywhere",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta.git",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/mediawiki-extensions-VectorBeta",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/HWWaitingTime-extension",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HWWaitingTime-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
-      "url": "https://github.com/Hitchwiki/HWLocationInput-extension",
-      "type": "git"
+      "url": "../../hw-mediawiki-extensions/HWLocationInput-extension",
+      "type": "path",
+      "options": {
+        "symlink": true
+      }
     },
     {
       "type": "package",
@@ -298,14 +322,14 @@
     }
   ],
   "require": {
-    "HWMap": "@dev",
-    "HWRatings": "@dev",
-    "HWComments": "@dev",
-    "HWWaitingTime": "@dev",
-    "HWLocationInput": "@dev",
-    "HWVectorBeta": "@dev",
-    "HitchwikiVector": "@dev",
-    "BetaFeatureEverywhere": "@dev",
+    "HWMap": "*",
+    "HWRatings": "*",
+    "HWComments": "*",
+    "HWWaitingTime": "*",
+    "HWLocationInput": "*",
+    "HWVectorBeta": "*",
+    "HitchwikiVector": "*",
+    "BetaFeatureEverywhere": "*",
     "BetaFeatures": "@dev",
     "AntiSpoof": "@dev",
     "AbuseFilter": "@dev",

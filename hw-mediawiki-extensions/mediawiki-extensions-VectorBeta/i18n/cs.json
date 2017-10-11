@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mormegil",
+			"Mirek2"
+		]
+	},
+	"vector-beta-feature-typography-message": "Oživení typografie",
+	"vectorbeta-desc": "Typografické oživení vzhledu Vektor v rámci betaverze",
+	"vector-beta-feature-typography-description": "Aktualizuje typografii vzhledu Vektor pro vylepšení čitelnosti, přístupnosti a konzistence.",
+	"vector-beta-feature-compact-personal-bar-message": "Kompaktní osobní nástroje",
+	"vector-beta-feature-compact-personal-bar-description": "Čistý a organizovaný přístup ke sledovaným stránkám, upozorněním a diskusi. Zjednodušená hlavička stránky s přístupem k nástrojům, když je potřebujete.",
+	"vector-beta-feature-fixedheader-message": "Pevné záhlaví",
+	"vector-beta-feature-fixedheader-description": "Změní záhlaví v implicitním stylu Vektor na pevné.",
+	"vector-beta-feature-form-refresh-message": "Aktualizace a standardizace rozhraní",
+	"vector-beta-feature-form-refresh-description": "Použije pro základní ovládací prvky na celém projektu aktualizovaný vzhled a chování. Ovládací prvky se budou řešit postupně. Tím, že si toto zapnete, nám budete moci psát názory na nový vzhled a ukazovat místa, kde to zatím úplně dobře nefunguje.",
+	"vector-beta-compact-personal-bar-privacy": "Soukromí"
+}

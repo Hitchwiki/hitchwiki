@@ -1,0 +1,154 @@
+#mw-head {
+  height: @header-height;
+  a {
+    &,
+    &:visited {
+      color: @hw-orange-text;
+    }
+  }
+}
+
+
+#p-search,
+#p-logo {
+  background-color: @hw-orange;
+  color: @hw-orange-text;
+}
+.hw-user-nonlogged {
+  #p-personal {
+    top: 0.8em;
+  }
+  #pt-login {
+    margin-top: 0;
+    a {
+      display: inline-block;
+      padding: 1px 10px 0 10px;
+      line-height: 20px;
+      text-transform: uppercase;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: bold;
+      background: @hw-orange-border;
+      &:hover {
+        background: lighten(@hw-orange-border, 5%);
+      }
+    }
+  }
+}
+#p-search {
+  top: 0;
+  border-bottom: 1px solid @hw-orange-border;
+  @media screen and (min-width: 768px) {
+    left: 12em;
+    height: @header-height;//3.4em;
+  }
+  #simpleSearch {
+    border-bottom-color: @hw-orange-border;
+    @media screen and (min-width: 768px) {
+      height: @header-height;//3.4em;
+    }
+    #searchButton {
+      @media screen and (min-width: 768px) {
+        top: 0;
+      }
+    }
+    #searchInput {
+      color: @hw-orange-text;
+      font-size: 16px;
+      line-height: @header-height;
+    }
+  }
+}
+
+#p-search .searchButton,
+div.vectorTabs, div#content {
+  border-left-color: @hw-orange-border;
+}
+
+/*
+ * Logo
+ */
+#p-logo {
+  // This will intentionally break the scrolling logo of VectorBeta Winter theme
+  position: fixed;
+  top: 0;
+  height: @header-height;//3.4em;
+  border-bottom: 1px solid @hw-orange-border;
+  @media screen and (min-width: 768px) {
+    width: 12em;
+  }
+  // Note that a has already inline background-image set from Vector template
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    .background-image('../images/hitchwiki-logo.png');
+    //.background-image-svg("images/@{name}.svg", 'images/@{name}.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+}
+
+// This will break the scrolling logo of VectorBeta Winter theme
+div#mw-panel {
+  top: @header-height;
+  position: fixed;
+  padding-top: 1em;
+}
+.mw-scrolled {
+  #p-logo {
+    border-bottom-color: @hw-orange-border;
+    @media screen and (min-width: 768px) {
+      width: 12em;
+      height: @header-height;//3.4em;
+    }
+    a {
+      height: 100%;
+      width: 100%;
+      background-size: auto auto;
+      background-position: center center;
+    }
+  }
+}
+
+/*
+ * Search suggestions
+ */
+.suggestions {
+  .suggestions-results {
+    .suggestions-result-current {
+      background-color: lighten(@hw-orange, 15%);
+    }
+    a div.suggestions-result-current {
+      background-color: @hw-orange;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    top: @header-height !important; // Original CSS had !important so we gotta override it here. :-(
+  }
+}
+
+
+/*
+ * @todo: placeholders for Search input...
+
+// WebKit browsers
+::-webkit-input-placeholder {
+color:    brighten(@hw-orange-text, 20%);
+}
+// Mozilla Firefox 4 to 18
+:-moz-placeholder {
+  color:    brighten(@hw-orange-text, 20%);
+  opacity:  1;
+}
+// Mozilla Firefox 19+
+::-moz-placeholder {
+  color:    brighten(@hw-orange-text, 20%);
+  opacity:  1;
+}
+// Internet Explorer 10+
+:-ms-input-placeholder {
+  color:    brighten(@hw-orange-text, 20%);
+}
+*/

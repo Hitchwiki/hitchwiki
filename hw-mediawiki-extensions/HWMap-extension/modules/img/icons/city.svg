@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
+<circle fill="#2D210C" cx="12" cy="12" r="12"/>
+<circle fill="#473614" cx="12" cy="12" r="11.2"/>
+<polygon fill="#2D210C" points="12.2,1.4 14.7,9 22.7,9 16.2,13.3 18.7,20.7 12.2,15.9 5.8,20.6 8.3,13.3 1.8,9 9.8,9 "/>
+<polygon fill="#E2921F" points="11.8,1.7 14.2,9 21.9,9 15.7,13 18,20 11.8,15.4 5.6,19.9 8,13 1.8,9 9.5,9 "/>
+</svg>

@@ -1,0 +1,123 @@
+<div>
+    <i onclick="mw.HWMaps.SpecialPage.closeSpecialPageSpot()"
+       class="fa fa-close hw-close-special-spot"></i>
+
+    <h2>Hitchhiking Spot</h2>
+
+    {{#spot}}
+    <div class="hw-specialpage-spot-content" id="hw-spot_{{id}}">
+
+      <!-- Spot content -->
+      <div class="hw-spot-content">
+
+        <!-- Spot actions -->
+        <div class="hw-specialpage-spot-actions">
+
+          {{#if rating_count || waiting_time_count}}
+            <button type="button"
+                    class="hw-button hw-button-small"
+                    id="hw-stats-button-{{id}}"
+                    onclick="mw.HWMaps.Spots.loadStatistics({{id}}, 'hw-stats-button-{{id}}', '{{@keypath}}')">
+              <i class="fa fa-bar-chart"></i>
+              Stats
+            </button>
+          {{/if}}
+
+          <button type="button"
+                  class="hw-button hw-button-small"
+                  onclick="mw.HWMaps.SpecialPage.setMapView('{{location.lat}}', '{{location.lon}}', 15, '{{id}}')">
+            <i class="fa fa-map-marker"></i>
+            Show on map
+          </button>
+
+          <button type="button"
+                  class="hw-button hw-button-small"
+                  onclick="mw.HWMaps.Spots.openStreetView('{{location.lat}}', '{{location.lon}}')">
+            <i class="fa fa-map-marker"></i>
+            Street view
+          </button>
+
+          {{#if userId}}
+            <button type="button"
+                    class="hw-button hw-button-small hw-spot-edit-button"
+                    onclick="mw.HWMaps.SpecialPage.editSpot('{{title}}')">
+              <i class="fa fa-edit"></i>
+              Edit
+            </button>
+          {{/if}}
+
+        </div>
+        <!-- /Spot actions -->
+
+        <!-- Spot content header -->
+        {{#if CitiesDirection || RoadsDirection}}
+        <div class="hw-spot-content-header">
+          {{#if CitiesDirection}}
+            Towards
+            {{#CitiesDirection:i}}{{#if i > 0}},&nbsp;{{/if}}<a href="{{this}}">{{this}}</a>{{/CitiesDirection}}
+          {{/if}}
+          {{#if CitiesDirection && RoadsDirection}} &bull; {{/if}}
+          {{#if RoadsDirection}}
+            Roads
+            {{#RoadsDirection:i}}{{#if i > 0}},&nbsp;{{/if}}<a href="{{this}}">{{this}}</a>{{/RoadsDirection}}
+          {{/if}}
+        </div>
+        {{/if}}
+        <!-- /Spot content header -->
+
+        <!-- Spot description -->
+        <div class="hw-spot-description">
+        {{#if Description}}
+          {{{Description}}}
+        {{else}}
+          <div class="hw-spot-description-empty">
+            <a href="#"
+               class="hw-spot-edit-button"
+               onclick="mw.HWMaps.SpecialPage.editSpot('{{title}}')">
+              Write a description
+            </a>
+            for this spot?
+          </div>
+        {{/if}}
+        </div>
+        <!-- /Spot description -->
+
+      </div>
+      <!-- /Spot content -->
+
+      <div class="hw-ratings-and-waiting-time">
+
+        <!-- Ratings -->
+        <div class="hw-ratings">
+          {{>ratingsTemplate}}
+        </div>
+        <!-- /Ratings -->
+
+        <!-- Waiting times -->
+        <div class="hw-waiting-time">
+          {{>waitingTimesTemplate}}
+        </div>
+        <!-- /Waiting times -->
+
+      </div>
+
+      <!-- Statistics -->
+      {{#if _isStatisticsVisible}}
+      <div class="hw-spot-statistics">
+        <h4>Waiting times distribution</h4>
+        {{>statsWaitingtimesTemplate}}
+        <h4>Ratings distribution</h4>
+        {{>statsRatingsTemplate}}
+      </div>
+      {{/if}}
+      <!-- /Statistics -->
+
+      <!-- Comments -->
+      <h4>Comments ({{comment_count}})</h4>
+      {{>commentsTemplate}}
+      <!-- /Comments -->
+
+    </div>
+    {{/spot}}
+
+</div>

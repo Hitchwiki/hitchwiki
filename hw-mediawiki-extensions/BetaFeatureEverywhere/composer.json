@@ -1,0 +1,17 @@
+{
+  "name": "BetaFeatureEverywhere",
+  "type": "mediawiki-extension",
+  "description": "Force MediaWiki beta features on/off for everyone, everywhere & everytime.",
+  "keywords": [
+    "Vector",
+    "Beta"
+  ],
+  "homepage": "https://github.com/Hitchwiki/BetaFeatureEverywhere",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mikael Korpela",
+      "homepage": "http://www.mikaelkorpela.fi"
+    }
+  ]
+}

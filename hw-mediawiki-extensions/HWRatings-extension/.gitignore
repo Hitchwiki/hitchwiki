@@ -1,0 +1,6 @@
+# Composer
+composer.lock
+composer.phar
+
+# Libs
+/modules/vendor/

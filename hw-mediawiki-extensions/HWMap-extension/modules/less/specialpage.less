@@ -1,0 +1,267 @@
+/*
+ * Hitchwiki Maps Special page
+ * /en/Special:HWMap
+ */
+.page-Special_HWMap {
+
+  @media screen and (min-width: 768px) {
+    .mw-body-content {
+      left: 80px;
+    }
+    .hwmap-container {
+      left: 80px;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .mw-body-content {
+      left: 0;
+    }
+    .hwmap-container {
+      left: 0;
+    }
+  }
+
+  // Make the map BIG
+  .mw-body-content {
+    position: absolute;
+    top: @hw-header-height;
+    bottom: 0;
+    right: 0;
+  }
+  #mw-content-text {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .hwmap-container {
+    position: fixed;
+    top: @hw-header-height;
+    bottom: 0;
+    bottom: 0;
+    right: 0;
+  }
+  #hwmap {
+    position: relative;
+    border-left: 1px solid @hw-orange-border;
+    transition: width 100ms;
+    height: 100%;
+    min-height: 300px;
+    width: 100%;
+    &.hw-spot-open-map {
+      width: 65%; // See also `hw-spot-open`
+    }
+  }
+
+  // Hide certain contents
+  #contentSub,
+  #jump-to-nav,
+  #footer, // No footer at map page :-(
+  .mw-menu,
+  .mw-body #firstHeading {
+    display: none;
+  }
+  div#content {
+    padding: 0;
+  }
+
+  // Button to init the form for adding
+  #hwmap-add-wrap {
+    position: absolute;
+    bottom: 10px;
+    right: 50%;
+    margin-right: -150px; // Has to be half of the width to center the block
+    width: 300px;
+    z-index: 2000;
+    background: rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+    padding: 15px;
+    font-size: 18px;
+    line-height: 23px;
+    font-weight: normal;
+    color: #fff;
+    text-align: center;
+    input[name='page_name'] {
+      display: none;
+    }
+  }
+
+  // Buttons for adding a new spot
+  #hwmap-add,
+  #hwmap-add-wrap input[type='submit'] {
+    .hwbutton();
+  }
+
+  // Button to init the adding a new spot
+  #hwmap-add {
+    display: inline-block;
+    position: absolute;
+    bottom: 10px;
+    right: 70px;
+    padding: 15px 25px;
+    z-index: 900;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+  }
+
+  // Button to cancel the adding a new spot
+  #hwmap-cancel-adding {
+    text-decoration: none;
+    color: #fff;
+    font-size: 12px;
+    line-height: 12px;
+  }
+
+  // Modal for adding a new spot / modifying spots
+  .popupform-container {
+    border: 0;
+    .box-shadow(5px 5px 15px rgba(0,0,0,0.5));
+    border-radius: 5px;
+  }
+
+  // Sidebar spot container
+  #hw-specialpage-spot {
+    position: relative;
+    width: 0;
+    transition: width 0.1s;
+    min-height: 100%;
+    height: auto;
+    float: right;
+    background-color: white;
+    &.hw-spot-open {
+      width: 35%; // See also `hw-spot-open-map`
+      /*
+      @media screen and (max-width: 768px) {
+        width: 45%;
+      }
+      */
+    }
+
+    // Loading spinner
+    .mw-spinner {
+      margin-top: 40px;
+    }
+
+    // The main title saying "Hitchhiking spot"
+    h2 {
+      margin-left: 10px;
+      margin-right: 10px;
+      font-size: 1.4em;
+    }
+
+    // Close sidebar "X"
+    .hw-close-special-spot {
+      display: none;
+      position: absolute;
+      float: right;
+      cursor: pointer;
+      top: 15px;
+      right: 15px;
+      font-size: 16px;
+      line-height: 24px;
+      margin-right: 5px;
+      color: @hw-grey-dark;
+      &:hover,
+      &:active {
+        color: lighten(@hw-grey-dark, 10%);
+      }
+    }
+    &.hw-spot-open .hw-close-special-spot {
+      display: block;
+    }
+  }
+  // SpecialPage HWMap sidebar when clicking a spot open
+
+  .hw-specialpage-spot-content {
+    // Spacing around all the content on sidebar
+    padding: 13px;
+  }
+
+  // Header section of the spot, containing info about directions
+  .hw-spot-content-header {
+    &, a {
+      font-size: 16px;
+      color: @hw-grey-dark;
+    }
+    font-weight: normal;
+    a {
+      font-weight: bold;
+    }
+  }
+
+  // A text shown when no spot description
+  .hw-spot-description-empty {
+    display: flex;
+    min-height: 100px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-style: italic;
+    &, a {
+      color: @hw-grey-medium;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Hitchability, waiting times etc
+  /*
+  .hw-spot-meta {
+    border-right: 1px solid @hw-grey-light;
+    .hw-waiting-time,
+    .hw-spot-actions,
+    .hw-ratings {
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid @hw-grey-light;
+    }
+  }
+  */
+
+  .hw-ratings-and-waiting-time {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid @hw-grey-light;
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    .hw-ratings,
+    .hw-waiting-time {
+      display: flex;
+      flex-grow: 1;
+      margin: 10px;
+    }
+  }
+
+  // Wrapper for spot action buttons
+  .hw-specialpage-spot-actions {
+    padding: 0 0 10px 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid @hw-grey-light;
+  }
+
+  // Detailed stats
+  .hw-spot-waiting-times,
+  .hw-spot-ratings {
+    padding: 10px 0;
+    margin: 10px 0;
+    border-top: 1px solid @hw-grey-light;
+  }
+
+  #hw-spot-edit-form-wrap {
+    display: none;
+  }
+
+  /**
+   * @TODO: Why this is visible on SpecialPage and
+   * why it causes empty border over top-right-corner?
+   */
+  div.vectorTabs {
+    display: none;
+  }
+
+}

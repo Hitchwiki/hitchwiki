@@ -1,0 +1,48 @@
+<!-- Rating statistics -->
+<div id="hw-spot-ratings-{{id}}" class="hw-spot-ratings">
+  {{#if ratings && ratings_distribution}}
+  <div class="hw-bar-graph-details">
+    <span class="hw-bar-5 hw-graph-bar" style="width: {{Math.floor10(ratings_distribution.5.percentage, -2) || 0}}%;"></span>
+    <span class="hw-bar-4 hw-graph-bar" style="width: {{Math.floor10(ratings_distribution.4.percentage, -2) || 0}}%;"></span>
+    <span class="hw-bar-3 hw-graph-bar" style="width: {{Math.floor10(ratings_distribution.3.percentage, -2) || 0}}%;"></span>
+    <span class="hw-bar-2 hw-graph-bar" style="width: {{Math.floor10(ratings_distribution.2.percentage, -2) || 0}}%;"></span>
+    <span class="hw-bar-1 hw-graph-bar" style="width: {{Math.floor10(ratings_distribution.1.percentage, -2) || 0}}%;"></span>
+    <table class="hw-distribution-details">
+      <tr>
+        <td><span class="hw-bubble hw-bubble-verygood"></span> Very good</td>
+        <td>{{Math.floor(ratings_distribution.5.percentage) || 0}}% ({{ratings_distribution.5.count || 0}})</td>
+      </tr>
+      <tr>
+        <td><span class="hw-bubble hw-bubble-good"></span> Good</td>
+        <td>{{Math.floor(ratings_distribution.4.percentage) || 0}}% ({{ratings_distribution.4.count || 0}})</td>
+      </tr>
+      <tr>
+        <td><span class="hw-bubble hw-bubble-average"></span> Average</td>
+        <td>{{Math.floor(ratings_distribution.3.percentage) || 0}}% ({{ratings_distribution.3.count || 0}})</td>
+      </tr>
+      <tr>
+        <td><span class="hw-bubble hw-bubble-bad"></span> Bad</td>
+        <td>{{Math.floor(ratings_distribution.2.percentage) || 0}}% ({{ratings_distribution.2.count || 0}})</td>
+      </tr>
+      <tr>
+        <td><span class="hw-bubble hw-bubble-senseless"></span> Senseless</td>
+        <td>{{Math.floor(ratings_distribution.1.percentage) || 0}}% ({{ratings_distribution.1.count || 0}})</td>
+      </tr>
+    </table>
+  </div>
+  <div class="hw-stats-list">
+    <table class="hw-stats-list-table">
+      {{#ratings}}
+      <tr>
+        <td>{{rating_label}}</td>
+        <td>{{user_name}}</td>
+        <td>{{timestamp_label}}</td>
+      </tr>
+      {{/ratings}}
+    </table>
+  </div>
+  {{else}}
+    <p><em>No rating statistics.</em></p>
+  {{/if}}
+</div>
+<!-- /Rating statistics -->

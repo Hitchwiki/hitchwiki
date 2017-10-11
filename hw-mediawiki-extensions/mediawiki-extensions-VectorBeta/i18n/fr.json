@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Gomoko",
+			"Maxim21",
+			"Scoopfinder",
+			"Ltrlg"
+		]
+	},
+	"vector-beta-feature-typography-message": "Actualisation de la typographie",
+	"vectorbeta-desc": "Actualisation de la typographie de l’habillage Vector en utilisant les fonctionnalités bêta",
+	"vector-beta-feature-typography-description": "Mettre à jour la typographie de l’habillage Vector en améliorant la lisibilité, l’accessibilité et la cohérence.",
+	"vector-beta-feature-compact-personal-bar-message": "Barre personnelle compacte",
+	"vector-beta-feature-compact-personal-bar-description": "Nettoyer et organiser les accès aux listes de suivi, notifications et pages de discussion. Une entête simplifiée avec un accès aux outils quand vous en avez besoin.",
+	"vector-beta-feature-fixedheader-message": "Entête fixe",
+	"vector-beta-feature-fixedheader-description": "Fixe l’entête de l’habillage Vecteur à un entête fixe.",
+	"vector-beta-feature-form-refresh-message": "Rafraîchissement et standardisation de l’interface",
+	"vector-beta-feature-form-refresh-description": "Utiliser une apparence améliorée pour les contrôles de base sur ce site. Les contrôles seront couverts progressivement. En activant cela, vous pouvez aider en donnant votre avis sur le nouvel aspect et aussi identifier les endroits où les choses ne semblent pas correctes.",
+	"vector-beta-compact-personal-bar-privacy": "Confidentialité"
+}

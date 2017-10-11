@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16",
+			"Nemo bis",
+			"Baffo"
+		]
+	},
+	"vector-beta-feature-typography-message": "Aggiornamenti tipografici",
+	"vectorbeta-desc": "Aggiornamenti tipografici del tema Vector con funzionalità sperimentali",
+	"vector-beta-feature-typography-description": "Aggiornamenti tipografici del tema Vector per migliorare la leggibilità, l'accessibilità e la consistenza.",
+	"vector-beta-feature-compact-personal-bar-message": "Compatta barra personale",
+	"vector-beta-feature-compact-personal-bar-description": "Pulisci ed organizza l'accesso agli osservati speciali, alle notifiche e alla pagina di discussione. Un'intestazione del sito semplificata con accesso agli strumenti quando ne hai bisogno.",
+	"vector-beta-feature-fixedheader-message": "Intestazione fissa",
+	"vector-beta-feature-fixedheader-description": "Trasforma l'intestazione nel tema predefinito Vector in un'intestazione fissa.",
+	"vector-beta-feature-form-refresh-message": "Standardizzazione e aggiornamento interfaccia",
+	"vector-beta-feature-form-refresh-description": "Utilizzare un aspetto aggiornato per controlli di base sul sito. I controlli saranno coperti gradualmente. Abilitando questa si può contribuire a dare un feedback sul nuovo look, oltre a identificare i luoghi dove le cose non sono ricercate del tutto nel modo giusto.",
+	"vector-beta-compact-personal-bar-privacy": "Privacy"
+}

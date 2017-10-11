@@ -1,0 +1,178 @@
+@import "mediawiki.mixins";
+
+@fadeDuration: .2s;
+@fadeDelay: .1s;
+
+.background-icon(@name) {
+	.background-image-svg("images/@{name}.svg", 'images/@{name}.png');
+
+	&:hover {
+		.background-image-svg('images/@{name}Hover.svg', 'images/@{name}Hover.png');
+	}
+}
+
+#p-personal {
+	ul {
+		// FIXME: overrides for Vector styles
+		padding: 0;
+	}
+
+	li {
+		// FIXME: overrides for Vector styles
+		margin-top: 0;
+	}
+
+	#pt-flyout {
+		line-height: 1.125em;
+		margin-top: .3em;
+		min-width: 200px;
+
+		// Set correct alignment in Firefox in RTL wikis.
+		// This shouldn't be needed, but Firefox has a bug with this.
+		// See https://bugzilla.wikimedia.org/show_bug.cgi?id=65476
+		text-align: left;
+	}
+
+	#pt-flyout > div {
+		padding: 0 .2em;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		background: right .5em top .6em no-repeat;
+		background-size: auto 10px;
+		.background-image-svg("images/carat.svg", "images/carat.png");
+
+		.transition(background-color @fadeDuration @fadeDelay, border-color @fadeDuration @fadeDelay;);
+
+		&:hover {
+			border-color: #aaa;
+			background-color: #fff;
+		}
+
+		ul {
+			// can't use display: none because it's not animatable
+			max-height: 0;
+			opacity: 0;
+			overflow: hidden;
+
+			.transition(max-height 0s @fadeDelay, opacity @fadeDuration @fadeDelay;);
+		}
+
+		&:hover ul {
+			max-height: 9999px;
+			opacity: 1;
+		}
+
+		a {
+			display: block;
+			padding: .5em 2.1em;
+			border-radius: 2px;
+			color: #000;
+			text-decoration: none;
+			background-size: 24px 24px;
+			background-repeat: no-repeat;
+		}
+
+		li {
+			// FIXME: overrides for Vector styles
+			float: none;
+			font-size: 1em;
+			margin: 0;
+			padding: 0 !important;
+			background: none;
+
+			&.group-start {
+				border-top: 1px solid #ededed;
+			}
+
+			a {
+				margin: .2em 0;
+				background-position: left;
+
+				span {
+					display: inline-block;
+					float: right;
+					width: 1.6em;
+					padding: .3em 0;
+					margin: -.3em -1.6em 0 0;
+					text-align: center;
+					font-weight: bold;
+					color: #aaa;
+					border-radius: 3px;
+				}
+
+				&:hover {
+					background-color: #4c85fb;
+					color: #fff;
+
+					span {
+						background: #4477e1;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+}
+
+#p-personal > div > ul > li {
+	vertical-align: top;
+	display: inline-block;
+	float: none;
+	line-height: 32px; /* same as the images, important for ULS */
+}
+
+#pt-watchlist a, #pt-mytalk a {
+	// FIXME: overrides for yellow bar
+	background-color: transparent !important;
+	padding: 0 !important;
+
+	display: block;
+	text-indent: -9999px;
+	overflow: hidden;
+	width: 32px;
+	height: 32px;
+	background-size: 32px 32px;
+}
+
+#pt-notifications {
+	// FIXME: overrides for weird echo badge styling
+	margin: 0 .8em 0 1.6em !important;
+}
+
+#pt-watchlist a {
+	.background-image-svg("images/watchlist.svg", "images/watchlist.png");
+}
+
+#pt-mytalk a {
+	.background-image-svg("images/talk.svg", "images/talk.png");
+}
+
+#pt-flyout div > a {
+	background-position: left;
+	.background-image-svg("images/user.svg", "images/user.png");
+}
+
+#pt-mycontris a {
+	.background-icon("contributions");
+}
+
+#pt-notifications-flyout a {
+	.background-icon("notifications");
+}
+
+#pt-newmessages-flyout a,
+#pt-mytalk-flyout a {
+	.background-icon("talk");
+}
+
+#pt-watchlist-flyout a {
+	.background-icon("watchlist");
+}
+
+#pt-preferences a {
+	.background-icon("preferences");
+}
+
+#pt-betafeatures a {
+	.background-icon("beta");
+}

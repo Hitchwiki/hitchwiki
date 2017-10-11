@@ -1,0 +1,9 @@
+# Composer
+composer.lock
+composer.phar
+
+# Libs
+/modules/vendor/
+
+# Mac crap
+.DS_Store

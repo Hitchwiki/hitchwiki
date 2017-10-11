@@ -1,0 +1,28 @@
+{
+  "name": "HWRatings",
+  "type": "mediawiki-extension",
+  "description": "Hitchwiki.org extension for ratings.",
+  "keywords": [
+    "Hitchwiki",
+    "Hitchhiking",
+    "Map",
+    "MediaWiki",
+    "SMW",
+    "Semantic MediaWiki"
+  ],
+  "homepage": "https://github.com/Hitchwiki/HWRatings-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hitchwiki",
+      "homepage": "http://hitchwiki.org"
+    }
+  ],
+  "support": {
+    "irc": "irc://irc.freenode.net/hitchhiking"
+  },
+  "scripts": {
+    "post-update-cmd": "bower update --config.interactive=false --allow-root",
+    "post-install-cmd": "bower install --config.interactive=false --allow-root"
+  }
+}

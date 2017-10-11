@@ -1,0 +1,75 @@
+.infobox {
+  width: 25em;
+  text-align: left;
+  font-size: 85%;
+  border: 1px solid #aaa;
+  border-radius: @hw-border-radius;
+  border-collapse: separate;
+  float: right;
+  margin: 0 0 20px 20px;
+  tbody {
+    background: #fff;
+  }
+  .fa {
+    margin-right: 5px;
+  }
+  .infobox-h1-secondary {
+    font-weight: normal;
+    &, a {
+      color: #888;
+    }
+    a:hover,
+    a:active {
+      text-decoration: none;
+      color: lighten(#888, 10%);
+      cursor: pointer;
+    }
+  }
+  .mw-collapsible-toggle {
+    .hwbutton();
+    .hwbutton-secondary();
+    .hwbutton-smaller();
+    background: #f7f7f7;
+    a {
+      // No text, we'll attach icon later here
+      font-size: 0;
+      line-height: 0;
+      color: transparent;
+      text-indent: -9999px;
+      overflow: hidden;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+      background: lighten(#f7f7f7, 2%);
+      //color: lighten(#555, 5%);
+    }
+    &:hover:before,
+    &:active:before,
+    &:focus:before {
+      color: lighten(#555, 5%);
+    }
+    &:before {
+      .fa-icon();
+      content: @fa-var-minus-square-o;
+    }
+    &.mw-collapsible-toggle-collapsed:before {
+      content: @fa-var-plus-square-o;
+    }
+  }
+  .mw-collapsible-bracket {
+    display: none;
+  }
+
+  .infobox-h1 {
+    background: #eee;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: normal;
+    .thumbborder {
+      border: 0;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+  }
+}

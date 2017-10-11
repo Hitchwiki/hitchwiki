@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"vector-beta-feature-typography-message": "Typography refresh",
+	"vectorbeta-desc": "Typography refresh of the Vector skin using BetaFeatures",
+	"vector-beta-feature-typography-description": "Updates typography of the Vector skin to improve readability, accessibility and consistency.",
+	"vector-beta-feature-compact-personal-bar-message": "Compact personal bar",
+	"vector-beta-feature-compact-personal-bar-description": "Clean and organized access to Watchlist, Notifications, and Talk page. A simplified site header with access to tools when you need them.",
+	"vector-beta-feature-fixedheader-message": "Fixed header",
+	"vector-beta-feature-fixedheader-description": "Turns the header on the default Vector skin into a fixed header.",
+	"vector-beta-feature-form-refresh-message": "Interface refresh and standardization",
+	"vector-beta-feature-form-refresh-description": "Use an updated look and feel for basic controls on the site. Controls will be covered gradually. By enabling this you can help give feedback on the new look as well as identify places where things aren't looking quite right.",
+	"vector-beta-compact-personal-bar-privacy": "Privacy"
+}

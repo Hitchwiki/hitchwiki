@@ -18,7 +18,6 @@ import_pages.sh | import Hitchwiki pages related to Semantic MediaWiki (forms, t
 install_parsoid.sh | install Parsoid NodeJS service used by VisualEditor
 migrate.sh | export old Hitchwiki SQL dumps and images; bring it up to date with the new Semantic MW-based setup
 permissions.sh | set correct file permissions
-pull_hw_extensions.sh | pull custom MediaWiki extensions and update their assets
 run_mw_jobs.sh | process MediaWiki job queue
 server_install.sh | install script to be run on the server or upon first boot by Vagrant
 update.sh | update MediaWiki, its database, extensions and assets
@@ -33,7 +32,6 @@ vagrant/export_pages.sh | tell Vagrant to  run _export_pages.sh_ inside the virt
 vagrant/import_pages.sh | tell Vagrant to run  _import_pages.sh_ inside the virtual machine
 vagrant/migrate.sh | tell vagrant to run _migrate.sh_ inside the virtual machine
 vagrant/permissions.sh | tell Vagrant to run _permissions.sh_ inside the virtual machine
-vagrant/pull_hw_extensions.sh | tell Vagrant to run _pull_hw_extensions.sh_ inside the virtual machine
 vagrant/update.sh | tell Vagrant to run _update.sh_ inside the virtual machine
 
 Install/reinstall scripts for the Vagrant box:

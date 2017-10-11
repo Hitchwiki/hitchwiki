@@ -1,0 +1,70 @@
+/*
+ * Langauges box at frontpage
+ */
+.hw-languages {
+  display: block;
+  float: right;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid @hw-orange-border;
+  background: #eee;
+  width: 200px;
+}
+.hw-languages-major,
+.hw-languages-minor {
+  display: block;
+  list-style: none;
+  overflow: hidden;
+  clear: both;
+  margin: 0;
+  padding: 0;
+  li {
+    padding: 0;
+    margin: 0;
+  }
+}
+.hw-languages-major {
+  li {
+    float: left;
+    width: 50%;
+    text-align: center;
+    a {
+      display: block;
+      padding: 5px;
+      font-size: 15px;
+      line-height: 17px;
+      color: @hw-orange-text;
+      text-decoration: none;
+    }
+    .hw-languages-articles {
+      display: block;
+      clear: both;
+      font-size: 10px;
+      line-height: 14px;
+      color: #888;
+    }
+  }
+}
+.hw-languages-minor {
+  li {
+    padding: 5px 0;
+    border-bottom: @hw-orange-border;
+    a {
+      color: @hw-orange-text;
+      text-decoration: none;
+    }
+    .hw-languages-articles {
+      display: block;
+      clear: both;
+      font-size: 10px;
+      line-height: 14px;
+      color: #888;
+      font-size: 15px;
+      line-height: 17px;
+    }
+  }
+}
+
+.hw-languages-label-minor {
+
+}

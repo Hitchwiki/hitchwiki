@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"Shirayuki",
+			"Amire80"
+		]
+	},
+	"vector-beta-feature-typography-message": "Name shown in user preferences for Vector typography beta feature experiment.",
+	"vectorbeta-desc": "{{desc|name=Vector Beta|url=https://www.mediawiki.org/wiki/Extension:VectorBeta}}",
+	"vector-beta-feature-typography-description": "Brief explanation of Vector typography beta feature experiment which updates/refreshes Vectors existing typography for first time since its launch.",
+	"vector-beta-feature-compact-personal-bar-message": "Name shown in user preferences for Compact personal bar beta feature experiment.",
+	"vector-beta-feature-compact-personal-bar-description": "Brief explanation of Compact personal bar beta feature experiment.",
+	"vector-beta-feature-fixedheader-message": "Name shown in user preferences for Vector header beta feature experiment.",
+	"vector-beta-feature-fixedheader-description": "Brief explanation of Vector header beta feature experiment which makes the header fixed.",
+	"vector-beta-feature-form-refresh-message": "Name shown in user preferences for Vector form refresh beta feature experiment.",
+	"vector-beta-feature-form-refresh-description": "Brief explanation of Vector form refresh beta feature experiment which makes forms consistent. \"Controls\" are user interface elements, such as buttons and checkboxes.",
+	"vector-beta-compact-personal-bar-privacy": "Short label for privacy policy.\n{{Identical|Privacy}}"
+}

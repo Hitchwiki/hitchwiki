@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Asaifm",
+			"زكريا",
+			"محمد أحمد عبد الفتاح"
+		]
+	},
+	"vector-beta-feature-typography-message": "تحديث الطباعة",
+	"vector-beta-feature-typography-description": "يعمل الإمتداد على تحديث وتنقيح أسلوب الطباعة الخاص بواجهة فكتور لتحسين المقروئية (سهولة القراءة) والموصولية (إمكانية الوصول لأي معلومة) والحفاظ على إتساق الخطوط.",
+	"vector-beta-feature-compact-personal-bar-message": "الشريط الشخصي المنسدل",
+	"vector-beta-feature-compact-personal-bar-description": "قائمة مسندلة لوصلات المستخدم العلوية، من قائمة المراقبة والإشعارات وغيرها.",
+	"vector-beta-feature-fixedheader-message": "ترويسة ثابتة",
+	"vector-beta-feature-fixedheader-description": "تثبيت ترويسة مظهر فكتر.",
+	"vector-beta-compact-personal-bar-privacy": "الخصوصية"
+}

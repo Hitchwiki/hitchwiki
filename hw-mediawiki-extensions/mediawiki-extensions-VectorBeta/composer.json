@@ -1,0 +1,17 @@
+{
+  "name": "HWVectorBeta",
+  "type": "mediawiki-extension",
+  "description": "Hitchwiki.org fork of original unmaintained VectorBeta extension.",
+  "homepage": "https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Hitchwiki",
+      "homepage": "http://hitchwiki.org"
+    }
+  ],
+  "support": {
+    "irc": "irc://irc.freenode.net/hitchhiking",
+    "source": "https://github.com/Hitchwiki/mediawiki-extensions-VectorBeta"
+  }
+}

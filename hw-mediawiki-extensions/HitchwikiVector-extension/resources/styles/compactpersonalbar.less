@@ -1,0 +1,30 @@
+/*
+ * VectorBeta Compact Personal Bar
+ * (that dropdown menu for logged in users)
+ */
+#p-personal {
+  #pt-flyout {
+    > div {
+      border-color: @hw-orange-border;
+      border-radius: @hw-border-radius;
+      font-size: 15px;
+      &:hover {
+        border-radius: @hw-border-radius;
+        border-color: @hw-orange-border;
+        background-color: #fff;
+      }
+      li {
+        a {
+          &:hover {
+            background-color: @hw-orange;
+            color: @hw-orange-text;
+            span {
+              background: @hw-orange;
+              color: @hw-orange-text;
+            }
+          }
+        }
+      }
+    }
+  }
+}
