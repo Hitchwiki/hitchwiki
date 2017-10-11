@@ -96,7 +96,14 @@ Pass | root
 Host | localhost
 
 ##### From desktop
-Only via SSH Forwarding.
+Only via SSH Forwarding. You need to set a password for `ubuntu` user before you can SSH into the box. (Info [via](https://stackoverflow.com/a/41337943/1984644))
+
+Do:
+```bash
+vagrant ssh
+sudo passwd ubuntu
+(type ubuntu twice)
+```
 
 Setting | Value
 ------------ | -------------
@@ -104,8 +111,8 @@ User | root
 Pass | root
 Host | localhost
 SSH Host | 192.168.33.10
-SSH User | vagrant
-SSH Password | vagrant
+SSH User | ubuntu
+SSH Password | ubuntu
 
 #### Clean Vagrant box
 If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
