@@ -393,7 +393,15 @@ setup_mediawiki()
 
   print_divider
 
-  echo "Setup database for several extensions (SemanticMediaWiki, AntiSpoof etc)..."
+  # Import interwiki table
+  # https://www.mediawiki.org/wiki/Extension:Interwiki
+  echo "Import interwiki table..."
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/import_interwiki.sh"
+
+  print_divider
+
+  echo "Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)..."
   # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
   # basically SMW extensions are not included in MediaWiki before this
   # file exists, because it would cause errors when running
@@ -421,14 +429,6 @@ setup_mediawiki()
   echo "Import Semantic templates and other MediaWiki special pages..."
   cd "$ROOTDIR"
   bash "$SCRIPTDIR/import_pages.sh"
-
-  print_divider
-
-  # Import interwiki table
-  # https://www.mediawiki.org/wiki/Extension:Interwiki
-  echo "Import interwiki table..."
-  cd "$ROOTDIR"
-  bash "$SCRIPTDIR/import_interwiki.sh"
 
   print_divider
 }
