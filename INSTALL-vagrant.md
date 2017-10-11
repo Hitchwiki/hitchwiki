@@ -3,7 +3,7 @@
 ### Prerequisites
 * A GNU/Linux or OS X machine. Let us know if this works with Cygwin.
 * Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
-* Install [Vagrant](https://www.vagrantup.com/) ([docs](https://docs.vagrantup.com/v2/installation/))
+* Install [Vagrant](https://www.vagrantup.com/) v2 ([docs](https://docs.vagrantup.com/v2/installation/))
 * Make sure you have [`git`](http://git-scm.com/) installed on your system. (`git --version`)
 
 ### Install
