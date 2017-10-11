@@ -8,9 +8,6 @@ private_network_ip: "192.168.33.10"
 # If you modify this, remember to change `domain` value from `settings.ini`
 hostname: "hitchwiki.test"
 
-# Install Parsoid and VisualEditor (recommended)
-install_visualeditor: true
-
 # Setup server using self signed SSL certificate
 #
 # When `true`: remember to set `protocol` to `https` from `configs/settings.ini`

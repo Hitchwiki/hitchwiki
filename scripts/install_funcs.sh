@@ -297,20 +297,16 @@ install_mediawiki()
 # https://www.mediawiki.org/wiki/Extension:VisualEditor
 install_mw_visual_editor()
 {
-  if [[ $* == *--visualeditor* ]]; then # optional command line flag that includes VisualEditor/Parsoid installation
-    echo "Install VisualEditor extension..."
-    cd "$WIKIDIR/extensions"
-    git clone \
-    --branch $HW__general__mw_branch \
-    --single-branch \
-    --depth=1 \
-    --recurse-submodules \
-    --quiet \
-    https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git \
-    VisualEditor;
-  else
-    echo "Skipped Installing VisualEditor extension. To install it, use --visualeditor attribute."
-  fi
+  echo "Install VisualEditor extension..."
+  cd "$WIKIDIR/extensions"
+  git clone \
+  --branch $HW__general__mw_branch \
+  --single-branch \
+  --depth=1 \
+  --recurse-submodules \
+  --quiet \
+  https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git \
+  VisualEditor;
 
   print_divider
 }
@@ -438,15 +434,9 @@ setup_mediawiki()
 # https://www.mediawiki.org/wiki/Parsoid/Setup
 install_parsoid()
 {
-  if [[ $* == *--visualeditor* ]]; then # optional command line flag that includes VisualEditor/Parsoid installation
-    echo
-    echo "Call Parsoid install script..."
-    cd "$ROOTDIR"
-    bash "$SCRIPTDIR/install_parsoid.sh"
-  else
-    echo
-    echo "Skipped calling Parsoid install script."
-  fi
+  echo "In Parsoid install script..."
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/install_parsoid.sh"
 
   print_divider
 }

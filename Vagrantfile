@@ -27,7 +27,6 @@ settings = YAML.load_file(settings_file)
 # Collect install arguments for the server install script
 # You can turn these flags on/off from `vagrant.yaml`
 install_args = Array.new
-install_args.push("--visualeditor") if settings["install_visualeditor"]
 install_args.push("--ssl") if settings["setup_ssl"]
 
 Vagrant.configure("2") do |config|
