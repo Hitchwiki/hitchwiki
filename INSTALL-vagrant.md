@@ -78,14 +78,14 @@ This is done once at install, but needs to be done each time somebody changes co
 
 ## More info on vagrant
 
-We're using [Scotchbox](http://box.scotch.io/).
+Read [basics about Vagrant](https://www.vagrantup.com/intro/)
 
 #### SSH into Vagrant
 ```bash
 vagrant ssh
 ```
 
-You're probably most interested in folder `/var/www/`
+This repository's root is visible via `/var/www/` inside the Vagrant machine.
 
 #### Database access
 ##### From the app
@@ -108,9 +108,9 @@ SSH User | vagrant
 SSH Password | vagrant
 
 #### Clean Vagrant box
-If for some reason you want to have clean ScotchBox, database and MediaWiki installed, run:
+If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
 ```bash
-vagrant destroy && vagrant up
+vagrant destroy -f && ./scripts/clean.sh && vagrant up
 ```
 
 ## Setting up production environment
