@@ -124,6 +124,9 @@ install_apache()
   echo "Restart Apache"
   sudo service apache2 restart
 
+  # Clean out folder created by Apache installer
+  sudo rm -fr "$ROOTDIR/html"
+
   print_divider
 }
 
