@@ -350,7 +350,7 @@
     "HeaderTabs": "@dev",
     "AddBodyClass": "@dev",
     "RevisionSlider": "@dev",
-    "mediawiki/semantic-media-wiki": "2.5.3",
+    "mediawiki/semantic-media-wiki": "2.5.4",
     "mediawiki/page-forms": "4.1",
     "mediawiki/maps": "4.0.3",
     "mediawiki/semantic-watchlist": "1.1.0",
