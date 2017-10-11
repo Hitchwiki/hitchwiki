@@ -20,8 +20,6 @@ source "scripts/_settings.sh"
 echo
 echo "Update Hitchwiki dependencies using `composer.local.json`..."
 cd "$WIKIDIR"
-rm "$WIKIDIR/composer.local.json"
-cp "$CONFDIR/composer.local.json" .
 composer update --no-progress --no-interaction
 echo
 echo "-------------------------------------------------------------------------"
