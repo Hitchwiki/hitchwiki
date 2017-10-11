@@ -171,16 +171,7 @@ $wgGroupPermissions['sysop']['interwiki'] = true;
 #$wgGroupPermissions['developer']['interwiki'] = true;
 // Interwiki tables are shared between language versions
 // https://www.mediawiki.org/wiki/Extension:Interwiki#Global_interwikis
-$wgSharedTables[] = "interwiki";
-
-/**
- * Recent changes cleanup
- * https://www.mediawiki.org/wiki/Extension:Recent_Changes_Cleanup
- */
-// require_once "$IP/extensions/RecentChangesCleanup/RecentChangesCleanup.php";
-// $wgAvailableRights[] = 'recentchangescleanup';
-// $wgGroupPermissions['sysop']['recentchangescleanup'] = true;
-// $wgGroupPermissions['recentchangescleanup']['recentchangescleanup'] = true;
+$wgSharedTables[] = 'interwiki';
 
 /**
  * CheckUser

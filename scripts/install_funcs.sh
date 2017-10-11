@@ -281,7 +281,6 @@ install_mediawiki()
   echo "Download basic MediaWiki extensions using Composer..."
   cd "$WIKIDIR"
   sudo ln -s "$CONFDIR/composer.local.json" composer.local.json
-  # composer update --no-dev --no-progress --no-interaction
   sudo composer update --no-dev --no-progress --no-interaction
 
   print_divider
@@ -292,7 +291,7 @@ install_mediawiki()
   cd "$WIKIDIR"
   echo "Run post-install-cmd for HWMap extension..."
   composer run-script post-install-cmd -d ./extensions/HWMap
-  solve_mw_maps_extension_bug
+  # solve_mw_maps_extension_bug
   echo
   echo "Run post-install-cmd for HitchwikiVector extension..."
   composer run-script post-install-cmd -d ./extensions/HitchwikiVector
@@ -302,6 +301,26 @@ install_mediawiki()
   echo
   echo "Run post-install-cmd for HWLocationInput extension..."
   composer run-script post-install-cmd -d ./extensions/HWLocationInput
+
+  # Setup MediaWiki
+  echo "Running Mediawiki install script..."
+  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
+  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
+  #
+  cd "$WIKIDIR"
+  # Runs Mediawiki install script:
+  # - sets up wiki in one language ("en")
+  # - creates one admin user "hitchwiki" with password "authobahn"
+  php maintenance/install.php --conf "$MWCONFFILE" \
+  --dbuser $HW__db__username \
+  --dbpass $HW__db__password \
+  --dbname $HW__db__database \
+  --dbtype mysql \
+  --pass autobahn \
+  --scriptpath /$WIKIFOLDER \
+  --lang en \
+  "$HW__general__sitename" \
+  hitchwiki
 
   print_divider
 }
@@ -347,40 +366,6 @@ create_db()
   mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
   mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
   #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
-
-  print_divider
-}
-
-# Install APC
-# TODO: https://www.digitalocean.com/community/questions/how-to-install-alternative-php-cache-apc-on-ubuntu-14-04
-#echo
-#echo "Install APC..."
-#sudo apt-get -y install php-apc
-#echo
-#echo "Restart Apache..."
-#sudo /etc/init.d/apache2 restart
-
-pre_setup_mediawiki()
-{
-  # Setup MediaWiki
-  echo "Running Mediawiki setup script..."
-  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-  cd "$WIKIDIR"
-  # Runs Mediawiki install script:
-  # - sets up wiki in one language ("en")
-  # - creates one admin user "hitchwiki" with password "authobahn"
-  php maintenance/install.php --conf "$MWCONFFILE" \
-  --dbuser $HW__db__username \
-  --dbpass $HW__db__password \
-  --dbname $HW__db__database \
-  --dbtype mysql \
-  --pass autobahn \
-  --scriptpath /$WIKIFOLDER \
-  --lang en \
-  "$HW__general__sitename" \
-  hitchwiki
-
-  php maintenance/update.php --quick --conf "$MWCONFFILE"
 
   print_divider
 }
