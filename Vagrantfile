@@ -34,16 +34,16 @@ Vagrant.configure("2") do |config|
 
   config.hostmanager.enabled = settings["hostmanager_enabled"]
   config.hostmanager.manage_host = true
+  config.hostmanager.manage_guest = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
-  config.vm.box = "ubuntu/xenial64"
-  config.vm.network "private_network", ip: settings["private_network_ip"]
-  config.vm.hostname = settings["hostname"]
-
-  # Install Hitchwiki with all of its dependencies
-  config.vm.provision :shell, :path => "scripts/server_install.sh", :args => install_args
-
-  config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
-
+  config.vm.define "hitchwiki" do |node|
+    node.vm.box = "ubuntu/xenial64"
+    node.vm.provision :shell, :path => "scripts/server_install.sh", :args => install_args
+    node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
+    node.vm.network :private_network, ip: settings["private_network_ip"]
+    node.vm.hostname = settings["hostname"]
+    # node.hostmanager.aliases = %w(hitchwiki)
+  end
 end
