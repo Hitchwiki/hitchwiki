@@ -1,0 +1,289 @@
+/*
+ * Hitchhiking spots
+ */
+@spot-minimum-height: 70px;
+@spot-spacing: 5px;
+
+// Big titles dividing spots into "cardinal directions" suchs as "North"
+.mw-body h3.hw-cardinal-direction {
+  font-weight: normal;
+  display: inline-block;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  &, a {
+    font-size: 24px;
+    line-height: 25px;
+    color: #333;
+    text-decoration: none;
+  }
+  a:hover,
+  a:active {
+    text-decoration: none;
+    color: lighten(#333, 10%);
+  }
+}
+
+.hw-city-page {
+
+  // Spots list main title
+  h2#hw-spots {
+    &, a {
+      color: #333;
+    }
+  }
+
+  // Start spot flex grid
+  // Put only flexbox/grid related styles here, not the actual color styles etc
+  .hw-spot {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding: @spot-spacing;
+    margin-bottom: 15px;
+    max-width: 800px;
+  }
+  .hw-spot-main {
+    min-height: @spot-minimum-height;
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+  }
+  .hw-spot-meta {
+    margin: 0 @spot-spacing;
+    padding: @spot-spacing;
+    flex: 3 1 30%;
+    order: 2;
+    max-width: 30%;
+  }
+  .hw-spot-content {
+    margin: 0 @spot-spacing;
+    padding: @spot-spacing;
+    flex: 1 6 70%;
+    order: 3;
+    max-width: 70%;
+  }
+  .hw-spot-comments,
+  .hw-spot-statistics {
+    display: block;
+    margin: @spot-spacing;
+    padding: @spot-spacing;
+  }
+  .hw-spot-description {
+    flex-grow: 1;
+    p {
+      word-wrap: break-word;
+    }
+  }
+
+  /* Too narrow to support all columns */
+  @media all and (max-width: 640px) {
+    .hw-spot {
+      flex-direction: column;
+    }
+    .hw-spot > .hw-spot-meta,
+    .hw-spot > .hw-spot-content {
+    /* Return them to document order */
+      order: 0;
+    }
+  }
+  // End spot flex grid
+
+  // Wrapper for the spot
+  .hw-spot {
+    position: relative;
+    clear: both;
+    border: 1px solid @hw-grey-medium;
+
+    // Spots have a left-border in different color depending on their average rating
+    border-left-width: 3px;
+    border-left-style: solid;
+    border-left-color: @hw-grey-medium;
+    &.hw-spot-rating-average-1 { border-left-color: @hw-color-senseless; }
+    &.hw-spot-rating-average-2 { border-left-color: @hw-color-bad; }
+    &.hw-spot-rating-average-3 { border-left-color: @hw-color-average; }
+    &.hw-spot-rating-average-4 { border-left-color: @hw-color-good; }
+    &.hw-spot-rating-average-5 { border-left-color: @hw-color-verygood; }
+
+    // Long descriptions are cut short
+    .hw-spot-description-long {
+      display: block;
+      max-height: 200px;
+      overflow: hidden;
+      position: relative;
+
+      // Add extra element with white-transparent gradient over the extra text
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        height: 30px;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0+0,0+100,1+100 */
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+      }
+    }
+
+    // When spots are "bad" or "senseless", this class is added to them.
+    // Hide most of the data inside spot element if this is active.
+    &.hw-spot-is-minimized {
+      .hw-spot-meta,
+      .hw-spot-content-header,
+      .hw-spot-description-empty {
+        display: none;
+      }
+      // Description text is smaller than usual
+      // Only first bits of the description is shown, the rest stays hidden
+      max-height: @spot-minimum-height;
+      overflow: hidden;
+      .hw-spot-content {
+        overflow: hidden;
+      }
+      // Text and "Hitchability" title are quite much more hidden on bad spots
+      .hw-spot-description,
+      .hw-spot-title {
+        opacity: 0.6;
+      }
+      .hw-spot-description {
+        font-size: 13px;
+        line-height: 15px;
+        overflow: hidden;
+        // Causes only first line of first <p> be visible:
+        /*
+        p {
+          display: none;
+          &:first-of-type {
+            display: inline;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+            overflow: hidden;
+          }
+        }
+        */
+      }
+
+      // Add extra element with white-transparent gradient over the bad place
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        height: 30px;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0+0,0+100,1+100 */
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+      }
+    }
+  }
+
+  // Styles when spot is highlighted on the list
+  .hw-spot-hover {
+    background-color: @hw-grey-light;
+  }
+
+  // Contains description etc basic info
+  /*
+  .hw-spot-content {
+  }
+  */
+
+  // Contains detailed statistics
+  .hw-spot-statistics {
+    border-top: 1px solid @hw-grey-light;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  // Header section of the spot, containing info about directions
+  .hw-spot-content-header {
+    &, a {
+      font-size: 16px;
+      color: @hw-grey-dark;
+    }
+    font-weight: normal;
+    a {
+      font-weight: bold;
+    }
+  }
+
+  // A text shown when no spot description
+  .hw-spot-description-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-style: italic;
+    &, a {
+      color: @hw-grey-medium;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Hitchability, waiting times etc
+  .hw-spot-meta {
+    border-right: 1px solid @hw-grey-light;
+    .hw-waiting-time,
+    .hw-spot-actions,
+    .hw-ratings {
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid @hw-grey-light;
+    }
+  }
+
+  // Some buttons fill the whole column
+  .hw-waiting-time-button,
+  .hw-spot-actions .hw-button {
+    width: 100%;
+    text-align: left;
+    clear: both;
+    margin: 1px 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    // Loading spinner in stats and comments buttons
+    .mw-spinner {
+      margin-left: 5px;
+      // Make animation smaller so it'll fit into buttons
+      height: 14px;
+      width: 14px;
+      min-width: 14px;
+      background-size: contain;
+    }
+  }
+
+  //!------ Detail list ------!//
+  .hw-spot-ratings,
+  .hw-spot-waiting-times {
+    max-width: 320px;
+    margin: 5px;
+
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+  }
+
+}
+
+//!------ Semantic MW form for initiating the spot edit form popup ------!//
+#hw-spot-edit-form-wrap {
+  display: none;
+}

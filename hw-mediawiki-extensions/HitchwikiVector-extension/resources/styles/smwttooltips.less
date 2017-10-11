@@ -1,0 +1,31 @@
+// SMW default tooltip icons are uggly
+// http://semantic-mediawiki.org/wiki/Help:Adding_tooltips
+
+// Icons made by Daniel Bruce http://www.danielbruce.se
+// from www.flaticon.com is licensed by CC BY 3.0
+// http://creativecommons.org/licenses/by/3.0/
+
+@import "mediawiki.mixins";
+
+// png files are 24px
+.smwtticon {
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  &.note {
+//    .background-size(12px, 12px);
+//    .background-image-svg('../images/smwtticon-note.svg', '../images/smwtticon-note.png');
+    background-size: 12px 12px;
+  }
+  &.info {
+//    .background-image-svg('../images/smwtticon-info.svg', '../images/smwtticon-info.png');
+    background-size: 12px 12px;
+//    .background-image(../images/smwtticon-info.png);
+//    .background-size(12px; 12px);
+  }
+  &.warning {
+//    .background-image-svg('../images/smwtticon-warning.svg', '../images/smwtticon-warning.png');
+    background-size: 12px 12px;
+//    .background-image(../images/smwtticon-warning.png);
+//    .background-size(12px; 12px);
+  }
+}

@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Tgr",
+			"Csega",
+			"Dorgan"
+		]
+	},
+	"vector-beta-feature-typography-message": "Tipográfiai vérfrissítés",
+	"vectorbeta-desc": "Béta funkcióként módosítja a Vector felület tipográfiáját",
+	"vector-beta-feature-typography-description": "Módosítja a Vector felület tipográfiáját, hogy szebb, könnyebben olvasható és egységesebb legyen.",
+	"vector-beta-feature-compact-personal-bar-message": "Összevont felhasználói fejléc",
+	"vector-beta-feature-compact-personal-bar-description": "Az eszköz használatával letisztult és rendszerezett formában férhetsz hozzá a lap tetején található figyelőlistádhoz, közreműködéseidhez és a vitalapodhoz.",
+	"vector-beta-compact-personal-bar-privacy": "Adatvédelem"
+}

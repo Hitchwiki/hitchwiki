@@ -1,0 +1,158 @@
+/*
+ * Sidebar
+ */
+div#mw-panel {
+  width: @sidebar-width;
+  background: #eee;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  color: #333;
+  a {
+    display: block;
+    &,
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+      color: #333;
+      text-decoration: none;
+    }
+  }
+  h3 {
+    display: none;
+  }
+  div.portal {
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    &.first div.body {
+      margin-left: 0;
+    }
+    div.body {
+      margin: 0;
+      ul {
+        margin: 0;
+        padding: 0;
+        li {
+          line-height: 1.125em;
+          margin: 0;
+          font-size: 0.68em;
+          word-wrap: break-word;
+          text-align: left;
+          padding: 0.2em 0 0.2em 0;
+          @media (min-width: 768px) {
+            padding: 0.4em 0.1em 0.6em 0.1em;
+            text-align: center;
+          }
+          a {
+            .transition(color 0.5s);
+            &:link,
+            &:visited {
+              color: #7a7a7a;
+            }
+            &:hover,
+            &:active {
+              color: lighten(#7a7a7a, 15%);
+            }
+            &:before {
+              .fa-icon();
+              padding: 0 10px 0 0;
+              @media (min-width: 768px) {
+                clear: both;
+                display: block;
+                font-size: 20px;
+                padding: 0 0 2px 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Sidebar link icons
+  #n-Home a:before {
+    content: @fa-var-thumbs-up;
+  }
+  #n-Map a:before {
+    content: @fa-var-compass;
+  }
+  #n-New-spot a:before {
+    content: @fa-var-map-marker;
+  }
+  #n-New-city a:before {
+    content: @fa-var-home;
+  }
+  #n-Add-photo a:before {
+    content: @fa-var-photo;
+  }
+  #n-recentchanges a:before {
+    content: @fa-var-clock-o;
+  }
+  #n-createaccount a:before {
+    content: @fa-var-arrow-circle-o-up;
+  }
+  #n-login a:before {
+    content: @fa-var-arrow-circle-o-right;
+    //content: @fa-var-sign-in;
+  }
+  #n-createaccount,
+  #n-login {
+    background: darken(#4E4E4E, 3%);
+    @media screen and (min-width: 768px) {
+      background: darken(#eee, 3%);
+    }
+  }
+
+}
+
+// Mobile
+.mw-navigation-enabled div#mw-panel div.portal div.body ul li a {
+  padding-left: 10px;
+}
+
+// Show navi items bold when on their pages
+.mw-special-HWMap #n-Map a,
+.page-Special_FormStart_City #n-New-city a,
+.page-Form_City #n-New-city a,
+.mw-special-UploadWizard #n-Add-photo a,
+.mw-special-Recentchanges #n-recentchanges a,
+.page-Contact #n-Contact-us a {
+  font-weight: bold;
+}
+
+// Hide content depending if user is logged in/out
+// The class is set from ext.HitchwikiVector.js
+body.hw-user-nonlogged {
+  #n-New-spot,
+  #n-New-city,
+  #n-Add-photo {
+    display: none;
+  }
+}
+body.hw-user-logged {
+  #n-login,
+  #n-createaccount {
+    display: none;
+  }
+}
+
+/*
+@media screen and (min-width: 982px) {
+  #mw-panel {
+    //...
+  }
+}
+*/
+@media screen and (min-width: 768px) {
+  div#footer,
+  #left-navigation,
+  div#content {
+    margin-left: @sidebar-width;
+  }
+}
+
+.mw-body {
+  border-color: @hw-orange-border;
+}

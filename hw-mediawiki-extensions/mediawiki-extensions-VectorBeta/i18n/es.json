@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fitoschido",
+			"Vivaelcelta",
+			"Macofe"
+		]
+	},
+	"vector-beta-feature-typography-message": "Actualización tipográfica",
+	"vectorbeta-desc": "Actualización tipográfica de la apariencia Vector usando caraterísticas experimentales (BetaFeatures)",
+	"vector-beta-feature-typography-description": "Actualiza la tipografía de la apariencia Vector para mejorar la lectura, la accesibilidad y la coherencia.",
+	"vector-beta-feature-compact-personal-bar-message": "Barra personal compacta",
+	"vector-beta-feature-compact-personal-bar-description": "Acceso prolijo y organizado a la lista de seguimiento, las notificaciones y la página de discusión. Un encabezado de sitio simplificado con acceso a herramientas cuando las necesitas.",
+	"vector-beta-feature-fixedheader-message": "Encabezado fijo",
+	"vector-beta-feature-fixedheader-description": "Convierte el encabezado en la apariencia predeterminada Vector a un encabezado fijo.",
+	"vector-beta-feature-form-refresh-message": "Actualización y normalización de la interfaz",
+	"vector-beta-compact-personal-bar-privacy": "Privacidad"
+}

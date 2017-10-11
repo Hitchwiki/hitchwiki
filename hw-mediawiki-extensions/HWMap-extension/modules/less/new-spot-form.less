@@ -1,0 +1,79 @@
+div.popupform-container {
+  border: 0;
+}
+
+/**
+ * Spot form
+ */
+.hw-spot-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  min-width: 550px;
+  max-width: 800px;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  .editCheckboxes {
+    padding-top: 10px;
+  }
+  .inputSpan {
+    clear: both;
+    display: block;
+  }
+}
+.hw-spot-form-column {
+
+  //display: block;
+  max-width: 50%;
+  margin: 0 10px;
+
+  // Grows to take space into columns (there are two of these, so `1|1`)
+  flex-grow: 1;
+  // This element contains `section`s, which in turn are stacket
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+.hw-spot-form-section {
+  width: 100%;
+}
+// Cardinal direction list
+.hw-spot-form-section-direction {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+  .checkboxesSpan {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+// Textarea
+.hw-spot-add-description {
+  font-size: 15px;
+  line-height: 20px;
+  min-height: 200px;
+}
+.hw-spot-add-cardinal {
+  display: block;
+  clear: both;
+}
+
+/**
+ * Form page outside the modal
+ */
+.hw-spot-add a {
+  .hwbutton();
+}
+
+/**
+ * Preview
+ */
+/*
+.hw-spot-preview {
+
+}
+*/

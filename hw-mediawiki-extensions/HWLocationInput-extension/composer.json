@@ -1,0 +1,43 @@
+{
+  "name": "HWLocationInput",
+  "type": "mediawiki-extension",
+  "description": "Adds Hitchwiki Location input type to Page Forms extension.",
+  "keywords": [
+    "Hitchwiki",
+    "Leaflet",
+    "map",
+    "MediaWiki",
+    "SMW",
+    "Semantic MediaWiki",
+    "Page Forms"
+  ],
+  "homepage": "https://github.com/Hitchwiki/HWLocationInput-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hitchwiki",
+      "homepage": "http://hitchwiki.org"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "composer/installers": "1.*,>=1.0.1",
+    "mediawiki/semantic-media-wiki": "~2.3",
+    "mediawiki/page-forms": ">=4.0"
+  },
+  "require-dev": {
+    "mediawiki/semantic-media-wiki": "@dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "HWLI\\": "src/"
+    }
+  },
+  "config": {
+    "process-timeout": 0
+  },
+  "scripts": {
+    "post-update-cmd": "bower update --config.interactive=false --allow-root",
+    "post-install-cmd": "bower install --config.interactive=false --allow-root"
+  }
+}

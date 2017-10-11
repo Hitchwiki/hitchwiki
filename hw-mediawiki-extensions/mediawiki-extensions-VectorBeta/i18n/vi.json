@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Minh Nguyen"
+		]
+	},
+	"vector-beta-feature-typography-message": "Làm mới phông chữ",
+	"vectorbeta-desc": "Làm mới các phông chữ trong giao diện Vectơ dùng hệ thống Tính năng beta",
+	"vector-beta-feature-typography-description": "Làm mới các phông chữ trong giao diện Vectơ để tăng tốc đọc hiểu, trợ năng, và tính nhất quán.",
+	"vector-beta-feature-compact-personal-bar-message": "Thu gọn thanh cá nhân",
+	"vector-beta-feature-compact-personal-bar-description": "Truy cập Danh sách theo dõi, các Thông báo, và trang Tin nhắn qua một giao diện sạch sẽ và hợp lý. Đơn giản hóa đầu đề của wiki mà vẫn hiển thị các công cụ khi nào cần.",
+	"vector-beta-feature-fixedheader-message": "Đầu đề cố định",
+	"vector-beta-feature-fixedheader-description": "Cố định đầu trang khi cuộn trang trong giao diện mặc định Vectơ.",
+	"vector-beta-feature-form-refresh-message": "Làm mới và tiêu chuẩn hóa giao diện",
+	"vector-beta-feature-form-refresh-description": "Sử dụng một giao diện mới hơn cho các điều khiển trên trang Web này. Các điều khiển sẽ được hỗ trợ từ từ. Sau khi bật lên tính này năng, bạn có thể tự động gửi phản hồi về giao diện mới. Bằng cách kích hoạt tính năng này, bạn có thể gửi phản hồi về giao diện mới và cho biết về những phần có vẻ không chính xác.",
+	"vector-beta-compact-personal-bar-privacy": "Riêng tư"
+}

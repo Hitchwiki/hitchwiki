@@ -1,0 +1,24 @@
+{
+  "name": "HWComments",
+  "type": "mediawiki-extension",
+  "description": "Hitchwiki.org extension for comments.",
+  "keywords": [
+    "Hitchwiki",
+    "Hitchhiking",
+    "Comments",
+    "MediaWiki",
+    "SMW",
+    "Semantic MediaWiki"
+  ],
+  "homepage": "https://github.com/Hitchwiki/HWComments-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hitchwiki",
+      "homepage": "http://hitchwiki.org"
+    }
+  ],
+  "support": {
+    "irc": "irc://irc.freenode.net/hitchhiking"
+  }
+}

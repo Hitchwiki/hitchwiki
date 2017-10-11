@@ -1,0 +1,9 @@
+{
+  "@metadata": {
+    "authors": [
+      "Mikael Korpela"
+    ]
+  },
+  "hwfl-desc": "Adds Hitchwiki Location input type to Page Forms extension.",
+  "hwfl-extensionname": "Hitchwiki Location input"
+}

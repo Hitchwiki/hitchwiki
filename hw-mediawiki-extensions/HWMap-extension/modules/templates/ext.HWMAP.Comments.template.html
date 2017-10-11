@@ -1,0 +1,32 @@
+<!-- Spot comments -->
+<div id="hw-spot-comments-{{id}}" class="hw-spot-comments" transition-in-out="slide"><!-- hw-hide-comment-->
+  {{#comments}}
+  <div class="hw-comment">
+    {{#if user_id == userId}}
+      <i onclick="mw.HWMaps.Comments.uiDeleteComment('{{comment_id}}', '{{@keypath}}')" class="fa fa-trash hw-comment-delete"></i>
+    {{/if}}
+    {{{commenttext}}}
+    <span class="hw-comment-meta">By {{user_name}}, {{timestamp_label}}</span>
+  </div>
+  {{/comments}}
+  {{#if userId}}
+    <textarea class="hw-comment-textarea"
+              disabled="{{_isAddingComment}}"
+              placeholder="Write a comment..."
+              value='{{_new_comment}}'></textarea>
+  {{else}}
+    <p><em>Please log in to add a comment</em></p>
+  {{/if}}
+  {{#if _new_comment.length}}
+    <button class="hw-button hw-button-big"
+            disabled="{{_isAddingComment}}"
+            onclick="mw.HWMaps.Comments.uiAddComment('{{_new_comment}}', '{{id}}', '{{@keypath}}')">
+      {{#if _isAddingComment}}
+        Wait...
+      {{else}}
+        Add comment
+      {{/if}}
+    </button>
+  {{/if}}
+</div>
+<!-- /Spot comments -->

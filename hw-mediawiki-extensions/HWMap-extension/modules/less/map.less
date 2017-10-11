@@ -1,0 +1,17 @@
+/**
+ * Generic styling for Hitchwiki Leaflet map
+ */
+#hwmap {
+  min-height: 300px;
+}
+
+// Spot icons at map
+.hw-spot-icon {
+  border-radius: 50%;
+  .transition('box-shadow' 50ms);
+  border: 2px solid transparent;
+  &.hw-highlight-spot {
+    border: 2px solid fade(@hw-rating-hover, 70%);
+    box-shadow: 0 0 15px @hw-rating-hover;
+  }
+}

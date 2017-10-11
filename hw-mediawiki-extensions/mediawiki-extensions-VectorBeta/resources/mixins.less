@@ -1,0 +1,10 @@
+@import "mediawiki.mixins";
+.icon( @icon ) {
+	.background-image-svg( ~"images/@{icon}.svg", ~"images/@{icon}.png" );
+}
+
+.box-sizing( @value ) {
+	-moz-box-sizing: @value;
+	-webkit-box-sizing: @value;
+	box-sizing: @value;
+}

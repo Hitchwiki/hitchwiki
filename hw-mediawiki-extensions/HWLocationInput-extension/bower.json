@@ -1,0 +1,11 @@
+{
+  "name": "hwlocationinput",
+  "homepage": "https://github.com/Hitchwiki/HWLocationInput-extension",
+  "authors": [
+    "Mikael Korpela <mikael@ihminen.org>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "leaflet": "~1.0.2"
+  }
+}

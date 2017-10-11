@@ -1,0 +1,31 @@
+<!-- WaitingTimes -->
+<div class="hw-waiting-time-widget">
+  {{#if waiting_time_count}}
+    Waiting time {{waiting_time_average || 0}} minutes<br/>
+    <small>({{waiting_time_count || 0}} experiences)</small>
+  {{else}}
+    No waiting times yet.
+  {{/if}}
+  <br/>
+  {{#if _isAddingWaitingTimeVisible}}
+    <div id="hw-add_waiting_time_{{id}}" class="hw-add-waiting-time">
+      <input value="{{_new_waiting_time_h}}" type="number" class="hw-waiting-time-input" min="0" max="24" step="1" /> hours
+      <input value="{{_new_waiting_time_m}}" type="number" class="hw-waiting-time-input" min="0" max="60" step="1" /> mins
+      <br/>
+      <button class="hw-button hw-button-small" onclick="mw.HWMaps.Waitingtimes.uiAddWaitingTime('{{_new_waiting_time_h}}', '{{_new_waiting_time_m}}', {{id}}, '{{@keypath}}')">
+        Add
+      </button>
+      <button class="hw-button hw-button-small" onclick="mw.HWMaps.Waitingtimes.uiToggleAddingWaitingTime('{{@keypath}}')">
+        Cancel
+      </button>
+    </div>
+  {{else}}
+    <button id="hw-waiting_time_button_{{id}}"
+            type="button"
+            onclick="mw.HWMaps.Waitingtimes.uiToggleAddingWaitingTime('{{@keypath}}')"
+            class="hw-waiting-time-button hw-button hw-button-small">
+      Add your experience
+    </button>
+  {{/if}}
+</div>
+<!-- /WaitingTimes -->
