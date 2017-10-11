@@ -36,12 +36,12 @@ services:
 
         - # This is the only required parameter,
           # the URL of you MediaWiki API endpoint.
-          uri: 'http://hitchwiki.dev/en/api.php'
+          uri: 'http://hitchwiki.test/en/api.php'
           # The "domain" is used for communication with Visual Editor
           # and RESTBase.  It defaults to the hostname portion of
           # the `uri` property below, but you can manually set it
           # to an arbitrary string.
-          domain: 'hitchwiki.dev'  # optional
+          domain: 'hitchwiki.test'  # optional
 
         - # Hitchwiki
           uri: 'http://hitchwiki.org/en/api.php'
