@@ -2,7 +2,7 @@
   "name": "hitchwiki",
   "description": "The Hitchhiker's Guide to Hitchhiking the World",
   "keywords": ["mediawiki", "wiki", "hitchhiking"],
-  "homepage": "http://hitchwiki.org/",
+  "homepage": "https://hitchwiki.org/",
   "type": "project",
   "authors": [
     {
@@ -23,7 +23,7 @@
         "version": "1.29.0",
         "type": "project",
         "dist": {
-          "url": "https://releases.wikimedia.org/mediawiki/1.28/mediawiki-1.29.0.tar.gz",
+          "url": "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-1.29.1.tar.gz",
           "type": "tar"
         }
       }
