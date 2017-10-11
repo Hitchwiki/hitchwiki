@@ -6,7 +6,7 @@ private_network_ip: "192.168.33.10"
 # Hostname to use for the development server
 #
 # If you modify this, remember to change `domain` value from `settings.ini`
-hostname: "hitchwiki.dev"
+hostname: "hitchwiki.test"
 
 # Install Parsoid and VisualEditor (recommended)
 install_visualeditor: true

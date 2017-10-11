@@ -1,4 +1,4 @@
-## Installing using vagrant 
+## Installing using vagrant
 
 ### Prerequisites
 * A GNU/Linux or OS X machine. Let us know if this works with Cygwin.
@@ -19,7 +19,7 @@ cp configs/vagrant-example.yaml configs/vagrant.yaml
 ```
 3. Some of the settings you can modify:
  - If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.ini`)
- - Domain (`hitchwiki.dev` by default) or develop using IP (`192.168.33.10` by default)
+ - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
 #### Install
 1. Start installation script
@@ -27,10 +27,10 @@ cp configs/vagrant-example.yaml configs/vagrant.yaml
 ./scripts/vagrant/install.sh
 ```
 
-2. Install will ask for your password to add `hitchwiki.dev` to your `/etc/hosts` file.
+2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
 
-3. Open [http://hitchwiki.dev/](http://hitchwiki.dev/) in your browser. [*https*://hitchwiki.dev/](https://hitchwiki.dev/) works if you set `setup_ssl` to `true` from `configs/vagrant.yaml`
+3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` from `configs/vagrant.yaml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just run `vagrant up`.

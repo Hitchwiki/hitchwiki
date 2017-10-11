@@ -50,8 +50,8 @@ parsoid_config=$(<"$SCRIPTDIR/configs/parsoid_config.yaml")
 sudo mkdir -p /etc/mediawiki/parsoid/
 sudo chown $(whoami) /etc/mediawiki/parsoid
 sudo chown $(whoami) /etc/mediawiki/parsoid/config.yaml
-# Replace "hitchwiki.dev" with domain variable from settings.ini
-sudo echo "${parsoid_config//hitchwiki.dev/$HW__general__domain}" > /etc/mediawiki/parsoid/config.yaml
+# Replace "hitchwiki.test" with domain variable from settings.ini
+sudo echo "${parsoid_config//hitchwiki.test/$HW__general__domain}" > /etc/mediawiki/parsoid/config.yaml
 
 echo ""
 echo "Create Parsoid init script..."
