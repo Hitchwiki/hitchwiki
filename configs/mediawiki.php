@@ -38,26 +38,26 @@ if ($wgCommandLineMode) {
 # as Geonames API has 2000 req / hour limit
 
 if (array_key_exists('geonames_usernames', $hwConfig["vendor"])) {
-  $hwConfig["vendor"]["geonames_username"] = $hwConfig["vendor"]["geonames_usernames"][array_rand($hwConfig["vendor"]["geonames_usernames"])];
+  $hwConfig['vendor']['geonames_username'] = $hwConfig['vendor']['geonames_usernames'][array_rand($hwConfig['vendor']['geonames_usernames'])];
 }
 
-## Uncomment this to disable output compression
+# Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = $hwConfig["general"]["sitename"];
-$wgMetaNamespace = $hwConfig["general"]["metanamespace"];
+$wgSitename = $hwConfig['general']['sitename'];
+$wgMetaNamespace = $hwConfig['general']['metanamespace'];
 
 ##
-## Dev environment settings
+# Dev environment settings
 ##
 $hwDebug = ($hwConfig['general']['debug']) ? true : false;
 $hwCache = ($hwConfig['general']['cache']) ? true : false;
 
 # Enable debugging only on dev environment
-if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
+if (isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
 
   // Enable error reporting
-  if($hwDebug) {
+  if ($hwDebug) {
     error_reporting( -1 );
     ini_set( 'display_errors', 1 );
   }
@@ -88,111 +88,111 @@ if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
   }
 }
 
-## Setup $hwLang
-## Will also change $wgSitename if it finds local name
-require_once("mediawiki-lang.php");
+# Setup `$hwLang`
+# Will also change $wgSitename if it finds local name
+require_once('mediawiki-lang.php');
 
-## When you make changes to this configuration file, this will make
-## sure that cached pages are cleared.
+# When you make changes to this configuration file, this will make
+# sure that cached pages are cleared.
 $configdate      = gmdate( 'YmdHis', @filemtime( __FILE__ ) );
 $wgCacheEpoch    = max($wgCacheEpoch, $configdate);
 
-## The URL base path to the directory containing the wiki;
-## defaults for all runtime URL paths are based off of this.
-## For more information on customizing the URLs
-## (like /w/index.php/Page_title to /wiki/Page_title) please see:
-## https://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath       = "/" . $hwLang;
-$wgScriptExtension  = ".php";
+# The URL base path to the directory containing the wiki;
+# defaults for all runtime URL paths are based off of this.
+# For more information on customizing the URLs
+# (like /w/index.php/Page_title to /wiki/Page_title) please see:
+# https://www.mediawiki.org/wiki/Manual:Short_URL
+$wgScriptPath       = '/'  . $hwLang;
+$wgScriptExtension  = '.php';
 $wgArticlePath      = "{$wgScriptPath}/$1";
 $wgScript           = "{$wgScriptPath}/index.php";
 $wgUsePathInfo      = true;
-$wgCookieDomain     = $hwConfig["general"]["cookiedomain"];
+$wgCookieDomain     = $hwConfig['general']['cookiedomain'];
 
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = $hwLang;
 
-## The protocol and server name to use in fully-qualified URLs
+# The protocol and server name to use in fully-qualified URLs
 ##
-## Since 1.18 MediaWiki also supports setting `$wgServer` to a protocol-relative
-## URL (e.g., //www.mediawiki.org). This is used for supporting both
-## HTTP and HTTPS with the same caches by using links that work under both
-## protocols. When doing this, `$wgCanonicalServer` can be used to set the
-## full URL including protocol that will be used in locations such as emails
-## that don't support protocol relative URLs.
+# Since 1.18 MediaWiki also supports setting `$wgServer` to a protocol-relative
+# URL (e.g., //www.mediawiki.org). This is used for supporting both
+# HTTP and HTTPS with the same caches by using links that work under both
+# protocols. When doing this, `$wgCanonicalServer` can be used to set the
+# full URL including protocol that will be used in locations such as emails
+# that don't support protocol relative URLs.
 ##
-## https://www.mediawiki.org/wiki/Manual:$wgServer
-## https://www.mediawiki.org/wiki/Manual:$wgCanonicalServer
-$wgServer = "//" . $hwConfig["general"]["domain"];
-$wgCanonicalServer = $hwConfig["general"]["protocol"] . "://" . $hwConfig["general"]["domain"];
+# https://www.mediawiki.org/wiki/Manual:$wgServer
+# https://www.mediawiki.org/wiki/Manual:$wgCanonicalServer
+$wgServer = '//' . $hwConfig['general']['domain'];
+$wgCanonicalServer = $hwConfig['general']['protocol'] . '://' . $hwConfig['general']['domain'];
 
-## If enabled with "true", output a `<link rel="canonical">`
-## tag on every page indicating the canonical server which should be used.
+# If enabled with "true", output a `<link rel="canonical">`
+# tag on every page indicating the canonical server which should be used.
 $wgEnableCanonicalServerLink = true;
 
-## The relative URL path to the skins directory
-$wgStylePath = $wgScriptPath . "/skins";
+# The relative URL path to the skins directory
+$wgStylePath = $wgScriptPath . '/skins';
 
-## The relative URL path to the logo and icons
-$wgLogo = $wgScriptPath . "/../wiki-logo.png";
-$wgAppleTouchIcon = $wgScriptPath . "/../apple-touch-icon.png";
-$wgFavicon = $wgScriptPath . "/../favicon.png";
+# The relative URL path to the logo and icons
+$wgLogo = $wgScriptPath . '/../wiki-logo.png';
+$wgAppleTouchIcon = $wgScriptPath . '/../apple-touch-icon.png';
+$wgFavicon = $wgScriptPath . '/../favicon.png';
 
-## UPO means: this is also a user preference option
+# UPO means: this is also a user preference option
 
 $wgEnableEmail = true;
 $wgEnableUserEmail = false; # UPO
 
-$wgEmergencyContact = "contact@" . $hwConfig["general"]["domain"];
-$wgPasswordSender = "noreply@" . $hwConfig["general"]["domain"];
+$wgEmergencyContact = 'contact@' . $hwConfig['general']['domain'];
+$wgPasswordSender = 'noreply@' . $hwConfig['general']['domain'];
 
-// For a detailed description of the following switches see
-// http://meta.wikimedia.org/Enotif and http://meta.wikimedia.org/Eauthent
-// There are many more options for fine tuning available see
-// /includes/DefaultSettings.php
-// UPO means: this is also a user preference option
+# For a detailed description of the following switches see
+# http://meta.wikimedia.org/Enotif and http://meta.wikimedia.org/Eauthent
+# There are many more options for fine tuning available see
+# /includes/DefaultSettings.php
+# UPO means: this is also a user preference option
 $wgEnotifUserTalk            = true; // UPO
 $wgEnotifWatchlist           = true; // UPO
 $wgEmailAuthentication       = true;
 $wgEnotifRevealEditorAddress = false;
 $wgEnotifFromEditor          = false;
 
-## Use SMTP to send out emails
-## https://www.mediawiki.org/wiki/Manual:$wgSMTP
-if(isset($hwConfig["smtp"]) && $hwConfig["smtp"]["enabled"] === true) {
+# Use SMTP to send out emails
+# https://www.mediawiki.org/wiki/Manual:$wgSMTP
+if (isset($hwConfig['smtp']) && $hwConfig['smtp']['enabled'] === true) {
   $wgSMTP = array(
-    'host'     => $hwConfig["smtp"]["host"],      // could also be an IP address. Where the SMTP server is located
-    'IDHost'   => $hwConfig["general"]["domain"], // Generally this will be the domain name of your website (aka mywiki.org)
-    'port'     => $hwConfig["smtp"]["port"],      // Port to use when connecting to the SMTP server
-    'auth'     => $hwConfig["smtp"]["auth"],      // Should we use SMTP authentication (true or false)
-    'username' => $hwConfig["smtp"]["username"],  // Username to use for SMTP authentication (if being used)
-    'password' => $hwConfig["smtp"]["password"]   // Password to use for SMTP authentication (if being used)
+    'host'     => $hwConfig['smtp']['host'],      // could also be an IP address. Where the SMTP server is located
+    'IDHost'   => $hwConfig['general']['domain'], // Generally this will be the domain name of your website (aka mywiki.org)
+    'port'     => $hwConfig['smtp']['port'],      // Port to use when connecting to the SMTP server
+    'auth'     => $hwConfig['smtp']['auth'],      // Should we use SMTP authentication (true or false)
+    'username' => $hwConfig['smtp']['username'],  // Username to use for SMTP authentication (if being used)
+    'password' => $hwConfig['smtp']['password']   // Password to use for SMTP authentication (if being used)
   );
 }
 
-## Database settings
+# Database settings
 $wgDBtype     = "mysql";
-$wgDBserver   = $hwConfig["db"]["host"];
-$wgDBname     = $hwConfig["db"]["database"];
-$wgDBuser     = $hwConfig["db"]["username"];
-$wgDBpassword = $hwConfig["db"]["password"];
+$wgDBserver   = $hwConfig['db']['host'];
+$wgDBname     = $hwConfig['db']['database'];
+$wgDBuser     = $hwConfig['db']['username'];
+$wgDBpassword = $hwConfig['db']['password'];
 
-## Shared database settings
-## Mainly for Users and Interwiki extension
-## By default shares 'users' and 'user_properties' tables
-$wgSharedDB = $hwConfig["db"]["database"];
+# Shared database settings
+# Mainly for Users and Interwiki extension
+# By default shares 'users' and 'user_properties' tables
+$wgSharedDB = $hwConfig['db']['database'];
 $wgSharedSchema = false;
-$wgSharedPrefix = $hwConfig["db"]["prefix"];
-## https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
-$wgSharedTables[] = "user_groups";
+$wgSharedPrefix = $hwConfig['db']['prefix'];
+# https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
+$wgSharedTables[] = 'user_groups';
 
-## MySQL specific settings
-$wgDBprefix = $hwConfig["db"]["prefix"];
+# MySQL specific settings
+$wgDBprefix = $hwConfig['db']['prefix'];
 
-## MySQL table options to use during installation or update
-$wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
+# MySQL table options to use during installation or update
+$wgDBTableOptions = 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
 
-## Experimental charset support for MySQL 5.0.
+# Experimental charset support for MySQL 5.0.
 $wgDBmysql5 = false;
 
 # Basic MW caching
@@ -203,10 +203,10 @@ $wgResourceLoaderMaxage['unversioned'] = array(
 	'client' => $hwCache ? 30 : 0, // minutes
 );
 
-## Shared memory settings
-## https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
-## https://www.mediawiki.org/wiki/Memcached
-if($hwCache) {
+# Shared memory settings
+# https://www.mediawiki.org/wiki/Manual:$wgMainCacheType
+# https://www.mediawiki.org/wiki/Memcached
+if ($hwCache) {
   $wgMemCachedPersistent = false;
   $wgUseMemCached = true;
   $wgMainCacheType = CACHE_MEMCACHED;
@@ -227,27 +227,27 @@ $wgExtraLanguageNames['wikivoyage'] = 'Wikivoyage';
 $wgExtraLanguageNames['trustroots'] = 'Trustroots';
 $wgExtraLanguageNames['bewelcome'] = 'BeWelcome';
 
-## To enable image uploads, make sure the 'images' directory
-## is writable, then set this to true:
+# To enable image uploads, make sure the 'images' directory
+# is writable, then set this to true:
 # ImageMagick is required by UploadWizard extension
 $wgEnableUploads = true;
 $wgUseImageMagick = true;
-$wgImageMagickConvertCommand = "/usr/bin/convert";
+$wgImageMagickConvertCommand = '/usr/bin/convert';
 
-## To enable image uploads, make sure the 'images' directory
-## is writable, then set this to true:
+# To enable image uploads, make sure the 'images' directory
+# is writable, then set this to true:
 $wgEnableUploads = true;
 $wgGenerateThumbnailOnParse = false;
 
-$wgUploadPath       = $wgScriptPath . "/images/" . $hwLang;
-$wgUploadDirectory  = $IP . "/images/" . $hwLang;
+$wgUploadPath       = $wgScriptPath . '/images/' . $hwLang;
+$wgUploadDirectory  = $IP . '/images/' . $hwLang;
 
-if($hwLang != 'en') {
+if ($hwLang != 'en') {
   // $wgUseSharedUploads            = true;
   $wgSharedUploadPath            = $wgUploadPath;
   $wgSharedUploadDirectory       = $wgUploadDirectory;
   $wgHashedSharedUploadDirectory = true;
-  $wgSharedUploadDBname          = $hwConfig["db"]["database"];
+  $wgSharedUploadDBname          = $hwConfig['db']["database"];
 }
 
 # Allowed file extensions for uploading files
@@ -261,47 +261,47 @@ $wgUseCommaCount = false;
 # InstantCommons allows wiki to use images from http://commons.wikimedia.org
 $wgUseInstantCommons = true;
 
-## If you use ImageMagick (or any other shell command) on a
-## Linux server, this will need to be set to the name of an
-## available UTF-8 locale
-$wgShellLocale = "en_US.utf8";
+# If you use ImageMagick (or any other shell command) on a
+# Linux server, this will need to be set to the name of an
+# available UTF-8 locale
+$wgShellLocale = 'en_US.utf8';
 
-## If you want to use image uploads under safe mode,
-## create the directories images/archive, images/thumb and
-## images/temp, and make them all writable. Then uncomment
-## this, if it's not already uncommented:
+# If you want to use image uploads under safe mode,
+# create the directories images/archive, images/thumb and
+# images/temp, and make them all writable. Then uncomment
+# this, if it's not already uncommented:
 #$wgHashedUploadDirectory = false;
 
-## Set $wgCacheDirectory to a writable directory on the web server
-## to make your wiki go slightly faster. The directory should not
-## be publically accessible from the web.
+# Set $wgCacheDirectory to a writable directory on the web server
+# to make your wiki go slightly faster. The directory should not
+# be publically accessible from the web.
 $wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = $hwConfig["general"]["secretkey"];
+$wgSecretKey = $hwConfig['general']['secretkey'];
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = $hwConfig["general"]["upgradekey"];
+$wgUpgradeKey = $hwConfig['general']['upgradekey'];
 
-## For attaching licensing metadata to pages, and displaying an
-## appropriate copyright notice / icon. GNU Free Documentation
-## License and Creative Commons licenses are supported so far.
+# For attaching licensing metadata to pages, and displaying an
+# appropriate copyright notice / icon. GNU Free Documentation
+# License and Creative Commons licenses are supported so far.
 
 $wgEnableCreativeCommonsRdf = true;
-$wgRightsPage               = ""; // Set to the title of a wiki page that describes your license/copyright
-$wgRightsUrl                = "http://creativecommons.org/licenses/by-sa/4.0/";
-$wgRightsText               = "Creative Commons Attribution-Share Alike";
-$wgRightsIcon               = "${wgStylePath}/common/images/cc-by-sa.png";
+$wgRightsPage               = ''; // Set to the title of a wiki page that describes your license/copyright
+$wgRightsUrl                = 'http://creativecommons.org/licenses/by-sa/4.0/';
+$wgRightsText               = 'Creative Commons Attribution-Share Alike';
+$wgRightsIcon               = $wgStylePath . '/common/images/cc-by-sa.png';
 
 
 $wgAllowDisplayTitle = true;
 
 # CSS
-$wgUseSiteCss        = true;
-$wgAllowUserCss      = true;
+$wgUseSiteCss = true;
+$wgAllowUserCss = true;
 
 # Path to the GNU diff3 utility. Used for conflict resolution.
-$wgDiff3 = "/usr/bin/diff3";
+$wgDiff3 = '/usr/bin/diff3';
 
 # Recent changes patrolling
 $wgShowUpdatedMarker             = true;
@@ -322,41 +322,41 @@ $wgAPIModules['createaccount'] = 'ApiDisabled';
 
 /***** Vector skin ******************************************************************************************/
 
-// Hitchwiki is largely relying on Vector skin so other skins are
-// not even included. We also have a few extensions expanding functionality and
-// look, see "HitchwikiVector" and "HWVectorBeta" from `/extensions` folder.
+# Hitchwiki is largely relying on Vector skin so other skins are
+# not even included. We also have a few extensions expanding functionality and
+# look, see "HitchwikiVector" and "HWVectorBeta" from `/extensions` folder.
 
-## Default skin. Use the internal symbolic.
-$wgDefaultSkin = "vector";
+# Default skin. Use the internal symbolic.
+$wgDefaultSkin = 'vector';
 
 wfLoadSkin('Vector');
 
-// Search form look.
-// true = use an icon search button
-// false = use Go & Search buttons
+# Search form look.
+# true = use an icon search button
+# false = use Go & Search buttons
 $wgVectorUseSimpleSearch = true;
 
-// Watch and unwatch as an icon rather than a link.
-// true = use an icon watch/unwatch button
-// false = use watch/unwatch text link
+# Watch and unwatch as an icon rather than a link.
+# true = use an icon watch/unwatch button
+# false = use watch/unwatch text link
 $wgVectorUseIconWatch = true;
 
-// Experimental setting to make Vector slightly more responsive. Not ready for production purposes and false by default.
-// true = Use responsiveness to improve usability in narrow viewports
-// false = No responsiveness
+# Experimental setting to make Vector slightly more responsive. Not ready for production purposes and false by default.
+# true = Use responsiveness to improve usability in narrow viewports
+# false = No responsiveness
 $wgVectorResponsive = false;
 
 
 /***** Extensions ******************************************************************************************/
 
-// Settings for MediaWiki extensions
-require_once "mediawiki-extensions.php";
+# Settings for MediaWiki extensions
+require_once 'mediawiki-extensions.php';
 
 
-// Settings for preventing spam on MediaWiki
-// You can turn these on/off from `/configs/settings.ini`
-if($hwConfig["spam"]["spamprotection"]) {
-  require_once "mediawiki-spam.php";
+# Settings for preventing spam on MediaWiki
+# You can turn these on/off from `/configs/settings.ini`
+if ($hwConfig['spam']['spamprotection']) {
+  require_once 'mediawiki-spam.php';
 }
 
 
