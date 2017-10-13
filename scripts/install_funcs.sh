@@ -282,6 +282,7 @@ install_mediawiki()
   print_divider
 
   echo "$OK_SYMBOL Create cache directories..."
+  mkdir -p "$ROOTDIR/tmp/sessions"
   mkdir -p "$WIKIDIR/cache"
   mkdir -p "$WIKIDIR/images/cache"
 
@@ -451,6 +452,9 @@ set_wiki_folder_permissions()
 
   sudo chown -R $HW_OWNERS "$ROOTDIR"
   # sudo chmod -R g+rw "$ROOTDIR"
+
+  sudo chown -R $HW_OWNERS "$ROOTDIR/tmp/sessions"
+  sudo chmod -R ug+rw "$ROOTDIR/tmp/sessions"
 
   sudo chown -R $HW_OWNERS "$WIKIDIR/images"
   sudo chmod -R ug+rw "$WIKIDIR/images"

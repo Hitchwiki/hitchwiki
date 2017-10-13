@@ -17,6 +17,11 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 # If PHP's memory limit is very low, some operations may fail.
 ini_set('memory_limit', '64M');
 
+# Path for storing sessions
+# https://secure.php.net/manual/en/function.session-save-path.php
+# https://secure.php.net/manual/en/session.configuration.php
+session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
+
 # Load Hitchwiki Config
 $hwConfig = parse_ini_file("settings.ini", true);
 
