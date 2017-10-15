@@ -12,9 +12,7 @@ hitchhikers all around the world. We have information about how to
 hitch out of big cities, how to cover long distances, maps and many
 more tips.
 
-## How to help
-This version is currently under heavy development in Vilnius, 5.—16.12.2016 by [@simison](https://github.com/simison), [@Remigr](https://github.com/Remigr/) and [@omelnyk](https://github.com/omelnyk/).
-
+## Help needed!
 _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
 Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
@@ -23,14 +21,13 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 We have two major ways of running the software:
 
+### Installing with Vagrant (recommended)
+
+The easiest and quickest way to get started is with Vagrant. Running through Vagrant can be a little bit slower. See [INSTALL-vagrant.md](INSTALL-vagrant.md) for further details.
 
 ### Installing locally
 
-Install the stack on your localhost. This approach takes a little more time to setup, and bit more manual configuration, but is super fast, and can be easier to work with. See [INSTALL.md](https://raw.githubusercontent.com/Hitchwiki/hitchwiki/master/INSTALL.md) for details.
-
-### Installing with Vagrant
-
-The easiest and quickest way to get started is with Vagrant. Running through Vagrant can be a little bit slower. See [INSTALL-vagrant.md](https://raw.githubusercontent.com/Hitchwiki/hitchwiki/master/INSTALL-vagrant.md) for further details.
+Install the stack on your localhost. This approach takes a little more time to setup, and bit more manual configuration, but is super fast, and can be easier to work with. See [INSTALL.md](INSTALL.md) for details.
 
 ## License
 Code [MIT](LICENSE.md)
