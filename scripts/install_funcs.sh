@@ -8,8 +8,8 @@ set -e
 # Makes sure we have settings.ini and "Bash ini parser"
 source "$SCRIPTDIR/_settings.sh"
 
-OK_SYMBOL=✅
-SKIP_SYMBOL=🔀
+OK_SYMBOL="✅ "
+SKIP_SYMBOL="🔀 "
 
 # Print divider between setup blocks
 print_divider()
