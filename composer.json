@@ -20,7 +20,7 @@
       "type": "package",
       "package": {
         "name": "wiki",
-        "version": "1.29.0",
+        "version": "1.29.1",
         "type": "project",
         "dist": {
           "url": "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-1.29.1.tar.gz",
