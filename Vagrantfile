@@ -45,4 +45,11 @@ Vagrant.configure("2") do |config|
     node.vm.hostname = settings["hostname"]
     # node.hostmanager.aliases = %w(hitchwiki)
   end
+
+  # https://www.vagrantup.com/docs/provisioning/ansible.html
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "playbook.yml"
+    ansible.force_remote_user = 1
+  end
 end

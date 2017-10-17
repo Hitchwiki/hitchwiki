@@ -1,0 +1,292 @@
+---
+- hosts: hitchwiki
+
+  vars:
+    remote_user: ubuntu
+
+  handlers:
+
+   - name: restart apache
+     service: name=apache2 state=restarted
+
+   - name: start maildev
+     become: root
+     sh /etc/init.d/maildev &>/dev/null &
+
+   - name: print versions
+     apache2 --version
+     php -v
+     npm --version
+     node --version
+     bower --version
+     openssl version
+     composer --version
+
+  tasks:
+
+   - name: create webroot
+     file: /var/www
+   - name: load settings
+     source "scripts/_path_resolve.sh"
+     source "$SCRIPTDIR/_settings.sh"
+     export LC_ALL="en_US.UTF-8"
+     export LANGUAGE="en_US.UTF-8"
+     source "scripts/install_funcs.sh"
+   - name: update system
+     apt: update && upgrade -y
+   - name: install helper tools
+     apt: package=unattended-upgrades state=latest
+     apt: package=vim state=latest
+     apt: package=curl state=latest
+     apt: package=git state=latest
+     apt: package=unzip state=latest
+     apt: package=zip state=latest
+     apt: package=imagemagick state=latest
+     apt: package=build-essential state=latest
+     apt: package=python-software-properties state=latest
+     apt: package=fail2ban state=latest
+     apt: --purge autoremove -y
+
+# https://github.com/ansible/ansible-examples/tree/master/mongodb
+   - name: update mariadb
+     export DEBIAN_FRONTEND=noninteractive
+     apt: package=mariadb-server state=latest
+   - name: Add keys and repository for MariaDB
+     apt: package=software-properties-common state=latest
+     apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+     add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main'
+     apt: update
+   - name: Configure MariaDB installation not to prompt for passwords
+     become: root
+     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password "$HW__db__password
+     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password "$HW__db__password   
+   - name: Secure MariaDB root user
+     mysqladmin -u $HW__db__username -p$HW__db__password password "$HW__db__password"
+     mysql -u $HW__db__username -p$HW__db__password -e "UPDATE mysql.user SET Password=PASSWORD('$HW__db__password') WHERE User='$HW__db__username'"
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.user WHERE User='$HW__db__username' AND Host NOT IN ('localhost', '127.0.0.1'$
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.user WHERE User=''"
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
+     mysql -u $HW__db__username -p$HW__db__password -e "FLUSH PRIVILEGES"
+
+# https://github.com/ansible/ansible-examples/tree/master/lamp_simple     
+   - name: update apache
+     apt: name=apache2 state=latest
+   - name: enable apache mod rewrite
+     become:root
+     a2enmod rewrite
+   - name: allow apache override to all
+     become:root
+     sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+   - name: Configure Apache to serve `./public` folder
+     cd /etc/apache2/sites-available
+     [[ -f hitchwiki.conf ]] || sudo ln -fs /var/www/configs/apache-hitchwiki.conf hitchwiki.conf
+     cd /etc/apache2/sites-enabled
+     sudo rm -f 000-default.conf
+     [[ -f hitchwiki.conf ]] || sudo ln -fs ../sites-available/hitchwiki.conf hitchwiki.conf
+     sudo rm -fr "$ROOTDIR/html"
+     notify: restart apache
+
+# https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
+   - name: install PHP7 and extensions
+   apt: name={{ item }} state=present
+   with_items:
+     - php7.0
+     - libapache2-mod-php7.0
+     - php7.0-mysql
+     - php7.0-curl
+     - php7.0-gd
+     - php7.0-intl
+     - php7.0-imap
+     - php7.0-mcrypt
+     - php7.0-pspell
+     - php7.0-recode
+     - php7.0-sqlite3
+     - php7.0-tidy
+     - php7.0-xmlrpc
+     - php7.0-xsl
+     - php7.0-mbstring
+     - php7.0-opcache
+     - php-memcache
+     - php-pear
+     - php-imagick
+     - php-apcu
+     - php-gettext
+   - name: Turn on PHP errors
+     sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+     notify: restart apache
+
+   - name: configure PHPMyAdmin
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string $HW__db__username"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $HW__db__password"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $HW__db__phpmyadmin_password"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $HW__db__phpmyadmin_password"
+   - name: install PHPMyAdmin
+     apt: package=phpmyadmin state=present
+     #echo "Add PHPMyAdmin configuration to Apache"
+     #sed -i -r "s:(Alias /).*(/usr/share/phpmyadmin):\1$PHPMYADMIN_DIR \2:" /etc/phpmyadmin/apache.conf
+       
+     
+   - name: update composer
+  cd "$ROOTDIR"
+  # https://getcomposer.org/download/
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  # Verification hash might change over time so we can't rely on it here...
+  # php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f23$
+  sudo php composer-setup.php --install-dir=/usr/local/bin # Intaller creates file `composer.phar`
+  [[ -f /usr/local/bin/composer ]] || sudo ln -fs /usr/local/bin/composer.phar /usr/local/bin/composer # Create symlink
+  sudo rm composer-setup.php
+
+   - name: update nodejs
+  # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  sudo apt-get -qq install -y nodejs
+
+   - name: update bower
+     npm: package=bower@~1.8 state=present
+
+   - name: install mail support
+   - name: Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime
+     pear: package={{item}} state=present
+     with_items: { mail, Net_SMTP, Auth_SASL, mail_mime }
+   - name: Install Maildev for catching emails while developing
+     npm install -g -q maildev@1.0.0-rc3
+   - name: Setup Maildev to start on reboot
+  sudo cp scripts/init_maildev.sh /etc/init.d/maildev
+  sudo chmod 755 /etc/init.d/maildev
+  [[ -f /etc/rc3.d/S99maildev ]] || sudo ln -fs /etc/init.d/maildev /etc/rc3.d/S99maildev
+     notify: start maildev
+
+   - name: install self-signed TLS
+       if [[ $* == *--ssl* ]]; then
+    echo "$OK_SYMBOL Setup self signed SSL certificate..."
+    cd "$ROOTDIR"
+    bash "$SCRIPTDIR/cert_selfsigned.sh"
+  else
+    echo "$SKIP_SYMBOL Skipped installing self signed SSL certificate. "
+  fi
+
+   - name: create database
+   - name: install mediawiki
+ composer install --no-autoloader --no-dev --no-progress --no-interaction
+  echo "$OK_SYMBOL Create cache directories..."
+  mkdir -p "$ROOTDIR/tmp/sessions"
+  mkdir -p "$WIKIDIR/cache"
+  mkdir -p "$WIKIDIR/images/cache"
+  echo "$OK_SYMBOL Create dumps directory..."
+  sudo mkdir -p "$WIKIDIR/dumps"
+
+   - name: set wiki folder permissions
+  HW_OWNERS="${HW__general__webserver_user}:${HW__general__webserver_group}"
+  sudo chown -R $HW_OWNERS "$ROOTDIR"
+  # sudo chmod -R g+rw "$ROOTDIR"
+  sudo chown -R $HW_OWNERS "$ROOTDIR/tmp/sessions"
+  sudo chmod -R ug+rw "$ROOTDIR/tmp/sessions"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/images"
+  sudo chmod -R ug+rw "$WIKIDIR/images"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/cache"
+  sudo chmod -R ug+rw "$WIKIDIR/cache
+
+   - name: Download basic MediaWiki extensions
+       cd "$WIKIDIR"
+  sudo ln -fs "$CONFDIR/composer.local.json" composer.local.json
+  sudo composer update --no-dev --no-progress --no-interaction
+   
+   - name: Setup HWMap extension
+     # composer run-script post-install-cmd -d ./extensions/HWMap
+     # solve_mw_maps_extension_bug
+     composer: package={{ item }} state=present
+     with_items:
+       - HWMap
+       - HitchwikiVector
+       - HWRatings
+       - HWLocationInput   
+  # - name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
+  #     sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
+  #     sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/server_install.sh for details\n' "$WIKIDIR$
+   - name: Running Mediawiki install script
+  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
+  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--$
+  #   
+  cd "$WIKIDIR"
+  # Runs Mediawiki install script:
+  # - sets up wiki in one language ("en")
+  # - creates one admin user "hitchwiki" with password "authobahn"
+  php maintenance/install.php --conf "$MWCONFFILE" \   
+  --dbuser $HW__db__username \
+  --dbpass $HW__db__password \
+  --dbname $HW__db__database \
+  --dbtype mysql \
+  --pass autobahn \
+  --scriptpath /$WIKIFOLDER \
+  --lang en \
+  "$HW__general__sitename" \                                                                                                                         
+  hitchwiki
+
+# Install VisualEditor
+# Since it requires submodules, we don't install this using composer
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+   - name: install MW visual editor
+  cd "$WIKIDIR/extensions"
+  git clone \
+  --branch $HW__general__mw_branch \
+  --single-branch \
+  --depth=1 \
+  --recurse-submodules \
+  --quiet \
+  https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git \
+  VisualEditor;
+
+   - name: Prepare database
+     mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
+     mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
+     #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
+   - name: setup mediawiki
+     # Config file is stored elsewhere, require it from MW's LocalSettings.php
+     echo "$OK_SYMBOL Point Mediawiki configuration to Hitchwiki configuration file..."
+     cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
+     # Import interwiki table
+     # https://www.mediawiki.org/wiki/Extension:Interwiki
+   - name: Import interwiki table
+     cd "$ROOTDIR"
+     mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
+   - name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)
+     # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+  # basically SMW extensions are not included in MediaWiki before this
+  # file exists, because it would cause errors when running
+  # `maintenance/install.php`.
+  touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
+  cd "$WIKIDIR"
+  php maintenance/update.php --quick --conf "$MWCONFFILE"
+   - name: Pre-populate the AntiSpoof extension's table
+       cd "$WIKIDIR"
+  php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+   - name: create bot users
+  echo "$OK_SYMBOL Create MediaWiki users"
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/create_users.sh"
+   - name: Import Semantic pages, main navigation et
+  echo "$OK_SYMBOL Import Semantic templates and other MediaWiki special pages..."
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/import_pages.sh"
+
+   - name: install parsoid
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/install_parsoid.sh"
+
+   - name: outro
+     echo: |
+     Hitchwiki is now installed!
+     Apache is up. Open http://$HW__geieral__domain/ in your browser.
+     Parsoid is running. Open http://$HW__general__domain:8142 in your browser.
+     Maildev is running, inspect emails in your browser http://$HW__general__domain:1080
+     PHPMyAdmin is running, access database via http://$HW__general__domain/phpmyadmin
+     Suspend the virtual machine by calling 'vagrant suspend'.
+     When you're ready to begin working again, just run 'vagrant up'.
+     To re-install, run 'vagrant destroy && vagrant up'.
+     Read more from http://github.com/Hitchwiki/hitchwiki
+     Good luck!
+
+---
