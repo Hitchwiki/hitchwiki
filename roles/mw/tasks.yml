@@ -1,0 +1,112 @@
+---
+# Setup mediawiki with Parsoid and fill it with content.
+
+   - name: create database
+   - name: install mediawiki
+ composer install --no-autoloader --no-dev --no-progress --no-interaction
+  echo "$OK_SYMBOL Create cache directories..."
+  mkdir -p "$ROOTDIR/tmp/sessions"
+  mkdir -p "$WIKIDIR/cache"
+  mkdir -p "$WIKIDIR/images/cache"
+  echo "$OK_SYMBOL Create dumps directory..."
+  sudo mkdir -p "$WIKIDIR/dumps"
+
+   - name: set wiki folder permissions
+  HW_OWNERS="${HW__general__webserver_user}:${HW__general__webserver_group}"
+  sudo chown -R $HW_OWNERS "$ROOTDIR"
+  # sudo chmod -R g+rw "$ROOTDIR"
+  sudo chown -R $HW_OWNERS "$ROOTDIR/tmp/sessions"
+  sudo chmod -R ug+rw "$ROOTDIR/tmp/sessions"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/images"
+  sudo chmod -R ug+rw "$WIKIDIR/images"
+  sudo chown -R $HW_OWNERS "$WIKIDIR/cache"
+  sudo chmod -R ug+rw "$WIKIDIR/cache
+
+   - name: Download basic MediaWiki extensions
+       cd "$WIKIDIR"
+  sudo ln -fs "$CONFDIR/composer.local.json" composer.local.json
+  sudo composer update --no-dev --no-progress --no-interaction
+   
+   - name: Setup HWMap extension
+     # composer run-script post-install-cmd -d ./extensions/HWMap
+     # solve_mw_maps_extension_bug
+     composer: package={{ item }} state=present
+     with_items:
+       - HWMap
+       - HitchwikiVector
+       - HWRatings
+       - HWLocationInput   
+  # - name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
+  #     sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
+  #     sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script. See scripts/server_install.sh for details\n' "$WIKIDIR$
+   - name: Running Mediawiki install script
+  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
+  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--$
+  #   
+  cd "$WIKIDIR"
+  # Runs Mediawiki install script:
+  # - sets up wiki in one language ("en")
+  # - creates one admin user "hitchwiki" with password "authobahn"
+  php maintenance/install.php --conf "$MWCONFFILE" \   
+  --dbuser $HW__db__username \
+  --dbpass $HW__db__password \
+  --dbname $HW__db__database \
+  --dbtype mysql \
+  --pass autobahn \
+  --scriptpath /$WIKIFOLDER \
+  --lang en \
+  "$HW__general__sitename" \                                                                                                                         
+  hitchwiki
+
+# Install VisualEditor
+# Since it requires submodules, we don't install this using composer
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+   - name: install MW visual editor
+  cd "$WIKIDIR/extensions"
+  git clone \
+  --branch $HW__general__mw_branch \
+  --single-branch \
+  --depth=1 \
+  --recurse-submodules \
+  --quiet \
+  https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git \
+  VisualEditor;
+
+   - name: Prepare database
+     mysql -u$HW__db__username -p$HW__db__password -e "DROP DATABASE IF EXISTS $HW__db__database"
+     mysql -u$HW__db__username -p$HW__db__password -e "CREATE DATABASE $HW__db__database CHARACTER SET utf8 COLLATE utf8_general_ci"
+     #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
+   - name: setup mediawiki
+     # Config file is stored elsewhere, require it from MW's LocalSettings.php
+     echo "$OK_SYMBOL Point Mediawiki configuration to Hitchwiki configuration file..."
+     cp -f "$SCRIPTDIR/configs/mediawiki_LocalSettings.php" "$WIKIDIR/LocalSettings.php"
+     # Import interwiki table
+     # https://www.mediawiki.org/wiki/Extension:Interwiki
+   - name: Import interwiki table
+     cd "$ROOTDIR"
+     mysql -u$HW__db__username -p$HW__db__password $HW__db__database < "$SCRIPTDIR/configs/interwiki.sql"
+   - name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)
+     # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+  # basically SMW extensions are not included in MediaWiki before this
+  # file exists, because it would cause errors when running
+  # `maintenance/install.php`.
+  touch "$WIKIDIR/extensions/SemanticMediaWikiEnabled"
+  cd "$WIKIDIR"
+  php maintenance/update.php --quick --conf "$MWCONFFILE"
+   - name: Pre-populate the AntiSpoof extension's table
+       cd "$WIKIDIR"
+  php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+   - name: create bot users
+  echo "$OK_SYMBOL Create MediaWiki users"
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/create_users.sh"
+   - name: Import Semantic pages, main navigation et
+  echo "$OK_SYMBOL Import Semantic templates and other MediaWiki special pages..."
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/import_pages.sh"
+
+   - name: install parsoid
+  cd "$ROOTDIR"
+  bash "$SCRIPTDIR/install_parsoid.sh"
+
+---

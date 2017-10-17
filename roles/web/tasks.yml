@@ -1,0 +1,130 @@
+---
+# Bring up apache2 webserver with PHP7, node and composer
+# Examples:
+#   https://github.com/ansible/ansible-examples/tree/master/lamp_simple
+#   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
+
+   - name: create webroot
+     file: /var/www
+   - name: load settings
+     source "scripts/_path_resolve.sh"
+     source "$SCRIPTDIR/_settings.sh"
+     export LC_ALL="en_US.UTF-8"
+     export LANGUAGE="en_US.UTF-8"
+     source "scripts/install_funcs.sh"
+   - name: update system
+     apt: update && upgrade -y
+   - name: install helper tools
+     apt: package=unattended-upgrades state=latest
+     apt: package=vim state=latest
+     apt: package=curl state=latest
+     apt: package=git state=latest
+     apt: package=unzip state=latest
+     apt: package=zip state=latest
+     apt: package=imagemagick state=latest
+     apt: package=build-essential state=latest
+     apt: package=python-software-properties state=latest
+     apt: package=fail2ban state=latest
+     apt: --purge autoremove -y
+
+
+   - name: update apache
+     apt: name=apache2 state=latest
+   - name: enable apache mod rewrite
+     become:root
+     a2enmod rewrite
+   - name: allow apache override to all
+     become:root
+     sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+   - name: Configure Apache to serve `./public` folder
+     cd /etc/apache2/sites-available
+     [[ -f hitchwiki.conf ]] || sudo ln -fs /var/www/configs/apache-hitchwiki.conf hitchwiki.conf
+     cd /etc/apache2/sites-enabled
+     sudo rm -f 000-default.conf
+     [[ -f hitchwiki.conf ]] || sudo ln -fs ../sites-available/hitchwiki.conf hitchwiki.conf
+     sudo rm -fr "$ROOTDIR/html"
+     notify: restart apache
+
+
+   - name: install PHP7 and extensions
+   apt: name={{ item }} state=present
+   with_items:
+     - php7.0
+     - libapache2-mod-php7.0
+     - php7.0-mysql
+     - php7.0-curl
+     - php7.0-gd
+     - php7.0-intl
+     - php7.0-imap
+     - php7.0-mcrypt
+     - php7.0-pspell
+     - php7.0-recode
+     - php7.0-sqlite3
+     - php7.0-tidy
+     - php7.0-xmlrpc
+     - php7.0-xsl
+     - php7.0-mbstring
+     - php7.0-opcache
+     - php-memcache
+     - php-pear
+     - php-imagick
+     - php-apcu
+     - php-gettext
+   - name: Turn on PHP errors
+     sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+     notify: restart apache
+
+   - name: configure PHPMyAdmin
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string $HW__db__username"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $HW__db__password"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $HW__db__phpmyadmin_password"
+  sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $HW__db__phpmyadmin_password"
+   - name: install PHPMyAdmin
+     apt: package=phpmyadmin state=present
+     #echo "Add PHPMyAdmin configuration to Apache"
+     #sed -i -r "s:(Alias /).*(/usr/share/phpmyadmin):\1$PHPMYADMIN_DIR \2:" /etc/phpmyadmin/apache.conf
+       
+     
+   - name: update composer
+  cd "$ROOTDIR"
+  # https://getcomposer.org/download/
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  # Verification hash might change over time so we can't rely on it here...
+  # php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f23$
+  sudo php composer-setup.php --install-dir=/usr/local/bin # Intaller creates file `composer.phar`
+  [[ -f /usr/local/bin/composer ]] || sudo ln -fs /usr/local/bin/composer.phar /usr/local/bin/composer # Create symlink
+  sudo rm composer-setup.php
+
+   - name: update nodejs
+  # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  sudo apt-get -qq install -y nodejs
+
+   - name: update bower
+     npm: package=bower@~1.8 state=present
+
+   - name: install mail support
+   - name: Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime
+     pear: package={{item}} state=present
+     with_items: { mail, Net_SMTP, Auth_SASL, mail_mime }
+   - name: Install Maildev for catching emails while developing
+     npm install -g -q maildev@1.0.0-rc3
+   - name: Setup Maildev to start on reboot
+  sudo cp scripts/init_maildev.sh /etc/init.d/maildev
+  sudo chmod 755 /etc/init.d/maildev
+  [[ -f /etc/rc3.d/S99maildev ]] || sudo ln -fs /etc/init.d/maildev /etc/rc3.d/S99maildev
+     notify: start maildev
+
+   - name: install self-signed TLS
+       if [[ $* == *--ssl* ]]; then
+    echo "$OK_SYMBOL Setup self signed SSL certificate..."
+    cd "$ROOTDIR"
+    bash "$SCRIPTDIR/cert_selfsigned.sh"
+  else
+    echo "$SKIP_SYMBOL Skipped installing self signed SSL certificate. "
+  fi
+
+---

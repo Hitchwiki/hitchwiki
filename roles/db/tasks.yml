@@ -1,0 +1,25 @@
+---
+# Setup database server
+
+# example: https://github.com/ansible/ansible-examples/tree/master/mongodb
+   - name: update mariadb
+     export DEBIAN_FRONTEND=noninteractive
+     apt: package=mariadb-server state=latest
+   - name: Add keys and repository for MariaDB
+     apt: package=software-properties-common state=latest
+     apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+     add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main'
+     apt: update
+   - name: Configure MariaDB installation not to prompt for passwords
+     become: root
+     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password "$HW__db__password
+     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password "$HW__db__password   
+   - name: Secure MariaDB root user
+     mysqladmin -u $HW__db__username -p$HW__db__password password "$HW__db__password"
+     mysql -u $HW__db__username -p$HW__db__password -e "UPDATE mysql.user SET Password=PASSWORD('$HW__db__password') WHERE User='$HW__db__username'"
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.user WHERE User='$HW__db__username' AND Host NOT IN ('localhost', '127.0.0.1'$
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.user WHERE User=''"
+     mysql -u $HW__db__username -p$HW__db__password -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
+     mysql -u $HW__db__username -p$HW__db__password -e "FLUSH PRIVILEGES"
+
+---
