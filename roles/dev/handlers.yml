@@ -1,8 +1,0 @@
----
-# Handlers for the development environment
-
-   - name: start maildev
-     become: root
-     sh /etc/init.d/maildev &>/dev/null &
-
----

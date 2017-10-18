@@ -39,17 +39,16 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "hitchwiki" do |node|
     node.vm.box = "ubuntu/xenial64"
-    node.vm.provision :shell, :path => "scripts/server_install.sh", :args => install_args
     node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
     node.vm.network :private_network, ip: settings["private_network_ip"]
     node.vm.hostname = settings["hostname"]
-    # node.hostmanager.aliases = %w(hitchwiki)
-  end
-
-  # https://www.vagrantup.com/docs/provisioning/ansible.html
-  config.vm.provision "ansible" do |ansible|
-    ansible.verbose = "v"
-    ansible.playbook = "playbook.yml"
-    ansible.force_remote_user = 1
+    #node.hostmanager.aliases = %w(hitchwiki)
+    #node.vm.provision :shell, :path => "scripts/server_install.sh", :args => install_args
+    config.vm.provision :ansible do |ansible|
+    # https://www.vagrantup.com/docs/provisioning/ansible.html
+      ansible.verbose = "v"
+      ansible.playbook = "hitchwiki.yml"
+      ansible.force_remote_user = 1
+    end
   end
 end

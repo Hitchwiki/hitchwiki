@@ -22,10 +22,14 @@ cp configs/vagrant-example.yaml configs/vagrant.yaml
  - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
 #### Install
-1. Start installation script
+1. Run the installation script
 ```bash
 ./scripts/vagrant/install.sh
 ```
+
+This will
+* Install [Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin
+* Setup Vagrant box (optional)
 
 2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
@@ -33,18 +37,21 @@ You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanag
 3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` from `configs/vagrant.yaml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
-When you're ready to begin working again, just run `vagrant up`.
+When you're ready to begin working again, just run `vagrant provision`.
 
-
-#### Install script will do the following:
-* Install [Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin
-* Setup Vagrant box (optional)
+#### Ansible
+As soon as ssh is ready, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) takes over to configure your system according to the `hitchwiki.yml` [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html):
+* Upgrade distribution packages
+* Setup MariaDB
+* Setup Apache2 with PHP7
+* Install composer and nodejs
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
 * Import pages from `./scripts/pages/`
 * Create three users (see below)
 * Install Parsoid and VisualEditor
+* Install Mediawiki extensions (HWMap, HitchwikiVector, HWRatings, HWLocationInput)
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
@@ -68,6 +75,10 @@ This is done once at install, but needs to be done each time somebody changes co
 * Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
 * Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
+* When you change Ansible Playbooks, check the syntax with:
+```
+ansible-playbook hitchwiki.yml --syntax-check
+```
 
 ### Update
 1. Pull latest changes: `git pull origin master`

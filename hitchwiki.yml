@@ -1,24 +1,43 @@
 ---
 # Ansible playbook for hitchwiki development environment
 #   https://docs.ansible.com/ansible/latest/playbooks_intro.html
-- hosts: hitchwiki
-
-  vars:
 # Vagrant starts ansible after bringing up the machine (ubuntu/xenial)
 #   https://docs.ansible.com/ansible/latest/guide_vagrant.html
 #   https://www.vagrantup.com/docs/provisioning/ansible.html
 # The user for the est environment is ubuntu. See Vagrantfile
-    remote_user: ubuntu
+- hosts: hitchwiki
+  remote_user: ubuntu
+  become: true
+  vars:
+    scriptdir: "{{ ROOTDIR }}/scripts"
+  vars_files:
+    - group_vars/vars
+
+  # Ansible needs python or it fails with "/usr/bin/python: not found"
+  # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
+  gather_facts: no
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -yqq install python-simplejson
 
 # Deployment is split into roles with tasks, handlers and templates:
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
 # 
 # Following roles are based on the install_funcs.sh script by Pedro.
 # Common is for system updates, db for mariadb, web for apache2, php and all modules, including composer, mw setups mediawiki and fills it.
+
 - name: Common system configuration
   hosts: all
   roles:
     - common
+  vars_files:
+    - group_vars/vars
+
+# For development some services like mail-catcher and phpmyadmin are necessary.
+- name: Development
+  hosts: all
+  roles:
+    - dev
 
 - name: Deploy database server
   hosts: all
@@ -35,14 +54,12 @@
   roles:
     - mw
 
-# For development some services like mail-catcher and phpmyadmin are necessary.
-- name: Development
-  hosts: dev
-  roles:
-    - dev
-
 # Production specific configuration
 #- name: Production
 #  hosts: production
 #  roles:
-#    - production
+#    - prod
+
+...
+
+# !unsafe https://docs.ansible.com/ansible/latest/playbooks_advanced_syntax.html

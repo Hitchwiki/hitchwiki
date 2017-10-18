@@ -1,0 +1,27 @@
+---
+
+   - name: load settings
+     shell: |
+       source "{{ SCRIPTDIR }}/_settings.sh"
+       export LC_ALL="en_US.UTF-8"
+       export LANGUAGE="en_US.UTF-8"
+
+   - name: update system
+     apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
+
+   - name: install helper tools
+     apt: package={{ item }} state=latest
+     with_items:
+       - python
+       - unattended-upgrades
+       - vim
+       - curl
+       - git
+       - unzip
+       - zip
+       - imagemagick
+       - build-essential
+       - python-software-properties
+       - fail2ban
+
+...

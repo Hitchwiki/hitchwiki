@@ -1,0 +1,19 @@
+---
+# Enable mail support
+
+- name: Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime
+  pear: name={{item}} state=present
+  with_items: { mail, Net_SMTP, Auth_SASL, mail_mime }
+
+- name: Install Maildev for catching emails while developing
+  npm: name=maildev version=1.0.0-rc3 state=present
+
+- name: Setup Maildev to start on reboot
+  copy: src=scripts/init_maildev.sh dest=/etc/init.d/maildev mode='755'
+
+- name: Create service symlink
+  command: creates=/etc/rc3.d/S99maildev ln -sf /etc/init.d/maildev /etc/rc3.d/S99maildev
+  notify:
+    - start maildev
+
+...
