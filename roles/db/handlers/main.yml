@@ -1,0 +1,13 @@
+---
+# Database handlers
+
+- name: restart db
+  become: yes
+  service: name=mariadb enabled=yes state=started
+  tags:
+    - mariadb
+    - db
+    - dbserver
+    - database
+
+...

@@ -3,23 +3,28 @@
 # example: https://github.com/ansible/ansible-examples/tree/master/mongodb
 
 - name: Add repository for MariaDB
+  become: true
   apt_repository:
     repo: deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main
     state: present
 
 - name: Add key for MariaDB
-  apt_key: state=present id=0xF1656F24C74CD1D8 keyserver=keyserver.ubuntu.com:80
+  become: true
+  apt_key: state=present id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
 
 - name: Install MariaDB
+  become: true
   apt: update_cache=yes package={{item}} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
 - name: Secure MariaDB root user
+  become: true
   shell: |
-    mysqlmysql -e "UPDATE mysql.user SET Password=PASSWORD('{{ HW__db__password }}') WHERE User='{{ HW__db__username }}'"
-    mysql -e "DELETE FROM mysql.user WHERE User='{{ HW__db__username }}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+    mysqlmysql -e "UPDATE mysql.user SET Password=PASSWORD('{{db.password}}') WHERE User='{{db.username}}'"
+    mysql -e "DELETE FROM mysql.user WHERE User='{{db.username}}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
     mysql -e "DELETE FROM mysql.user WHERE User=''"
     mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql -e "FLUSH PRIVILEGES"
+  notify: restart db
 
 ...

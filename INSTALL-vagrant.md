@@ -41,10 +41,15 @@ When you're ready to begin working again, just run `vagrant provision`.
 
 #### Ansible
 As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) takes over to configure the system according to the `hitchwiki.yml` [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html):
+
+common
 * Upgrade distribution packages
+db
 * Setup MariaDB
+web
 * Setup Apache2 with PHP7
 * Install composer and nodejs
+mw
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
 * Create a database and configure MediaWiki
@@ -52,6 +57,23 @@ As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansib
 * Create three users (see below)
 * Install Parsoid and VisualEditor
 * Install Mediawiki extensions (HWMap, HitchwikiVector, HWRatings, HWLocationInput)
+
+Depending on your connection this will take some time (40mb for MW alone).
+
+When errors happen, fix them in `roles` and check the syntax with
+```
+ansible-playbook hitchwiki.yml --syntax-check
+```
+
+Show hosts in the hitchwiki group (configured in `ansible.cfg`):
+```
+ansible hitchwiki --list-hosts
+```
+
+Run ansible without `vagrant provision`:
+```
+ansible-playbook hitchwiki.yml
+```
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn

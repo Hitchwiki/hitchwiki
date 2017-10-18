@@ -1,7 +1,12 @@
 ---
 # Handlers for the development environment
 
-- name: start maildev
+- name: restart maildev
+  become: yes
   service: name=maildev enabled=yes state=started
+  tags:
+    - mail
+    - stml
+    - maildev
 
 ...

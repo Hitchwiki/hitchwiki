@@ -1,28 +1,35 @@
 ---
 
-   - name: load settings
-     shell: |
-       source "{{ SCRIPTDIR }}/_settings.sh"
-       export LC_ALL="en_US.UTF-8"
-       export LANGUAGE="en_US.UTF-8"
+- name: Set language
+  shell: |
+     export LC_ALL="en_US.UTF-8"
+     export LANGUAGE="en_US.UTF-8"
 
-   - name: update system
-     become: true
-     apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
+- name: Make sure settings.ini exists
+  file: state=link path="{{SETTINGSFILE}}" src="{{ CONFDIR }}/settings-example.ini" force=yes
 
-   - name: install helper tools
-     become: true
-     apt: package={{ item }} state=latest
-     with_items:
-       - unattended-upgrades
-       - vim
-       - curl
-       - git
-       - unzip
-       - zip
-       - imagemagick
-       - build-essential
-       - python-software-properties
-       - fail2ban
+- name: Install Bash ini parser
+  git:
+    clone: yes
+    repo: https://github.com/pmgouveia/bash_ini_parser.git
+    dest: "{{ SCRIPTDIR }}/vendor/bash_ini_parser"
+    depth: 1
+  # TODO "Local modifications exist in repository (force=no)."
+  ignore_errors: yes
+
+# settings.ini has been added to group_vars/all
+#- name: Load Bash ini parser
+#  shell: |
+#    source {{SCRIPTDIR}}/vendor/bash_ini_parser/read_ini.sh
+#    "{{SCRIPTDIR}}/vendor/bash_ini_parser/read_ini.sh {{SETTINGSFILE}} -p HW"
+
+- name: Update system
+  become: true
+  apt: update_cache=yes upgrade=dist #autoremove=yes autoclean=yes
+
+- name: install helper tools
+  become: true
+  apt: package={{ item }} state=latest
+  with_items: { unattended-upgrades, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
 
 ...

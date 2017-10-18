@@ -4,65 +4,82 @@
 #   https://github.com/ansible/ansible-examples/tree/master/lamp_simple
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
 
-- name: Install apache2
-  apt: name=apache2 state=latest
-
 - name: Create /var/www
-  command: creates=/var/www/ mkdir /var/www/
+  file: state=directory path={{ROOTDIR}}
 
-- name: enable apache mod rewrite
-  apache2_module: name=rewrite state=present
-  notify:
-    - restart apache
-
-- name: allow apache override to all
-  command: sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
-  notify:
-    - restart apache
-
-- name: Configure Apache to serve `./public` folder
-  shell: |
-    ln -fs /var/www/configs/apache-hitchwiki.conf hitchwiki.conf chdir=/etc/apache2/sites-available removes=hitchwiki.conf
-    ln -fs ../sites-available/hitchwiki.conf hitchwiki.conf chdir=/etc/apache2/sites-enabled
-    rm 000-default.conf chdir=/etc/apache2/sites-enabled
-    rm -fr "{{ ROOTDIR }}/html" #chdir=/etc/apache2/sites-enabled
-  notify:
-    - restart apache
-
-- name: install PHP7 and extensions
+- name: Install node, Apache2 with PHP7 and extensions
+  become: yes
   apt: name={{item}} state=present
-  with_items: { php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
+  with_items: { apache2, npm, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
+  # TODO do we need to install composer or does it come with ansible
 
-- name: Install composer
+- name: Enable apache mod rewrite
+  become: yes
+  apache2_module: name=rewrite state=present
+  notify: restart apache
+
+- name: Allow apache override to all
+  become: yes
+  # TODO use ninja2 https://docs.ansible.com/ansible/latest/template_module.html#template
+  command: sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+  notify: restart apache
+
+- name: Remove default Apache2 site
+  become: yes
+  file: state=absent path=/etc/apache2/sites-enabled/000-default.conf
+  notify: restart apache
+
+- name: Remove default Apache2 webroot
+  file: state=absent path={{ROOTDIR}}/html
+  notify: restart apache
+
+- name: Configure Hitchwiki for Apache2
+  become: yes
+  file: state=link src={{CONFDIR}}/apache-hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
+  notify: restart apache
+
+- name: Activate Hitchwiki in Apache2
+  file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
+  become: yes
+  notify: restart apache
+
+# TODO is it sufficient to use compuser via ansible?
+#- name: Install composer
   # https://getcomposer.org/download/
-  command: |
-    chdir {{ ROOTDIR }}
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  # TODO use file
+#  command: |
+#    chdir {{ ROOTDIR }}
+#    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     # The installer creates file `composer.phar`
-    php composer-setup.php --install-dir=/usr/local/bin
+#    php composer-setup.php --install-dir=/usr/local/bin
     # Verification hash might change over time so we can't rely on it here...
     # php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f23$
-    mv /usr/local/bin/composer.phar /usr/local/bin/composer
-    rm composer-setup.php
-  # creates: /usr/local/bin/composer
+#    mv /usr/local/bin/composer.phar /usr/local/bin/composer
+#    rm composer-setup.php
+#  # creates: /usr/local/bin/composer
 
-- name: Update nodejs
-  apt: name=nodejs state=present
-
-- name: install NodeSoure 8.x
+# TODO breaks apt with incomplete Release file
+#- name: Install NodeSoure 8.x
+#  become: yes
   # TODO migrate the bash script here
   # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-  command: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+#  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+#  ignore_errors: yes
 
-- name: Update bower
-  npm: name=bower version='1.8' state=present
+- name: Install bower 1.8
+  become: yes
+  npm: name=bower version='1.8' state=present global=yes
 
 - name: Setup self signed SSL certificate
-  command: chdir={{ ROOTDIR }} |
+  # TODO port to ansible
+  shell: |
+    cd {{ROOTDIR}}
     if [[ $* == *--ssl* ]]; then
-      bash {{ SCRIPTDIR }}/cert_selfsigned.sh
+      bash {{SCRIPTDIR}}/cert_selfsigned.sh
     else
-      echo "Skipped installing self signed SSL certificate."
+      msg "Skipped installing self signed SSL certificate."
     fi
+  when: ssl
+  ignore_errors: yes
 
 ...

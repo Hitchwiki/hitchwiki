@@ -1,0 +1,78 @@
+# Variables for ansible provisioning
+# See https://docs.ansible.com/ansible/latest/playbooks_variables.html
+
+# TODO make this dynamic
+env: "dev"
+ssl: False
+debug: False
+cache: False
+
+# Paths (from scripts/_path_resolve.sh)
+ROOTDIR: /var/www
+CONFDIR: "{{ROOTDIR}}/configs"
+SCRIPTDIR: "{{ROOTDIR}}/scripts"
+PAGESDIR: "{{SCRIPTSDIR}}/pages"
+SETTINGSFILE: "{{CONFDIR}}/settings.ini"
+
+# Mediawiki
+WIKIFOLDER: wiki
+WIKIDIR: "{{ROOTDIR}}/public/{{WIKIFOLDER}}"
+MWCONFFILE: "{{ROOTDIR}}/mediawiki.php"
+DUMPSDIR: "{{ROOTDIR}}/dumps"
+mw_branch: REL1_29
+
+db:
+  host: localhost
+  username: root
+  password: root
+  database: hitchwiki_en
+  prefix:
+  phpmyadmin_password: autobahn
+
+# MailDev is running at port 1025 at dev server
+# https://github.com/djfarrelly/MailDev
+# See http://hitchwiki.test:1080/
+smtp:
+  enabled: true
+  host: localhost
+  port: 1025
+# Should we use SMTP authentication (true or false):
+  auth: false
+  username:
+  password:
+
+# Apache
+webserver_user: www-data
+webserver_group: www-data
+hw_owners: "{{webserver_user}}:{{webserver_group}}"
+HW__general__sitename: Hitchwiki
+HW__general__metanamespace: Hitchwiki
+HW__general__domain: hitchwiki.test
+protocol: http
+cookiedomain: .hitchwiki.test
+
+spam:
+  spamprotection: false
+# https://www.google.com/recaptcha/intro/index.html
+# These keys will work only at domains hitchwiki.test and 192.168.33.10
+# TODO use vault https://docs.ansible.com/ansible/latest/playbooks_vault.html
+  recaptchapublickey: 6Lfx_-cSAAAAAFNMDH9fuFc37x_TYkOAcYHY_ZNc
+  recaptchaprivatekey: 6Lfx_-cSAAAAAAdawoKHU7z83VS3aEJETODcCLQf
+
+# vendor
+mapbox:
+  username: trustroots
+  # MapBox (access token: the public one!)
+  access_token: pk.eyJ1IjoidHJ1c3Ryb290cyIsImEiOiJVWFFGa19BIn0.4e59q4-7e8yvgvcd1jzF4g
+  mapkey_streets: ce8bb774
+  mapkey_satellite: kil7hee6
+
+# Geonames
+geonames_username: hitchwiki
+# use these instead of the above if geonames requests are being throttled
+# during migration. keep this list in the end of the file, as "[]" causes
+# bash_ini_parser to crash (we don't need these variables in bash)
+geonames_usernames:
+  0: hitchwiki
+  1: hitchwiki2
+  2: hitchwiki3
