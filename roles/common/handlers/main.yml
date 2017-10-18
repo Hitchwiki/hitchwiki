@@ -15,7 +15,7 @@
      # TODO use scripts/status.sh
      command: |
        echo "Hitchwiki is now installed!
-       Apache is up. Open http://{{ HW__geieral__domain }}/ in your browser.
+       Apache is up. Open http://{{ HW__general__domain }}/ in your browser.
        Parsoid is running. Open http://{{ HW__general__domain }}:8142 in your browser.
        Maildev is running, inspect emails in your browser http://{{ HW__general__domain }}:1080
        PHPMyAdmin is running, access database via http://{{ HW__general__domain }}/phpmyadmin

@@ -1,6 +1,7 @@
 ---
-# Enable mail support
+# Devlopment specific tasks
 
+# Maildev
 - name: Install PEAR mail, Net_SMTP, Auth_SASL and mail_mime
   pear: name={{item}} state=present
   with_items: { mail, Net_SMTP, Auth_SASL, mail_mime }
@@ -11,9 +12,56 @@
 - name: Setup Maildev to start on reboot
   copy: src=scripts/init_maildev.sh dest=/etc/init.d/maildev mode='755'
 
-- name: Create service symlink
+- name: Create Maildev startup symlink
   command: creates=/etc/rc3.d/S99maildev ln -sf /etc/init.d/maildev /etc/rc3.d/S99maildev
   notify:
     - start maildev
+
+# MariaDB
+- name: Create ~/.my.cnf
+  # https://dev.mysql.com/doc/refman/5.7/en/option-files.html
+  copy:
+    dest: ~/.my.cnf
+    content: |
+      [client]
+      user={{ HW__db__username }}
+      password={{ HW__db__password }}
+
+- name: Set MariaDB root user
+  mysql_user: name={{ HW__db__username }} password={{ HW__db__password }} state=present
+
+- name: Configure MariaDB installation not to prompt for passwords
+  # https://docs.ansible.com/ansible/latest/mysql_db_module.html
+  # Both login_password and login_user are required when you are passing credentials.
+  # If none are present, the module will attempt to read the credentials from ~/.my.cnf,
+  # and finally fall back to using the MySQL default login of ‘root’ with no password.
+  shell: |
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password" {{ HW__db__password }}
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password" {{ HW__db__password }}
+
+# PHP debug
+- name: Turn on PHP errors
+  shell: |
+    sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
+    sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+  notify:
+    - restart apache
+
+# PHPMyAdmin
+- name: configure PHPMyAdmin
+  # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
+  shell: |
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string {{ HW__db__username }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{ HW__db__password }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{ HW__db__phpmyadmin_password }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{ HW__db__phpmyadmin_password }}"
+
+- name: Install PHPMyAdmin
+  apt: package=phpmyadmin state=present
+
+#- name: Add PHPMyAdmin configuration to Apache
+#  command: sed -i -r "s:(Alias /).*(/usr/share/phpmyadmin):\1$PHPMYADMIN_DIR \2:" /etc/phpmyadmin/apache.conf
 
 ...

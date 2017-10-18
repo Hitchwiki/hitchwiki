@@ -7,12 +7,13 @@
        export LANGUAGE="en_US.UTF-8"
 
    - name: update system
+     become: true
      apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
 
    - name: install helper tools
+     become: true
      apt: package={{ item }} state=latest
      with_items:
-       - python
        - unattended-upgrades
        - vim
        - curl

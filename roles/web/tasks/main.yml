@@ -33,29 +33,6 @@
   apt: name={{item}} state=present
   with_items: { php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
 
-- name: Turn on PHP errors
-  shell: |
-    sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
-    sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
-  notify:
-    - restart apache
-
-- name: configure PHPMyAdmin
-  # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
-  shell: |
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string {{ HW__db__username }}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{ HW__db__password }}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{ HW__db__phpmyadmin_password }}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{ HW__db__phpmyadmin_password }}"
-
-- name: Install PHPMyAdmin
-  apt: package=phpmyadmin state=present
-
-#- name: Add PHPMyAdmin configuration to Apache
-#  command: sed -i -r "s:(Alias /).*(/usr/share/phpmyadmin):\1$PHPMYADMIN_DIR \2:" /etc/phpmyadmin/apache.conf
-
 - name: Install composer
   # https://getcomposer.org/download/
   command: |

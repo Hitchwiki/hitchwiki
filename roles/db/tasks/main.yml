@@ -14,27 +14,6 @@
   apt: update_cache=yes package={{item}} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
-- name: Configure MariaDB installation not to prompt for passwords
-  # https://docs.ansible.com/ansible/latest/mysql_db_module.html
-  # Both login_password and login_user are required when you are passing credentials.
-  # If none are present, the module will attempt to read the credentials from ~/.my.cnf,
-  # and finally fall back to using the MySQL default login of ‘root’ with no password.
-  shell: |
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password" {{ HW__db__password }}
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password" {{ HW__db__password }}
-
-#- name: Set MariaDB root user
-#  mysql_user: name={{ HW__db__username }} password={{ HW__db__password }} state=present
-
-- name: Create ~/.my.cnf
-  # https://dev.mysql.com/doc/refman/5.7/en/option-files.html
-  copy:
-    dest: ~/.my.cnf
-    content: |
-      [client]
-      user={{ HW__db__username }}
-      password={{ HW__db__password }}
-
 - name: Secure MariaDB root user
   shell: |
     mysqlmysql -e "UPDATE mysql.user SET Password=PASSWORD('{{ HW__db__password }}') WHERE User='{{ HW__db__username }}'"

@@ -31,9 +31,7 @@
 
 - name: Point Mediawiki configuration to Hitchwiki configuration file
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
-  copy:
-    src: "{{ SCRIPTDIR }}/configs/mediawiki_LocalSettings.php"
-    dest: "{{ WIKIDIR }}/LocalSettings.php"
+  command: creates={{ WIKIDIR }}/LocalSettings.php ln -sf {{ SCRIPTDIR }}/configs/mediawiki_LocalSettings.php {{ WIKIDIR }}/LocalSettings.php
 
 - name: Run Mediawiki install script
   # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script

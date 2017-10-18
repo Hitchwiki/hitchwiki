@@ -40,7 +40,7 @@ After setup your virtual machine is running. Suspend the virtual machine by typi
 When you're ready to begin working again, just run `vagrant provision`.
 
 #### Ansible
-As soon as ssh is ready, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) takes over to configure your system according to the `hitchwiki.yml` [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html):
+As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) takes over to configure the system according to the `hitchwiki.yml` [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html):
 * Upgrade distribution packages
 * Setup MariaDB
 * Setup Apache2 with PHP7

@@ -2,7 +2,7 @@
 # See https://docs.ansible.com/ansible/latest/playbooks_variables.html
 
 # Paths (from scripts/_path_resolve.sh)
-ROOTDIR: "{{ rbenv_root }}"
+ROOTDIR: /var/www
 CONFDIR: "{{ ROOTDIR }}/configs"
 MWCONFFILE: "{{ ROOTDIR }}/mediawiki.php"
 SCRIPTDIR: "{{ ROOTDIR }}/scripts"
@@ -19,4 +19,4 @@ VAGRANT_DUMPSDIR: "{{ VAGRANT_ROOTDIR }}/dumps"
 VAGRANT_WIKIDIR: "{{ VAGRANT_ROOTDIR }}/public/wiki"
 
 # Hitchwiki
-hw_owners: "{{ HW__general__webserver_user }}:{{ HW__general__webserver_group }}"
+hw_owners: "www-data:www-data"
