@@ -23,7 +23,8 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
-$hwConfig = parse_ini_file("settings.ini", true);
+#$hwConfig = parse_ini_file("settings.ini", true);
+$hwConfig = cat ../configs/settings.ini | shyaml get-value mapping
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -354,7 +355,7 @@ require_once 'mediawiki-extensions.php';
 
 
 # Settings for preventing spam on MediaWiki
-# You can turn these on/off from `/configs/settings.ini`
+# You can turn these on/off from `/configs/settings.yml`
 if ($hwConfig['spam']['spamprotection']) {
   require_once 'mediawiki-spam.php';
 }

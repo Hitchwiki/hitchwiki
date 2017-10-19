@@ -30,11 +30,8 @@
       user={{db.username}}
       password={{db.password}}
 
-# TODO just for testing
 - import_tasks: roles/db/tasks/main.yml
-
-- name: Start dbserver
-  service: name={{db.server}} state=started
+  when: not finished_db_tasks
 
 - name: Configure MariaDB not to prompt for passwords
   become: true
@@ -72,7 +69,7 @@
     path: /etc/php/7.0/apache2/php.ini
     regexp: '^error_reporting = E_ALL'
     line: 'error_reporting = .*'
-  when: debug == False
+  when: not debug
   notify: restart apache
 
 - name: Hide PHP errors
@@ -81,14 +78,17 @@
     path: /etc/php/7.0/apache2/php.ini
     regexp: '^display_errors = On'
     line: 'display_errors = .*'
-  when: debug == False
+  when: not debug
   notify: restart apache
 
 # PHPMyAdmin
-  # TODO Is it necessary to run this before the installation of the phpmyadmin package?
+- import_tasks: roles/web/tasks/main.yml
+  when: not finished_web_tasks
+
 - name: Configure PHPMyAdmin
   become: true
   # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
+  # TODO Is it necessary to run this before the installation of the phpmyadmin package?
   shell: |
     debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
@@ -104,7 +104,14 @@
     path: /etc/phpmyadmin/apache.conf
     regexp: '(Alias /).*(/usr/share/phpmyadmin)'
     line: '\1{{PHPMYADMIN_DIR}} \2'
-  # TODO test
   notify: restart apache
+
+- name: Finish installation
+  lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_installation'
+    line: 'finished_installation: True'
+  when: finished_common_tasks and finished_db_tasks and finished_web_tasks and finished_mw_tasks
+  notify: status
 
 ...

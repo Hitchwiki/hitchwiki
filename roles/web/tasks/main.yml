@@ -5,10 +5,10 @@
 #   https://github.com/ansible/ansible-examples/tree/master/lamp_simple
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
 
-- name: Install node, Apache2 with PHP7 and extensions
+- name: Install Apache2 with PHP7 and extensions
   become: yes
-  apt: name={{item}} state=present
-  with_items: { apache2, npm, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
+  apt: name={{ item }} state=present
+  with_items: "{{ pkg.web }}"
 
 - name: Enable apache mod rewrite
   become: yes
@@ -21,8 +21,7 @@
     path: /etc/apache2/apache2.conf
     regexp: 'AllowOverride None'
     replace: 'AllowOverride All'
-
-  shell: sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+    validate: '/usr/sbin/apache2ctl -f %s -t'
   notify: restart apache
 
 - name: Remove default Apache2 site
@@ -42,16 +41,21 @@
 - name: Activate Hitchwiki in Apache2
   become: yes
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
-  become: yes
   notify: restart apache
 
 # NodeSource
-# TODO breaks apt with incomplete Release file
-#- name: Install NodeSoure 8.x
-#  become: yes
+- name: Install NodeSoure 8.x
+  become: yes
+  # TODO breaks apt with incomplete Release file
   # TODO migrate the bash script here
   # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
-#  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-#  ignore_errors: yes
+  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+  when: fixed_nodesource is defined
+
+- name: Finish web tasks
+  lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_web_tasks'
+    line: 'finished_web_tasks: True'
 
 ...

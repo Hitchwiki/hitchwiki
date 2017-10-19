@@ -14,11 +14,10 @@ git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki
 ```
 2. If you want to modify any settings before installation, copy files and do modifications to them:
 ```
-cp configs/settings-example.ini configs/settings.ini
-cp configs/vagrant-example.yaml configs/vagrant.yaml
+cp configs/settings-example.yml configs/settings.yml
 ```
 3. Some of the settings you can modify:
- - If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.ini`)
+ - If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.yml`)
  - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
 #### Install
@@ -34,21 +33,25 @@ This will
 2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
 
-3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` from `configs/vagrant.yaml`
+3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just run `vagrant provision`.
 
 #### Ansible
-As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) takes over to configure the system according to the `hitchwiki.yml` [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html):
+As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml` with the following roles/chapters:
 
 common
 * Upgrade distribution packages
+* Install helpers like composer and node
+* Start downloads in background
+
 db
 * Setup MariaDB
+
 web
 * Setup Apache2 with PHP7
-* Install composer and nodejs
+
 mw
 * Download and extract [Mediawiki](https://www.mediawiki.org/)
 * Install dependencies with Composer
@@ -60,12 +63,12 @@ mw
 
 Depending on your connection this will take some time (40mb for MW alone).
 
-When errors happen, fix them in `roles` and check the syntax with
+When errors happen, fix them in `./roles/*/tasks/main.yml` and check the syntax with
 ```
 ansible-playbook hitchwiki.yml --syntax-check
 ```
 
-Show hosts in the hitchwiki group (configured in `ansible.cfg`):
+Show hosts in the hitchwiki group (configured in `hosts` and `ansible.cfg`):
 ```
 ansible hitchwiki --list-hosts
 ```
@@ -74,6 +77,8 @@ Run ansible without `vagrant provision`:
 ```
 ansible-playbook hitchwiki.yml
 ```
+
+There is still a lot to do. Just risk a `rgrep TODO roles`.
 
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
@@ -87,17 +92,17 @@ If you do changes to Semantic structures (forms, templates etc), you should expo
 ```
 
 ### Import Semantic structure
-
 This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`. It can be done by running:
 ```bash
 ./scripts/vagrant/import_pages.sh
 ```
 
 ### Debug
-* Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
+* Enable debugging mode by setting `debug = true` from `./configs/settings.yml`. You'll then see SQL and PHP warnings+errors.
 * Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
-* When you change Ansible Playbooks, check the syntax with:
+* Add `strategy: debug` to a role to automically load a (quite limited) [debugger](https://docs.ansible.com/ansible/latest/playbooks_debugger.html) to inspect variables when a task fails.
+* Check the syntax of Ansible Playbooks,  with:
 ```
 ansible-playbook hitchwiki.yml --syntax-check
 ```

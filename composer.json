@@ -30,11 +30,12 @@
     }
   ],
   "require": {
-    "wiki": "*"
+    "wiki": "*",
     "mustangostang/spyc": "0.6.2"
   },
   "config": {
-    "vendor-dir": "public/"
+    "vendor-dir": "public/",
+    "process-timeout": 900
   },
   "scripts": {
     "install_vagrant": "scripts/vagrant/install.sh",

@@ -13,8 +13,8 @@ require "fileutils"
 
 # Config file paths
 current_dir = File.dirname(File.expand_path(__FILE__))
-settings_file = "#{current_dir}/configs/vagrant.yaml"
-settings_file_template = "#{current_dir}/configs/vagrant-example.yaml"
+settings_file = "#{current_dir}/configs/settings.yml"
+settings_file_template = "#{current_dir}/configs/settings-example.yml"
 
 # Copy vagrant config file from template file if it doesn't exist yet
 if not File.exist?(settings_file)

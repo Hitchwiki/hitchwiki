@@ -1,21 +1,24 @@
 ---
-- name: Hitchwiki
 # Ansible playbook for hitchwiki development environment
 #   https://docs.ansible.com/ansible/latest/playbooks_intro.html
 # Vagrant starts ansible after bringing up the machine (ubuntu/xenial)
 #   https://docs.ansible.com/ansible/latest/guide_vagrant.html
 #   https://www.vagrantup.com/docs/provisioning/ansible.html
-# The user for the est environment is ubuntu. See Vagrantfile
-  hosts: all
-  remote_user: ubuntu
-#  become: true
- 
-  # Ansible needs python or it fails with "/usr/bin/python: not found"
-  # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
+# Nice read: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
+
+- hosts: all
+  #remote_user: ubuntu # The user for the test environment is ubuntu. See Vagrantfile
   gather_facts: no
+
+  # Example: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
+  #include_vars: "{{ item }}"
+  #with_first_found:
+  #  - "configs/settings.yml"
+  #  - "configs/settings-example.yml"
+
   pre_tasks:
-    - name: 'install python2'
-      raw: sudo apt-get -yqq install python-simplejson
+    - import_tasks: roles/common/tasks/main.yml
+      when: not finished_common_tasks
 
 # Deployment is split into roles with tasks, handlers and templates:
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
@@ -26,34 +29,35 @@
 #- name: Common system configuration
 #  hosts: all
 #  roles:
-#    - common
+#    - { role: common, when: not finished_common_tasks }
 
-#- name: Deploy database server
-#  hosts: all
-#  roles:
-#    - db
+# For development some services like mail-catcher and phpmyadmin are necessary.
 
-#- name: Setup webserver with PHP7 and node
-#  hosts: all
-#  roles:
-#    - web
+- name: Deploy database server
+  hosts: all
+  roles:
+    - { role: db, when: not finished_db_tasks }
+
+- name: Setup webserver with PHP7 and node
+  hosts: all
+  roles:
+    - { role: web, when: not finished_web_tasks }
 
 - name: Install mediawiki, extensions and insert content
   hosts: all
   roles:
-    - mw
+    - { role: mw, when: not finished_mw_tasks }
 
-# For development some services like mail-catcher and phpmyadmin are necessary.
 - name: Setup staging environment
   hosts: all
   roles:
-    - { role: dev, when: env == 'dev' or env == 'staging' }
+    - { role: dev, when: not finished_installation and env == 'dev' }
 
 # Production specific configuration
 - name: Setup production environment
   hosts: all
   roles:
-    - { role: production, when: env == 'prod' }
+    - { role: production, when: not finished_installation and env == 'prod' }
 
 ...
 

@@ -16,7 +16,10 @@
 - name: Install MariaDB
   become: true
   apt: update_cache=yes package={{item}} state=present
-  with_items: { mariadb-server, software-properties-common, python-mysqldb }
+  with_items: "{{ pkg.db }}"
+
+- name: Start dbserver
+  service: name={{db.server}} state=started
 
 - name: Add MariaDB user
   mysql_user: name={{db.username}} password={{db.password}} state=present
@@ -29,5 +32,12 @@
     mysql -e "DELETE FROM mysql.user WHERE User=''"
     mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql -e "FLUSH PRIVILEGES"
+  notify: restart db
+
+- name: Finish db tasks
+  lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_db_tasks'
+    line: 'finished_db_tasks: True'
 
 ...

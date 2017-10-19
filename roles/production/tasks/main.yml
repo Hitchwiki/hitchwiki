@@ -11,7 +11,14 @@
     else
       msg "Skipped installing self signed SSL certificate."
     fi
-  when: ssl
-  ignore_errors: yes
+  when: setup_ssl
+
+- name: Finish installation
+  lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_installation'
+    line: 'finished_installation: True'
+  when: finished_common_tasks and finished_db_tasks and finished_web_tasks and finished_mw_tasks
+  notify: status
 
 ...
