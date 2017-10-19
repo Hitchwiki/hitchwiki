@@ -1,17 +1,14 @@
 ---
-# Bring up apache2 webserver with PHP7, node and composer
+# Bring up apache2 webserver with PHP7 and extensions
+
 # Examples:
 #   https://github.com/ansible/ansible-examples/tree/master/lamp_simple
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
-
-- name: Create /var/www
-  file: state=directory path={{ROOTDIR}}
 
 - name: Install node, Apache2 with PHP7 and extensions
   become: yes
   apt: name={{item}} state=present
   with_items: { apache2, npm, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
-  # TODO do we need to install composer or does it come with ansible
 
 - name: Enable apache mod rewrite
   become: yes
@@ -20,8 +17,12 @@
 
 - name: Allow apache override to all
   become: yes
-  # TODO use ninja2 https://docs.ansible.com/ansible/latest/template_module.html#template
-  command: sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+  replace:
+    path: /etc/apache2/apache2.conf
+    regexp: 'AllowOverride None'
+    replace: 'AllowOverride All'
+
+  shell: sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
   notify: restart apache
 
 - name: Remove default Apache2 site
@@ -39,25 +40,12 @@
   notify: restart apache
 
 - name: Activate Hitchwiki in Apache2
+  become: yes
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
   become: yes
   notify: restart apache
 
-# TODO is it sufficient to use compuser via ansible?
-#- name: Install composer
-  # https://getcomposer.org/download/
-  # TODO use file
-#  command: |
-#    chdir {{ ROOTDIR }}
-#    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    # The installer creates file `composer.phar`
-#    php composer-setup.php --install-dir=/usr/local/bin
-    # Verification hash might change over time so we can't rely on it here...
-    # php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f23$
-#    mv /usr/local/bin/composer.phar /usr/local/bin/composer
-#    rm composer-setup.php
-#  # creates: /usr/local/bin/composer
-
+# NodeSource
 # TODO breaks apt with incomplete Release file
 #- name: Install NodeSoure 8.x
 #  become: yes
@@ -65,21 +53,5 @@
   # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
 #  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 #  ignore_errors: yes
-
-- name: Install bower 1.8
-  become: yes
-  npm: name=bower version='1.8' state=present global=yes
-
-- name: Setup self signed SSL certificate
-  # TODO port to ansible
-  shell: |
-    cd {{ROOTDIR}}
-    if [[ $* == *--ssl* ]]; then
-      bash {{SCRIPTDIR}}/cert_selfsigned.sh
-    else
-      msg "Skipped installing self signed SSL certificate."
-    fi
-  when: ssl
-  ignore_errors: yes
 
 ...

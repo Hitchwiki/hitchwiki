@@ -2,26 +2,10 @@
 # Devlopment specific tasks
 
 # Maildev
-
-#- name: Install pear
-#  become: true
-#  apt: name=php-pear state=present
-#- name: Install npm
-#  become: true
-#  apt: name=npm state=present
-#- name: Install MySQL-python
-#  become: yes
-#  apt: name=python-mysqldb state=present
-#- name: Install PHPMyAdmin
-#  become: true
-#  apt: package=phpmyadmin state=present
-
 - name: Install PHP PEAR modules
   become: true
   pear: name={{item}} state=present
   with_items: { Auth_SASL, mail, mail_mime, Net_SMTP }
-  # TODO Failed to find required executable pear in paths: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
-  ignore_errors: yes
 
 - name: Install Maildev for catching emails while developing
   become: true
@@ -30,15 +14,15 @@
 
 - name: Setup Maildev to start on reboot
   become: true
-  file: state=link src=scripts/init_maildev.sh path=/etc/init.d/maildev mode='755' force=yes
+  file: state=link src={{SCRIPTDIR}}/init_maildev.sh path=/etc/init.d/maildev mode='755' force=yes
 
 - name: Create Maildev startup symlink
   become: true
-  file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev
+  file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev force=yes
 
 # MariaDB
-- name: Create ~/.my.cnf
-  # https://dev.mysql.com/doc/refman/5.7/en/option-files.html
+- name: Save db credentials locally
+  # See https://dev.mysql.com/doc/refman/5.7/en/option-files.html
   copy:
     dest: ~/.my.cnf
     content: |
@@ -46,13 +30,13 @@
       user={{db.username}}
       password={{db.password}}
 
-- name: Set MariaDB root user
-  # TODO root necessary?
-  become: true
-  mysql_user: name={{db.username}} password={{db.password}} state=present
-  notify: restart db
+# TODO just for testing
+- import_tasks: roles/db/tasks/main.yml
 
-- name: Configure MariaDB installation not to prompt for passwords
+- name: Start dbserver
+  service: name={{db.server}} state=started
+
+- name: Configure MariaDB not to prompt for passwords
   become: true
   # https://docs.ansible.com/ansible/latest/mysql_db_module.html
   # Both login_password and login_user are required when you are passing credentials.
@@ -64,15 +48,44 @@
 
 # PHP debug
 # https://github.com/Hitchwiki/hitchwiki/blob/master/configs/mediawiki.php#L59-L63
-- name: Turn on PHP errors
+- name: Turn on PHP error reporting
   become: true
-  shell: |
-    sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
-    sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
+  lineinfile:
+    path: /etc/php/7.0/apache2/php.ini
+    regexp: '^error_reporting = .*'
+    line: 'error_reporting = E_ALL'
   when: debug
   notify: restart apache
 
+- name: Display PHP errors
+  become: true
+  lineinfile:
+    path: /etc/php/7.0/apache2/php.ini
+    regexp: '^display_errors = .*'
+    line: 'display_errors = On'
+  when: debug
+  notify: restart apache
+
+- name: Turn off PHP error reporting
+  become: true
+  lineinfile:
+    path: /etc/php/7.0/apache2/php.ini
+    regexp: '^error_reporting = E_ALL'
+    line: 'error_reporting = .*'
+  when: debug == False
+  notify: restart apache
+
+- name: Hide PHP errors
+  become: true
+  lineinfile:
+    path: /etc/php/7.0/apache2/php.ini
+    regexp: '^display_errors = On'
+    line: 'display_errors = .*'
+  when: debug == False
+  notify: restart apache
+
 # PHPMyAdmin
+  # TODO Is it necessary to run this before the installation of the phpmyadmin package?
 - name: Configure PHPMyAdmin
   become: true
   # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
@@ -83,12 +96,15 @@
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{db.password}}"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{db.phpmyadmin_password}}"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{db.phpmyadmin_password}}"
-  # TODO Is it necessary to run this before the installation of the phpmyadmin package?
   notify: restart apache
 
 - name: Add PHPMyAdmin configuration to Apache
   become: true
-  command: sed -i -r "s:(Alias /).*(/usr/share/phpmyadmin):\1$PHPMYADMIN_DIR \2:" /etc/phpmyadmin/apache.conf
+  lineinfile:
+    path: /etc/phpmyadmin/apache.conf
+    regexp: '(Alias /).*(/usr/share/phpmyadmin)'
+    line: '\1{{PHPMYADMIN_DIR}} \2'
+  # TODO test
   notify: restart apache
 
 ...

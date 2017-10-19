@@ -1,0 +1,26 @@
+---
+# Composer
+- name: Download Composer installer.
+  get_url:
+      url: https://getcomposer.org/installer
+      dest: /tmp/composer-installer.php
+      mode: 0755
+
+- name: Run Composer installer.
+  become: yes
+  command: >
+      php composer-installer.php
+      chdir=/tmp
+      creates={{ composer_path }}
+
+- name: Move Composer into globally-accessible location.
+  become: yes
+  shell: >
+      mv /tmp/composer.phar {{ composer_path }}
+      creates={{ composer_path }}
+
+# Bower
+- name: Install bower 1.8
+  become: yes
+  npm: name=bower version='1.8' state=present global=yes
+

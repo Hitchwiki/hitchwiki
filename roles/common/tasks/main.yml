@@ -1,27 +1,23 @@
 ---
 
-- name: Set language
-  shell: |
-     export LC_ALL="en_US.UTF-8"
-     export LANGUAGE="en_US.UTF-8"
-
-- name: Make sure settings.ini exists
-  file: state=link path="{{SETTINGSFILE}}" src="{{ CONFDIR }}/settings-example.ini" force=yes
-
-- name: Install Bash ini parser
-  git:
-    clone: yes
-    repo: https://github.com/pmgouveia/bash_ini_parser.git
-    dest: "{{ SCRIPTDIR }}/vendor/bash_ini_parser"
-    depth: 1
-  # TODO "Local modifications exist in repository (force=no)."
+- name: Load settins
+  include: config/settings.yml
+  register: result
   ignore_errors: yes
 
-# settings.ini has been added to group_vars/all
-#- name: Load Bash ini parser
-#  shell: |
-#    source {{SCRIPTDIR}}/vendor/bash_ini_parser/read_ini.sh
-#    "{{SCRIPTDIR}}/vendor/bash_ini_parser/read_ini.sh {{SETTINGSFILE}} -p HW"
+- name: Make sure settings.ini exists
+  # TODO replace this by settings.yml
+  file: state=link path="{{SETTINGSFILE}}" src="{{ CONFDIR }}/settings-example.ini" force=yes
+
+- msg: Please copy 'configs/settings-example.yml' to 'configs/settings.yml'.
+  when: result|failed
+
+- name: Set language
+  lineinfile: 
+    path: .profile
+    line: |
+      export LC_ALL="en_US.UTF-8"
+      export LANGUAGE="en_US.UTF-8"
 
 - name: Update system
   become: true

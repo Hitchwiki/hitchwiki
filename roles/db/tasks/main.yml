@@ -1,6 +1,7 @@
 ---
 # Setup database server
-# example: https://github.com/ansible/ansible-examples/tree/master/mongodb
+
+# Example: https://github.com/ansible/ansible-examples/tree/master/mongodb
 
 - name: Add repository for MariaDB
   become: true
@@ -17,14 +18,16 @@
   apt: update_cache=yes package={{item}} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
+- name: Add MariaDB user
+  mysql_user: name={{db.username}} password={{db.password}} state=present
+  notify: restart db
+
 - name: Secure MariaDB root user
-  become: true
   shell: |
-    mysqlmysql -e "UPDATE mysql.user SET Password=PASSWORD('{{db.password}}') WHERE User='{{db.username}}'"
+    #mysqladmin -e "UPDATE mysql.user SET Password=PASSWORD('{{db.password}}') WHERE User='{{db.username}}'"
     mysql -e "DELETE FROM mysql.user WHERE User='{{db.username}}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
     mysql -e "DELETE FROM mysql.user WHERE User=''"
     mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql -e "FLUSH PRIVILEGES"
-  notify: restart db
 
 ...

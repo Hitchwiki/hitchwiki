@@ -1,5 +1,24 @@
 ---
-# Setup mediawiki with Parsoid and fill it with content.
+# Setup mediawiki with Parsoid and fill it with content
+
+# chown www-data.www-data -R /var/www
+# chmod 644 -R /var/www
+- name: Grant wiki folders to webuser
+  become: yes
+  acl: state=present path={{dir.root}} entity=www-data etype=user permissions=rw recursive=yes
+  ignore_errors: yes
+
+- name: Create wiki directories
+  file: state=directory path={{item}} owner=www-data group=www-data mode=664
+  with_items:
+    - "{{ROOTDIR}}/tmp/sessions"
+    - "{{WIKIDIR}}/cache"
+    - "{{WIKIDIR}}/images/cache"
+    - "{{WIKIDIR}}/dumps"
+  ignore_errors: yes
+
+- name: Configure composer
+  copy: src={{CONFDIR}}/composer.local.json dest={{WIKIDIR}}/composer.local.json
 
 - name: Point Mediawiki configuration to Hitchwiki configuration file
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
@@ -7,51 +26,26 @@
 
 - name: Install mediawiki
   composer: command=install no_dev=True working_dir={{ROOTDIR}}
-
-- name: Create wiki directories
-  shell: |
-    mkdir -p {{ROOTDIR}}/tmp/sessions
-    mkdir {{WIKIDIR}}/cache
-    mkdir -p {{WIKIDIR}}/images/cache
-    mkdir {{WIKIDIR}}/dumps
-
-- name: Set wiki folder permissions ({{ROOTDIR}})
-  become: yes
-  acl: entity={{hw_owners}} path={{ROOTDIR}} recursive=yes state=present #permissions=g+rw
-
-- name: Set wiki folder permissions ({{ROOTDIR}}/tmp/sessions)
-  become: yes
-  acl: entity={{hw_owners}} path={{ROOTDIR}}/tmp/sessions recursive=yes state=present permissions=ug+rw
-
-- name: Set wiki folder permissions ({{WIKIDIR}}/images)
-  become: yes
-  acl: entity={{hw_owners}} path={{WIKIDIR}}/images recursive=yes state=present permissions=ug+rw
-
-- name: Set wiki folder permissions ({{WIKIDIR}}/cache)
-  become: yes
-  acl: entity={{hw_owners}} path={{WIKIDIR}}/cache recursive=yes state=present permissions=ug+rw
-
-- name: Configure composer
-  become: yes
-  copy: src={{CONFDIR}}/composer.local.json dest={{WIKIDIR}}/composer.local.json
+  ignore_errors: yes
 
 - name: Download basic MediaWiki extensions
   composer: command=update no_dev=True working_dir={{WIKIDIR}}
+  ignore_errors: yes
 
 - name: Run Mediawiki install script
   # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
   # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
   # sets up wiki in one language ("en")
   # creates one admin user "hitchwiki" with password "autobahn"
-  command: chdir={{ WIKIDIR }} |
-    php maintenance/install.php --conf "{{ MWCONFFILE }}" \   
-    --dbuser {{ HW__db__username }} \
-    --dbpass {{ HW__db__password }} \
-    --dbname {{ HW__db__database }} \
-    --dbtype mysql \
-    --pass autobahn \
-    --scriptpath /{{ WIKIFOLDER }} \
-    --lang en "{{ HW__general__sitename }}" hitchwiki
+  command: chdir={{WIKIDIR}} >
+    php maintenance/install.php --conf "{{MWCONFFILE}}"
+    --dbuser {{db.username}}
+    --dbpass {{db.password}}
+    --dbname {{db.database}}
+    --dbtype mysql
+    --pass autobahn
+    --scriptpath /{{WIKIFOLDER}}
+    --lang en "{{hw.sitename}}" hitchwiki
 
 - name: install MW visual editor
   # Since it requires submodules, we don't install this using composer
@@ -59,15 +53,13 @@
   git:
     clone: yes
     repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-    version: "{{ HW__general__mw_branch }}"
-    dest: "{{ WIKIDIR }}/extensions/VisualEditor"
+    version: "{{hw.branch}}"
+    dest: "{{dir.wiki}}/extensions/VisualEditor"
     depth: 1
     track_submodules: yes
-  # TODO exists
-  ignore_errors: yes
 
 - name: Setup Mediawiki extensions
-  composer: action=run-script working_dir={{WIKIDIR}} arguments="post-install-cmd -d ./extensions/{{ tem}}"
+  composer: action=run-script working_dir={{dir.wiki}} arguments="post-install-cmd -d ./extensions/{{item}}"
   with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
 
 #- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
@@ -90,29 +82,71 @@
 
 - name: Import interwiki table
   # https://www.mediawiki.org/wiki/Extension:Interwiki
-  mysql_db: name={{db.database}} state=import target="{{SCRIPTDIR}}/configs/interwiki.sql"
+  mysql_db: name={{db.database}} state=import target="{{dir.script}}/configs/interwiki.sql"
 
-- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)
+- name: Create MediaWiki users
+  #command: chdir={{dir.root}} bash "{{dir.script}}/create_users.sh"
+  shell: |
+    cd "$WIKIDIR"
+    # Create hitchwiki account
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki autobahn
+    # Create bot account
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot autobahn
+    # Create another dummy account
+    php maintenance/createAndPromote.php Hitchhiker autobahn
+    # Confirm emails for all created users
+    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
+    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
+    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+
+- name: Enable Semantic Mediawiki extension
   # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
   # basically SMW extensions are not included in MediaWiki before this
   # file exists, because it would cause errors when running
   # `maintenance/install.php`.
-  # TODO use file
-  shell: |
-    touch {{ WIKIDIR }}/extensions/SemanticMediaWikiEnabled
-    cd  {{ WIKIDIR }}
-    php maintenance/update.php --quick --conf "$MWCONFFILE"
+  file: path={{dir.wiki}}/extensions/SemanticMediaWikiEnabled
+
+- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)
+  command: chdir={{dir.wiki}} php maintenance/update.php --quick --conf "{{dir.mwconf}}"
 
 - name: Pre-populate the AntiSpoof extension's table
-  command: chdir={{ WIKIDIR }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  command: chdir={{dir.wiki}} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
 
 - name: Create MediaWiki users
-  command: chdir={{ROOTDIR}} bash "{{SCRIPTDIR}}/create_users.sh"
+  command: chdir={{dir.root}} bash "{{dir.script}}/create_users.sh"
 
 - name: Import Semantic templates and other MediaWiki special pages
-  command: chdir={{ROOTDIR}} bash "{{SCRIPTDIR}}/import_pages.sh"
+  command: chdir={{dir.root}} bash "{{dir.script}}/import_pages.sh"
 
-- name: Install parsoid
-  command: chdir={{ROOTDIR}} bash "{{SCRIPTDIR}}/install_parsoid.sh"
+# Parsoid is NodeJS service used by VisualEditor
+# https://www.mediawiki.org/wiki/Parsoid/Setup
+- name: Add Parsoid apt key
+  become: yes
+  apt_key: id=90E9F83F22250DD7 keyserver=keys.gnupg.net
+
+- name: Add Wikimedia repository
+  become: yes
+  apt_repository: state=present repo='deb https://releases.wikimedia.org/debian jessie-mediawiki main'
+
+- name: Install Parsoid
+  become: yes
+  apt: name={{item}} state=present update_cache=yes
+  with_items: { apt-transport-https, install-recommends parsoid }
+
+- name: Create /etc/mediawiki/parsoid/
+  become: yes
+  file: path=/etc/mediawiki/parsoid/ user={{hw.user}}
+
+- name: Configure Parsoid
+  become: yes
+  copy: src={{dir.script}}/configs/parsoid_config.yaml path=/etc/mediawiki/parsoid/config.yaml user={{hw.user}}
+
+- name: Set domain in Parsoid
+  become: yes
+  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{hw.domain}}
+
+- name: Create Parsoid init script
+  become: yes
+  file: state=link src={{dir.script}}/configs/parsoid_initscript path=/etc/default/parsoid
 
 ...
