@@ -12,6 +12,4 @@
     - phpmyadmin
     - mediawiki
 
-# TODO fatal: [hitchwiki]: FAILED! => {"changed": false, "failed": true, "msg": "Unable to restart service apache2: Failed to restart apache2.service: Interactive authentication required.\nSee system logs and 'systemctl status apache2.service' for details.\n"}
-
 ...

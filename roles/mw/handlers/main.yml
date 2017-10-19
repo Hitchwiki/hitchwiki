@@ -1,0 +1,10 @@
+---
+# Mediawiki handlers
+
+- name: Restart Parsoid
+  serivce: name=parsoid state=restarted
+  listen:
+    - restart parsoid
+  tags:
+    - parsoid
+...

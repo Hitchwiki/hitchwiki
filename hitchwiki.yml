@@ -23,40 +23,41 @@
 # Following roles are based on the install_funcs.sh script by Pedro.
 # Common is for system updates, db for mariadb, web for apache2, php and all modules, including composer, mw setups mediawiki and fills it.
 
-- name: Common system configuration
-  hosts: all
-  roles:
-    - common
+#- name: Common system configuration
+#  hosts: all
+#  roles:
+#    - common
 
-- name: Deploy database server
-  hosts: all
-  roles:
-    - db
+#- name: Deploy database server
+#  hosts: all
+#  roles:
+#    - db
 
-- name: Setup webserver with PHP7 and node
-  hosts: all
-  roles:
-    - web
+#- name: Setup webserver with PHP7 and node
+#  hosts: all
+#  roles:
+#    - web
 
 - name: Install mediawiki, extensions and insert content
   hosts: all
   roles:
     - mw
 
-# Production specific configuration
-- name: Production
-  hosts: all
-  roles:
-    - { role: production, when: env == "prod" }
-
 # For development some services like mail-catcher and phpmyadmin are necessary.
-- name: Development
+- name: Setup staging environment
   hosts: all
   roles:
-    - { role: dev, when: env == "dev" }
+    - { role: dev, when: env == 'dev' or env == 'staging' }
+
+# Production specific configuration
+- name: Setup production environment
+  hosts: all
+  roles:
+    - { role: production, when: env == 'prod' }
 
 ...
 
+# Notes
 # !unsafe https://docs.ansible.com/ansible/latest/playbooks_advanced_syntax.html
 # local_home: "{{ lookup('env','HOME') }}" https://docs.ansible.com/ansible/latest/faq.html
 # {{ ansible_env.SOME_VARIABLE }}

@@ -1,0 +1,17 @@
+---
+# Productive environment
+
+# TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
+# Check https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html
+- name: Setup self signed SSL certificate
+  shell: |
+    cd {{ROOTDIR}}
+    if [[ $* == *--ssl* ]]; then
+      bash {{SCRIPTDIR}}/cert_selfsigned.sh
+    else
+      msg "Skipped installing self signed SSL certificate."
+    fi
+  when: ssl
+  ignore_errors: yes
+
+...

@@ -3,7 +3,7 @@
 
 - name: restart db
   become: yes
-  service: name=mariadb enabled=yes state=started
+  service: name={{db.server}} enabled=yes state=restarted
   tags:
     - mariadb
     - db
