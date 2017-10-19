@@ -22,6 +22,7 @@ logs
 
 # Local configs
 /configs/settings.ini
+/configs/settings.yml
 /configs/vagrant.yaml
 
 # Other

@@ -75,6 +75,8 @@ Run ansible without `vagrant provision`:
 ansible-playbook hitchwiki.yml
 ```
 
+There is still a lot to do. Just risk a `rgrep TODO roles`.
+
 #### Pre-created users (user/pass)
 * Admin: Hitchwiki / autobahn
 * Bot: Hitchbot / autobahn
@@ -94,7 +96,7 @@ This is done once at install, but needs to be done each time somebody changes co
 ```
 
 ### Debug
-* Enable debugging mode by setting `debug = true` from `./configs/settings.ini`. You'll then see SQL and PHP warnings+errors.
+* Enable debugging mode by setting `debug = true` from `./configs/settings.yml`. You'll then see SQL and PHP warnings+errors.
 * Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
 * When you change Ansible Playbooks, check the syntax with:

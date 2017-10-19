@@ -1,12 +1,7 @@
 ---
 
-- name: Make sure settings.ini exists
-  # TODO replace this by settings.yml
-  copy: path={{dir.settings}} src={{db.conf}}/settings-example.yml
-  ignore_errors: True
-
-- msg: Please copy 'configs/settings-example.yml' to 'configs/settings.yml'.
-  when: result|failed
+- name: Make sure settings.yml exists
+  copy: path={{dir.settings}} src={{dir.conf}}/settings-example.yml
 
 - name: Set language
   lineinfile: 
