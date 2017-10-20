@@ -24,14 +24,6 @@
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
 # 
 # Following roles are based on the install_funcs.sh script by Pedro.
-# Common is for system updates, db for mariadb, web for apache2, php and all modules, including composer, mw setups mediawiki and fills it.
-
-#- name: Common system configuration
-#  hosts: all
-#  roles:
-#    - { role: common, when: not finished_common_tasks }
-
-# For development some services like mail-catcher and phpmyadmin are necessary.
 
 - name: Deploy database server
   hosts: all

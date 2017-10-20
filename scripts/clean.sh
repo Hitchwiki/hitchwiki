@@ -23,6 +23,6 @@ rm -f "$ROOTDIR/*-cloudimg-console.log"
 rm -f "$ROOTDIR/scripts/*-cloudimg-console.log"
 
 echo "Done! Note that this did not remove config files:"
-echo "- ./configs/settings.ini"
+echo "- ./configs/settings.yml"
 echo "- ./configs/vagrant.yaml"
 echo ""

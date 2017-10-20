@@ -25,6 +25,10 @@
   mysql_user: name={{db.username}} password={{db.password}} state=present
   notify: restart db
 
+- name: Add MariaDB user
+  mysql_user: name={{db.username}} password={{db.password}} state=present
+  notify: restart db
+
 - name: Secure MariaDB root user
   shell: |
     #mysqladmin -e "UPDATE mysql.user SET Password=PASSWORD('{{db.password}}') WHERE User='{{db.username}}'"
@@ -32,7 +36,6 @@
     mysql -e "DELETE FROM mysql.user WHERE User=''"
     mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql -e "FLUSH PRIVILEGES"
-  notify: restart db
 
 - name: Finish db tasks
   lineinfile:

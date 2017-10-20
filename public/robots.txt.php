@@ -6,7 +6,8 @@
 
 header("Content-Type: text/plain");
 
-$hwConfig = parse_ini_file("../configs/settings.ini", true);
+# $hwConfig = parse_ini_file("../configs/settings.ini", true);
+$hwConfig = cat ../configs/settings.ini | shyaml get-value mapping
 
 // Production environment
 if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'prod'):

@@ -43,14 +43,11 @@
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
   notify: restart apache
 
-# NodeSource
+# NodeSource (https://nodejs.org/en/download/package-manager)
 - name: Install NodeSoure 8.x
   become: yes
-  # TODO breaks apt with incomplete Release file
-  # TODO migrate the bash script here
-  # https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
   shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  when: fixed_nodesource is defined
+  # TODO migrate the bash script here
 
 - name: Finish web tasks
   lineinfile:

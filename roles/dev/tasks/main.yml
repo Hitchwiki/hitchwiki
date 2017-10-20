@@ -84,7 +84,6 @@
 # PHPMyAdmin
 - import_tasks: roles/web/tasks/main.yml
   when: not finished_web_tasks
-
 - name: Configure PHPMyAdmin
   become: true
   # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
