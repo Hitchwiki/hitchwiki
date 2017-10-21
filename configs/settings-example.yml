@@ -33,10 +33,10 @@ setup_ssl: false
 hostmanager_enabled: true
 
 pkg:
-  helper:	{ unattended-upgrades, composer, python-pip, tmux, npm, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
-  db:		{ mariadb-server, software-properties-common, python-mysqldb }
-  web:		{ apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
-  mw:		{ apt-transport-https, parsoid }
+  helper: { unattended-upgrades, composer, python-pip, tmux, npm, vim, curl, git, unzip, zip, imagemagick build-essential, python-software-properties, fail2ban }
+  db: { mariadb-server, software-properties-common, python-mysqldb }
+  web: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
+  mw: { apt-transport-https, parsoid }
 
 dir:
   root: 	"/var/www"

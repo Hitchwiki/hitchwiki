@@ -6,6 +6,9 @@
   apt: name=python-simplejson state=present
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
+- name: Make sure settings.yml exists
+  copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
+
 - name: Are variables loaded?
   command: "echo {{ private_network_ip }} {{ hostname }} {{ dir.conf }}"
 
@@ -16,12 +19,11 @@
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
 
-- name: Make sure settings.yml exists
-  copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
-
 - name: Use apt-cacher
+  become: yes
   lineinfile:
     path: /etc/apt/apt.conf.d/apt-cacher-ng
+    create: yes
     regexp: '^Acquire::http::Proxy'
     line: >
       Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";

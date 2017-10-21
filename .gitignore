@@ -24,6 +24,7 @@ logs
 /configs/settings.ini
 /configs/settings.yml
 /configs/vagrant.yaml
+/configs/authorized_keys
 
 # Other
 /public/google*.html

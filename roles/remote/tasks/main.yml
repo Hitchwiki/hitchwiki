@@ -1,0 +1,50 @@
+---
+
+# As root
+- name: Change hostname
+  become: yes
+  hostname: name={{ hostname }}
+
+- name: adduser {{ user }}
+  become: yes
+  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
+  # https://docs.ansible.com/ansible/latest/user_module.html
+
+- name: Set .ssh/authorized_keys from file
+  authorized_key: user={{ user }}  state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
+
+#- name: Create {{ user }} .ssh/authorized_keys
+#  become: yes
+#  copy: src=configs/authorized_keys dest=/home/{{ user }}/.ssh/ owner={{ user }} group={{ user }}
+
+- name: Add {{ user }}'s ssh key for local login
+  remote_user: "{{ user }}"
+  # TODO
+  #lineinfile: line=
+  shell: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+- name: Install pip
+  become: yes
+  apt: name={{ item }} state=present
+  with_items: { git, python-pip }
+
+- name: Install ansible and upgrade pip
+  pip: name={{ item }} state=latest
+  with_items: { pip, ansible }
+
+- name: Clone hitchwiki repository
+  remote_user: "{{ user }}"
+  git:
+    dest: ~/hitchwiki
+    repo: https://github.com/traumschule/hitchwiki
+    version: ansible
+    depth: 1
+
+- name: Link /home/{{ user }}/hitchwiki to /var/www
+  become: yes
+  file: state=link force=yes src="/home/{{ user }}/hitchwiki" path=/var/www
+
+- debug:
+    msg: Success! Now ssh to your new `{{ user }}` user and run `cd hitchwiki; ansible-playbook hitchwiki.yml`.
+
+...

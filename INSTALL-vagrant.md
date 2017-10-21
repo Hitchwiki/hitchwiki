@@ -28,7 +28,7 @@ cp configs/settings-example.yml configs/settings.yml
 
 This will
 * Install [Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin
-* Setup Vagrant box (optional)
+* Setup and boot Vagrant box with provisioning with Ansible (see below)
 
 2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
@@ -36,7 +36,9 @@ You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanag
 3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
-When you're ready to begin working again, just run `vagrant provision`.
+When you're ready to begin working again, just `vagrant up` to coninue and `vagrant provision` if the first run ended with errors.
+
+To add VMs or VPS edit `./hosts`.
 
 #### Ansible
 As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml` with the following roles/chapters:

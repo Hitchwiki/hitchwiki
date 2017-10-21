@@ -23,6 +23,7 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
+# TODO https://secure.php.net/manual/en/book.yaml.php
 #$hwConfig = parse_ini_file("settings.ini", true);
 $hwConfig = cat ../configs/settings.ini | shyaml get-value mapping
 
