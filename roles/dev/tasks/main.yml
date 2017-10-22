@@ -25,17 +25,6 @@
   become: true
   file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev
 
-# MariaDB
-- name: Save db credentials locally
-  # See https://dev.mysql.com/doc/refman/5.7/en/option-files.html
-  # TODO use vault instead
-  copy:
-    dest: ~/.my.cnf
-    content: |
-      [client]
-      user={{db.username}}
-      password={{db.password}}
-
 # PHPMyAdmin
 - import_tasks: roles/web/tasks/main.yml
   when: not finished_web_tasks
