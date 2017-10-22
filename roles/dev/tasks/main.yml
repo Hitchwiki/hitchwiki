@@ -36,44 +36,6 @@
       user={{db.username}}
       password={{db.password}}
 
-# PHP debug
-# https://github.com/Hitchwiki/hitchwiki/blob/master/configs/mediawiki.php#L59-L63
-- name: Turn on PHP error reporting
-  become: true
-  lineinfile:
-    path: /etc/php/7.0/apache2/php.ini
-    regexp: '^error_reporting = .*'
-    line: 'error_reporting = E_ALL'
-  when: debug
-  notify: restart apache
-
-- name: Display PHP errors
-  become: true
-  lineinfile:
-    path: /etc/php/7.0/apache2/php.ini
-    regexp: '^display_errors = .*'
-    line: 'display_errors = On'
-  when: debug
-  notify: restart apache
-
-- name: Turn off PHP error reporting
-  become: true
-  lineinfile:
-    path: /etc/php/7.0/apache2/php.ini
-    regexp: '^error_reporting = E_ALL'
-    line: 'error_reporting = .*'
-  when: not debug
-  notify: restart apache
-
-- name: Hide PHP errors
-  become: true
-  lineinfile:
-    path: /etc/php/7.0/apache2/php.ini
-    regexp: '^display_errors = On'
-    line: 'display_errors = .*'
-  when: not debug
-  notify: restart apache
-
 # PHPMyAdmin
 - import_tasks: roles/web/tasks/main.yml
   when: not finished_web_tasks
