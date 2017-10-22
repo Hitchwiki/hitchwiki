@@ -1,35 +1,9 @@
 ---
 # Common ansible handlers
 
-- name: update system
+- name: Update system
   become: true
-  at: command="apt-get update && apt-get dist-upgrade && apt-get autoremove && apt-get autoclean" count=1 units=minutes
-  #apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
+  apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
   listen: update system
-
-- name: print versions
-  shell: |
-    apache2 --version
-    php -v
-    npm --version
-    node --version
-    bower --version
-    openssl version
-    composer --version
-
-- name: status
-  # TODO use scripts/status.sh
-  command: |
-    echo "Hitchwiki is now installed!
-
-    Apache is up. Open http://{{ HW__general__domain }}/ in your browser.
-    Parsoid is running. Open http://{{ HW__general__domain }}:8142 in your browser.
-    Maildev is running, inspect emails in your browser http://{{ HW__general__domain }}:1080
-    PHPMyAdmin is running, access database via http://{{ HW__general__domain }}/phpmyadmin
-    Suspend the virtual machine by calling 'vagrant suspend'.
-    When you're ready to begin working again, just run 'vagrant up'.
-    To re-install, run 'vagrant destroy && vagrant up'.
-    Read more from http://github.com/Hitchwiki/hitchwiki
-    Good luck!"
 
 ...

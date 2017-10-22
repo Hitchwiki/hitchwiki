@@ -4,6 +4,7 @@
 - name: restart apache
   become: yes
   service: name=apache2 state=restarted
+  register: apache_restart
   tags:
     - apache
     - apache2
@@ -11,5 +12,20 @@
     - webserver
     - phpmyadmin
     - mediawiki
+
+- debug:
+    var: apache_restart.stderr_lines
+
+- lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_web_tasks'
+    line: 'finished_web_tasks: True'
+  when: apache_restart|succeeded
+
+- lineinfile:
+    path: "{{ dir.settings }}"
+    regexp: '^finished_web_tasks'
+    line: 'finished_web_tasks: False'
+  when: apache_restart|failed
 
 ...

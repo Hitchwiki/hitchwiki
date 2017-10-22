@@ -1,11 +1,35 @@
-declare -A services
-ping=$(ping hitchwiki.test -c1|grep "64 bytes from"|wc -l)
-services[apache]=$(wget -q http://hitchwiki.test -O - |grep mediawiki|wc -l)
-services[parsoid]=$(wget -q http://hitchwiki.test:8142 -O -|grep "Parsoid</a> web service"|wc -l)
-services[maildev]=$(wget -q http://hitchwiki.test:1080 -O -|grep "MailDev"|wc -l)
-services[phpmyadmin]=$(wget -q http://hitchwiki.test/phpmyadmin -O -|grep "phpMyAdmin"|wc -l)
+host=127.0.0.1
+protocol=http
 
-if [[ $ping -gt 0 ]] ; then echo "Machine is up."; else echo "Machine is down."; exit; fi
+if [[ $1 ]]; then host=$1; fi
+if [[ $2 ]]; then protocol=$2 ; fi
+url="$protocol://$host"
+
+declare -A services
+services=([apache]="$url Mediawiki" [parsoid]="$url:8142 Parsoid" [maildev]="$url:1080 MailDev" [myadmin]="$url/phpmyadmin phpMyAdmin")
+
+ping=$(ping $host -c1|grep "64 bytes from"|wc -l)
+if [[ $ping -gt 0 ]]
+then
+  echo "Got pong from $url."
+else
+  echo "$url seems offline."
+  exit
+fi
+
+function test {
+  url=$1
+  name=$2
+  html=$(wget -q $url -O -)
+  lines=$(echo $html|grep -i $name|wc -l)
+  result=?
+  if [[ $lines -gt 0 ]]; then result=up; else
+    if [[ -z $html ]] ; then result=down; fi; fi
+  echo -e "\t$name:\t$result\t$url"
+} 
+
 for service in ${!services[@]}; do
-  if [[ ${services[$service]} -gt 0 ]]; then echo "$service is up."; else echo "$service is down." ; fi
+  test ${services[$service]}
 done
+
+if [[ ! $1 ]] ; then echo "(Get info on other other hosts: $(basename $0) ip|hostname http|https)"; fi

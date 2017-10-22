@@ -7,18 +7,10 @@
 # Nice read: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
 
 - hosts: all
-  #remote_user: ubuntu # The user for the test environment is ubuntu. See Vagrantfile
   gather_facts: no
-
-  # Example: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
-  #include_vars: "{{ item }}"
-  #with_first_found:
-  #  - "configs/settings.yml"
-  #  - "configs/settings-example.yml"
-
   pre_tasks:
     - import_tasks: roles/common/tasks/main.yml
-      when: not finished_common_tasks
+      when: finished_common_tasks is undefined or not finished_common_tasks
 
 # Deployment is split into roles with tasks, handlers and templates:
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
@@ -27,29 +19,41 @@
 
 - name: Deploy database server
   hosts: all
+  gather_facts: no
   roles:
     - { role: db, when: not finished_db_tasks }
 
 - name: Setup webserver with PHP7 and node
   hosts: all
+  gather_facts: no
   roles:
     - { role: web, when: not finished_web_tasks }
 
 - name: Install mediawiki, extensions and insert content
   hosts: all
+  gather_facts: no
   roles:
     - { role: mw, when: not finished_mw_tasks }
 
 - name: Setup staging environment
   hosts: all
+  gather_facts: no
   roles:
     - { role: dev, when: not finished_installation and env == 'dev' }
 
 # Production specific configuration
 - name: Setup production environment
   hosts: all
+  gather_facts: no
   roles:
     - { role: production, when: not finished_installation and env == 'prod' }
+
+- name: Status report
+  hosts: all
+  strategy: debug
+  gather_facts: no
+  roles: 
+    - status
 
 ...
 

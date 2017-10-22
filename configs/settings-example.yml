@@ -9,6 +9,7 @@ finished_common_tasks: False
 finished_db_tasks: False
 finished_web_tasks: False
 finished_mw_tasks: False
+finished_dev_tasks: False
 finished_installation: False
 
 # Apt proxy:
@@ -26,29 +27,29 @@ private_network_ip: "192.168.33.10"
 hostname: "hitchwiki.test"
 
 # Setup server using self signed SSL certificate
-setup_ssl: false
+setup_ssl: False
 
 # Set `false` to use only private network IP to access the server.
 # Vagrant won't therefore modify your `/etc/hosts` file neither.
-hostmanager_enabled: true
+hostmanager_enabled: True
 
 pkg:
-  helper: { unattended-upgrades, composer, python-pip, tmux, npm, vim, curl, git, unzip, zip, imagemagick build-essential, python-software-properties, fail2ban }
-  db: { mariadb-server, software-properties-common, python-mysqldb }
-  web: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
-  mw: { apt-transport-https, parsoid }
+  helper: [ unattended-upgrades, composer, tmux, nodejs, npm, python-pip, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban ]
+  db: [ mariadb-server, software-properties-common, python-mysqldb ]
+  web: [ apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext ]
+  mw: [ apt-transport-https, parsoid ]
 
 dir:
-  root: 	"/var/www"
-  conf: 	"/var/www/configs"
-  script: 	"/var/www/scripts"
-  pages: 	"/var/www/scripts/pages"
-  settings: 	"/var/www/configs/settings.yml"
-  wikifolder:	"wiki"
-  wiki: 	"/var/www/public/wiki"
-  mwconf: 	"/var/www/configs/mediawiki.php"
-  dumps: 	"/var/www/dumps"
-  phpmyadmin:	"/usr/share/phpmyadmin"
+  root: /var/www
+  conf: /var/www/configs
+  script: /var/www/scripts
+  pages: /var/www/scripts/pages
+  settings: /var/www/configs/settings.yml
+  wikifolder: wiki
+  wiki: /var/www/public/wiki
+  mwconf: /var/www/configs/mediawiki.php
+  dumps: /var/www/dumps
+  phpmyadmin: /usr/share/phpmyadmin
 
 db:
   server: mariadb
@@ -58,19 +59,20 @@ db:
   database: hitchwiki_en
   prefix:
   phpmyadmin_password: autobahn
+db_credentials: "-u {{ db.username }} -p{{ db.password }}"
 
 # Apache
 webserver_user: www-data
 webserver_group: www-data
 
 hw:
-  branch:		REL1_29
-  owner:		"{{ webserver_user }}:{{ webserver_group }}"
-  sitename:		Hitchwiki
-  metanamespace:	Hitchwiki
-  domain:		hitchwiki.test
-  cookiedomain:		.hitchwiki.test
-  protocol:		http # change to https with enabled TLS
+  branch: REL1_29
+  owner: "{{ webserver_user }}:{{ webserver_group }}"
+  sitename: Hitchwiki
+  metanamespace: Hitchwiki
+  domain: hitchwiki.test
+  cookiedomain: .hitchwiki.test
+  protocol: http # change to https with enabled TLS
 
 # MailDev is running at port 1025 at dev server
 # https://github.com/djfarrelly/MailDev
@@ -85,7 +87,7 @@ smtp:
   password:
 
 spam:
-  spamprotection: false
+  spamprotection: False
 # https://www.google.com/recaptcha/intro/index.html
 # These keys will work only at domains hitchwiki.test and 192.168.33.10
 # TODO use vault https://docs.ansible.com/ansible/latest/playbooks_vault.html
@@ -111,19 +113,19 @@ geonames_usernames:
   2: hitchwiki3
 
 # DEPRECATED TODO replace with above names if you find them to be referenced somewhere
-ROOTDIR:	"{{ dir.root }}"
-CONFDIR:	"{{ dir.conf }}"
-SCRIPTDIR:	"{{ dir.script }}"
-PAGESDIR:	"{{ dir.pages }}"
-SETTINGSFILE:	"{{ dir.settings }}"
-WIKIFOLDER:	"{{ dir.wikifolder }}"
-WIKIDIR:	"{{ dir.wiki }}"
-MWCONFFILE:	"{{ dir.mwconf }}"
-DUMPSDIR:	"{{ dir.dumps }}"
-PHPMYADMINDIR:	"{{ dir.phpmyadmin }}"
-hw_owners:			"{{ hw.owner }}"
-HW__general__sitename:		"{{ hw.sitename }}"
-HW__general__metanamespace:	"{{ hw.metanamespace }}"
-HW__general__domain:		"{{ hw.domain }}"
-protocol:			"{{ hw.protocol }}"
-cookiedomain:			"{{ hw.cookiedomain }}"
+ROOTDIR: "{{ dir.root }}"
+CONFDIR: "{{ dir.conf }}"
+SCRIPTDIR: "{{ dir.script }}"
+PAGESDIR: "{{ dir.pages }}"
+SETTINGSFILE: "{{ dir.settings }}"
+WIKIFOLDER: "{{ dir.wikifolder }}"
+WIKIDIR: "{{ dir.wiki }}"
+MWCONFFILE: "{{ dir.mwconf }}"
+DUMPSDIR: "{{ dir.dumps }}"
+PHPMYADMINDIR: "{{ dir.phpmyadmin }}"
+hw_owners: "{{ hw.owner }}"
+HW__general__sitename: "{{ hw.sitename }}"
+HW__general__metanamespace: "{{ hw.metanamespace }}"
+HW__general__domain: "{{ hw.domain }}"
+protocol: "{{ hw.protocol }}"
+cookiedomain: "{{ hw.cookiedomain }}"

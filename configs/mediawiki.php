@@ -24,8 +24,8 @@ session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_sa
 
 # Load Hitchwiki Config
 # TODO https://secure.php.net/manual/en/book.yaml.php
-#$hwConfig = parse_ini_file("settings.ini", true);
-$hwConfig = cat ../configs/settings.ini | shyaml get-value mapping
+#$hwConfig = eval 'cat ../configs/settings.ini | shyaml get-value mapping';
+$hwConfig = parse_ini_file("settings.ini", true);
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))

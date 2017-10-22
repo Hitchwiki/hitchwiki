@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+  gather_facts: no
+
+- name: Status report
+  hosts: all
+  gather_facts: no
+  roles:
+    - status
+
+...

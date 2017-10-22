@@ -10,6 +10,11 @@
   apt: name={{ item }} state=present
   with_items: "{{ pkg.web }}"
 
+- name: Enable SSL support in Apache
+  become: yes
+  apache2_module: name=ssl state=present
+  notify: restart apache
+
 - name: Enable apache mod rewrite
   become: yes
   apache2_module: name=rewrite state=present
@@ -21,7 +26,21 @@
     path: /etc/apache2/apache2.conf
     regexp: 'AllowOverride None'
     replace: 'AllowOverride All'
-    validate: '/usr/sbin/apache2ctl -f %s -t'
+
+- name: Validate apache config syntax
+  shell: /usr/sbin/apache2ctl -f /etc/apache2/apache2.conf -t
+  register: validate_apache_syntax
+- debug:
+    var: validate_apache_syntax.stderr_lines
+
+- name: Configure Hitchwiki for Apache2
+  become: yes
+  file: state=link src={{ dir.conf }}/apache-hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf
+  notify: restart apache
+
+- name: Activate Hitchwiki in Apache2
+  become: yes
+  file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf
   notify: restart apache
 
 - name: Remove default Apache2 site
@@ -29,28 +48,28 @@
   file: state=absent path=/etc/apache2/sites-enabled/000-default.conf
   notify: restart apache
 
-- name: Remove default Apache2 webroot
+- name: Clean out folder created by Apache installer
+  become: yes
   file: state=absent path={{ROOTDIR}}/html
   notify: restart apache
 
-- name: Configure Hitchwiki for Apache2
-  become: yes
-  file: state=link src={{CONFDIR}}/apache-hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
-  notify: restart apache
-
-- name: Activate Hitchwiki in Apache2
-  become: yes
-  file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf force=yes
-  notify: restart apache
 
 # NodeSource (https://nodejs.org/en/download/package-manager)
-- name: Install NodeSoure 8.x
+- name: Add apt source for NodeSoure 8.x
   become: yes
   shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   # TODO migrate the bash script here
+  # TODO [WARNING]: Consider using get_url or uri module rather than running curl
 
-- name: Finish web tasks
-  lineinfile:
+- name: Install nodejs
+  become: yes
+  apt: name=nodejs state=present update_cache=yes
+
+- name: Link nodejs to node
+  become: yes
+  file: state=link src=/usr/bin/nodejs path=/usr/local/bin/node
+
+- lineinfile:
     path: "{{ dir.settings }}"
     regexp: '^finished_web_tasks'
     line: 'finished_web_tasks: True'

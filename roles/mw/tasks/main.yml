@@ -1,35 +1,141 @@
 ---
 # Setup mediawiki with Parsoid and fill it with content
 
-- name: Is mediawiki installed?
-  command: ls {{ dir.wiki }}/index.php
-  register: mediawiki_installed
+- name: Backup wiki folder
+  # TODO safe to remove
+  shell: mv {{ dir.wiki }} {{ dir.wiki }}.bck
+  #archive: path={{ dir.wiki }} remove=True
+  #when: lookup('file', "{{ dir.wiki }}")
+  #move: src={{ dir.wiki }} path={{ dir.wiki }}.bck
+  #file: path={{ dir.wiki }} recurse=yes owner={{ ansible_user_id }} group={{ ansible_user_id }} #mode=640
   ignore_errors: yes
 
-- name: Raise Composer timeout
-  when: mediawiki_installed|failed
-  shell: composer config -g process-timeout 900
-  ignore_errors: yes
+- name: Drop Mediawiki database
+  # TODO use vault
+  mysql_db: name={{ db.database }} state=absent login_user={{ db.username }} login_password={{ db.password }}
+  
+- name: Create database
+  # TODO use vault
+  mysql_db: name={{ db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ db.username }} login_password={{ db.password }}
+  #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
 
-- name: Install mediawiki (background)
-  when: mediawiki_installed|failed
-  at: command='cd {{ dir.root }} && composer install --no-dev --no-autoloader -vv 2>&1 |tee -a composer.log' count=1 units=minutes
-  register: install_mediawiki
 
-# Prepare folders
-- name: Grant wiki folder to webuser
-  become: yes
-  file: path={{ dir.wiki }} recurse=yes owner={{ webserver_user }} group={{ webserver_group }} #mode=640
+# Mediawiki installation
+- name: Install mediawiki
+  composer: command=install no_dev=True working_dir={{ dir.root }}
 
 - name: Create wiki directories
   become: yes
-  file: state=directory path={{ item }} owner=www-data group=www-data mode=664
+  file: state=directory path={{ item }} owner={{ ansible_user_id }} group={{ ansible_user_id }} mode=664
   with_items:
     - "{{ dir.root }}/tmp/sessions"
     - "{{ dir.wiki }}/cache"
     - "{{ dir.wiki }}/images/cache"
     - "{{ dir.wiki }}/dumps"
     - "{{ dir.wiki }}/extensions"
+
+- name: Grant extensions folder to ansible user
+  become: yes
+  file: state=directory path={{dir.wiki}} recurse=yes owner=1050 group=1050 mode=774
+
+- name: Configure composer
+  file: state=link src={{ dir.conf }}/composer.local.json dest={{ dir.wiki }}/composer.local.json
+
+- name: Download basic MediaWiki extensions
+  become: yes
+  composer: command=update no_dev=True working_dir={{ dir.wiki }}
+
+- name: Setup Mediawiki extensions
+  composer: working_dir={{dir.wiki}} command=run-script no_dev=True arguments="post-install-cmd -d ./extensions/{{ item }}"
+  with_items: [ HWMap, HitchwikiVector, HWRatings, HWLocationInput ]
+
+#- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
+  # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
+  #
+  # We are using GeoData's function in templates to index articles with spatial info
+  #
+  # TODO: any solution that is cleaner than this temporary dirty hack..
+  #echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
+  # sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
+  # sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script.
+  # See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
+
+- name: Run Mediawiki install script
+  shell: >
+    cd {{ dir.wiki }}
+    php maintenance/install.php --conf "{{ dir.mwconf }}"
+    --dbuser {{db.username}}
+    --dbpass {{db.password}}
+    --dbname {{db.database}}
+    --dbtype mysql
+    --pass {{ db.phpmyadmin_password }}
+    --scriptpath /{{ dir.wiki }}vault
+    --lang en "{{hw.sitename}}" hitchwiki
+  # sets up wiki in one language ("en")
+  # creates one admin user "hitchwiki" with password "autobahn"
+  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
+  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
+
+
+# MW visual editor
+- name: Install MW visual editor
+  git:
+    clone: yes
+    repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+    version: "{{ hw.branch }}"
+    dest: "{{ dir.wiki }}/extensions/VisualEditor"
+    depth: 1
+    track_submodules: yes
+    force: yes
+  # Since it requires submodules, we don't install this using composer
+  # https://www.mediawiki.org/wiki/Extension:VisualEditor
+
+
+# Setup Mediawiki
+- name: Configure Hitchwiki
+  file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
+  # Config file is stored elsewhere, require it from MW's LocalSettings.php
+
+- name: Import interwiki table
+  # TODO use vault
+  mysql_db: name={{ db.database }} state=import target="{{ dir.script }}/configs/interwiki.sql" login_user={{ db.username }} login_password={{ db.password }}
+  # https://www.mediawiki.org/wiki/Extension:Interwiki
+
+- name: Enable Semantic Mediawiki extension
+  file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
+  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+  # basically SMW extensions are not included in MediaWiki before this
+  # file exists, because it would cause errors when running
+  # `maintenance/install.php`.
+
+- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc.)
+  command: chdir={{ dir.wiki }} php maintenance/update.php --quick --conf "{{ dir.mwconf }}"
+  # TODO check output
+  ignore_errors: yes
+
+- name: Pre-populate the AntiSpoof extension's table
+  command: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  # TODO check output
+  ignore_errors: yes
+
+- name: Create MediaWiki users
+  # TODO use vault
+  shell: >
+    cd "{{ dir.wiki }}"
+    echo "Create hitchwiki account"
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ db.phpmyadmin_password }}
+    echo "Create bot account"
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ db.phpmyadmin_password }}
+    echo "Create dummy account"
+    php maintenance/createAndPromote.php Hitchhiker {{ db.phpmyadmin_password }}
+    echo "Confirm emails for created users"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+
+- name: Import Semantic templates and other MediaWiki special pages
+  command: chdir={{ dir.root }} bash "{{ dir.script }}/import_pages.sh"
+
 
 # Parsoid is a NodeJS service used by VisualEditor (https://www.mediawiki.org/wiki/Parsoid/Setup)
 - name: Add Parsoid apt key
@@ -59,105 +165,13 @@
 
 - name: Create Parsoid init script
   become: yes
-  file: state=link src={{ dir.script }}/configs/parsoid_initscript path=/etc/default/parsoid
-  ignore_errors: yes
+  # TODO do we need to overwrite the packaged version?
+  copy: force=no src={{ dir.script }}/configs/parsoid_initscript path=/etc/default/parsoid
+  when: not lookup('file', '/etc/default/parsoid')
 
-# Continue Mediawiki installation
-- name: Check if mediawiki installation succeeded
-  command: ls {{ dir.wiki }}/index.php
-
-- name: Configure Hitchwiki
-  file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
-  # Config file is stored elsewhere, require it from MW's LocalSettings.php
-
-- name: Configure composer
-  copy: src="configs/composer.local.json" dest="{{ dir.wiki }}/composer.local.json"
-
-- name: Download basic MediaWiki extensions
-  composer: command=update no_dev=True working_dir={{ dir.wiki }}
-
-- name: Setup Mediawiki extensions
-  composer: action=run-script working_dir={{dir.wiki}} arguments="post-install-cmd -d ./extensions/{{item}}"
-  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
-
-#- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
-  # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
-  #
-  # We are using GeoData's function in templates to index articles with spatial info
-  #
-  # TODO: any solution that is cleaner than this temporary dirty hack..
-  #echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
-  # sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
-  # sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script.
-  # See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
-
-# MW visual editor
-- name: install MW visual editor
-  git:
-    clone: yes
-    repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-    version: "{{hw.branch}}"
-    dest: "{{ dir.wiki }}/extensions/VisualEditor"
-    depth: 1
-    track_submodules: yes
-  # Since it requires submodules, we don't install this using composer
-  # https://www.mediawiki.org/wiki/Extension:VisualEditor
-
-- name: Drop Mediawiki database
-  mysql_db: name={{ db.database }} state=absent
-  
-- name: Create database
-  mysql_db: name={{ db.database }} state=present encoding=utf8 collation=utf8_general_ci
-  #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
-
-- name: Run Mediawiki install script
-  command: chdir={{ dir.wiki }} >
-    php maintenance/install.php --conf "{{ dir.mwconf }}"
-    --dbuser {{db.username}}
-    --dbpass {{db.password}}
-    --dbname {{db.database}}
-    --dbtype mysql
-    --pass {{ db.phpmyadmin_password }}
-    --scriptpath /{{ dir.wiki }}
-    --lang en "{{hw.sitename}}" hitchwiki
-  # sets up wiki in one language ("en")
-  # creates one admin user "hitchwiki" with password "autobahn"
-  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
-  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-
-- name: Import interwiki table
-  mysql_db: name={{ db.database }} state=import target="{{ dir.script }}/configs/interwiki.sql"
-  # https://www.mediawiki.org/wiki/Extension:Interwiki
-
-- name: Create MediaWiki users
-  shell: >
-    cd "{{ dir.wiki }}"
-    echo "Create hitchwiki account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ db.phpmyadmin_password }}
-    echo "Create bot account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ db.phpmyadmin_password }}
-    echo "Create dummy account"
-    php maintenance/createAndPromote.php Hitchhiker {{ db.phpmyadmin_password }}
-    echo "Confirm emails for created users"
-    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-    mysql $HW__db__database -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
-
-- name: Enable Semantic Mediawiki extension
-  file: path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
-  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
-  # basically SMW extensions are not included in MediaWiki before this
-  # file exists, because it would cause errors when running
-  # `maintenance/install.php`.
-
-- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc)
-  command: chdir={{ dir.wiki }} php maintenance/update.php --quick --conf "{{ dir.mwconf }}"
-
-- name: Pre-populate the AntiSpoof extension's table
-  command: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
-
-- name: Import Semantic templates and other MediaWiki special pages
-  command: chdir={{ dir.root }} bash "{{ dir.script }}/import_pages.sh"
+- name: Grant wiki folder to webuser
+  become: yes
+  file: path={{ dir.wiki }} recurse=yes owner={{ webserver_user }} group={{ webserver_group }} #mode=640
 
 - name: Finished Mediawiki installation
   lineinfile:

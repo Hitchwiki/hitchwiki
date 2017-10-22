@@ -3,14 +3,15 @@
 
 - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
   become: yes
-  apt: name=python-simplejson state=present
+  raw: apt-get install -yq python-simplejson
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
 - name: Make sure settings.yml exists
   copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
 
-- name: Are variables loaded?
-  command: "echo {{ private_network_ip }} {{ hostname }} {{ dir.conf }}"
+- name: Load variables
+  include_vars: configs/settings.yml
+  when: hostname is undefined
 
 - name: Set language
   lineinfile: 
@@ -33,17 +34,20 @@
 
 # Start long downloads in background
 # See: http://www.linuxnix.com/ansible-run-commands-in-background-in-playbooks
-- name: install helper tools
-  become: true
-  at: command="apt-get install {{ pkg.helper }}, {{ pkg.db }}, {{ pkg.web }}, {{ pkg.mw }}" count=1 units=minutes
-  #notify: update system
 
-- name: Install mediawiki
-  at: command='cd {{ dir.root }} && composer install --no-dev --no-autoloader -vv 2>&1 |tee -a composer.log' count=1 units=minutes
+- name: Install helper tools
+  become: true
+  apt: name={{ item }} state=present update_cache=yes
+  with_items: "{{ pkg.helper }}"
+  notify: update system
+
+- name: Install bower
+  become: yes
+  npm: name=bower version=~1.8 state=present global=yes
 
 - name: Install shyaml to parse yml files
-  at: command="pip install shyaml" count=1 units=minutes
-  #pip: name=shyaml state=present
+  become: yes
+  pip: name=shyaml state=present
 
 - name: Finish common tasks
   lineinfile:

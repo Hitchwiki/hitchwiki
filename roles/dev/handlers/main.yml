@@ -1,15 +1,15 @@
 ---
 # Handlers for the development environment
 
-- import_tasks: roles/db/handlers/main.yml
-- import_tasks: roles/web/handlers/main.yml
+- include_tasks: roles/db/handlers/main.yml
+- include_tasks: roles/web/handlers/main.yml
 
 - name: restart maildev
   become: yes
   service: name=maildev enabled=yes state=started
   tags:
     - mail
-    - stml
+    - smptp
     - maildev
 
 ...

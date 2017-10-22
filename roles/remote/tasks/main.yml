@@ -5,6 +5,13 @@
   become: yes
   hostname: name={{ hostname }}
 
+- name: Add {{ hostname }} to `/etc/hosts`
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127.0.0.1'
+    line: 127.0.0.1 localhost {{ hostname }}
+
 - name: adduser {{ user }}
   become: yes
   user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
@@ -12,10 +19,6 @@
 
 - name: Set .ssh/authorized_keys from file
   authorized_key: user={{ user }}  state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
-
-#- name: Create {{ user }} .ssh/authorized_keys
-#  become: yes
-#  copy: src=configs/authorized_keys dest=/home/{{ user }}/.ssh/ owner={{ user }} group={{ user }}
 
 - name: Add {{ user }}'s ssh key for local login
   remote_user: "{{ user }}"
@@ -36,9 +39,14 @@
   remote_user: "{{ user }}"
   git:
     dest: ~/hitchwiki
-    repo: https://github.com/traumschule/hitchwiki
+    repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
     depth: 1
+# set
+
+# TODO remove later
+- name: Track ansible branch
+  shell: cd ~/hitchwiki; git branch --set-upstream-to=origin/ansible ansible
 
 - name: Link /home/{{ user }}/hitchwiki to /var/www
   become: yes
