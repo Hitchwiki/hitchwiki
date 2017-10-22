@@ -3,6 +3,11 @@
 
 # TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
 # Check https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html
+- name: Enable SSL support in Apache
+  become: yes
+  apache2_module: name=ssl state=present
+  notify: restart apache
+
 - name: Setup self signed SSL certificate
   shell: |
     cd {{ROOTDIR}}
@@ -12,6 +17,35 @@
       msg "Skipped installing self signed SSL certificate."
     fi
   when: setup_ssl
+
+# Monit
+#- name: Clone into Monit 
+#  git: repo: git clone=https://tildeslash@bitbucket.org/tildeslash/monit.git dest=~/moniit depth=1
+
+#- name: Install monit dependencies
+#  apt: name={{item}} state=present
+#  with_items: { automake bison byacc flex libpam0g-dev } # libtool m4
+
+#- name: Build monit
+#  shell: |
+#    cd ~/monit
+#    ./configure
+#    make
+
+#- name: Install monit
+#  become: yes
+#  shell: cd /home/{{ ansible_user_id }}/monit; make install
+- name: Install monit
+  apt: name=monit state=present
+
+- name: Monitor services
+  monit: name={{item}} state=started
+  # https://docs.ansible.com/ansible/latest/monit_module.html
+  with_items:
+    - apache2
+    - mariadb
+    - 
+# TODO untested
 
 - name: Finish installation
   lineinfile:
