@@ -6,8 +6,8 @@
 
 header("Content-Type: text/plain");
 
-# $hwConfig = parse_ini_file("../configs/settings.ini", true);
-$hwConfig = cat ../configs/settings.ini | shyaml get-value mapping
+require_once 'mustangostang/spyc/spyc.php';
+$hwConfig = spyc_load_file('../configs/settings.yaml');
 
 // Production environment
 if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'prod'):

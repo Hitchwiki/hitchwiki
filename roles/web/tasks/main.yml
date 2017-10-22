@@ -10,11 +10,6 @@
   apt: name={{ item }} state=present
   with_items: "{{ pkg.web }}"
 
-- name: Enable SSL support in Apache
-  become: yes
-  apache2_module: name=ssl state=present
-  notify: restart apache
-
 - name: Enable apache mod rewrite
   become: yes
   apache2_module: name=rewrite state=present
@@ -53,6 +48,21 @@
   file: state=absent path={{ROOTDIR}}/html
   notify: restart apache
 
+- name: Increase post size in php.ini
+  become: yes
+  lineinfile:
+    path: /etc/php/7.0/cli/php.ini
+    state: present
+    regexp: '^php_value post_max_size'
+    line: php_value post_max_size 10M
+
+- name: Increase upload limit in php.ini
+  become: yes
+  lineinfile:
+    path: /etc/php/7.0/cli/php.ini
+    state: present
+    regexp: '^php_value upload_max_filesize'
+    line: php_value upload_max_filesize 8M
 
 # NodeSource (https://nodejs.org/en/download/package-manager)
 - name: Add apt source for NodeSoure 8.x
