@@ -1,0 +1,23 @@
+---
+# Transport Layer Security (set `setup_ssl: True`)
+
+# TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
+# Upcoming: mod_md fo apache 2.4.x https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html
+# Build instructions: https://github.com/icing/mod_md/wiki/2.4.x-Installation
+# Packages: https://launchpad.net/%7Eondrej/+archive/ubuntu/apache2/+packages
+# Configuration: https://github.com/icing/mod_md/wiki
+#  - For now, in such a setup, you have to manually restart httpd for any certificate changes to take effect.
+- name: Add apache mod_md repository (TLS)
+  apt_repository: state=present repo=ppa:ondrej/apache2
+  when: setup_ssl
+  # https://launchpad.net/%7Eondrej/+archive/ubuntu/apache2/+packages
+
+- name: Install patched apache 2.4.29 (TLS)
+  apt: name={{item}} state=latest update_cache=yes
+  with_items: 
+    - apache2
+    - apache2-dbg
+    - libapache2-mod-md
+  when: setup_ssl
+
+...

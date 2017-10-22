@@ -1,21 +1,8 @@
 ---
 # Productive environment
 
-# TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
-# Check https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html
-- name: Enable SSL support in Apache
-  become: yes
-  apache2_module: name=ssl state=present
-  notify: restart apache
-
-- name: Setup self signed SSL certificate
-  shell: |
-    cd {{ROOTDIR}}
-    if [[ $* == *--ssl* ]]; then
-      bash {{SCRIPTDIR}}/cert_selfsigned.sh
-    else
-      msg "Skipped installing self signed SSL certificate."
-    fi
+- name: Transport Layer Security (setup_ssl)
+  include_tasks: setup_ssl.yml
   when: setup_ssl
 
 # Monit
@@ -41,9 +28,12 @@
 - name: Monitor services
   monit: name={{item}} state=started
   # https://docs.ansible.com/ansible/latest/monit_module.html
+  # https://mmonit.com/monit/documentation/monit.html
   with_items:
     - apache2
     - mariadb
+
+
     - 
 # TODO untested
 

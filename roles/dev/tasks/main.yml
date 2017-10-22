@@ -1,6 +1,10 @@
 ---
 # Devlopment specific tasks
 
+- name: Transport Layer Security (setup_ssl)
+  include_tasks: setup_ssl.yml
+  when: setup_ssl
+
 # Maildev
 - name: Install PHP PEAR modules
   become: true

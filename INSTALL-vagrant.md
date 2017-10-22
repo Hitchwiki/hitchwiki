@@ -41,6 +41,8 @@ When you're ready to begin working again, just `vagrant up` to coninue and `vagr
 To add VMs or VPS edit `./hosts`.
 
 #### Ansible
+To test current ansible development: `git clone https://github.com/traumschule/hitchwiki -b ansible`.
+
 As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml` with the following roles/chapters:
 
 common
@@ -108,6 +110,11 @@ This is done once at install, but needs to be done each time somebody changes co
 ```
 ansible-playbook hitchwiki.yml --syntax-check
 ```
+
+# Encryption
+To test encryption test provisioning and set `setup_ssl: True` in `settings.yml` (the variable name may change in the future).
+- _staging (development)_ uses the legacy `scripts/cert_selfsigned.sh`
+- _production_ is configured to test the unreleased [mod_md](https://github.com/icing/mod_md) module to support  [ACME in apache 2.4.x](https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html)
 
 ### Update
 1. Pull latest changes: `git pull origin master`
