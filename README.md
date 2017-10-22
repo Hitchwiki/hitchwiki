@@ -19,31 +19,7 @@ Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwik
 
 ## Installing
 
-We have two major ways of running the software:
-
-### Installing with Vagrant (recommended)
-
-The easiest and quickest way to get started is with Vagrant. Running through Vagrant can be a little bit slower. See [INSTALL-vagrant.md](INSTALL-vagrant.md) for further details.
-
-### Installing locally
-
-Install the stack on your localhost. This approach takes a little more time to setup, and bit more manual configuration, but is super fast, and can be easier to work with. See [INSTALL.md](INSTALL.md) for details.
-
-### Install remotely
-
-If you have root access to a remote machine, you can deploy hitchwiki there:
-- Copy configs/settings.yml from configs/settings-example.yml
-- Add the IP address to the `[remote]` section in `hosts`
-- Run `ssh-keygen` locally and add it to `/home/root/.ssh/authorized_keys` on your machine.
-- Change `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
-# (optional) Change `user` and `hostname` in `roles/remote/vars/main.yml`
-# Add to your local ~/.ssh/config:
-```
-Host hw-dev
-  HostName {{ ip address }}
-  User {{ user }} # default: hitchwiki
-```
-- now run `ansible-playbooks deploy_remote.yml`
+We use ansible to deploy locally or via vagrant, see [INSTALL.md](INSTALL.md) for details.
 
 ## License
 Code [MIT](LICENSE.md)

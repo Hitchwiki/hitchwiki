@@ -1,46 +1,184 @@
-# Running Hitchwiki locally
+## Installing using vagrant
 
-_These instructions are for installing locally and manually (updating might be tedious). If you'd like to have virtualized setup, see [INSTALL-vagrant.md](INSTALL-vagrant.md) instead._
+### Prerequisites
+* A GNU/Linux or OS X machine. Let us know if this works with Cygwin.
+* Install [VirtualBox](https://www.virtualbox.org/) ([...because](http://docs.vagrantup.com/v2/virtualbox))
+* Install [Vagrant](https://www.vagrantup.com/) v2 ([docs](https://docs.vagrantup.com/v2/installation/))
+* Make sure you have [`git`](http://git-scm.com/) installed on your system. (`git --version`)
 
-## Prerequisites
+### Install
 
-Make sure you have installed all these prerequisites:
-* mysql
-* apache2
-* php
-* git
+1. Clone the repo:
+```
+git clone https://github.com/Hitchwiki/hitchwiki.git && cd hitchwiki
+```
+2. If you want to modify any settings before installation, copy files and do modifications to them:
+```
+cp configs/settings-example.yml configs/settings.yml
+```
+3. Some of the settings you can modify:
+ - If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.yml`)
+ - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
-Run as root:
+#### Install with vagrant
+[Vagrant hostmanager](https://github.com/smdahlen/vagrant-hostmanager) plugin set's up and provisions a Vagrant box with Ansible (see below).
+
+1. Run the installation script
 ```bash
-apt-get install sudo apache2 mysql-server libapache2-mod-php5 git npm php5-mysql
-a2enmod rewrite
-npm install -g npm
-ln -s /usr/bin/nodejs /usr/bin/node
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
+./scripts/vagrant/install.sh
+```
+2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
+You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
+3. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
+
+After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
+When you're ready to begin working again, just `vagrant up` to coninue and `vagrant provision` if the first run ended with errors.
+
+To add VMs or VPS edit `./hosts`.
+
+#### Install on localhost or remotely
+_TODO update this section to install on localhost_
+
+If you have root access to a machine, you can deploy hitchwiki there:
+- Copy `configs/settings.yml` from `configs/settings-example.yml`
+- Add the IP address to the `[remote]` section in `hosts`
+- Run `ssh-keygen` locally and add it to `/home/root/.ssh/authorized_keys` on your machine.
+- Change `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
+# (optional) Change `user` and `hostname` in `roles/remote/vars/main.yml`
+# Add to your local ~/.ssh/config:
+```
+Host hw-dev
+  HostName {{ ip address }}
+  User {{ user }} # default: hitchwiki
+```
+- now run `ansible-playbooks deploy_remote.yml`
+
+#### Ansible
+To test current ansible development: `git clone https://github.com/traumschule/hitchwiki -b ansible`.
+
+As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml` with the following roles/chapters:
+
+common
+* Upgrade distribution packages
+* Install helpers like composer and node
+* Start downloads in background
+
+db
+* Setup MariaDB
+
+web
+* Setup Apache2 with PHP7
+
+mw
+* Download and extract [Mediawiki](https://www.mediawiki.org/)
+* Install dependencies with Composer
+* Create a database and configure MediaWiki
+* Import pages from `./scripts/pages/`
+* Create three users (see below)
+* Install Parsoid and VisualEditor
+* Install Mediawiki extensions (HWMap, HitchwikiVector, HWRatings, HWLocationInput)
+
+Depending on your connection this will take some time (40mb for MW alone).
+
+When errors happen, fix them in `./roles/*/tasks/main.yml` and check the syntax with
+```
+ansible-playbook hitchwiki.yml --syntax-check
 ```
 
-Somewhere in your system run:
-```bash
-git clone https://framagit.org/c1000101/devops.git
+Show hosts in the hitchwiki group (configured in `hosts` and `ansible.cfg`):
+```
+ansible hitchwiki --list-hosts
 ```
 
-This will download and install mediawiki:
-```bash
-cd /var/www/
-composer install_local
+Run ansible without `vagrant provision`:
+```
+ansible-playbook hitchwiki.yml
 ```
 
-## Installing locally
-1. Create user with database
-2. Copy `configs/settings-example.yml` to `configs/settings.yml` and edit if necessary
-3. Run the install script to deploy Hitchwiki to `public/`:
+There is still a lot to do. Just risk a `rgrep TODO roles`.
+
+#### Pre-created users (user/pass)
+* Admin: Hitchwiki / autobahn
+* Bot: Hitchbot / autobahn
+* User: Hitchhiker / autobahn
+
+### Export Semantic structure
+If you do changes to Semantic structures (forms, templates etc), you should export those files by running:
 ```bash
-composer install_local
+./scripts/vagrant/export_pages.sh
 ```
 
-#### Update local installation
-1. Run `git pull` and check for changes
-2. It might be enough to run `scripts/updates.sh` to update MediaWiki, the database, extensions and assets
-3. Now you can just do:
- `composer clean && composer install_local`
+### Import Semantic structure
+This is done once at install, but needs to be done each time somebody changes content inside `./scripts/pages/`. It can be done by running:
+```bash
+./scripts/vagrant/import_pages.sh
+```
+
+### Debug
+* Enable debugging mode by setting `debug = true` from `./configs/settings.yml`. You'll then see SQL and PHP warnings+errors.
+* Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
+* See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
+* Add `strategy: debug` to a role to automically load a (quite limited) [debugger](https://docs.ansible.com/ansible/latest/playbooks_debugger.html) to inspect variables when a task fails.
+* Check the syntax of Ansible Playbooks,  with:
+```
+ansible-playbook hitchwiki.yml --syntax-check
+```
+
+# Encryption
+To test encryption test provisioning and set `setup_ssl: True` in `settings.yml` (the variable name may change in the future).
+- _staging (development)_ uses the legacy `scripts/cert_selfsigned.sh`
+- _production_ is configured to test the unreleased [mod_md](https://github.com/icing/mod_md) module to support  [ACME in apache 2.4.x](https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html)
+
+### Update
+1. Pull latest changes: `git pull origin master`
+2. Run update script: `./scripts/vagrant/update.sh`
+
+### Re-Install
+2. Run re-install script: `./scripts/vagrant/reinstall.sh`
+
+## More info on vagrant
+
+Read [basics about Vagrant](https://www.vagrantup.com/intro/)
+
+#### SSH into Vagrant
+```bash
+vagrant ssh
+```
+
+This repository's root is visible via `/var/www/` inside the Vagrant machine.
+
+#### Database access
+##### From the app
+Setting | Value
+------------ | -------------
+User | root
+Pass | root
+Host | localhost
+
+##### From desktop
+Only via SSH Forwarding. You need to set a password for `ubuntu` user before you can SSH into the box. (Info [via](https://stackoverflow.com/a/41337943/1984644))
+
+Do:
+```bash
+vagrant ssh
+sudo passwd ubuntu
+(type ubuntu twice)
+```
+
+Setting | Value
+------------ | -------------
+User | root
+Pass | root
+Host | localhost
+SSH Host | 192.168.33.10
+SSH User | ubuntu
+SSH Password | ubuntu
+
+#### Clean Vagrant box
+If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
+```bash
+vagrant destroy -f && ./scripts/clean.sh && vagrant up
+```
+
+## Setting up production environment
+_TODO_
