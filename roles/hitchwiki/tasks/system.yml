@@ -7,9 +7,6 @@
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
 - name: Create configs/settings.yml based on settings-example.yml
-  #debug:
-  #  msg: Please copy configs/settings-example.yml` to `configs/settings.yml`.
-  #when: not lookup('file', 'configs/settings.yml')
   copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
 
 - name: Load variables
@@ -43,7 +40,7 @@
   become: yes
   apt: name={{ item }} state=present update_cache=yes
   with_items: { unattended-upgrades, composer, npm, tmux, python-pip, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
-  notify: update system
+  notify: apt
 
 - name: Install bower
   become: yes

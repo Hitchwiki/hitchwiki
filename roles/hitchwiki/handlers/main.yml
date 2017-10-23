@@ -5,18 +5,18 @@
 - name: Update system
   become: yes
   apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
-  listen: update system
+  listen:
+    - apt
 
 # Database
 
 - name: restart db
   become: yes
   service: name={{db.server}} enabled=yes state=restarted
-  tags:
-    - mariadb
+  listen:
     - db
-    - dbserver
-    - database
+    - mariadb
+    - mysql
 
 # Webserver
 
@@ -24,7 +24,7 @@
   become: yes
   service: name=apache2 state=restarted
   register: apache_restart
-  tags:
+  listen:
     - apache
     - apache2
     - web
@@ -51,15 +51,13 @@
 - name: Restart Parsoid
   service: name=parsoid state=restarted
   listen:
-    - restart parsoid
-  tags:
     - parsoid
 
 # Development environment
 - name: restart maildev
   become: yes
   systemd: name=maildev enabled=yes state=started
-  tags:
+  listen:
     - mail
     - smptp
     - maildev

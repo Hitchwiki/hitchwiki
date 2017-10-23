@@ -13,7 +13,7 @@
 - name: Enable apache mod rewrite
   become: yes
   apache2_module: name=rewrite state=present
-  notify: restart apache
+  notify: apache
 
 - name: Allow apache override to all
   become: yes
@@ -31,22 +31,19 @@
 - name: Configure Hitchwiki for Apache2
   become: yes
   file: state=link src={{ dir.conf }}/apache-hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf
-  notify: restart apache
 
 - name: Activate Hitchwiki in Apache2
   become: yes
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf
-  notify: restart apache
+  notify: apache
 
 - name: Remove default Apache2 site
   become: yes
   file: state=absent path=/etc/apache2/sites-enabled/000-default.conf
-  notify: restart apache
 
 - name: Clean out folder created by Apache installer
   become: yes
   file: state=absent path={{ROOTDIR}}/html
-  notify: restart apache
 
 - name: Increase post size in php.ini
   become: yes
