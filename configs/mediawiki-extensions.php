@@ -324,7 +324,7 @@ require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
 wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms extension
 
 // Vendor configs for HW extensions
-// See `settings.yml`
+// See `settings.ini`
 $hwGeonamesUsername = array_key_exists('geonames_username', $hwConfig['vendor']) ? $hwConfig['vendor']['geonames_username'] : false;
 $hwMapboxUsername = array_key_exists('mapbox_username', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_username'] : false;
 $hwMapboxAccessToken = array_key_exists('mapbox_access_token', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_access_token'] : false;

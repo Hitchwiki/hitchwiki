@@ -23,8 +23,10 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
-require_once 'mustangostang/spyc/spyc.php';
-$hwConfig = spyc_load_file('../configs/settings.yaml');
+$hwConfig = parse_ini_file("../../configs/settings.ini", true);
+# TODO test
+#require_once 'mustangostang/spyc/spyc.php';
+#$hwConfig = spyc_load_file('../../configs/settings.yaml');
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))

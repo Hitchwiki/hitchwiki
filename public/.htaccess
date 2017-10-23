@@ -119,5 +119,5 @@ RewriteRule .* - [E=DOWNLOAD:yes]
 #
 # File uploads
 #
-php_value post_max_size 10M
-php_value upload_max_filesize 8M
+#php_value post_max_size 10M
+#php_value upload_max_filesize 8M
