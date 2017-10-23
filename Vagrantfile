@@ -3,10 +3,6 @@
 # vi: set ft=ruby :
 
 # Hitchwiki Development Vagrant setup
-# Using http://box.scotch.io/
-#
-# Modified from https://github.com/scotch-io/scotch-box/blob/master/Vagrantfile
-# Added https://github.com/smdahlen/vagrant-hostmanager
 
 require "yaml"
 require "fileutils"
@@ -42,10 +38,9 @@ Vagrant.configure("2") do |config|
     node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
     node.vm.network :private_network, ip: settings["private_network_ip"]
     node.vm.hostname = settings["hostname"]
-    #node.hostmanager.aliases = %w(hitchwiki)
-    #node.vm.provision :shell, :path => "scripts/server_install.sh", :args => install_args
-    config.vm.provision :ansible do |ansible|
+    # Provision machine using Ansible
     # https://www.vagrantup.com/docs/provisioning/ansible.html
+    config.vm.provision :ansible do |ansible|
       ansible.verbose = "v"
       ansible.playbook = "hitchwiki.yml"
       ansible.force_remote_user = 1
