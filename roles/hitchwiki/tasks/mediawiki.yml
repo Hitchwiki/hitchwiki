@@ -140,7 +140,7 @@
 - name: Install Parsoid
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: "{{ pkg.mw }}"
+  with_items: { apt-transport-https, parsoid }
 
 - name: Create /etc/mediawiki/parsoid/
   become: yes

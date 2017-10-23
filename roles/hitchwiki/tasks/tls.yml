@@ -1,15 +1,16 @@
 ---
+# Setup TLS
 
 # apache mod md
-include_tasks: tls_selfsigned.yml
-when: env == 'env'
+- include_tasks: tls_selfsigned.yml
+  when: env == 'env'
 
 # Let's Encrypt - apache mod md
-include_tasks: tls_md.yml
-when: env == 'production'
+- include_tasks: tls_md.yml
+  when: env == 'production'
 
 # Let's Encrypt - certbot
-#include_tasks: tls_certbot.yml
-#when: env == 'production'
+#- include_tasks: tls_certbot.yml
+#  when: env == 'production'
 
 ...

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 cd "$(dirname $0)/.."
 
 # Kick start Hitchwiki installation
@@ -17,14 +18,16 @@ echo "     The Hitchhiker's Guide to Hitchhiking the World"
 echo -e $sep
 
 echo "Checking system ..."
-for app in pip vagrant ansible; do
+for app in pip vagrant bundler ansible; do
   bin=$(which $app)
   if [[ ! $bin ]] ; then
     echo "Please install $app."
   else
-    echo "  $app=$bin"
+    echo "- $app: $bin"
+    $bin --version
   fi
 done
+echo "Note: Vagrant prior 1.8.2 will fail."
 
 echo -e $sep
 echo "All fine, let's roll ..."

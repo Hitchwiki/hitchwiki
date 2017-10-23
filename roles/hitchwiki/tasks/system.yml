@@ -7,7 +7,10 @@
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
 - name: Make sure settings.yml exists
-  copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
+  debug:
+    msg: Please copy configs/settings-example.yml` to `configs/settings.yml`.
+  when: not lookup('file', 'configs/settings.yml')
+  #copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
 
 - name: Load variables
   include_vars: configs/settings.yml
@@ -36,10 +39,15 @@
 # See: http://www.linuxnix.com/ansible-run-commands-in-background-in-playbooks
 
 - name: Install helper tools
-  become: true
+  become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: "{{ pkg.helper }}"
+  with_items: { unattended-upgrades, composer, tmux, nodejs, python-pip, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
   notify: update system
+
+- name: Install helper tools
+  become: yes
+  apt: name=npm state=present update_cache=yes
+  ignore_errors: yes # npm sometimes has dependency problems
 
 - name: Install bower
   become: yes
@@ -47,6 +55,9 @@
 
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user
+
+- name: Add daily cron job to update system
+  cron: name=apt special_time=daily job="apt-get update && apt-get dist-upgrade -yq && apt-get autoremove -yq"
 
 - name: Finish common tasks
   lineinfile:

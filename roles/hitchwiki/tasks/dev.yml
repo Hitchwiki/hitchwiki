@@ -1,10 +1,6 @@
 ---
 # Devlopment specific tasks
 
-- name: Transport Layer Security (setup_ssl)
-  include_tasks: setup_ssl.yml
-  when: setup_ssl
-
 # Maildev
 - name: Install PHP PEAR modules
   become: true
@@ -26,8 +22,6 @@
   file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev
 
 # PHPMyAdmin
-- import_tasks: roles/web/tasks/main.yml
-  when: not finished_web_tasks
 - name: Configure PHPMyAdmin
   become: true
   # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
