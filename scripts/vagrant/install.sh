@@ -17,13 +17,10 @@ echo "     The Hitchhiker's Guide to Hitchhiking the World"
 echo -e $sep
 
 echo "Checking system ..."
-declare -A app
-app=([pip]="sudo apt-get install python-pip" [vagrant]="sudo apt-get install vagrant" [ansible]="pip install ansible")
-for app in ${!app[@]}; do
+for app in pip vagrant ansible; do
   bin=$(which $app)
   if [[ ! $bin ]] ; then
-    echo "Need to install $app"
-    eval app[$app]
+    echo "Please install $app."
   else
     echo "  $app=$bin"
   fi
