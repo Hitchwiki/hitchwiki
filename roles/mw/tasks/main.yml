@@ -1,15 +1,6 @@
 ---
 # Setup mediawiki with Parsoid and fill it with content
 
-- name: Backup wiki folder
-  # TODO safe to remove
-  shell: mv {{ dir.wiki }} {{ dir.wiki }}.bck
-  #archive: path={{ dir.wiki }} remove=True
-  #when: lookup('file', "{{ dir.wiki }}")
-  #move: src={{ dir.wiki }} path={{ dir.wiki }}.bck
-  #file: path={{ dir.wiki }} recurse=yes owner={{ ansible_user_id }} group={{ ansible_user_id }} #mode=640
-  ignore_errors: yes
-
 - name: Drop Mediawiki database
   # TODO use vault
   mysql_db: name={{ db.database }} state=absent login_user={{ db.username }} login_password={{ db.password }}
@@ -172,6 +163,10 @@
 - name: Grant wiki folder to webuser
   become: yes
   file: path={{ dir.wiki }} recurse=yes owner={{ webserver_user }} group={{ webserver_group }} #mode=640
+
+- name: Add cron job for daily localisation updates
+  cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
+  # See https://github.com/Hitchwiki/hitchwiki/issues/109
 
 - name: Finished Mediawiki installation
   lineinfile:
