@@ -20,7 +20,7 @@
 - name: Install MariaDB
   become: true
   apt: update_cache=yes package={{ item }} state=present
-  with_items: "{{ pkg.db }}"
+  with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
 - name: Start dbserver
   service: name={{ db.server }} state=started

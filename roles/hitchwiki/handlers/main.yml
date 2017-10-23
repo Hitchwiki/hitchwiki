@@ -3,7 +3,7 @@
 
 # System
 - name: Update system
-  become: true
+  become: yes
   apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
   listen: update system
 
@@ -58,7 +58,7 @@
 # Development environment
 - name: restart maildev
   become: yes
-  service: name=maildev enabled=yes state=started
+  systemd: name=maildev enabled=yes state=started
   tags:
     - mail
     - smptp

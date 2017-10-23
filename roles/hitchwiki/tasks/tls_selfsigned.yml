@@ -13,6 +13,7 @@
   shell: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 
 - name: Create SSL configuration for Apache
+  # TODO
   shell: |
     echo "File: /etc/apache2/conf-available/ssl-params.conf"
     # Using temporary file `{{ dir.root }}/tmp/ssl-params.conf` because

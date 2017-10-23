@@ -2,31 +2,31 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
-# Prepare environment
-import_tasks: system.yml
+- name: Setup database server
+  include_tasks: database.yml
+  when: not finished_db_tasks
 
-# Setup dbserver
-import_tasks: database.yml
+- name: Setup webserver
+  include_tasks: apache.yml
+  when: not finished_web_tasks
 
-# Setup webserver
-import_tasks: apache.yml
+- name: Setup mediawiki
+  include_tasks: mediawiki.yml
+  when: not finished_mw_tasks
 
-# Setup mediawiki
-import_tasks: mediawiki.yml
+- name: Setup TLS
+  include_tasks: tls.yml
+  when: mediawiki.protocol == 'https' and not finished_tls_tasks
 
-# Setup tls
-import_tasks: tls.yml
-when: mediawiki.protocol == 'https'
+- name: Setup development services
+  include_tasks: dev.yml
+  when: env == 'dev' and not finished_dev_tasks
 
-# Setup development environment
-import_tasks: dev.yml
-when: env == 'dev'
+- name: Setup production environment
+  include_tasks: production.yml
+  when: env == 'production'
 
-# Setup production environment
-import_tasks: prod.yml
-when: env == 'production'
-
-# Print status
-import_tasks: status.yml
+- name: Status report
+  include_tasks: status.yml
 
 ...

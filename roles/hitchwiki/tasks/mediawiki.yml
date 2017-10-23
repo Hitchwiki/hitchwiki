@@ -128,37 +128,7 @@
   command: chdir={{ dir.root }} bash "{{ dir.script }}/import_pages.sh"
   # TODO check output
 
-# Parsoid is a NodeJS service used by VisualEditor (https://www.mediawiki.org/wiki/Parsoid/Setup)
-- name: Add Parsoid apt key
-  become: yes
-  apt_key: id=90E9F83F22250DD7 keyserver=keys.gnupg.net
-
-- name: Add Wikimedia repository
-  become: yes
-  apt_repository: state=present repo='deb https://releases.wikimedia.org/debian jessie-mediawiki main'
-
-- name: Install Parsoid
-  become: yes
-  apt: name={{ item }} state=present update_cache=yes
-  with_items: "{{ pkg.mw }}"
-
-- name: Create /etc/mediawiki/parsoid/
-  become: yes
-  file: path=/etc/mediawiki/parsoid/ owner={{ webserver_user }}
-
-- name: Configure Parsoid
-  become: yes
-  copy: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ webserver_user }} force=no
-
-- name: Set domain in Parsoid
-  become: yes
-  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ hw.domain }}
-
-- name: Create Parsoid init script
-  become: yes
-  # TODO do we need to overwrite the packaged version?
-  copy: force=no src={{ dir.script }}/configs/parsoid_initscript path=/etc/default/parsoid
-  when: not lookup('file', '/etc/default/parsoid')
+- include_tasks: parsoid.yml
 
 - name: Grant wiki folder to webuser group
   become: yes

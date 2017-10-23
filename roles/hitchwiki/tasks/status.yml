@@ -62,6 +62,18 @@
   when: finished_common_tasks and finished_db_tasks and finished_web_tasks and finished_mw_tasks
 
 - shell: |
+    echo "Deployment on {{hostname}} is stuck:
+    common: {{finished_common_tasks}}q
+    db: {{finished_db_tasks}}
+    web: {{finished_web_tasks}}
+    mw: {{finished_mw_tasks}}"
+  register: open_tasks
+  when: finished_installation|skipped
+- debug:
+    var: open_tasks.stdout_lines
+  when: finished_installation|skipped
+
+- shell: |
     {{dir.script}}/status.sh {{hostname}}
     echo "
     #######################################################################
@@ -73,23 +85,12 @@
     # - Read more at http://github.com/Hitchwiki/hitchwiki                #
     #                 Have fun and happy hacking!                         #
     #######################################################################
-    "
+
+    Run `rgrep TODO roles` to see open tasks."
   register: outro
   when: finished_installation|succeeded
 - debug:
     var: outro.stdout_lines
   when: finished_installation|succeeded
-
-- shell: |
-    echo "Deployment on {{hostname}} is stuck:
-    common: {{finished_common_tasks}} 
-    db: {{finished_db_tasks}}
-    web: {{finished_web_tasks}}
-    mw: {{finished_mw_tasks}}"
-  register: open_tasks
-  when: finished_installation|skipped
-- debug:
-    var: open_tasks.stdout_lines
-  when: finished_installation|skipped
 
 ...

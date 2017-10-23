@@ -10,7 +10,8 @@
   gather_facts: no
 
   pre_tasks:
-    - import_tasks: roles/hitchwiki/tasks/system.yml
+    - name: Prepare system
+      include_tasks: roles/hitchwiki/tasks/system.yml
       when: finished_common_tasks is undefined or not finished_common_tasks
 
 # Deployment is split into roles with tasks, handlers and templates:

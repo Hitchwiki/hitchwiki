@@ -8,7 +8,7 @@
 - name: Install Apache2 with PHP7 and extensions
   become: yes
   apt: name={{ item }} state=present
-  with_items: "{{ pkg.web }}"
+  with_items: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
 
 - name: Enable apache mod rewrite
   become: yes
@@ -63,21 +63,6 @@
     state: present
     regexp: '^php_value upload_max_filesize'
     line: php_value upload_max_filesize 8M
-
-# NodeSource (https://nodejs.org/en/download/package-manager)
-- name: Add apt source for NodeSoure 8.x
-  become: yes
-  shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  # TODO migrate the bash script here
-  # TODO [WARNING]: Consider using get_url or uri module rather than running curl
-
-- name: Install nodejs
-  become: yes
-  apt: name=nodejs state=present update_cache=yes
-
-- name: Link nodejs to node
-  become: yes
-  file: state=link src=/usr/bin/nodejs path=/usr/local/bin/node
 
 - lineinfile:
     path: "{{ dir.settings }}"

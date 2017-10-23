@@ -6,7 +6,10 @@
   raw: apt-get install -yq python-simplejson
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
-- name: Make sure settings.yml exists
+- name: Create configs/settings.yml based on settings-example.yml
+  #debug:
+  #  msg: Please copy configs/settings-example.yml` to `configs/settings.yml`.
+  #when: not lookup('file', 'configs/settings.yml')
   copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
 
 - name: Load variables
@@ -32,13 +35,14 @@
       # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
   when: apt_proxy is defined
 
-# Start long downloads in background
-# See: http://www.linuxnix.com/ansible-run-commands-in-background-in-playbooks
+- name: Remove apt source of NodeSoure 8.x # to avoid dependency problems
+  become: yes
+  apt_repository: filename=nodesource.list state=absent repo="deb https://deb.nodesource.com/node_8.x xenial main"
 
 - name: Install helper tools
-  become: true
+  become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: "{{ pkg.helper }}"
+  with_items: { unattended-upgrades, composer, npm, tmux, python-pip, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
   notify: update system
 
 - name: Install bower
@@ -47,6 +51,9 @@
 
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user
+
+- name: Add daily cron job to update system
+  cron: name=apt special_time=daily job="apt-get update && apt-get dist-upgrade -yq && apt-get autoremove -yq"
 
 - name: Finish common tasks
   lineinfile:
