@@ -79,7 +79,7 @@ hw: # TODO merge into 'hitchwiki'
   domain: hitchwiki.test
   cookiedomain: .hitchwiki.test
   protocol: http # change to https with enabled TLS
-s
+
 # MailDev is running at port 1025 at dev server
 # https://github.com/djfarrelly/MailDev
 # See http://hitchwiki.test:1080/
