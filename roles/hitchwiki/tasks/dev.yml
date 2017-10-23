@@ -10,7 +10,8 @@
 - name: Install Maildev for catching emails while developing
   become: true
   npm: name=maildev version=1.0.0-rc3 state=present global=yes
-  notify: maildev
+  notify:
+  - maildev
 
 - name: Setup Maildev to start on reboot
   become: true
@@ -40,7 +41,8 @@
     path: /etc/phpmyadmin/apache.conf
     regexp: '(Alias /).*(/usr/share/phpmyadmin)'
     line: '\1{{ dir.phpmyadmin }} \2'
-  notify: apache
+  notify:
+  - apache
 
 - name: Finish development tasks
   lineinfile:

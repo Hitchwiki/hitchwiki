@@ -13,7 +13,8 @@
 - name: Enable apache mod rewrite
   become: yes
   apache2_module: name=rewrite state=present
-  notify: apache
+  notify:
+  - apache
 
 - name: Allow apache override to all
   become: yes
@@ -35,7 +36,8 @@
 - name: Activate Hitchwiki in Apache2
   become: yes
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf
-  notify: apache
+  notify:
+  - apache
 
 - name: Remove default Apache2 site
   become: yes

@@ -105,7 +105,8 @@
   become: yes
   apache2_module: name={{item}} state=present
   with_items: { ssl, headers }
-  notify: apache
+  notify: 
+  - apache
 
 - name: Enable SSL Virtual Host
   become: yes

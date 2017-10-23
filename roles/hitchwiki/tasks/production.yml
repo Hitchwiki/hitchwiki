@@ -43,6 +43,7 @@
     regexp: '^finished_installation'
     line: 'finished_installation: True'
   when: finished_common_tasks and finished_db_tasks and finished_web_tasks and finished_mw_tasks
-  notify: status
+  notify:
+  - status
 
 ...
