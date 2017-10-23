@@ -1,0 +1,36 @@
+---
+# Playbook to test content migration to hitchwiki v3
+# https://github.com/Hitchwiki/hitchwiki/labels/migrate
+
+# Blocked by
+# - city circles https://github.com/Hitchwiki/hitchwiki/issues/137
+
+- name: Make wiki read-only #134
+  lineinfile:
+    - path: {{ dir.wiki }}/LocalSettings.php
+    - regexp: '^$wgReadOnly'
+    - line: $wgReadOnly = 'This wiki is currently being upgraded to a newer software version.';
+    - state: present
+
+- name: Migrate old contents 
+  # https://github.com/Hitchwiki/hitchwiki/issues/69
+  command: chdir={{ dir.script }}/bot bot_install.sh
+
+- name: Remove all infobox templates #121
+
+  # TODO
+  # - Reduce warnings #133
+  # - Check for errors #78
+  # - Preserve spot author id during migration #81
+
+- name: Make wiki writable again
+  lineinfile:
+    - path: {{ dir.wiki }}/LocalSettings.php
+    - regexp: '^$wgReadOnly'
+    - state: absent
+
+# References
+# templates https://github.com/Hitchwiki/hitchwiki/issues/122
+# Location templates https://github.com/Hitchwiki/hitchwiki/issues/129
+
+...
