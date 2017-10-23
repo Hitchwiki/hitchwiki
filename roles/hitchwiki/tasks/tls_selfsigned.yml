@@ -1,22 +1,5 @@
 ---
 # Transport Layer Security
-- name: Enable TLS support in Apache
-  become: yes
-  apache2_module: name=ssl state=present
-  when: setup_ssl
-  notify: restart apache
-
-- name: Setup self signed SSL certificate
-  shell: |
-    cd {{ROOTDIR}}
-    if [[ $* == *--ssl* ]]; then
-      bash {{SCRIPTDIR}}/cert_selfsigned.sh
-    else
-      msg "Skipped installing self signed SSL certificate."
-    fi
-  when: setup_ssl
-  notify: restart apache
-
 - name: Create the SSL Certificate
   become: yes
   shell: >
@@ -32,7 +15,7 @@
 - name: Create SSL configuration for Apache
   shell: |
     echo "File: /etc/apache2/conf-available/ssl-params.conf"
-    # Using temporary file `$ROOTDIR/tmp/ssl-params.conf` because
+    # Using temporary file `{{ dir.root }}/tmp/ssl-params.conf` because
     #  output redirection (`>>`) is done by the shell, not by `cat`,
     #  and thus `sudo` won't work.
     # http://askubuntu.com/a/230482

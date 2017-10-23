@@ -38,7 +38,7 @@
 - name: Clone hitchwiki repository
   remote_user: "{{ user }}"
   git:
-    dest: ~/hitchwiki
+    dest: ~/src
     repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
     depth: 1
@@ -48,11 +48,11 @@
 - name: Track ansible branch
   shell: cd ~/hitchwiki; git branch --set-upstream-to=origin/ansible ansible
 
-- name: Link /home/{{ user }}/hitchwiki to /var/www
+- name: Link /home/{{ user }}/src to /var/www
   become: yes
   file: state=link force=yes src="/home/{{ user }}/hitchwiki" path=/var/www
 
 - debug:
-    msg: Success! Now ssh to your new `{{ user }}` user and run `cd hitchwiki; ansible-playbook hitchwiki.yml`.
+    msg: Success! Now run ansible-playbook hitchwiki.yml`.
 
 ...

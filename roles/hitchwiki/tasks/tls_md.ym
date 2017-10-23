@@ -1,6 +1,9 @@
 ---
 # Transport Layer Security (set `setup_ssl: True`)
 
+# TODO "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
+# https://github.com/Hitchwiki/hitchwiki/issues/127
+
 # TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
 # Upcoming: mod_md fo apache 2.4.x https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html
 # Build instructions: https://github.com/icing/mod_md/wiki/2.4.x-Installation

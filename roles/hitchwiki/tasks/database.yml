@@ -1,8 +1,6 @@
 ---
 # Setup database server
 
-# Example: https://github.com/ansible/ansible-examples/tree/master/mongodb
-
 - name: Add repository for MariaDB
   become: true
   apt_repository:

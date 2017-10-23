@@ -1,5 +1,5 @@
 ---
-# Ansible playbook for hitchwiki development environment
+# Ansible playbook for hitchwiki
 #   https://docs.ansible.com/ansible/latest/playbooks_intro.html
 # Vagrant starts ansible after bringing up the machine (ubuntu/xenial)
 #   https://docs.ansible.com/ansible/latest/guide_vagrant.html
@@ -8,49 +8,19 @@
 
 - hosts: all
   gather_facts: no
+
   pre_tasks:
-    - import_tasks: roles/common/tasks/main.yml
+    - import_tasks: roles/hitchwiki/tasks/system.yml
       when: finished_common_tasks is undefined or not finished_common_tasks
 
 # Deployment is split into roles with tasks, handlers and templates:
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
 # 
-# Following roles are based on the install_funcs.sh script by Pedro.
+# Following roles are 
 
-- name: Deploy database server
+- name: Setup hitchwiki
   hosts: all
   roles:
-    - { role: db, when: not finished_db_tasks }
-
-- name: Setup webserver with PHP7 and node
-  hosts: all
-  roles:
-    - { role: web, when: not finished_web_tasks }
-
-- name: Install mediawiki, extensions and insert content
-  hosts: all
-  roles:
-    - { role: mw, when: not finished_mw_tasks }
-
-- name: Setup staging environment
-  hosts: all
-  roles:
-    - { role: dev, when: not finished_installation and env == 'dev' }
-
-# Production specific configuration
-- name: Setup production environment
-  hosts: all
-  roles:
-    - { role: production, when: not finished_installation and env == 'prod' }
-
-- name: Status report
-  hosts: all
-  roles: 
-    - status
+    - hitchwiki
 
 ...
-
-# Notes
-# !unsafe https://docs.ansible.com/ansible/latest/playbooks_advanced_syntax.html
-# local_home: "{{ lookup('env','HOME') }}" https://docs.ansible.com/ansible/latest/faq.html
-# {{ ansible_env.SOME_VARIABLE }}

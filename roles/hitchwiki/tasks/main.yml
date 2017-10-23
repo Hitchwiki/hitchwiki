@@ -1,0 +1,32 @@
+---
+# Setup hitchwiki
+# based on install_funcs.sh by pgouveia.
+
+# Prepare environment
+import_tasks: system.yml
+
+# Setup dbserver
+import_tasks: database.yml
+
+# Setup webserver
+import_tasks: apache.yml
+
+# Setup mediawiki
+import_tasks: mediawiki.yml
+
+# Setup tls
+import_tasks: tls.yml
+when: mediawiki.protocol == 'https'
+
+# Setup development environment
+import_tasks: dev.yml
+when: env == 'dev'
+
+# Setup production environment
+import_tasks: prod.yml
+when: env == 'production'
+
+# Print status
+import_tasks: status.yml
+
+...

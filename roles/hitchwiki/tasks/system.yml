@@ -46,8 +46,7 @@
   npm: name=bower version=~1.8 state=present global=yes
 
 - name: Install shyaml to parse yml files
-  become: yes
-  pip: name=shyaml state=present
+  pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user
 
 - name: Finish common tasks
   lineinfile:

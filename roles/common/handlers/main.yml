@@ -1,9 +1,0 @@
----
-# Common ansible handlers
-
-- name: Update system
-  become: true
-  apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
-  listen: update system
-
-...

@@ -8,6 +8,10 @@ node_modules/
 # Vagrant files
 .vagrant
 
+# Ansible
+hosts
+*.retry
+
 # Folder created by Apache installer
 /html
 
