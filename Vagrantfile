@@ -12,18 +12,13 @@ current_dir = File.dirname(File.expand_path(__FILE__))
 settings_file = "#{current_dir}/configs/settings.yml"
 settings_file_template = "#{current_dir}/configs/settings-example.yml"
 
-# Copy vagrant config file from template file if it doesn't exist yet
+# Copy settings.yml file from template file if it doesn't exist yet
 if not File.exist?(settings_file)
   FileUtils.cp(settings_file_template, settings_file)
 end
 
 # Load vagrant config file
 settings = YAML.load_file(settings_file)
-
-# Collect install arguments for the server install script
-# You can turn these flags on/off from `vagrant.yaml`
-install_args = Array.new
-install_args.push("--ssl") if settings["vagrant"]["setup_ssl"]
 
 Vagrant.configure("2") do |config|
 
