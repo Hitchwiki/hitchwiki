@@ -37,7 +37,7 @@
 - name: Setup production environment
   include_tasks: production.yml
   when: env == 'production' and not state.production
-9
+
 - meta: flush_handlers
 
 - name: Status report
