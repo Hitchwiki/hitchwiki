@@ -1,12 +1,11 @@
 ## Installing using vagrant
 
 ### Prerequisites
-1. A GNU/Linux or MacOS machine.
 1. Install [VirtualBox](https://www.virtualbox.org/)
-1. Install [Vagrant](https://www.vagrantup.com/) v2 ([docs](https://docs.vagrantup.com/v2/installation/))
+1. Install [Vagrant](https://www.vagrantup.com/) v2 ([Install docs](https://docs.vagrantup.com/v2/installation/))
 1. Make sure you have [`git`](http://git-scm.com/) installed on your system. (`git --version`)
-1. Make sure you have [python v2]() installed on your system. (`python --version`)
-1. Install [Ansible](https://www.ansible.com/) ([docs](https://docs.ansible.com/ansible/latest/intro_installation.html#installing-the-control-machine))
+1. Make sure you have [Python](https://www.python.org/) v2 installed on your system. (`python --version`)
+1. Install [Ansible](https://www.ansible.com/) v2 ([Install docs](https://docs.ansible.com/ansible/latest/intro_installation.html#installing-the-control-machine))
 
 ### Install
 
@@ -19,7 +18,7 @@
     cp configs/settings-example.yml configs/settings.yml
     ```
 1. Some of the settings you can modify:
-    - If self signed certificate will be installed (i.e. use `https`) (`vagrant.yaml` and `settings.yml`)
+    - If self signed certificate will be installed (i.e. use `https`)
     - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
 #### Install with vagrant
@@ -34,11 +33,13 @@ You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanag
 1. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
-When you're ready to begin working again, just `vagrant up` to coninue and `vagrant provision` if the first run ended with errors.
+When you're ready to begin working again, just `vagrant up` to continue and `vagrant provision` if the first run ended with errors.
 
 To add VMs or VPS edit `./hosts`.
 
 #### Install on localhost or remotely
+Note that setup scripts are based on Ubuntu.
+
 _TODO update this section to install on localhost_
 
 If you have root access to a machine, you can deploy hitchwiki there:
@@ -120,7 +121,7 @@ This is done once at install, but needs to be done each time somebody changes co
 * Enable debugging mode by setting `debug = true` from `./configs/settings.yml`. You'll then see SQL and PHP warnings+errors.
 * Use [Debugging toolbar](https://www.mediawiki.org/wiki/Debugging_toolbar) by setting get/post/cookie variable `hw_debug=1`.
 * See [EventLogging](https://www.mediawiki.org/wiki/Extension:EventLogging) extension
-* Add `strategy: debug` to a role to automically load a (quite limited) [debugger](https://docs.ansible.com/ansible/latest/playbooks_debugger.html) to inspect variables when a task fails.
+* Add `strategy: debug` to a role to automatically load a (quite limited) [debugger](https://docs.ansible.com/ansible/latest/playbooks_debugger.html) to inspect variables when a task fails.
 * Check the syntax of Ansible Playbooks,  with:
     ```bash
     ansible-playbook hitchwiki.yml --syntax-check
@@ -179,8 +180,9 @@ SSH Password | ubuntu
 #### Clean Vagrant box
 If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
 ```bash
-vagrant destroy -f && ./scripts/clean.sh && vagrant up
+/scripts/vagrant/clean.sh
 ```
+This will basically run `vagrant destroy` and clean out all the custom files created during previous provision.
 
 ## Setting up production environment
 _TODO_
