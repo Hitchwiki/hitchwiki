@@ -23,10 +23,11 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
-$hwConfig = parse_ini_file("../../configs/settings.ini", true);
-# TODO test
-#require_once 'mustangostang/spyc/spyc.php';
-#$hwConfig = spyc_load_file('../../configs/settings.yaml');
+require_once 'mustangostang/spyc/spyc.php';
+if (!function_exists('spyc_load_file')) {
+  die('Missing `mustangostang/spyc`!');
+}
+$hwConfig = spyc_load_file('../../configs/settings.yaml');
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -57,13 +58,11 @@ $hwDebug = ($hwConfig['general']['debug']) ? true : false;
 $hwCache = ($hwConfig['general']['cache']) ? true : false;
 
 # Enable debugging only on dev environment
-if (isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') {
+if ($hwDebug) {
 
   // Enable error reporting
-  if ($hwDebug) {
-    error_reporting( -1 );
-    ini_set( 'display_errors', 1 );
-  }
+  error_reporting( -1 );
+  ini_set( 'display_errors', 1 );
 
   // Show the debug toolbar if `hw_debug` is set on the request,
   // either as a parameter or a cookie.
@@ -71,24 +70,24 @@ if (isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'dev') 
   if ( !empty( $_REQUEST['hw_debug'] ) ) {
     $wgDebugToolbar = true;
   }
+}
 
-  // Expose debug info for PHP & SQL errors.
-  $wgShowExceptionDetails = $hwDebug;
-  $wgDevelopmentWarnings = $hwDebug;
-  $wgDebugDumpSql = $hwDebug;
-  $wgShowDBErrorBacktrace = $hwDebug;
-  $wgShowSQLErrors = $hwDebug;
-  $wgResourceLoaderDebug = $hwDebug;
+// Expose debug info for PHP & SQL errors.
+$wgShowExceptionDetails = $hwDebug;
+$wgDevelopmentWarnings = $hwDebug;
+$wgDebugDumpSql = $hwDebug;
+$wgShowDBErrorBacktrace = $hwDebug;
+$wgShowSQLErrors = $hwDebug;
+$wgResourceLoaderDebug = $hwDebug;
 
-  // Profiling
-  $wgDebugProfiling = false;
+// Profiling
+$wgDebugProfiling = false;
 
-  // Log into file
-  $logDir = '/vagrant/logs';
-  $wgDebugLogFile = "{$logDir}/mediawiki-debug.log";
-  foreach ( array( 'exception', 'runJobs', 'JobQueueRedis' ) as $logGroup ) {
-    $wgDebugLogGroups[$logGroup] = "{$logDir}/mediawiki-{$logGroup}.log";
-  }
+// Log into file
+$logDir = '/vagrant/logs'; // @TODO
+$wgDebugLogFile = "{$logDir}/mediawiki-debug.log";
+foreach ( array( 'exception', 'runJobs', 'JobQueueRedis' ) as $logGroup ) {
+  $wgDebugLogGroups[$logGroup] = "{$logDir}/mediawiki-{$logGroup}.log";
 }
 
 # Setup `$hwLang`
