@@ -180,7 +180,7 @@ SSH Password | ubuntu
 #### Clean Vagrant box
 If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
 ```bash
-/scripts/vagrant/clean.sh
+./scripts/vagrant/clean.sh
 ```
 This will basically run `vagrant destroy` and clean out all the custom files created during previous provision.
 
