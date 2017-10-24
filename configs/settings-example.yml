@@ -5,10 +5,16 @@ env: "dev"
 #apt_proxy: IP address # Install apt-cacher-ng on the host to avoid downloading packages again.
 
 vagrant:
-  private_network_ip: "192.168.33.10" # Sets IP address for the Virtual Machine
-  hostname: "hitchwiki.test" # Hostname to use for the development server
-  hostmanager_enabled: True  # Set `false` to use only private network IP to access the server.
-                             # Vagrant won't therefore modify your `/etc/hosts` file neither.
+  # Sets IP address for the Virtual Machine
+  private_network_ip: "192.168.33.10"
+  # Hostname to use for the development server
+  hostname: "hitchwiki.test"
+  # hostname to your local hosts file.
+  # You should add this line to your `/etc/hosts`:
+  # `192.168.33.10  hitchwiki.test`
+  # Set `False` to disable Vagrant hostnamager adding
+  hostmanager_enabled: True
+
 db:
   server: mariadb
   host: localhost
@@ -52,8 +58,9 @@ mediawiki:
     # TODO use vault https://docs.ansible.com/ansible/latest/playbooks_vault.html
     recaptchapublickey: 6Lfx_-cSAAAAAFNMDH9fuFc37x_TYkOAcYHY_ZNc
     recaptchaprivatekey: 6Lfx_-cSAAAAAAdawoKHU7z83VS3aEJETODcCLQf
-  mapbox: # MapBox (access token: the public one!)
-    username: trustroots    
+  mapbox:
+    username: trustroots
+    # Public access token
     access_token: pk.eyJ1IjoidHJ1c3Ryb290cyIsImEiOiJVWFFGa19BIn0.4e59q4-7e8yvgvcd1jzF4g
     mapkey_streets: ce8bb774
     mapkey_satellite: kil7hee6
