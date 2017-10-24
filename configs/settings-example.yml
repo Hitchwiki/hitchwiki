@@ -34,6 +34,7 @@ mediawiki:
   domain: hitchwiki.test
   cookiedomain: .hitchwiki.test
   protocol: http # change to https with enabled TLS
+  visible_to_search_engines: True
   user:
     Hitchwiki: "{{ db.phpmyadmin_password }}"
     Hitchbot: "{{ db.phpmyadmin_password }}"

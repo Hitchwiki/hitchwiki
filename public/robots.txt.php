@@ -6,13 +6,13 @@
 
 header("Content-Type: text/plain");
 
-$hwConfig = parse_ini_file("../configs/settings.ini", true);
-# TODO test
-#require_once 'mustangostang/spyc/spyc.php';
-#$hwConfig = spyc_load_file('../configs/settings.yaml');
+require_once 'mustangostang/spyc/spyc.php';
+if (!function_exists('spyc_load_file')) {
+  die('Missing `mustangostang/spyc`!');
+}
+$hwConfig = spyc_load_file('../../configs/settings.yaml');
 
-// Production environment
-if(isset($hwConfig['general']['env']) && $hwConfig['general']['env'] == 'prod'):
+if(isset($hwConfig['mediawiki']['visible_to_search_engines']) && $hwConfig['mediawiki']['visible_to_search_engines'] === true):
 ?>
 # No special pages (edit pages, diff pages, etc)
 User-agent: *
