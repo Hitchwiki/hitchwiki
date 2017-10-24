@@ -18,7 +18,7 @@ echo "     The Hitchhiker's Guide to Hitchhiking the World"
 echo -e $sep
 
 echo "Checking system ..."
-for app in pip vagrant bundler ansible; do
+for app in vagrant ansible; do
   bin=$(which $app)
   if [[ ! $bin ]] ; then
     echo "Please install $app."
