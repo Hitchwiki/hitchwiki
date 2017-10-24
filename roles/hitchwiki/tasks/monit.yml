@@ -1,0 +1,33 @@
+---
+
+# Monit
+#- name: Clone into Monit 
+#  git: repo: git clone=https://tildeslash@bitbucket.org/tildeslash/monit.git dest=~/moniit depth=1
+
+#- name: Install monit dependencies
+#  apt: name={{item}} state=present
+#  with_items: { automake bison byacc flex libpam0g-dev } # libtool m4
+
+#- name: Build monit
+#  shell: |
+#    cd ~/monit
+#    ./configure
+#    make
+
+- name: Install monit
+  become: yes
+  apt: name=monit state=present
+#  shell: cd /home/{{ ansible_user_id }}/monit; make install
+
+- name: Monitor services # TODO
+  monit: name={{item}} state=started
+  # https://docs.ansible.com/ansible/latest/monit_module.html
+  # https://mmonit.com/monit/documentation/monit.html
+  with_items:
+    - apache2
+    - mariadb
+
+- debug:
+    msg: Monit has not been configured.
+
+...

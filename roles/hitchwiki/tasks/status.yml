@@ -6,7 +6,7 @@
     regexp: '^  finished:'
     line: '  finished: True'
   register: finished
-  when: state.system and state.db and state.web and state.mw and state.mw_import and state.parsoid and (state.production or (state.phpmyadmin and state.maildev))
+  when: state.system and state.db and state.web and state.mw and state.mw_import and state.parsoid and ((state.production and state.tls) or (state.phpmyadmin and state.maildev))
   notify:
   - load
 - lineinfile:

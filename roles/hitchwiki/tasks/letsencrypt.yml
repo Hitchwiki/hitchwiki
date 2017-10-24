@@ -1,0 +1,50 @@
+---
+# Certbot
+
+# https://certbot.eff.org/docs/using.html#certbot-commands
+
+- name: Add Certbot PPA
+  become: yes
+  apt_repository: state=present repo=ppa:certbot/certbot
+
+- name: Install Certbot
+  become: yes
+  apt: name=python-certbot-apache state=present update_cache=yes
+
+#- name: Request certificate # done manually, next step: solve challenge TODO
+#  become: yes
+#  command: certbot certonly --webroot -w {{ dir.root }} -d {{ mediawiki.domain }}
+
+# All generated keys and issued certificates can be found in /etc/letsencrypt/live/$domain
+
+# TODO https://docs.ansible.com/ansible/latest/letsencrypt_module.html
+#- letsencrypt:
+#    account_key: /etc/pki/cert/private/account.key
+#    csr: /etc/pki/cert/csr/sample.com.csr
+#    dest: /etc/httpd/ssl/sample.com.crt
+#    data: "{{ sample_com_challenge }}"
+
+# TODO check for certificates and create apache config based on /etc/letsencrypt/options-ssl-apache.conf
+- name: Show certificates
+  command: certbot certificates
+  register: certificates
+- debug:
+    var: certificates.stdout_lines
+
+#- name: Add cron job for renewal
+#  cron: name=certbot special_time=monthly  job="certbot renew"
+# certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
+
+# certificate removal
+# https://www.jeffgeerling.com/blog/2016/remove-single-certbot-letsencrypt-certificate-server
+# certbot delete --cert-name example.com
+
+- name: Certbot is set up, check /etc/letsencrypt
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  tls:'
+    line: "  tls: False"
+  notify:
+  - load
+
+...

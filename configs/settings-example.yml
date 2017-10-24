@@ -1,45 +1,22 @@
 # Variables for ansible provisioning
 #  https://docs.ansible.com/ansible/latest/playbooks_variables.html
 
-env: "dev"
+env: "dev" # dev | production - to enable TLS change mediawiki.protocal to 'https' below
 #apt_proxy: IP address # Install apt-cacher-ng on the host to avoid downloading packages again.
 
-vagrant:
-  # Sets IP address for the Virtual Machine
-  private_network_ip: "192.168.33.10"
-  # Hostname to use for the development server
-  hostname: "hitchwiki.test"
-  # hostname to your local hosts file.
-  # You should add this line to your `/etc/hosts`:
-  # `192.168.33.10  hitchwiki.test`
-  # Set `False` to disable Vagrant hostnamager adding
-  hostmanager_enabled: True
-
-db:
-  server: mariadb
-  host: localhost
-  username: root
-  password: root
-  database: hitchwiki_en
-  phpmyadmin_password: autobahn
-# TODO use vault
-db_credentials: "-u {{ db.username }} -p{{ db.password }}"
-
-apache:
-  user: www-data
-  group: www-data
-
 mediawiki:
+  domain: hitchwiki.test
+  protocol: http # change to 'https' to enable TLS
   debug: False
   cache: False
   branch: REL1_29
-  owner: "{{ apache.user }}:{{ apache.group }}"
   sitename: Hitchwiki
   metanamespace: Hitchwiki
-  domain: hitchwiki.test
   cookiedomain: .hitchwiki.test
   db_prefix: "hw_"
   protocol: http # change to https with enabled TLS
+  owner: "{{ apache.user }}:{{ apache.group }}"
+  db_prefix: "hw_"
   visible_to_search_engines: True
   user:
     Hitchwiki: "{{ db.phpmyadmin_password }}"
@@ -70,3 +47,9 @@ mediawiki:
     # during migration. keep this list in the end of the file, as "[]" causes
     # bash_ini_parser to crash (we don't need these variables in bash)
     alternatives: { hitchwiki, hitchwiki2, hitchwiki3 }
+
+vagrant:
+  private_network_ip: "192.168.33.10" # Sets IP address for the Virtual Machine
+  hostname: "{{ mediawiki.domain }}" # Hostname to use for the development server
+  hostmanager_enabled: True  # Set `false` to use only private network IP to access the server.
+                             # Vagrant won't therefore modify your `/etc/hosts` file neither.

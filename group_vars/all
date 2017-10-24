@@ -1,0 +1,53 @@
+dir:
+  root: /var/www
+  conf: /var/www/configs
+  script: /var/www/scripts
+  pages: /var/www/scripts/pages
+  settings: /var/www/configs/settings.yml
+  wikifolder: wiki
+  wiki: /var/www/public/wiki
+  mwconf: /var/www/configs/mediawiki.php
+  dumps: /var/www/dumps
+  phpmyadmin: /usr/share/phpmyadmin
+  state: /var/www/group_vars/all
+
+self_signed_certs:
+  - key: /etc/ssl/private/server.key
+    cert: /etc/ssl/certs/server.crt
+
+domain: "{{ mediawiki.domain }}"
+hostname: "{{ mediawiki.domain }}"
+
+apache:
+  vhosts:
+    listen: "443 ssl http2"
+    server_name: "{{ mediawiki.domain }}"
+    root: "/var/www/example.com"
+    ssl_certificate: "{{ self_signed_certs.0.cert }}"
+    ssl_certificate_key: "{{ self_signed_certs.0.key }}"
+  user: www-data
+  group: www-data
+
+db:
+  server: mariadb
+  host: localhost
+  username: root
+  password: root
+  database: hitchwiki_en
+  prefix:
+  phpmyadmin_password: autobahn
+# TODO use vault
+db_credentials: "-u {{ db.username }} -p{{ db.password }}"
+
+# Install status
+state:
+  system: False
+  db: False
+  web: False
+  mw: False
+  mw_import: False
+  parsoid: False
+  phpmyadmin: False
+  maildev: False
+  production: False
+  tls: False

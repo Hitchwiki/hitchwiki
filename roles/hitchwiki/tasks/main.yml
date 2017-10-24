@@ -12,6 +12,10 @@
   include_tasks: apache.yml
   when: not state.web
 
+- name: Enable TLS
+  include_tasks: tls.yml
+  when: mediawiki.protocol == 'https' and not state.tls
+
 - meta: flush_handlers
 
 - name: Setup Mediawiki
@@ -21,10 +25,6 @@
 - name: Import Mediawiki content
   include_tasks: mw_import.yml
   when: not state.mw_import
-
-- name: Setup TLS
-  include_tasks: tls.yml
-  when: mediawiki.protocol == 'https' and not state.tls
 
 - name: Install Maildev
   include_tasks: maildev.yml
@@ -36,7 +36,7 @@
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: env == 'production' and not state.production
+  when: env == 'production'
 
 - meta: flush_handlers
 

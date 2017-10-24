@@ -1,5 +1,15 @@
 ---
 # Transport Layer Security
+
+# TODO https://www.jeffgeerling.com/blog/2017/self-signed-certificates-ansible-local-testing-nginx
+- name: Create self-signed certificate, if configured.
+  command: >
+    openssl req -x509 -nodes -subj '/CN={{ vagrant.hostname }}' -days 365
+    -newkey rsa:4096 -sha256 -keyout {{ item.key }} -out {{ item.cert }}
+    creates={{ item.cert }}
+  with_items: "{{ self_signed_certs }}"
+
+
 - name: Create the SSL Certificate
   become: yes
   shell: >
@@ -121,11 +131,11 @@
   command: apache2ctl configtest
   register: syntaxcheck
 
-- name: Successfully setup TLS
+- name: Self-signed certificate is not set up # Successfully setup TLS
   lineinfile:
     path: "{{ dir.state }}"
     regexp: '^  tls:'
-    line: "  tls: True"
+    line: "  tls: False"
   notify:
   - load
   - apache

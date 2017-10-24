@@ -1,0 +1,12 @@
+---
+# TODO Discourse https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+
+- name: Discourse is not set up.
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  discourse:'
+    line: "  discourse: False"
+  notify:
+  - load
+
+...

@@ -4,6 +4,7 @@
 # Examples:
 #   https://github.com/ansible/ansible-examples/tree/master/lamp_simple
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
+#   TODO https://github.com/geerlingguy/ansible-role-apache
 
 - name: Install Apache2 with PHP7 and extensions
   become: yes

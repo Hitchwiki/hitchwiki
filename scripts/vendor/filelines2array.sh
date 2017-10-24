@@ -39,6 +39,7 @@ fileLines2Array() {
   let i=0
   for l in "${MAPFILE[@]}"
   do
+    echo $l
     l=${l%%$commentPattern}		# Remove trailing portion beginning with delimiter.
     l=${l%%*( )}				# Trim trailing spaces
     l=${l##*( )}				# Trim leading spaces
@@ -46,6 +47,7 @@ fileLines2Array() {
       unset MAPFILE[$i]
     else
       MAPFILE[$i]=$l			# Replace the line we read with its modified version.
+      echo ${MAPFILE[$i]}
     fi
     let i++
   done
