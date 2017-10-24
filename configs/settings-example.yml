@@ -21,7 +21,6 @@ db:
   username: root
   password: root
   database: hitchwiki_en
-  prefix:
   phpmyadmin_password: autobahn
 # TODO use vault
 db_credentials: "-u {{ db.username }} -p{{ db.password }}"
@@ -39,6 +38,7 @@ mediawiki:
   metanamespace: Hitchwiki
   domain: hitchwiki.test
   cookiedomain: .hitchwiki.test
+  db_prefix: "hw_"
   protocol: http # change to https with enabled TLS
   visible_to_search_engines: True
   user:

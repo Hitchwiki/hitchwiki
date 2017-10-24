@@ -185,12 +185,12 @@ $wgDBpassword = $hwConfig['db']['password'];
 # By default shares 'users' and 'user_properties' tables
 $wgSharedDB = $hwConfig['db']['database'];
 $wgSharedSchema = false;
-$wgSharedPrefix = $hwConfig['db']['prefix'];
+$wgSharedPrefix = $hwConfig['mediawiki']['db_prefix'];
 # https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
 $wgSharedTables[] = 'user_groups';
 
 # MySQL specific settings
-$wgDBprefix = $hwConfig['db']['prefix'];
+$wgDBprefix = $hwConfig['mediawiki']['db_prefix'];
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
