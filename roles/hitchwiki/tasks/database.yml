@@ -37,10 +37,12 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
 
-- name: Finish db tasks
+- name: Finish database setup
   lineinfile:
-    path: "{{ dir.settings }}"
-    regexp: '^finished_db_tasks'
-    line: 'finished_db_tasks: True'
+    path: "{{ dir.state }}"
+    regexp: '^  db:'
+    line: "  db: True"
+  notify:
+  - load
 
 ...

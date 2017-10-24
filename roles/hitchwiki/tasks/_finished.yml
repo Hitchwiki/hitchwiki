@@ -1,0 +1,33 @@
+---
+
+- name: Show versions
+  include_tasks: versions.yml
+
+- name: Hitchwiki is installed!
+  shell: |
+    {{ dir.script }}/status.sh {{ vagrant.hostname }}
+    echo "
+    #######################################################################
+    #                                                                     #
+    #                     - Hitchwiki is installed -                      #
+    #                                                                     #
+    #   If a service is not 'up' in above list, check it's log file       #
+    #   and rerun the test with ./script/status.sh                        #
+    #                                                                     #
+    # - Suspend the virtual machine by calling 'vagrant suspend'.         #
+    # - When you're ready to begin working again, just run 'vagrant up'.  #
+    # - To re-install, run 'vagrant destroy && vagrant up'.               #
+    # - Read more at http://github.com/Hitchwiki/hitchwiki                #
+    #                                                                     #
+    #                 Have fun and happy hacking!                         #
+    #                                                                     #
+    #######################################################################
+
+    Run 'rgrep TODO roles' to see open tasks."
+  register: outro
+  when: state.finished
+- debug:
+    var: outro.stdout_lines
+  when: state.finished
+
+...

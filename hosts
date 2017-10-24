@@ -1,5 +1,0 @@
-[hitchwiki]
-#192.168.33.10 ansible_user=ubuntu ansible_ssh_private_key_file=/home/hitchwiki/src/hitchwiki/.vagrant/machines/hitchwiki/virtualbox/private_key
-
-[remote]
-46.101.117.158 ansible_user=hitchwiki

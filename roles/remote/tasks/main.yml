@@ -17,6 +17,13 @@
   user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
   # https://docs.ansible.com/ansible/latest/user_module.html
 
+- name: Add {{ user }} to sudoers
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^{{user}}'
+    line: "{{user}} ALL=NOPASSWD:ALL"
+
 - name: Set .ssh/authorized_keys from file
   authorized_key: user={{ user }}  state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
 
@@ -42,17 +49,12 @@
     repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
     depth: 1
-# set
-
-# TODO remove later
-- name: Track ansible branch
-  shell: cd ~/hitchwiki; git branch --set-upstream-to=origin/ansible ansible
 
 - name: Link /home/{{ user }}/src to /var/www
   become: yes
-  file: state=link force=yes src="/home/{{ user }}/hitchwiki" path=/var/www
+  file: state=link force=yes src="/home/{{ user }}/src" path=/var/www
 
 - debug:
-    msg: Success! Now run ansible-playbook hitchwiki.yml`.
+    msg: Success! Now move the host to the 'hitchwiki' group in 'hosts' and run ansible-playbook hitchwiki.yml`.
 
 ...

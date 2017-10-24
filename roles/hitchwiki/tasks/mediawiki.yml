@@ -60,20 +60,23 @@
     --dbname {{db.database}}
     --dbtype mysql
     --pass {{ db.phpmyadmin_password }}
-    --scriptpath /{{ dir.wiki }}vault
-    --lang en "{{hw.sitename}}" hitchwiki
+    --scriptpath /{{ dir.wiki }}
+    --lang en "{{ mediawiki.sitename }}" hitchwiki
   # sets up wiki in one language ("en")
   # creates one admin user "hitchwiki" with password "autobahn"
   # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
   # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
+  register: mw_install
 
+- debug:
+    msg: "{{ mw_install }}"
 
 # MW visual editor
 - name: Install MW visual editor
   git:
     clone: yes
     repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-    version: "{{ hw.branch }}"
+    version: "{{ mediawiki.branch }}"
     dest: "{{ dir.wiki }}/extensions/VisualEditor"
     depth: 1
     track_submodules: yes
@@ -84,13 +87,11 @@
 
 # Setup Mediawiki
 - name: Configure Hitchwiki
-  file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
+  #become: yes
+  shell: rm {{ dir.wiki }}/LocalSettings.php; cp {{ dir.script }}/configs/mediawiki_LocalSettings.php {{ dir.wiki }}/LocalSettings.php
+  #file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
+  #copy: src={{ dir.script }}/configs/mediawiki_LocalSettings.php dest={{ dir.wiki }}/LocalSettings.php owner={{ apache.user }} group={{ apache.group }}
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
-
-- name: Import interwiki table
-  # TODO use vault
-  mysql_db: name={{ db.database }} state=import target="{{ dir.script }}/configs/interwiki.sql" login_user={{ db.username }} login_password={{ db.password }}
-  # https://www.mediawiki.org/wiki/Extension:Interwiki
 
 - name: Enable Semantic Mediawiki extension
   file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
@@ -99,49 +100,29 @@
   # file exists, because it would cause errors when running
   # `maintenance/install.php`.
 
-- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc.)
-  command: chdir={{ dir.wiki }} php maintenance/update.php --quick --conf "{{ dir.mwconf }}"
-  # TODO check output
-  ignore_errors: yes
-
-- name: Pre-populate the AntiSpoof extension's table
-  command: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
-  # TODO check output
-  ignore_errors: yes
-
-- name: Create MediaWiki users
-  # TODO use vault
-  shell: >
-    cd "{{ dir.wiki }}"
-    echo "Create hitchwiki account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ db.phpmyadmin_password }}
-    echo "Create bot account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ db.phpmyadmin_password }}
-    echo "Create dummy account"
-    php maintenance/createAndPromote.php Hitchhiker {{ db.phpmyadmin_password }}
-    echo "Confirm emails for created users"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
-
-- name: Import Semantic templates and other MediaWiki special pages
-  command: chdir={{ dir.root }} bash "{{ dir.script }}/import_pages.sh"
-  # TODO check output
-
-- include_tasks: parsoid.yml
+- name: Install Parsoid
+  include_tasks: parsoid.yml
+  when: not state.parsoid
 
 - name: Grant wiki folder to webuser group
   become: yes
-  file: path={{ dir.wiki }} recurse=yes group={{ webserver_group }} #mode=640
+  file: path={{ dir.wiki }} recurse=yes owner={{ apache.user }} group={{ apache.group }}
+
+- name: Grant wiki files to webuser
+  become: yes
+  file: path={{ dir.conf }}/{{item}} owner={{ apache.user }} group={{ apache.group }}
+  with_items: { mediawiki.php, settings.ini, mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
 
 - name: Add cron job for daily localisation updates
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
   # See https://github.com/Hitchwiki/hitchwiki/issues/109
 
-- name: Finished Mediawiki installation
+- name: Finish mediawiki setup
   lineinfile:
-    path: "{{ dir.settings }}"
-    regexp: '^finished_mw_tasks'
-    line: 'finished_mw_tasks: True'
+    path: "{{ dir.state }}"
+    regexp: '^  mw:'
+    line: "  mw: True"
+  notify:
+  - load
 
 ...

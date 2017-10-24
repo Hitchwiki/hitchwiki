@@ -19,13 +19,11 @@
 #    ./configure
 #    make
 
-#- name: Install monit
-#  become: yes
-#  shell: cd /home/{{ ansible_user_id }}/monit; make install
 - name: Install monit
   apt: name=monit state=present
+#  shell: cd /home/{{ ansible_user_id }}/monit; make install
 
-- name: Monitor services
+- name: Monitor services # TODO
   monit: name={{item}} state=started
   # https://docs.ansible.com/ansible/latest/monit_module.html
   # https://mmonit.com/monit/documentation/monit.html
@@ -33,17 +31,12 @@
     - apache2
     - mariadb
 
-
-    - 
-# TODO untested
-
 - name: Finish installation
   lineinfile:
-    path: "{{ dir.settings }}"
-    regexp: '^finished_installation'
-    line: 'finished_installation: True'
-  when: finished_common_tasks and finished_db_tasks and finished_web_tasks and finished_mw_tasks
+    path: "{{ dir.state }}"
+    regexp: '^  production:'
+    line: '  production: True'
   notify:
-  - status
+  - load
 
 ...

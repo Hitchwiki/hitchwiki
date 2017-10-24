@@ -12,7 +12,7 @@
   pre_tasks:
     - name: Prepare system
       include_tasks: roles/hitchwiki/tasks/system.yml
-      when: finished_common_tasks is undefined or not finished_common_tasks
+      when: state.system is undefined or not state.system
 
 # Deployment is split into roles with tasks, handlers and templates:
 #    https://docs.ansible.com/ansible/latest/playbooks_reuse.html

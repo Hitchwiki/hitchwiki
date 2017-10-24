@@ -10,9 +10,10 @@
   apt: name={{ item }} state=present
   with_items: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
 
-- name: Enable apache mod rewrite
+- name: Enable apache mod php7.0 and rewrite
   become: yes
-  apache2_module: name=rewrite state=present
+  apache2_module: name={{item}} state=present
+  with_items: {{ php7.0, rewrite }}
   notify:
   - apache
 
@@ -45,7 +46,7 @@
 
 - name: Clean out folder created by Apache installer
   become: yes
-  file: state=absent path={{ROOTDIR}}/html
+  file: state=absent path={{ dir.root }}/html
 
 - name: Increase post size in php.ini
   become: yes
@@ -63,9 +64,12 @@
     regexp: '^php_value upload_max_filesize'
     line: php_value upload_max_filesize 8M
 
-- lineinfile:
-    path: "{{ dir.settings }}"
-    regexp: '^finished_web_tasks'
-    line: 'finished_web_tasks: True'
+- name: Finish apache setup
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  web:'
+    line: "  web: True"
+  notify:
+  - load
 
 ...

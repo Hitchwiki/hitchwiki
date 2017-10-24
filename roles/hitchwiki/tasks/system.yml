@@ -6,12 +6,12 @@
   raw: apt-get install -yq python-simplejson
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
-- name: Create configs/settings.yml based on settings-example.yml
-  copy: src=configs/settings-example.yml dest=/var/www/configs/settings.yml force=no
+- debug:
+    msg: "root: {{ dir.root }}"
 
-- name: Load variables
-  include_vars: configs/settings.yml
-  when: hostname is undefined
+- name: Has configs/settings-example.yml been copied to configs/settings.yml?
+  include_vars: ./configs/settings.yml
+  when: lookup('file', 'configs/settings.yml')
 
 - name: Set language
   lineinfile: 
@@ -53,10 +53,12 @@
 - name: Add daily cron job to update system
   cron: name=apt special_time=daily job="apt-get update && apt-get dist-upgrade -yq && apt-get autoremove -yq"
 
-- name: Finish common tasks
+- name: Finish system preparation
   lineinfile:
-    path: "{{ dir.settings }}"
-    regexp: '^finished_common_tasks'
-    line: 'finished_common_tasks: True'
+    path: "{{ dir.state }}"
+    regexp: '^  system:'
+    line: "  system: True"
+  notify:
+  - load
 
 ...

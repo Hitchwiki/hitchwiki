@@ -1,16 +1,21 @@
 ---
 # Setup TLS
 
-# apache mod md
+# TODO untested: self signed certificate
 - include_tasks: tls_selfsigned.yml
   when: mediawiki.protocol == 'https' and env == 'env'
 
-# Let's Encrypt - apache mod md
-- include_tasks: tls_md.yml
-  when: mediawiki.protocol == 'https' and env == 'production'
+# TODO untested: Let's Encrypt - apache mod md
+# "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
+#- include_tasks: tls_md.yml
+#  when: mediawiki.protocol == 'https' and env == 'production'
 
-# Let's Encrypt - certbot
+# TODO untested: Let's Encrypt - certbot
 #- include_tasks: tls_certbot.yml
 #  when: env == 'production'
+
+- debug:
+    msg: TLS is not set up.
+  when: not state.tls
 
 ...

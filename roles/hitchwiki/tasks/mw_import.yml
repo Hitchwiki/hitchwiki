@@ -1,0 +1,97 @@
+---
+# Import content
+
+- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc.)
+  become: yes
+  command: chdir={{ dir.wiki }} php maintenance/update.php --quick --conf "{{ dir.mwconf }}"
+  register: mw_extensions
+  ignore_errors: yes
+- debug:
+    msg: "{{ mw_extensions.stderr_lines }}{{ mw_extensions.stdout_lines }}"
+
+- name: Pre-populate the AntiSpoof extension's table
+  become: yes
+  command: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  register: mw_antispoof
+  ignore_errors: yes
+- debug:
+    msg: "{{ mw_antispoof.stderr_lines }}{{ mw_antispoof.stdout_lines }}"
+
+- name: Create MediaWiki users
+  become: yes
+  # TODO use vault
+  shell: |
+    set -e
+    source {{ dir.script }}/_path_resolve.sh
+    echo "Importing Semantic content..."
+    cd "{{ dir.wiki }}"
+    echo "Create hitchwiki account"
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ db.phpmyadmin_password }}
+    echo "Create bot account"
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ db.phpmyadmin_password }}
+    echo "Create dummy account"
+    php maintenance/createAndPromote.php Hitchhiker {{ db.phpmyadmin_password }}
+    echo "Confirm emails for created users"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
+    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+  register: mw_users
+  ignore_errors: yes
+- debug:
+    msg: "{{ mw_users.stderr_lines }}{{ mw_users.stdout_lines }}"
+
+- name: Import Semantic templates and other MediaWiki special pages
+  become: yes
+  shell: |
+    set -e
+    source {{dir.script}}/_path_resolve.sh
+    cd {{ dir.wiki }}
+    if [ ! -f "{{ dir.pages }}/_pagelist.txt" ]; then
+      warn "{{ dir.pages }}/_pagelist.txt does not exist! Aborting."
+      exit 1
+    fi
+    source {{ dir.script }}/vendor/filelines2array.sh
+    fileLines2Array {{ dir.pages }}/_pagelist.txt
+    let i=0
+    for l in "${MAPFILE[@]}"
+    do
+      PAGE="${MAPFILE[$i]}"
+      echo -n "Importing '$PAGE'..."
+      if [ -z "${PAGE}" ]; then
+        warn "Filename empty!"
+        continue
+      fi
+      if [ -f "$PAGESDIR/$PAGE" ]; then
+        # Supported parameters of https://www.mediawiki.org/wiki/Manual:Edit.php:
+        #
+        # Parameter      Description
+        # --------------------------
+        # -u <user>      Username
+        # -s <summary>   Edit summary
+        # -m             Minor edit
+        # -b             Bot (hidden) edit
+        # -a             Enable autosummary
+        # --no-rc        Do not show the change in recent changes
+        php maintenance/edit.php --no-rc -u Hitchbot -b -s "Importing semantic structure." "$PAGE" < "{{ dir.pages }}/$PAGE"
+        php maintenance/protect.php --user Hitchbot "$PAGE"
+        echo "done."
+      else
+        warn "Could not load file contents for '$PAGE' - file does not exist."
+      fi
+      echo ""
+      let i++
+    done
+  register: import_pages
+  ignore_errors: yes
+- debug:
+    msg: "{{ import_pages.stderr_lines }}{{ import_pages.stdout_lines }}"
+
+- name: Finish mediawiki import
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  mw_import:'
+    line: "  mw_import: False" # TODO
+  notify:
+  - load
+
+...

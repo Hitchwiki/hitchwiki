@@ -1,7 +1,7 @@
 ---
 # Transport Layer Security (set `setup_ssl: True`)
 
-# TODO "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
+# TODO untested - "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
 # https://github.com/Hitchwiki/hitchwiki/issues/127
 
 # TODO use https://docs.ansible.com/ansible/latest/letsencrypt_module.html
@@ -21,6 +21,13 @@
     - apache2
     - apache2-dbg
     - libapache2-mod-md
-  when: setup_ssl
+
+- name: Finish development setup
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  tls:'
+    line: "  tls: True"
+  notify:
+  - load
 
 ...

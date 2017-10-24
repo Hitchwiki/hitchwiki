@@ -23,11 +23,11 @@ settings = YAML.load_file(settings_file)
 # Collect install arguments for the server install script
 # You can turn these flags on/off from `vagrant.yaml`
 install_args = Array.new
-install_args.push("--ssl") if settings["setup_ssl"]
+install_args.push("--ssl") if settings["vagrant"]["setup_ssl"]
 
 Vagrant.configure("2") do |config|
 
-  config.hostmanager.enabled = settings["hostmanager_enabled"]
+  config.hostmanager.enabled = settings["vagrant"]["hostmanager_enabled"]
   config.hostmanager.manage_host = true
   config.hostmanager.manage_guest = true
   config.hostmanager.ignore_private_ip = false
@@ -36,8 +36,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "hitchwiki" do |node|
     node.vm.box = "ubuntu/xenial64"
     node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
-    node.vm.network :private_network, ip: settings["private_network_ip"]
-    node.vm.hostname = settings["hostname"]
+    node.vm.network :private_network, ip: settings["vagrant"]["private_network_ip"]
+    node.vm.hostname = settings["vagrant"]["hostname"]
     # Provision machine using Ansible
     # https://www.vagrantup.com/docs/provisioning/ansible.html
     config.vm.provision :ansible do |ansible|

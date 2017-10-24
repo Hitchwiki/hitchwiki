@@ -1,17 +1,8 @@
 ---
 
 # Parsoid depends on NodeSource (https://nodejs.org/en/download/package-manager)
-#- tempfile: state=file suffix=nodejs
-#  register: nodejs
-
-#- name: Download NodeSoure 8.x installer
-  #become: yes
-  #uri: dest={{nodejs.path}} url=https://deb.nodesource.com/setup_8.x
-  #shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  # TODO migrate the bash script here
-  # TODO [WARNING]: Consider using get_url or uri module rather than running curl
-
 - name: Add apt source for NodeSoure 8.x
+  become: yes
   apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_8.x xenial main"
 
 - name: Install nodejs
@@ -38,20 +29,27 @@
 
 - name: Create /etc/mediawiki/parsoid/
   become: yes
-  file: path=/etc/mediawiki/parsoid/ owner={{ webserver_user }}
+  file: path=/etc/mediawiki/parsoid/ owner={{ apache.user }}
 
 - name: Configure Parsoid
   become: yes
-  copy: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ webserver_user }} force=no
+  copy: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ apache.user }} force=no
 
 - name: Set domain in Parsoid
   become: yes
-  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ hw.domain }}
+  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ mediawiki.domain }}
 
-- name: Create Parsoid init script
-  become: yes
-  # TODO do we need to overwrite the packaged version?
-  copy: force=no src={{ dir.script }}/configs/parsoid_initscript path=/etc/default/parsoid
-  when: not lookup('file', '/etc/default/parsoid')
+# TODO do we need to overwrite the packaged version?
+#- name: Create Parsoid init script
+#  become: yes
+#  shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
+
+- name: Finish parsoid setup
+  lineinfile:
+    path: "{{ dir.state }}"
+    regexp: '^  parsoid:'
+    line: "  parsoid: True"
+  notify:
+  - load
 
 ...

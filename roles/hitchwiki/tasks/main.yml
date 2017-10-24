@@ -4,27 +4,41 @@
 
 - name: Setup database server
   include_tasks: database.yml
-  when: not finished_db_tasks
+  when: not state.db
+
+- meta: flush_handlers
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not finished_web_tasks
+  when: not state.web
 
-- name: Setup mediawiki
+- meta: flush_handlers
+
+- name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not finished_mw_tasks
+  when: not state.mw
+
+- name: Import Mediawiki content
+  include_tasks: mw_import.yml
+  when: not state.mw_import
 
 - name: Setup TLS
   include_tasks: tls.yml
-  when: mediawiki.protocol == 'https' and not finished_tls_tasks
+  when: mediawiki.protocol == 'https' and not state.tls
 
-- name: Setup development services
-  include_tasks: dev.yml
-  when: env == 'dev' and not finished_dev_tasks
+- name: Install Maildev
+  include_tasks: maildev.yml
+  when: env == 'dev' and not state.maildev
+
+- name: Install PHPMyAdmin
+  include_tasks: phpmyadmin.yml
+  when: env == 'dev' and not state.phpmyadmin
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: env == 'production'
+  when: env == 'production' and not state.production
+9
+- meta: flush_handlers
 
 - name: Status report
   include_tasks: status.yml

@@ -11,7 +11,7 @@ services=([apache]="$url Mediawiki" [parsoid]="$url:8142 Parsoid" [maildev]="$ur
 ping=$(ping $host -c1|grep "64 bytes from"|wc -l)
 if [[ $ping -gt 0 ]]
 then
-  echo "Got pong from $url."
+  echo "$url is online!"
 else
   echo "$url seems offline."
   exit
@@ -25,11 +25,11 @@ function test {
   result=?
   if [[ $lines -gt 0 ]]; then result=up; else
     if [[ -z $html ]] ; then result=down; fi; fi
-  echo -e "\t$name:\t$result\t$url"
+  echo -e "$name: $result - $url"
 } 
 
 for service in ${!services[@]}; do
   test ${services[$service]}
 done
 
-if [[ ! $1 ]] ; then echo "(Get info on other other hosts: $(basename $0) ip|hostname http|https)"; fi
+if [[ ! $1 ]] ; then echo "(Get info on other hosts: $(basename $0) ip|hostname http|https)"; fi
