@@ -1,11 +1,8 @@
 ---
 
-- name: Show versions
-  include_tasks: versions.yml
-
-- name: Hitchwiki is installed!
+- name: Installation successfull 
   shell: |
-    {{ dir.script }}/status.sh {{ vagrant.hostname }}
+    {{ dir.script }}/status.sh {{ domain }}
     echo "
     #######################################################################
     #                                                                     #
@@ -22,12 +19,9 @@
     #                 Have fun and happy hacking!                         #
     #                                                                     #
     #######################################################################
-
-    Run 'rgrep TODO roles' to see open tasks."
+    Tip: Run 'rgrep TODO roles' to see open tasks."
   register: outro
-  when: state.finished
 - debug:
     var: outro.stdout_lines
-  when: state.finished
 
 ...

@@ -3,14 +3,14 @@
 # As root
 - name: Change hostname
   become: yes
-  hostname: name={{ hostname }}
+  hostname: name={{ domain }}
 
-- name: Add {{ hostname }} to `/etc/hosts`
+- name: Add {{ domain }} to `/etc/hosts`
   become: yes
   lineinfile:
     path: /etc/hosts
     regexp: '^127.0.0.1'
-    line: 127.0.0.1 localhost {{ hostname }}
+    line: 127.0.0.1 localhost {{ domain }}
 
 - name: adduser {{ user }}
   become: yes

@@ -14,35 +14,44 @@
 - name: Configure MariaDB not to prompt for passwords
   become: true
   shell: |
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password" {{ db.password }}
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password" {{ db.password }}
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password" {{ mediawiki.db.password }}
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password" {{ mediawiki.db.password }}
 
 - name: Install MariaDB
   become: true
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
-- name: Start dbserver
-  service: name={{ db.server }} state=started
+- name: Activate mysql in Monit
+  become: yes
+  file: state=link src=/etc/monit/conf-available/mysql path=/etc/monit/conf-enabled/mysql
+  notify:
+    - reload monit
+
+- meta: flush_handlers
+
+- name: Monitor mysql
+  become: yes
+  monit: name=mysql state=monitored
+  ignore_errors: yes
+- name: Start mysql
+  become: yes
+  monit: name=mysql state=started
+  ignore_errors: yes
 
 - name: Set db user password
-  shell: mysqladmin {{ db_credentials }} password "{{ db.password }}"
+  shell: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
   ignore_errors: yes
 
 - name: Secure MariaDB root user
   shell: |
-    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password=PASSWORD('{{ db.password }}') WHERE User='{{ db.username }}'"
-    mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='{{db.username}}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password=PASSWORD('{{ mediawiki.db.password }}') WHERE User='{{ mediawiki.db.username }}'"
+    mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='{{ mediawiki.db.username }}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
 
-- name: Finish database setup
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  db:'
-    line: "  db: True"
-  notify:
-  - load
+- name: Finish dbserver installation
+  set_fact: state_db=true cacheable=true
 
 ...

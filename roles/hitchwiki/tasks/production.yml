@@ -1,15 +1,19 @@
 ---
 # Productive environment
 
-- name: Setup Monit
-  include_tasks: monit.yml
+#- name: Setup Monit
+#  include_tasks: monit.yml
+# TODO change monit password
+# TODO disable phpmyadmin
+# TODO disable maildev
+# TODO change db password
+# TODO test TLS
 
-- name: Finish installation
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  production:'
-    line: '  production: True'
-  notify:
-  - load
+- name: Setup TLS
+  include_tasks: tls.yml
+
+- name: Production environment is set up
+  set_fact: state_production=true cacheable=true
+  when: state_https and state_monit
 
 ...

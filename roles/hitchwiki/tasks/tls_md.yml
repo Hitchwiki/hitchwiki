@@ -22,12 +22,7 @@
     - apache2-dbg
     - libapache2-mod-md
 
-- name: Finish development setup
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  tls:'
-    line: "  tls: True"
-  notify:
-  - load
+- name: Apache mod_md is not setup.
+  set_fact: state_https=false cacheable=true
 
 ...

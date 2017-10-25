@@ -24,4 +24,7 @@
   become: yes
   npm: name=bower version='1.8' state=present global=yes
 
+- name: Finish composer installation
+  set_fact: state_composer=true cacheable=true
+
 ...

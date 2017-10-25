@@ -7,7 +7,7 @@
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
 - debug:
-    msg: "root: {{ dir.root }}"
+    var: dir
 
 - name: Has configs/settings-example.yml been copied to configs/settings.yml?
   include_vars: ./configs/settings.yml
@@ -19,6 +19,24 @@
     line: |
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
+
+- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
+  become: yes
+  file: state=directory path=/etc/ansible/facts.d/
+
+- name: Store versions script
+  become: yes
+  blockinfile:
+    path: /etc/ansible/facts.d/apps.fact
+    #mode: a+x
+    create: yes
+    marker: "" #"# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      #!/bin/bash
+      echo "[versions]
+      echo "apache2=$(apache2ctl -V|head -n1)"
+      echo "openssl=$(openssl version)"
+      for app in php npm node bower composer; do version=$($app --version|head -n1); echo "$app=$version"; done
 
 - name: Use apt-cacher
   become: yes
@@ -39,7 +57,7 @@
 - name: Install helper tools
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: { unattended-upgrades, composer, npm, tmux, python-pip, vim, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
+  with_items: { unattended-upgrades, composer, npm, tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban }
   notify:
   - apt
 
@@ -50,15 +68,7 @@
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user
 
-- name: Add daily cron job to update system
-  cron: name=apt special_time=daily job="apt-get update && apt-get dist-upgrade -yq && apt-get autoremove -yq"
-
 - name: Finish system preparation
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  system:'
-    line: "  system: True"
-  notify:
-  - load
+  set_fact: state_system=true cacheable=true
 
 ...

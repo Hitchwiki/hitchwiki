@@ -3,25 +3,46 @@
 
 - name: load
   include_vars: group_vars/all
+  listen:
+    - reload
 
 # System
 - name: Update system
   become: yes
   apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
-  listen: apt
+  listen:
+    - apt
+    - update system
 
 # Database
-- name: Restart database server
+- name: Restart mysql
   become: yes
+#  monit: name=mysql state=restarted # TODO switch to monit
+#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
   service: name={{db.server}} enabled=yes state=restarted
-  listen: database
+  listen:
+    - database
+    - mariadb
+    - mysql
+    - restart mysql
+    - restart mariadb
+    - restart dbserver
+
 
 # Webserver
 - name: Restart apache
   become: yes
+#  monit: name=apache2 state=restarted # TODO switch to monit
+#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
   service: name=apache2 state=restarted
   register: apache_restart
-  listen: apache
+  listen:
+    - apache
+    - restart apache
+    - apache2
+    - restart apache2
+    - webserver
+    - restart webserver
 
 - debug:
     var: apache_restart.stderr_lines
@@ -43,8 +64,13 @@
 
 # Mediawiki handlers
 - name: Restart Parsoid
+  become: yes
   service: name=parsoid state=restarted
-  listen: parsoid
+#  monit: name=parsoid state=restarted # TODO switch to monit
+#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
+  listen:
+    - parsoid
+    - restart parsoid
 
 # Development environment
 - name: Start maildev
@@ -52,6 +78,7 @@
   command: maildev --smtp 1025 --silent
   #service: name=maildev enabled=yes state=started
   #systemd: name=maildev enabled=yes state=started
-  listen: maildev
+  listen:
+    - maildev
 
 ...

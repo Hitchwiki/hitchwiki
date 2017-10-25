@@ -4,7 +4,7 @@
 # TODO https://www.jeffgeerling.com/blog/2017/self-signed-certificates-ansible-local-testing-nginx
 - name: Create self-signed certificate, if configured.
   command: >
-    openssl req -x509 -nodes -subj '/CN={{ vagrant.hostname }}' -days 365
+    openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 365
     -newkey rsa:4096 -sha256 -keyout {{ item.key }} -out {{ item.cert }}
     creates={{ item.cert }}
   with_items: "{{ self_signed_certs }}"
@@ -13,7 +13,7 @@
 - name: Create the SSL Certificate
   become: yes
   shell: >
-    openssl req -subj "/CN={{ mediawiki.domain }}/O={{ mediawiki.sitename }}/C=DE" -x509 -nodes
+    openssl req -subj "/CN={{ domain }}/O={{ mediawiki.sitename }}/C=DE" -x509 -nodes
     -days 365 -newkey rsa:2048
     -keyout /etc/ssl/private/apache-selfsigned.key
     -out /etc/ssl/certs/apache-selfsigned.crt
@@ -84,8 +84,8 @@
     sudo cat <<EOT > default-ssl.conf
     <IfModule mod_ssl.c>
             <VirtualHost _default_:443>
-                    ServerAdmin webmaster@{{ mediawiki.domain }}
-                    ServerName {{ mediawiki.domain }}
+                    ServerAdmin webmaster@{{ domain }}
+                    ServerName {{ domain }}
                     DocumentRoot {{ dir.root }}/public
                     ErrorLog \${APACHE_LOG_DIR}/error.log
                     CustomLog \${APACHE_LOG_DIR}/access.log combined
@@ -132,13 +132,9 @@
   register: syntaxcheck
 
 - name: Self-signed certificate is not set up # Successfully setup TLS
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  tls:'
-    line: "  tls: False"
-  notify:
-  - load
-  - apache
-  when: syntaxcheck|succeeded
+  set_fact: state_https=false cacheable=true
+#  notify:
+#  - apache
+#  when: syntaxcheck|succeeded
 
 ...

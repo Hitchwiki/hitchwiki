@@ -37,19 +37,34 @@
 
 - name: Set domain in Parsoid
   become: yes
-  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ mediawiki.domain }}
+  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ domain }}
 
 # TODO do we need to overwrite the packaged version?
 #- name: Create Parsoid init script
 #  become: yes
 #  shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
 
-- name: Finish parsoid setup
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  parsoid:'
-    line: "  parsoid: True"
+- name: Add parsoid to Monit
+  become: yes
+  blockinfile:
+    path: /etc/monit/monitrc.d/parsoid
+    create: yes
+    mode: 0700
+    block: |
+      check process parsoid with pidfile /run/parsoid.pid
+       start program = "/usr/sbin/service parsoid start" with timeout 60 seconds
+       stop program  = "/usr/sbin/service parsoid stop"
   notify:
-  - load
+    - reload monit
+
+- name: Monitor parsoid
+  become: yes
+  monit: name=parsoid state=monitored
+  notify:
+    - restart parsoid
+  ignore_errors: yes
+
+- name: Finish parsoid installation
+  set_fact: state_parsoid=true cacheable=true
 
 ...

@@ -13,7 +13,7 @@
 
 #- name: Request certificate # done manually, next step: solve challenge TODO
 #  become: yes
-#  command: certbot certonly --webroot -w {{ dir.root }} -d {{ mediawiki.domain }}
+#  command: certbot certonly --webroot -w {{ dir.root }} -d {{ domain }}
 
 # All generated keys and issued certificates can be found in /etc/letsencrypt/live/$domain
 
@@ -39,12 +39,7 @@
 # https://www.jeffgeerling.com/blog/2016/remove-single-certbot-letsencrypt-certificate-server
 # certbot delete --cert-name example.com
 
-- name: Certbot is set up, check /etc/letsencrypt
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  tls:'
-    line: "  tls: False"
-  notify:
-  - load
+- name: You need to solve the challenge to finish Certbot setup, see /etc/letsencrypt
+  set_fact: state_https=false cacheable=true
 
 ...

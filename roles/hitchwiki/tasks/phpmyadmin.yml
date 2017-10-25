@@ -7,10 +7,10 @@
   shell: |
     debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string {{db.username}}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{db.password}}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{db.phpmyadmin_password}}"
-    debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{db.phpmyadmin_password}}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-user string {{ mediawiki.db.username }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{ mediawiki.db.password }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{ phpmyadmin_password }}"
+    debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{ phpmyadmin_password }}"
 
 - name: Add PHPMyAdmin configuration to Apache
   become: true
@@ -21,12 +21,7 @@
   notify:
   - apache
 
-- name: Successfully set up PHPMyAdmin
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  phpmyadmin:'
-    line: "  phpmyadmin: True"
-  notify:
-  - load
+- name: Finish PHPMyAdmin installation
+  set_fact: state_phpmyadmin=true cacheable=true
 
 ...

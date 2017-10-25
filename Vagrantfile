@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
     node.vm.box = "ubuntu/xenial64"
     node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
     node.vm.network :private_network, ip: settings["vagrant"]["private_network_ip"]
-    node.vm.hostname = settings["vagrant"]["hostname"]
+    node.vm.hostname = settings["hostname"]
     # Provision machine using Ansible
     # https://www.vagrantup.com/docs/provisioning/ansible.html
     config.vm.provision :ansible do |ansible|

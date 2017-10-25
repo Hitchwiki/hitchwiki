@@ -1,33 +1,51 @@
 ---
-
 # Monit
-#- name: Clone into Monit 
-#  git: repo: git clone=https://tildeslash@bitbucket.org/tildeslash/monit.git dest=~/moniit depth=1
+#  https://docs.ansible.com/ansible/latest/monit_module.html
+#  https://mmonit.com/monit/documentation/monit.html
 
-#- name: Install monit dependencies
-#  apt: name={{item}} state=present
-#  with_items: { automake bison byacc flex libpam0g-dev } # libtool m4
-
-#- name: Build monit
-#  shell: |
-#    cd ~/monit
-#    ./configure
-#    make
-
-- name: Install monit
+- name: Configure Monit
   become: yes
-  apt: name=monit state=present
-#  shell: cd /home/{{ ansible_user_id }}/monit; make install
+  blockinfile:
+    path: /etc/monitrc
+    create: yes
+    mode: 0700
+    block: |
+      set alert {{ admin_contact }}
+      set alert {{ mediawiki.emergency_contact }} not on { instance, action }
+      set httpd port 2812
+          use address localhost  # only accept connection from localhost
+          allow localhost        # allow localhost to connect to the server and  
+          allow admin:monit      # require user 'admin' with password 'monit'
+      include /etc/monit/conf-enabled/*
+      include /etc/monit/monitrc.d/*
 
-- name: Monitor services # TODO
-  monit: name={{item}} state=started
-  # https://docs.ansible.com/ansible/latest/monit_module.html
-  # https://mmonit.com/monit/documentation/monit.html
-  with_items:
-    - apache2
-    - mariadb
+- name: Activate openssh-server in Monit
+  become: yes
+  file: state=link src=/etc/monit/conf-available/openssh-server path=/etc/monit/conf-enabled/openssh-server
+
+- name: Check monit syntax
+  become: yes
+  command: monit -t
+  register: monit_syntax
+  ignore_errors: yes
 
 - debug:
-    msg: Monit has not been configured.
+    msg: "{{ monit_syntax.stdout_lines }}"
+
+- name: Reload monit
+  become: yes
+  command: monit reload
+  register: monit_reloaded
+  when: "'OK' in monit_syntax.stdout"
+
+- name: Monitor openssh-server
+  become: yes
+  monit: name=openssh-server state=monitored
+  when: monit_reloaded|succeeded
+  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
+
+- name: Monit is set tup
+  set_fact: state_monit=True cacheable=true
+  when: monit_reloaded|succeeded
 
 ...

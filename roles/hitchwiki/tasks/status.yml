@@ -1,27 +1,26 @@
 ---
 # Status report
+#- name: Installation state on {{ domain }}
+#- debug: var=ansible_facts.ansible_local
+#- debug: var=versions
+#- debug: var=state
 
-- lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  finished:'
-    line: '  finished: True'
+- name: Are we finished?
+  when: state_system and state_monit and state_db and state_web and state_mw and state_mw_import and state_parsoid and (not https or state_https) and (not env == 'dev' or (state_maildev and state_phpmyadmin)) and (not env == 'production' or state_production) # make sure all variables are set
+  set_fact: state_finished=True
   register: finished
-  when: state.system and state.db and state.web and state.mw and state.mw_import and state.parsoid and ((state.production and state.tls) or (state.phpmyadmin and state.maildev))
-  notify:
-  - load
-- lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  finished:'
-    line: '  finished: False'
-  when: finished|skipped
-  notify:
-  - load
+
+# {{ hostvars[inventory_hostname]['somevar_' + other_var] }}
+#- name: Save state
+#  become: yes
+#  blockinfile:
+#    path: /etc/facs.d/state.fact
+#    block: |
+#      state_{{item}}: {{state_{{ item }}}}
+#  with_items: { system, db, web, mw, mw_import, parsoid, https, maildev, phpmyadmin, production, monit, discourse }
 
 # Summary
-- include_tasks: _failed.yml
-  when: not state.finished
-
 - include_tasks: _finished.yml
-  when: state.finished
+  when: finished|succeeded
 
 ...

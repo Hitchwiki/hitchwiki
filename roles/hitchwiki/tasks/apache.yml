@@ -11,10 +11,17 @@
   apt: name={{ item }} state=present
   with_items: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
 
-- name: Enable apache mod php7.0 and rewrite
+- name: Activate apache2 in Monit
   become: yes
-  apache2_module: name={{item}} state=present
-  with_items: {{ php7.0, rewrite }}
+  file: state=link src=/etc/monit/conf-available/apache2 path=/etc/monit/conf-enabled/apache2
+  notify:
+    - reload monit
+
+- meta: flush_handlers
+
+- name: Enable apache mod rewrite
+  become: yes
+  apache2_module: name=rewrite state=present
   notify:
   - apache
 
@@ -49,28 +56,22 @@
   become: yes
   file: state=absent path={{ dir.root }}/html
 
-- name: Increase post size in php.ini
-  become: yes
-  lineinfile:
-    path: /etc/php/7.0/cli/php.ini
-    state: present
-    regexp: '^php_value post_max_size'
-    line: php_value post_max_size 10M
-
 - name: Increase upload limit in php.ini
   become: yes
-  lineinfile:
+  blockinfile:
     path: /etc/php/7.0/cli/php.ini
     state: present
-    regexp: '^php_value upload_max_filesize'
-    line: php_value upload_max_filesize 8M
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+    block: |
+      php_value post_max_size 10M
+      php_value upload_max_filesize 8M
 
-- name: Finish apache setup
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  web:'
-    line: "  web: True"
-  notify:
-  - load
+- name: Monitor mysql
+  become: yes
+  monit: name=mysql state=monitored
+  ignore_errors: yes
+
+- name: Finish apache installation
+  set_fact: state_web=true cacheable=true
 
 ...

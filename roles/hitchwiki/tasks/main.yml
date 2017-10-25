@@ -2,37 +2,48 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
+#- name: Check status
+#  include_tasks: status.yml
+
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not state_monit
+
 - name: Setup database server
   include_tasks: database.yml
-  when: not state.db
+  when: not state_db
 
 - meta: flush_handlers
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not state.web
+  when: not state_web
 
 - name: Enable TLS
   include_tasks: tls.yml
-  when: mediawiki.protocol == 'https' and not state.tls
+  when: https and not state_https
 
 - meta: flush_handlers
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not state.mw
+  when: not state_mw
+
+# Development
 
 - name: Import Mediawiki content
   include_tasks: mw_import.yml
-  when: not state.mw_import
+  when: not state_mw_import
 
 - name: Install Maildev
   include_tasks: maildev.yml
-  when: env == 'dev' and not state.maildev
+  when: env == 'dev' and not state_maildev
 
 - name: Install PHPMyAdmin
   include_tasks: phpmyadmin.yml
-  when: env == 'dev' and not state.phpmyadmin
+  when: env == 'dev' and not state_phpmyadmin
+
+# Production
 
 - name: Setup production environment
   include_tasks: production.yml

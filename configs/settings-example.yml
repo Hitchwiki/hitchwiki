@@ -1,34 +1,43 @@
-# Variables for ansible provisioning
-#  https://docs.ansible.com/ansible/latest/playbooks_variables.html
+domain: hitchwiki.test
+cookiedomain: .hitchwiki.test
+https: False
+env: "dev" # dev | production
+admin_contact: 
 
-env: "dev" # dev | production - to enable TLS change mediawiki.protocal to 'https' below
+# Development variables
+phpmyadmin_password: autobahn
 #apt_proxy: IP address # Install apt-cacher-ng on the host to avoid downloading packages again.
+smtp: # MailDev is running at port 1025 at dev server https://github.com/djfarrelly/MailDev
+  enabled: true # See http://hitchwiki.test:1080/
+  host: localhost
+  port: 1025
+  auth: false # Should we use SMTP authentication (true or false)
+  username:
+  password:
 
 mediawiki:
-  domain: hitchwiki.test
-  protocol: http # change to 'https' to enable TLS
   debug: False
   cache: False
   branch: REL1_29
   sitename: Hitchwiki
   metanamespace: Hitchwiki
-  cookiedomain: .hitchwiki.test
-  db_prefix: "hw_"
-  protocol: http # change to https with enabled TLS
-  owner: "{{ apache.user }}:{{ apache.group }}"
-  db_prefix: "hw_"
   visible_to_search_engines: True
-  user:
-    Hitchwiki: "{{ db.phpmyadmin_password }}"
-    Hitchbot: "{{ db.phpmyadmin_password }}"
-    Hitchhiker: "{{ db.phpmyadmin_password }}"
-  smtp: # MailDev is running at port 1025 at dev server https://github.com/djfarrelly/MailDev
-    enabled: true # See http://hitchwiki.test:1080/
+  use_smtp: True
+  enable_api: True
+  enable_write_api: True
+  api_modules_createaccount: "ApiDisabled"
+  emergency_contact: "contact@hitchwiki.test"
+  password_sender: "noreply@hitchwiki.test"
+  db:
     host: localhost
-    port: 1025
-    auth: false # Should we use SMTP authentication (true or false)
-    username:
-    password:
+    username: root
+    password: root
+    database: hitchwiki_en
+    prefix: hw_
+  user:
+    Hitchwiki: "{{ phpmyadmin_password }}"
+    Hitchbot: "{{ phpmyadmin_password }}"
+    Hitchhiker: "{{ phpmyadmin_password }}"
   spam: # https://www.google.com/recaptcha/intro/index.html
     spamprotection: False
     # These keys will work only at domains hitchwiki.test and 192.168.33.10
@@ -46,10 +55,11 @@ mediawiki:
     # use these instead of the above if geonames requests are being throttled
     # during migration. keep this list in the end of the file, as "[]" causes
     # bash_ini_parser to crash (we don't need these variables in bash)
-    alternatives: { hitchwiki, hitchwiki2, hitchwiki3 }
+    # alternatives: { hitchwiki, hitchwiki2, hitchwiki3 }
 
+# Variables for ansible provisioning
+#  https://docs.ansible.com/ansible/latest/playbooks_variables.html
 vagrant:
   private_network_ip: "192.168.33.10" # Sets IP address for the Virtual Machine
-  hostname: "{{ mediawiki.domain }}" # Hostname to use for the development server
   hostmanager_enabled: True  # Set `false` to use only private network IP to access the server.
                              # Vagrant won't therefore modify your `/etc/hosts` file neither.

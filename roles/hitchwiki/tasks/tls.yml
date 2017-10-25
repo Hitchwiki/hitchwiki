@@ -3,7 +3,7 @@
 
 # TODO untested: self signed certificate
 - include_tasks: tls_selfsigned.yml
-  when: env == 'env'
+  when: env == 'dev'
 
 # TODO untested: Let's Encrypt - apache mod md
 # "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
@@ -14,8 +14,8 @@
 - include_tasks: letsencrypt.yml
   when: env == 'production'
 
-- debug:
-    msg: TLS is not set up.
-  when: not state.tls
+- name: Is https setup?
+  debug:
+    var: state_https
 
 ...

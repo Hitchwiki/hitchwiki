@@ -3,17 +3,17 @@
 
 - name: Drop Mediawiki database
   # TODO use vault
-  mysql_db: name={{ db.database }} state=absent login_user={{ db.username }} login_password={{ db.password }}
+  mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
   
 - name: Create database
   # TODO use vault
-  mysql_db: name={{ db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ db.username }} login_password={{ db.password }}
+  mysql_db: name={{ mediawiki.db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
   #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
 
 
 # Mediawiki installation
 - name: Install mediawiki
-  composer: command=install no_dev=True working_dir={{ dir.root }}
+  composer: command=install no_dev=True working_dir=/var/www/
 
 - name: Create wiki directories
   become: yes
@@ -55,11 +55,11 @@
   shell: >
     cd {{ dir.wiki }}
     php maintenance/install.php --conf "{{ dir.mwconf }}"
-    --dbuser {{db.username}}
-    --dbpass {{db.password}}
-    --dbname {{db.database}}
+    --dbuser {{ mediawiki.db.username }}
+    --dbpass {{ mediawiki.db.password }}
+    --dbname {{ mediawiki.db.database }}
     --dbtype mysql
-    --pass {{ db.phpmyadmin_password }}
+    --pass {{ phpmyadmin_password }}
     --scriptpath /{{ dir.wiki }}
     --lang en "{{ mediawiki.sitename }}" hitchwiki
   # sets up wiki in one language ("en")
@@ -67,9 +67,6 @@
   # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
   # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
   register: mw_install
-
-- debug:
-    msg: "{{ mw_install }}"
 
 # MW visual editor
 - name: Install MW visual editor
@@ -86,9 +83,9 @@
 
 
 # Setup Mediawiki
+- file: state=absent path={{ dir.wiki }}/LocalSettings.php
 - name: Configure Hitchwiki
-  #become: yes
-  shell: rm {{ dir.wiki }}/LocalSettings.php; cp {{ dir.script }}/configs/mediawiki_LocalSettings.php {{ dir.wiki }}/LocalSettings.php
+  shell: cp {{ dir.script }}/configs/mediawiki_LocalSettings.php {{ dir.wiki }}/LocalSettings.php # copy file to change permission later
   #file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
   #copy: src={{ dir.script }}/configs/mediawiki_LocalSettings.php dest={{ dir.wiki }}/LocalSettings.php owner={{ apache.user }} group={{ apache.group }}
   # Config file is stored elsewhere, require it from MW's LocalSettings.php
@@ -117,12 +114,7 @@
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
   # See https://github.com/Hitchwiki/hitchwiki/issues/109
 
-- name: Finish mediawiki setup
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  mw:'
-    line: "  mw: True"
-  notify:
-  - load
+- name: Finish Mediawiki installation
+  set_fact: state_mw=true cacheable=true
 
 ...

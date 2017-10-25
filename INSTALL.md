@@ -32,47 +32,77 @@ Vagrant set's up and provisions a Vagrant box with [Ansible](https://www.ansible
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
 1. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
 
+As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml`.
+
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just `vagrant up` to continue and `vagrant provision` if the first run ended with errors.
 
 To add VMs or VPS edit `./hosts`.
 
-#### Install on localhost or remotely
-Note that setup scripts are based on Ubuntu.
+##### Update
+1. Pull latest changes: `git pull origin master`
+2. Run update script: `./scripts/vagrant/update.sh`
 
-_TODO update this section to install on localhost_
+##### Re-Install
+2. Run re-install script: `./scripts/vagrant/reinstall.sh`
 
-If you have root access to a machine, you can deploy hitchwiki there:
+##### More info on vagrant
+Read [basics about Vagrant](https://www.vagrantup.com/intro/)
+
+##### SSH into Vagrant
+```bash
+vagrant ssh
+```
+This repository's root is visible via `/var/www/` inside the Vagrant machine.
+
+##### Clean Vagrant box
+If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
+```bash
+./scripts/vagrant/clean.sh
+```
+This will basically run `vagrant destroy` and clean out all the custom files created during previous provision.
+
+#### Run Ansible without vagrant
+If you have root access to a remote or local machine, you can deploy hitchwiki there:
+```bash
+git clone https://github.com/traumschule/hitchwiki -b ansible hitchwiki
+cd hitchwiki
+```
 - Copy `configs/settings.yml` from `configs/settings-example.yml`
-- Add the IP address to the `[remote]` section in `hosts`
+- Add the IP address to the `[remote]` section in `hosts`. You can as well use `localhost`.
 - Run `ssh-keygen` locally and add it to `/home/root/.ssh/authorized_keys` on your machine.
-- Change `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
+- Add your public key in `~/.ssh/id_rsa.pub` to `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
 - (optional) Change `user` and `hostname` in `roles/remote/vars/main.yml`
-- Add to your local ~/.ssh/config:
-    ```
+- (optional) Add to your local ~/.ssh/config:
+```
     Host hw-dev
       HostName {{ ip address }}
       User {{ user }} # default: hitchwiki
-    ```
-- now run `ansible-playbooks deploy_remote.yml`
+```
+To prepare a remote system:
+```bash
+ansible-playbooks deploy_remote.yml
+```
+To test ansible locally, run
+```bash
+ansible-playbooks hitchwiki.yml
+```
+When errors happen, fix them in `./roles/*/tasks/main.yml` and check the syntax with
+```bash
+ansible-playbook hitchwiki.yml --syntax-check
+```
+Show hosts (configured in `hosts`):
+```bash
+ansible hitchwiki --list-hosts
+```
+There is still a lot to do. Just risk a `rgrep TODO roles`. Note that setup scripts are based on Ubuntu.
 
-#### Ansible
-To test current ansible development: `git clone https://github.com/traumschule/hitchwiki -b ansible`.
-
-As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml` with the following roles/chapters:
-
-##### common
+##### What ansible does
 - Upgrade distribution packages
 - Install helpers like composer and node
 - Start downloads in background
-
-##### db
 - Setup MariaDB
-
-##### web
 - Setup Apache2 with PHP7
-
-##### mw
 - Download and extract [Mediawiki](https://www.mediawiki.org/)
 - Install dependencies with Composer
 - Create a database and configure MediaWiki
@@ -80,27 +110,9 @@ As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansib
 - Create three users (see below)
 - Install Parsoid server and VisualEditor extension
 - Install Mediawiki extensions
-
 Depending on your connection this will take some time (40mb for MW alone).
 
-When errors happen, fix them in `./roles/*/tasks/main.yml` and check the syntax with
-```bash
-ansible-playbook hitchwiki.yml --syntax-check
-```
-
-Show hosts in the hitchwiki group (configured in `hosts` and `ansible.cfg`):
-```bash
-ansible hitchwiki --list-hosts
-```
-
-Run ansible without `vagrant provision`:
-```bash
-ansible-playbook hitchwiki.yml
-```
-
-There is still a lot to do. Just risk a `rgrep TODO roles`.
-
-#### Pre-created users (user/pass)
+### Pre-created users (user/pass)
 - Admin: Hitchwiki / autobahn
 - Bot: Hitchbot / autobahn
 - User: Hitchhiker / autobahn
@@ -127,38 +139,20 @@ This is done once at install, but needs to be done each time somebody changes co
     ansible-playbook hitchwiki.yml --syntax-check
     ```
 
-# HTTPS
-To test encryption test provisioning, set `setup_ssl: True` in `settings.yml` (the variable name may change in the future).
-- _staging (development)_ uses the legacy `scripts/cert_selfsigned.sh`
-- _production_ is configured to test the unreleased [mod_md](https://github.com/icing/mod_md) module to support [ACME in apache 2.4.x](https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html)
+### HTTPS
+To test encryption test provisioning, set `https: True` in `settings.yml` (the variable name may change in the future).
+- _staging (development):_ see `roles/hitchwiki/tasks/tls_selfsigned.yml`
+- _production:_ used `certbot`. If you like, uncomment and test the unreleased [mod_md](https://github.com/icing/mod_md) for [ACME in apache 2.4.x](https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html) in `roles/hitchwiki/tasks/tls.yml`.
 
-### Update
-1. Pull latest changes: `git pull origin master`
-2. Run update script: `./scripts/vagrant/update.sh`
-
-### Re-Install
-2. Run re-install script: `./scripts/vagrant/reinstall.sh`
-
-## More info on vagrant
-
-Read [basics about Vagrant](https://www.vagrantup.com/intro/)
-
-#### SSH into Vagrant
-```bash
-vagrant ssh
-```
-
-This repository's root is visible via `/var/www/` inside the Vagrant machine.
-
-#### Database access
-##### From the app
+###  Database access
+#### From the app
 Setting | Value
 ------------ | -------------
 User | root
 Pass | root
 Host | localhost
 
-##### From desktop
+#### From desktop
 Only via SSH Forwarding. You need to set a password for `ubuntu` user before you can SSH into the box. (Info [via](https://stackoverflow.com/a/41337943/1984644))
 
 Do:
@@ -177,12 +171,5 @@ SSH Host | 192.168.33.10
 SSH User | ubuntu
 SSH Password | ubuntu
 
-#### Clean Vagrant box
-If for some reason you want to have clean Vagrant setup, database and MediaWiki installed, run:
-```bash
-./scripts/vagrant/clean.sh
-```
-This will basically run `vagrant destroy` and clean out all the custom files created during previous provision.
-
 ## Setting up production environment
-_TODO_
+Set `env: production` in `configs/settings.yml` run `ansible-playbook hitchwiki.yml`.

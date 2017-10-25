@@ -26,11 +26,11 @@
     echo "Importing Semantic content..."
     cd "{{ dir.wiki }}"
     echo "Create hitchwiki account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ db.phpmyadmin_password }}
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ phpmyadmin_password }}
     echo "Create bot account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ db.phpmyadmin_password }}
+    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ phpmyadmin_password }}
     echo "Create dummy account"
-    php maintenance/createAndPromote.php Hitchhiker {{ db.phpmyadmin_password }}
+    php maintenance/createAndPromote.php Hitchhiker {{ phpmyadmin_password }}
     echo "Confirm emails for created users"
     mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
     mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
@@ -86,12 +86,12 @@
 - debug:
     msg: "{{ import_pages.stderr_lines }}{{ import_pages.stdout_lines }}"
 
-- name: Finish mediawiki import
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  mw_import:'
-    line: "  mw_import: False" # TODO
-  notify:
-  - load
+- name: Finish Mediawiki import
+  when: mw_extensions|succeeded and mw_antispoof|succeeded and mw_users|succeeded and import_pages|succeeded
+  register: mw_import_finished
+
+#- set_fact: state_mw_import=true cacheable=true
+- set_fact: state_mw_import=false cacheable=true
+  when: mw_import_finished|skipped
 
 ...

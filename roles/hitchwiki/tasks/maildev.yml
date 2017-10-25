@@ -22,12 +22,7 @@
   notify:
   - maildev
 
-- name: Successfully set up Maildev
-  lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  maildev:'
-    line: "  maildev: True"
-  notify:
-  - load
+- name: Finish Maildev installation
+  set_fact: state_maildev=true cacheable=true
 
 ...

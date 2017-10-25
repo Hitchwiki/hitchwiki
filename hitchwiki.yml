@@ -9,15 +9,10 @@
 - hosts: all
   gather_facts: no
 
-  pre_tasks:
-    - name: Prepare system
-      include_tasks: roles/hitchwiki/tasks/system.yml
-      when: state.system is undefined or not state.system
-
-# Deployment is split into roles with tasks, handlers and templates:
-#    https://docs.ansible.com/ansible/latest/playbooks_reuse.html
-# 
-# Following roles are 
+#  pre_tasks:
+#    - name: Prepare system
+#      include_tasks: roles/hitchwiki/tasks/system.yml
+#      when: not state_system or state_system is undefined
 
 - name: Setup hitchwiki
   hosts: all
