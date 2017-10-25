@@ -32,9 +32,9 @@
     echo "Create dummy account"
     php maintenance/createAndPromote.php Hitchhiker {{ phpmyadmin_password }}
     echo "Confirm emails for created users"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-    mysql {{ db_credentials }} {{ db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
+    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
+    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
   register: mw_users
   ignore_errors: yes
 - debug:
@@ -87,11 +87,10 @@
     msg: "{{ import_pages.stderr_lines }}{{ import_pages.stdout_lines }}"
 
 - name: Finish Mediawiki import
+  set_fact: state_mw_import=true cacheable=true
   when: mw_extensions|succeeded and mw_antispoof|succeeded and mw_users|succeeded and import_pages|succeeded
   register: mw_import_finished
-
-#- set_fact: state_mw_import=true cacheable=true
-- set_fact: state_mw_import=false cacheable=true
+- set_fact: state_mw_import=false
   when: mw_import_finished|skipped
 
 ...
