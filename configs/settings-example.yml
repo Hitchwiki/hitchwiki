@@ -19,8 +19,11 @@ mediawiki:
   debug: False
   cache: False
   branch: REL1_29
+  protocol: http
   sitename: Hitchwiki
   metanamespace: Hitchwiki
+  secretkey: 
+  upgradekey:
   visible_to_search_engines: True
   use_smtp: True
   enable_api: True
@@ -55,7 +58,7 @@ mediawiki:
     # use these instead of the above if geonames requests are being throttled
     # during migration. keep this list in the end of the file, as "[]" causes
     # bash_ini_parser to crash (we don't need these variables in bash)
-    # alternatives: { hitchwiki, hitchwiki2, hitchwiki3 }
+    usernames: { hitchwiki, hitchwiki2, hitchwiki3 }
 
 # Variables for ansible provisioning
 #  https://docs.ansible.com/ansible/latest/playbooks_variables.html

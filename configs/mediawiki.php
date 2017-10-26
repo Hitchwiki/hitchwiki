@@ -27,7 +27,7 @@ require_once '../mustangostang/spyc/Spyc.php';
 if (!function_exists('spyc_load_file')) {
   die('Missing `mustangostang/spyc`!');
 }
-$hwConfig = spyc_load_file('../../configs/settings.yaml');
+$hwConfig = spyc_load_file('../../configs/settings.yml');
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -41,21 +41,21 @@ if ($wgCommandLineMode) {
 # We're doing this to avoid request throttling especially during migration,
 # as Geonames API has 2000 req / hour limit
 
-if (array_key_exists('geonames_usernames', $hwConfig["vendor"])) {
-  $hwConfig['vendor']['geonames_username'] = $hwConfig['vendor']['geonames_usernames'][array_rand($hwConfig['vendor']['geonames_usernames'])];
+if (array_key_exists('geonames', $hwConfig["mediawiki"])) {
+  $hwConfig['mediawiki']['geonames']['username'] = $hwConfig['mediawiki']['geonames']['usernames'][array_rand($hwConfig['mediawiki']['geonames']['usernames'])];
 }
 
 # Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = $hwConfig['general']['sitename'];
-$wgMetaNamespace = $hwConfig['general']['metanamespace'];
+$wgSitename = $hwConfig['mediawiki']['sitename'];
+$wgMetaNamespace = $hwConfig['mediawiki']['metanamespace'];
 
 ##
 # Dev environment settings
 ##
-$hwDebug = ($hwConfig['general']['debug']) ? true : false;
-$hwCache = ($hwConfig['general']['cache']) ? true : false;
+$hwDebug = ($hwConfig['mediawiki']['debug']) ? true : false;
+$hwCache = ($hwConfig['mediawiki']['cache']) ? true : false;
 
 # Enable debugging only on dev environment
 if ($hwDebug) {
@@ -109,7 +109,7 @@ $wgScriptExtension  = '.php';
 $wgArticlePath      = "{$wgScriptPath}/$1";
 $wgScript           = "{$wgScriptPath}/index.php";
 $wgUsePathInfo      = true;
-$wgCookieDomain     = $hwConfig['general']['cookiedomain'];
+$wgCookieDomain     = $hwConfig['cookiedomain'];
 
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = $hwLang;
@@ -125,8 +125,8 @@ $wgLanguageCode = $hwLang;
 ##
 # https://www.mediawiki.org/wiki/Manual:$wgServer
 # https://www.mediawiki.org/wiki/Manual:$wgCanonicalServer
-$wgServer = '//' . $hwConfig['general']['domain'];
-$wgCanonicalServer = $hwConfig['general']['protocol'] . '://' . $hwConfig['general']['domain'];
+$wgServer = '//' . $hwConfig['domain'];
+$wgCanonicalServer = $hwConfig['mediawiki']['protocol'] . '://' . $hwConfig['domain'];
 
 # If enabled with "true", output a `<link rel="canonical">`
 # tag on every page indicating the canonical server which should be used.
@@ -145,8 +145,8 @@ $wgFavicon = $wgScriptPath . '/../favicon.png';
 $wgEnableEmail = true;
 $wgEnableUserEmail = false; # UPO
 
-$wgEmergencyContact = 'contact@' . $hwConfig['general']['domain'];
-$wgPasswordSender = 'noreply@' . $hwConfig['general']['domain'];
+$wgEmergencyContact = 'contact@' . $hwConfig['domain'];
+$wgPasswordSender = 'noreply@' . $hwConfig['domain'];
 
 # For a detailed description of the following switches see
 # http://meta.wikimedia.org/Enotif and http://meta.wikimedia.org/Eauthent
@@ -164,7 +164,7 @@ $wgEnotifFromEditor          = false;
 if (isset($hwConfig['smtp']) && $hwConfig['smtp']['enabled'] === true) {
   $wgSMTP = array(
     'host'     => $hwConfig['smtp']['host'],      // could also be an IP address. Where the SMTP server is located
-    'IDHost'   => $hwConfig['general']['domain'], // Generally this will be the domain name of your website (aka mywiki.org)
+    'IDHost'   => $hwConfig['domain'], // Generally this will be the domain name of your website (aka mywiki.org)
     'port'     => $hwConfig['smtp']['port'],      // Port to use when connecting to the SMTP server
     'auth'     => $hwConfig['smtp']['auth'],      // Should we use SMTP authentication (true or false)
     'username' => $hwConfig['smtp']['username'],  // Username to use for SMTP authentication (if being used)
@@ -174,22 +174,22 @@ if (isset($hwConfig['smtp']) && $hwConfig['smtp']['enabled'] === true) {
 
 # Database settings
 $wgDBtype     = "mysql";
-$wgDBserver   = $hwConfig['db']['host'];
-$wgDBname     = $hwConfig['db']['database'];
-$wgDBuser     = $hwConfig['db']['username'];
-$wgDBpassword = $hwConfig['db']['password'];
+$wgDBserver   = $hwConfig['mediawiki']['db']['host'];
+$wgDBname     = $hwConfig['mediawiki']['db']['database'];
+$wgDBuser     = $hwConfig['mediawiki']['db']['username'];
+$wgDBpassword = $hwConfig['mediawiki']['db']['password'];
 
 # Shared database settings
 # Mainly for Users and Interwiki extension
 # By default shares 'users' and 'user_properties' tables
-$wgSharedDB = $hwConfig['db']['database'];
+$wgSharedDB = $hwConfig['mediawiki']['db']['database'];
 $wgSharedSchema = false;
-$wgSharedPrefix = $hwConfig['mediawiki']['db_prefix'];
+$wgSharedPrefix = $hwConfig['mediawiki']['db']['prefix'];
 # https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
 $wgSharedTables[] = 'user_groups';
 
 # MySQL specific settings
-$wgDBprefix = $hwConfig['mediawiki']['db_prefix'];
+$wgDBprefix = $hwConfig['mediawiki']['db']['prefix'];
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
@@ -279,11 +279,11 @@ $wgShellLocale = 'en_US.utf8';
 # be publically accessible from the web.
 $wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = $hwConfig['general']['secretkey'];
+$wgSecretKey = $hwConfig['mediawiki']['secretkey'];
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = $hwConfig['general']['upgradekey'];
+$wgUpgradeKey = $hwConfig['mediawiki']['upgradekey'];
 
 # For attaching licensing metadata to pages, and displaying an
 # appropriate copyright notice / icon. GNU Free Documentation
@@ -357,7 +357,7 @@ require_once 'mediawiki-extensions.php';
 
 # Settings for preventing spam on MediaWiki
 # You can turn these on/off from `/configs/settings.yml`
-if ($hwConfig['spam']['spamprotection']) {
+if ($hwConfig['mediawiki']['spam']['spamprotection']) {
   require_once 'mediawiki-spam.php';
 }
 
