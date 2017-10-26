@@ -23,7 +23,7 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
-require_once 'mustangostang/spyc/spyc.php';
+require_once '../mustangostang/spyc/Spyc.php';
 if (!function_exists('spyc_load_file')) {
   die('Missing `mustangostang/spyc`!');
 }
