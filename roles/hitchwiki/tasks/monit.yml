@@ -5,7 +5,7 @@
 
 - name: Configure Monit
   become: yes
-  template: src={{ dir.conf }}/monitrc dest=/etc/monitrc
+  template: src={{ dir.conf }}/monitrc dest=/etc/monitrc mode=0700
 
 - name: Check monit syntax
   become: yes
@@ -16,11 +16,11 @@
 - debug:
     msg: "{{ monit_syntax.stdout_lines }}"
 
-- name: Reload monit
+- name: Restart monit
   become: yes
-  command: monit reload
+  service: name=monit state=restarted
   register: monit_reloaded
-  when: "'OK' in monit_syntax.stdout"
+  when: monit_syntax|succeeded
 
 - name: Monit is set tup
   set_fact: state_monit=True cacheable=true

@@ -1,3 +1,4 @@
+set daemon 60
 set alert {{ admin_contact }}
 set alert {{ mediawiki.emergency_contact }} not on { instance, action }
 set pidfile /var/run/monit.pid
