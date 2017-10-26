@@ -26,11 +26,11 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
   $wgVirtualRestConfig['modules']['parsoid'] = array(
           // URL to the Parsoid instance
           // Use port 8142 if you use the Debian package
-          'url' => 'http://' . $hwConfig["general"]["domain"] . ':8142',
+          'url' => 'http://' . $hwConfig["domain"] . ':8142',
           // Parsoid "domain"
-          'domain' => $hwConfig["general"]["domain"],
+          'domain' => $hwConfig["domain"],
           // Parsoid "prefix"
-          'prefix' => $hwConfig["general"]["domain"]
+          'prefix' => $hwConfig["domain"]
   );
 
   // Extra settings for VisualEditor
@@ -325,11 +325,18 @@ wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms ex
 
 // Vendor configs for HW extensions
 // See `settings.ini`
-$hwGeonamesUsername = array_key_exists('geonames_username', $hwConfig['vendor']) ? $hwConfig['vendor']['geonames_username'] : false;
+$hwGeonamesUsername = $hwConfig['mediawiki']['geonames']['username'];
+$hwMapboxUsername = $hwConfig['mediawiki']['mapbox']['username'];
+$hwMapboxAccessToken = $hwConfig['mediawiki']['mapbox']['access_token'];
+$hwMapboxMapkeyStreets = $hwConfig['mediawiki']['mapbox']['mapkey_streets'];
+$hwMapboxMapkeySatellite = $hwConfig['mediawiki']['mapbox']['mapkey_satellite'];
+/*
+//$hwGeonamesUsername = array_key_exists(['geonames']['username'], $hwConfig['mediawiki']) ? $hwConfig['vendor']['geonames_username'] : false;
 $hwMapboxUsername = array_key_exists('mapbox_username', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_username'] : false;
 $hwMapboxAccessToken = array_key_exists('mapbox_access_token', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_access_token'] : false;
 $hwMapboxMapkeyStreets = array_key_exists('mapbox_mapkey_streets', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_streets'] : false;
 $hwMapboxMapkeySatellite = array_key_exists('mapbox_mapkey_satellite', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_satellite'] : false;
+*/
 
 // Default settings for HW extensions
 $hwDefaultCenter = array(48.6908333333, 9.14055555556); // `[(float) latitude, (float) longitude]` (Europe)
