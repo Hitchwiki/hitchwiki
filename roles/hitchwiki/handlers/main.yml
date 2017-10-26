@@ -17,9 +17,7 @@
 # Database
 - name: Restart mysql
   become: yes
-#  monit: name=mysql state=restarted # TODO switch to monit
-#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
-  service: name={{db.server}} enabled=yes state=restarted
+  monit: name=mariadb state=restarted
   listen:
     - database
     - mariadb
@@ -28,13 +26,10 @@
     - restart mariadb
     - restart dbserver
 
-
 # Webserver
 - name: Restart apache
   become: yes
-#  monit: name=apache2 state=restarted # TODO switch to monit
-#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
-  service: name=apache2 state=restarted
+  monit: name=apache2 state=restarted
   register: apache_restart
   listen:
     - apache
@@ -65,9 +60,7 @@
 # Mediawiki handlers
 - name: Restart Parsoid
   become: yes
-  service: name=parsoid state=restarted
-#  monit: name=parsoid state=restarted # TODO switch to monit
-#  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
+  monit: name=parsoid state=restarted
   listen:
     - parsoid
     - restart parsoid

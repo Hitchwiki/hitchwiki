@@ -29,40 +29,16 @@
 
 - name: Create /etc/mediawiki/parsoid/
   become: yes
-  file: path=/etc/mediawiki/parsoid/ owner={{ apache.user }}
+  file: state=directory path=/etc/mediawiki/parsoid/ owner={{ apache.user }}
 
 - name: Configure Parsoid
   become: yes
-  copy: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ apache.user }} force=no
-
-- name: Set domain in Parsoid
-  become: yes
-  lineinfile: path=/etc/mediawiki/parsoid/config.yaml regexp='hitchwiki.test' line={{ domain }}
+  template: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ apache.user }} force=no
 
 # TODO do we need to overwrite the packaged version?
 #- name: Create Parsoid init script
 #  become: yes
 #  shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
-
-- name: Add parsoid to Monit
-  become: yes
-  blockinfile:
-    path: /etc/monit/monitrc.d/parsoid
-    create: yes
-    mode: 0700
-    block: |
-      check process parsoid with pidfile /run/parsoid.pid
-       start program = "/usr/sbin/service parsoid start" with timeout 60 seconds
-       stop program  = "/usr/sbin/service parsoid stop"
-  notify:
-    - reload monit
-
-- name: Monitor parsoid
-  become: yes
-  monit: name=parsoid state=monitored
-  notify:
-    - restart parsoid
-  ignore_errors: yes
 
 - name: Finish parsoid installation
   set_fact: state_parsoid=true cacheable=true

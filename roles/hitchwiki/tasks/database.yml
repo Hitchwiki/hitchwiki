@@ -22,23 +22,6 @@
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
-- name: Activate mysql in Monit
-  become: yes
-  file: state=link src=/etc/monit/conf-available/mysql path=/etc/monit/conf-enabled/mysql
-  notify:
-    - reload monit
-
-- meta: flush_handlers
-
-- name: Monitor mysql
-  become: yes
-  monit: name=mysql state=monitored
-  ignore_errors: yes
-- name: Start mysql
-  become: yes
-  monit: name=mysql state=started
-  ignore_errors: yes
-
 - name: Set db user password
   shell: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
   ignore_errors: yes
@@ -50,8 +33,11 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
+  notify:
+    - mariadb
 
 - name: Finish dbserver installation
   set_fact: state_db=true cacheable=true
+
 
 ...

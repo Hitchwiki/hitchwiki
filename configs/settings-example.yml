@@ -2,7 +2,7 @@ domain: hitchwiki.test
 cookiedomain: .hitchwiki.test
 https: False
 env: "dev" # dev | production
-admin_contact: 
+admin_contact: {{ mediawiki.emergency_contact }}
 
 # Development variables
 phpmyadmin_password: autobahn

@@ -13,8 +13,6 @@
   include_tasks: database.yml
   when: not state_db
 
-- meta: flush_handlers
-
 - name: Setup webserver
   include_tasks: apache.yml
   when: not state_web
@@ -22,8 +20,6 @@
 - name: Enable TLS
   include_tasks: tls.yml
   when: https and not state_https
-
-- meta: flush_handlers
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
@@ -48,6 +44,10 @@
 - name: Setup production environment
   include_tasks: production.yml
   when: env == 'production'
+
+- name: Monitor all in monit
+  become: yes
+  monit: name=all state=monitored
 
 - meta: flush_handlers
 
