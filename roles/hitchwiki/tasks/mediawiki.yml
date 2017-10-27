@@ -96,7 +96,7 @@
 - name: Grant wiki files to webuser
   become: yes
   file: path={{ dir.conf }}/{{item}} group={{ apache.group }}
-  with_items: { settings.ini, mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
+  with_items: { mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
 
 - name: Import Mediawiki content # MW db actions
   include_tasks: mw_import.yml

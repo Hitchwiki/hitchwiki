@@ -55,9 +55,6 @@ mediawiki:
     mapkey_satellite: kil7hee6
   geonames:
     username: hitchwiki
-    # use these instead of the above if geonames requests are being throttled
-    # during migration. keep this list in the end of the file, as "[]" causes
-    # bash_ini_parser to crash (we don't need these variables in bash)
     usernames: { hitchwiki, hitchwiki2, hitchwiki3 }
 
 # Variables for ansible provisioning
