@@ -1,9 +1,7 @@
 ---
 # Setup TLS
 
-# TODO untested: self signed certificate
 - include_tasks: tls_selfsigned.yml
-  when: env == 'dev'
 
 # TODO untested: Let's Encrypt - apache mod md
 # "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"

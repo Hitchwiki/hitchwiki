@@ -11,9 +11,9 @@
   become: yes
   apt: name=python-certbot-apache state=present update_cache=yes
 
-#- name: Request certificate # done manually, next step: solve challenge TODO
-#  become: yes
-#  command: certbot certonly --webroot -w {{ dir.root }} -d {{ domain }}
+- name: Request certificate
+  become: yes
+  command: certbot --apache # certonly --webroot -w {{ dir.root }} -d {{ domain }}
 
 # All generated keys and issued certificates can be found in /etc/letsencrypt/live/$domain
 
@@ -24,16 +24,16 @@
 #    dest: /etc/httpd/ssl/sample.com.crt
 #    data: "{{ sample_com_challenge }}"
 
-# TODO check for certificates and create apache config based on /etc/letsencrypt/options-ssl-apache.conf
+# TODO check for certificates
 - name: Show certificates
+  become: yes
   command: certbot certificates
   register: certificates
 - debug:
     var: certificates.stdout_lines
 
-#- name: Add cron job for renewal
-#  cron: name=certbot special_time=monthly  job="certbot renew"
-# certbot renew --pre-hook "service nginx stop" --post-hook "service nginx start"
+- name: Add cron job for renewal
+  cron: name=certbot special_time=monthly job="certbot renew" certbot renew --pre-hook "service apache2 stop" --post-hook "service apache2 start"
 
 # certificate removal
 # https://www.jeffgeerling.com/blog/2016/remove-single-certbot-letsencrypt-certificate-server
