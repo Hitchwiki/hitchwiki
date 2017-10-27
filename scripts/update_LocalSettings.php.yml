@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+  gather_facts: no
+
+- name: Update LocalSettings.php
+  hosts: all
+  gather_facts: no
+  roles:
+    - update
+
+...

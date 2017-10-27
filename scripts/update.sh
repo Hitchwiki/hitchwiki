@@ -18,7 +18,13 @@ source "scripts/_path_resolve.sh"
 source "scripts/_settings.sh"
 
 echo
-echo "Update Hitchwiki dependencies using `composer.local.json`..."
+echo "Update 'LocalSettings.php' based on variables in 'configs/settings.yml'..."
+ansible-playbook ./scripts/update_LocalSettings.php.yml
+echo
+echo "-------------------------------------------------------------------------"
+
+echo
+echo "Update Hitchwiki dependencies using 'composer.local.json'..."
 cd "$WIKIDIR"
 composer update --no-progress --no-interaction
 echo
