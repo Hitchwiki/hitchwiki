@@ -1,8 +1,7 @@
-if [[ $(whoami) != 'root' ]] ; then
-  echo "Please run this as root."
-  exit
+#!/bin/bash
+cmd='tail -f logs/*.log|less'
+if [ $(whoami) == 'root' ]
+then eval $cmd
+else echo "Please run this as root from the repository root. This script will run '$cmd'.
+Recommended usage: Split screen inside tmux or screen. Press Shift+F to receive updates in less."
 fi
-for log in apache-access.log apache-error.log auth.log letsencrypt.log parsoid.log fail2ban.log monit.log syslog unattended-upgrades.log unattended-upgrades-dpkg.log
-do
-  tail -f logs/$log &
-done
