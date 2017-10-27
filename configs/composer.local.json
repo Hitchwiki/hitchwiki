@@ -127,7 +127,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-AntiSpoof/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AntiSpoof/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -139,7 +139,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-AbuseFilter/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AbuseFilter/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -151,7 +151,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoData/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoData/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -163,7 +163,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-DismissableSiteNotice/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-DismissableSiteNotice/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -175,7 +175,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoCrumbs/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-GeoCrumbs/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -187,7 +187,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-CheckUser/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-CheckUser/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -199,7 +199,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-ExternalData/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ExternalData/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -211,7 +211,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-TorBlock/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-TorBlock/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -235,7 +235,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -247,7 +247,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-AdminLinks/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-AdminLinks/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -259,7 +259,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-BetaFeatures/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-BetaFeatures/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -271,7 +271,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-ReplaceText/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-ReplaceText/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -283,7 +283,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-Echo/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-Echo/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -295,7 +295,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-StopForumSpam/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-StopForumSpam/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -307,7 +307,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-MobileFrontend/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-MobileFrontend/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -319,7 +319,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-UploadWizard/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-UploadWizard/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -331,7 +331,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-EventLogging/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-EventLogging/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -343,7 +343,7 @@
         "version": "@dev",
         "type": "mediawiki-extension",
         "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-HeaderTabs/archive/REL1_29.zip",
+          "url": "https://github.com/wikimedia/mediawiki-extensions-HeaderTabs/archive/{{ mediawiki.branch }}.zip",
           "type": "zip"
         }
       }
@@ -389,7 +389,7 @@
     "EventLogging": "@dev",
     "HeaderTabs": "@dev",
     "AddBodyClass": "@dev",
-    "mediawiki/semantic-media-wiki": "2.5.4",
+    "mediawiki/semantic-media-wiki": "~2.5",
     "mediawiki/page-forms": "4.2",
     "mediawiki/maps": "4.4.0",
     "data-values/data-values": "^1.0"
