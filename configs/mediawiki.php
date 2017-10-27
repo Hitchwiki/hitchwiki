@@ -23,11 +23,11 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
-require_once '../mustangostang/spyc/Spyc.php';
+require_once '{{ dir.spyc }}';
 if (!function_exists('spyc_load_file')) {
   die('Missing `mustangostang/spyc`!');
 }
-$hwConfig = spyc_load_file('../../configs/settings.yml');
+$hwConfig = spyc_load_file('{{ dir.settings }}');
 
 if ($wgCommandLineMode) {
   if (isset($_SERVER) && array_key_exists( 'REQUEST_METHOD', $_SERVER))
@@ -48,14 +48,14 @@ if (array_key_exists('geonames', $hwConfig["mediawiki"])) {
 # Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
-$wgSitename = $hwConfig['mediawiki']['sitename'];
-$wgMetaNamespace = $hwConfig['mediawiki']['metanamespace'];
+$wgSitename = '{{ mediawiki.sitename }}';
+$wgMetaNamespace = '{{ mediawiki.metanamespace }}';
 
 ##
 # Dev environment settings
 ##
-$hwDebug = ($hwConfig['mediawiki']['debug']) ? true : false;
-$hwCache = ($hwConfig['mediawiki']['cache']) ? true : false;
+$hwDebug = {{ mediawiki.debug }};
+$hwCache = {{ mediawiki.cache }};
 
 # Enable debugging only on dev environment
 if ($hwDebug) {
@@ -84,7 +84,7 @@ $wgResourceLoaderDebug = $hwDebug;
 $wgDebugProfiling = false;
 
 // Log into file
-$logDir = '/vagrant/logs'; // @TODO
+$logDir = '{{ dir.log }}';
 $wgDebugLogFile = "{$logDir}/mediawiki-debug.log";
 foreach ( array( 'exception', 'runJobs', 'JobQueueRedis' ) as $logGroup ) {
   $wgDebugLogGroups[$logGroup] = "{$logDir}/mediawiki-{$logGroup}.log";
@@ -92,7 +92,7 @@ foreach ( array( 'exception', 'runJobs', 'JobQueueRedis' ) as $logGroup ) {
 
 # Setup `$hwLang`
 # Will also change $wgSitename if it finds local name
-require_once('mediawiki-lang.php');
+require_once('{{ dir.conf }}/mediawiki-lang.php');
 
 # When you make changes to this configuration file, this will make
 # sure that cached pages are cleared.
@@ -109,7 +109,7 @@ $wgScriptExtension  = '.php';
 $wgArticlePath      = "{$wgScriptPath}/$1";
 $wgScript           = "{$wgScriptPath}/index.php";
 $wgUsePathInfo      = true;
-$wgCookieDomain     = $hwConfig['cookiedomain'];
+$wgCookieDomain     = '{{ cookiedomain }}';
 
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = $hwLang;
@@ -125,8 +125,8 @@ $wgLanguageCode = $hwLang;
 ##
 # https://www.mediawiki.org/wiki/Manual:$wgServer
 # https://www.mediawiki.org/wiki/Manual:$wgCanonicalServer
-$wgServer = '//' . $hwConfig['domain'];
-$wgCanonicalServer = $hwConfig['mediawiki']['protocol'] . '://' . $hwConfig['domain'];
+$wgServer = '//{{ domain }}';
+$wgCanonicalServer = '{{ mediawiki.protocol }}://{{ domain }}';
 
 # If enabled with "true", output a `<link rel="canonical">`
 # tag on every page indicating the canonical server which should be used.
@@ -143,10 +143,10 @@ $wgFavicon = $wgScriptPath . '/../favicon.png';
 # UPO means: this is also a user preference option
 
 $wgEnableEmail = true;
-$wgEnableUserEmail = false; # UPO
+$wgEnableUserEmail = {{ mediawiki.enableuseremail }};
 
-$wgEmergencyContact = 'contact@' . $hwConfig['domain'];
-$wgPasswordSender = 'noreply@' . $hwConfig['domain'];
+$wgEmergencyContact = 'contact@{{ domain }}';
+$wgPasswordSender = 'noreply@{{ domain }}';
 
 # For a detailed description of the following switches see
 # http://meta.wikimedia.org/Enotif and http://meta.wikimedia.org/Eauthent
@@ -161,35 +161,35 @@ $wgEnotifFromEditor          = false;
 
 # Use SMTP to send out emails
 # https://www.mediawiki.org/wiki/Manual:$wgSMTP
-if (isset($hwConfig['smtp']) && $hwConfig['smtp']['enabled'] === true) {
+if ({{ smtp.enabled }}) {
   $wgSMTP = array(
-    'host'     => $hwConfig['smtp']['host'],      // could also be an IP address. Where the SMTP server is located
-    'IDHost'   => $hwConfig['domain'], // Generally this will be the domain name of your website (aka mywiki.org)
-    'port'     => $hwConfig['smtp']['port'],      // Port to use when connecting to the SMTP server
-    'auth'     => $hwConfig['smtp']['auth'],      // Should we use SMTP authentication (true or false)
-    'username' => $hwConfig['smtp']['username'],  // Username to use for SMTP authentication (if being used)
-    'password' => $hwConfig['smtp']['password']   // Password to use for SMTP authentication (if being used)
+    'host'     => '{{ smtp.host }}',      // could also be an IP address. Where the SMTP server is located
+    'IDHost'   => '{{ domain }}', // Generally this will be the domain name of your website (aka mywiki.org)
+    'port'     => '{{ smtp.port }}',      // Port to use when connecting to the SMTP server
+    'auth'     => '{{ smtp.auth }}',      // Should we use SMTP authentication (true or false)
+    'username' => '{{ smtp.username }}',  // Username to use for SMTP authentication (if being used)
+    'password' => '{{ smtp.password }}'   // Password to use for SMTP authentication (if being used)
   );
 }
 
 # Database settings
 $wgDBtype     = "mysql";
-$wgDBserver   = $hwConfig['mediawiki']['db']['host'];
-$wgDBname     = $hwConfig['mediawiki']['db']['database'];
-$wgDBuser     = $hwConfig['mediawiki']['db']['username'];
-$wgDBpassword = $hwConfig['mediawiki']['db']['password'];
+$wgDBserver   = '{{ mediawiki.db.host }}';
+$wgDBname     = '{{ mediawiki.db.database }}';
+$wgDBuser     = '{{ mediawiki.db.username }}';
+$wgDBpassword = '{{ mediawiki.db.password }}';
 
 # Shared database settings
 # Mainly for Users and Interwiki extension
 # By default shares 'users' and 'user_properties' tables
-$wgSharedDB = $hwConfig['mediawiki']['db']['database'];
+$wgSharedDB = '{{ mediawiki.db.database }}';
 $wgSharedSchema = false;
-$wgSharedPrefix = $hwConfig['mediawiki']['db']['prefix'];
+$wgSharedPrefix = '{{ mediawiki.db.prefix }}';
 # https://www.mediawiki.org/wiki/Manual:Shared_database#The_user_groups_table
 $wgSharedTables[] = 'user_groups';
 
 # MySQL specific settings
-$wgDBprefix = $hwConfig['mediawiki']['db']['prefix'];
+$wgDBprefix = '{{ mediawiki.db.prefix }}';
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = 'ENGINE=InnoDB, DEFAULT CHARSET=binary';
@@ -249,7 +249,7 @@ if ($hwLang != 'en') {
   $wgSharedUploadPath            = $wgUploadPath;
   $wgSharedUploadDirectory       = $wgUploadDirectory;
   $wgHashedSharedUploadDirectory = true;
-  $wgSharedUploadDBname          = $hwConfig['db']["database"];
+  $wgSharedUploadDBname          = '{{ mediawiki.db.database }}';
 }
 
 # Allowed file extensions for uploading files
@@ -279,11 +279,11 @@ $wgShellLocale = 'en_US.utf8';
 # be publically accessible from the web.
 $wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = $hwConfig['mediawiki']['secretkey'];
+$wgSecretKey = '{{ mediawiki.secretkey }}';
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = $hwConfig['mediawiki']['upgradekey'];
+$wgUpgradeKey = '{{ mediawiki.upgradekey }}';
 
 # For attaching licensing metadata to pages, and displaying an
 # appropriate copyright notice / icon. GNU Free Documentation
@@ -352,13 +352,13 @@ $wgVectorResponsive = false;
 /***** Extensions ******************************************************************************************/
 
 # Settings for MediaWiki extensions
-require_once 'mediawiki-extensions.php';
+require_once '{{ dir.conf }}/mediawiki-extensions.php';
 
 
 # Settings for preventing spam on MediaWiki
 # You can turn these on/off from `/configs/settings.yml`
-if ($hwConfig['mediawiki']['spam']['spamprotection']) {
-  require_once 'mediawiki-spam.php';
+if ({{ mediawiki.spam.spamprotection }}) {
+  require_once '{{ dir.conf }}/{{ dir.conf }}/mediawiki-spam.php';
 }
 
 

@@ -49,7 +49,7 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
  * WikiEditor (code)
  * https://www.mediawiki.org/wiki/Extension:WikiEditor
  */
-//wfLoadExtension('WikiEditor');
+wfLoadExtension('WikiEditor');
 // Enables use of WikiEditor by default but still allows users to disable it in preferences
 $wgDefaultUserOptions['usebetatoolbar'] = 1;
 
@@ -121,12 +121,11 @@ wfLoadExtension('DismissableSiteNotice');
  * from `./scripts/server_install.sh` file. It's to ensure we don't load them
  * too early in process and cause DB errors.
  */
-  wfLoadExtension('PageForms');
-
 if (file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
   require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
   enableSemantics();
   require_once "$IP/extensions/Maps/Maps.php";
+  wfLoadExtension('PageForms');
 
   // Sets whether help information on the edit page is displayed
   $smwgEnabledEditPageHelp = false;
@@ -156,7 +155,7 @@ if (file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
  * ParserFunctions
  * https://www.mediawiki.org/wiki/Extension:ParserFunctions
  */
-//wfLoadExtension('ParserFunctions');
+wfLoadExtension('ParserFunctions');
 // Enable old string functions (needed at our semantic templates)
 $wgPFEnableStringFunctions = true;
 
@@ -165,7 +164,7 @@ $wgPFEnableStringFunctions = true;
  * - Grant sysops permissions to edit interwiki data
  * - See Database settings to understand how Interwiki settings are shared between wikis
  */
-//wfLoadExtension('Interwiki');
+wfLoadExtension('Interwiki');
 $wgGroupPermissions['sysop']['interwiki'] = true;
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
@@ -267,7 +266,7 @@ $wgVectorBetaWinter = true;
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
-//wfLoadExtension('LocalisationUpdate');
+wfLoadExtension('LocalisationUpdate');
 $wgLocalisationUpdateDirectory = "$IP/cache";
 
 /**
@@ -282,7 +281,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
  * Rename user
  * https://www.mediawiki.org/wiki/Extension:Renameuser
  */
-//wfLoadExtension('Renameuser');
+wfLoadExtension('Renameuser');
 $wgGroupPermissions['sysop']['renameuser'] = true;
 
 
@@ -325,7 +324,7 @@ require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
 wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms extension
 
 // Vendor configs for HW extensions
-// See `settings.ini`
+// See `settings.ini`n
 $hwGeonamesUsername = $hwConfig['mediawiki']['geonames']['username'];
 $hwMapboxUsername = $hwConfig['mediawiki']['mapbox']['username'];
 $hwMapboxAccessToken = $hwConfig['mediawiki']['mapbox']['access_token'];

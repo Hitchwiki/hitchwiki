@@ -1,17 +1,18 @@
 ---
 # Setup mediawiki with Parsoid and fill it with content
 
+# Prepare database
 - name: Drop Mediawiki database
-  # TODO use vault
   mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
-  
 - name: Create database
-  # TODO use vault
   mysql_db: name={{ mediawiki.db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
-  #IFS=$'\n' languages=($(echo "SHOW DATABASES;" | mysql -u$username -p$password | grep -E '^hitchwiki_..$' | sed 's/^hitchwiki_//g'))
-
 
 # Mediawiki installation
+- name: Clean wiki folder
+  become: yes
+  file: state=absent path={{ dir.wiki }}
+  with_items: "{ {{ dir.wiki }} composer.lock }"
+
 - name: Install mediawiki
   composer: command=install no_dev=True working_dir=/var/www/
 
@@ -30,11 +31,14 @@
   file: state=directory path={{dir.wiki}} recurse=yes owner=1050 group=1050 mode=774
 
 - name: Configure composer
-  file: state=link src={{ dir.conf }}/composer.local.json dest={{ dir.wiki }}/composer.local.json
+  template: src={{ dir.conf }}/composer.local.json dest={{ dir.wiki }}/composer.local.json
 
 - name: Download basic MediaWiki extensions
-  become: yes
+#  become: yes
   composer: command=update no_dev=True working_dir={{ dir.wiki }}
+  register: composer_update
+- debug:
+    var: composer_update.stderr_lines
 
 - name: Setup Mediawiki extensions
   composer: working_dir={{dir.wiki}} command=run-script no_dev=True arguments="post-install-cmd -d ./extensions/{{ item }}"
@@ -51,22 +55,26 @@
   # sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script.
   # See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
 
-- name: Run Mediawiki install script
-  shell: >
-    cd {{ dir.wiki }}
-    php maintenance/install.php --conf "{{ dir.mwconf }}"
-    --dbuser {{ mediawiki.db.username }}
-    --dbpass {{ mediawiki.db.password }}
-    --dbname {{ mediawiki.db.database }}
-    --dbtype mysql
-    --pass {{ phpmyadmin_password }}
-    --scriptpath /{{ dir.wiki }}
-    --lang en "{{ mediawiki.sitename }}" hitchwiki
-  # sets up wiki in one language ("en")
-  # creates one admin user "hitchwiki" with password "autobahn"
-  # https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki#Run_the_installation_script
+- name: Run Mediawiki install script - https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki
+  # sets up wiki in one language ("en") and creates admin user "hitchwiki" with password {{ phpmyadmin_password }}
   # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
+  command: chdir={{ dir.wiki }} php maintenance/install.php \
+    --dbuser {{ mediawiki.db.username }} --dbpass {{ mediawiki.db.password }} \
+    --dbname {{ mediawiki.db.database }} --dbprefix {{ mediawiki.db.prefix }} \
+    --dbtype mysql --pass {{ phpmyadmin_password }} \
+    --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
   register: mw_install
+  ignore_errors: yes
+- debug:
+    var: mw_install.stderr_lines
+
+- name: Download Vector skin
+  git:
+    clone: yes
+    repo: https://phabricator.wikimedia.org/diffusion/SVEC/Vector
+    dest: "{{ dir.wiki }}/skins/Vector"
+    depth: 1
+  ignore_errors: yes
 
 # MW visual editor
 - name: Install MW visual editor
@@ -81,34 +89,22 @@
   # Since it requires submodules, we don't install this using composer
   # https://www.mediawiki.org/wiki/Extension:VisualEditor
 
+- name: Grant wiki folder to webuser group
+  become: yes
+  file: path={{ dir.wiki }} recurse=yes group={{ apache.group }}
 
-# Setup Mediawiki
-- file: state=absent path={{ dir.wiki }}/LocalSettings.php
-- name: Configure Hitchwiki
-  shell: cp {{ dir.script }}/configs/mediawiki_LocalSettings.php {{ dir.wiki }}/LocalSettings.php # copy file to change permission later
-  #file: state=link src={{ dir.script }}/configs/mediawiki_LocalSettings.php path={{ dir.wiki }}/LocalSettings.php force=yes
-  #copy: src={{ dir.script }}/configs/mediawiki_LocalSettings.php dest={{ dir.wiki }}/LocalSettings.php owner={{ apache.user }} group={{ apache.group }}
-  # Config file is stored elsewhere, require it from MW's LocalSettings.php
+- name: Grant wiki files to webuser
+  become: yes
+  file: path={{ dir.conf }}/{{item}} group={{ apache.group }}
+  with_items: { settings.ini, mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
 
-- name: Enable Semantic Mediawiki extension
-  file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
-  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
-  # basically SMW extensions are not included in MediaWiki before this
-  # file exists, because it would cause errors when running
-  # `maintenance/install.php`.
+- name: Import Mediawiki content # MW db actions
+  include_tasks: mw_import.yml
+  when: not state_mw_import
 
 - name: Install Parsoid
   include_tasks: parsoid.yml
   when: not state.parsoid
-
-- name: Grant wiki folder to webuser group
-  become: yes
-  file: path={{ dir.wiki }} recurse=yes owner={{ apache.user }} group={{ apache.group }}
-
-- name: Grant wiki files to webuser
-  become: yes
-  file: path={{ dir.conf }}/{{item}} owner={{ apache.user }} group={{ apache.group }}
-  with_items: { mediawiki.php, settings.ini, mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
 
 - name: Add cron job for daily localisation updates
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
