@@ -5,25 +5,23 @@
 
 - name: Configure Monit
   become: yes
-  template: src={{ dir.conf }}/monitrc dest=/etc/monitrc mode=0700
+  template: src={{ dir.conf }}/monitrc dest=/etc/monit/monitrc mode=0700
 
 - name: Check monit syntax
   become: yes
   command: monit -t
   register: monit_syntax
-  ignore_errors: yes
-
-- debug:
-    msg: "{{ monit_syntax.stdout_lines }}"
 
 - name: Restart monit
   become: yes
   service: name=monit state=restarted
-  register: monit_reloaded
-  when: monit_syntax|succeeded
 
 - name: Monit is set tup
   set_fact: state_monit=True cacheable=true
-  when: monit_reloaded|succeeded
+
+# fails in 2.4 https://github.com/ansible/ansible/issues/30614
+#- name: Monitor sshd in monit
+#  become: yes
+#  monit: name=openssh-server state=monitored
 
 ...

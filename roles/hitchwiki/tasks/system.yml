@@ -6,7 +6,8 @@
   raw: apt-get install -yq python-simplejson
   # See https://stackoverflow.com/questions/32429259/ansible-fails-with-bin-sh-1-usr-bin-python-not-found
 
-- debug:
+- name: This should show path settings or `group_vars/hitchwiki` is missing
+  debug:
     var: dir
 
 - name: Has configs/settings-example.yml been copied to configs/settings.yml?
@@ -77,6 +78,7 @@
 - name: Install bower
   become: yes
   npm: name=bower version=~1.8 state=present global=yes
+
 
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user

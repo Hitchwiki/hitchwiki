@@ -55,11 +55,6 @@
   include_tasks: production.yml
   when: env == 'production'
 
-- name: Monitor all in monit
-  become: yes
-  monit: name=all state=monitored
-  ignore_errors: yes
-
 # Finish!
 - meta: flush_handlers
 
