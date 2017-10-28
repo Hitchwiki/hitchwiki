@@ -62,6 +62,13 @@
   notify:
   - apt
 
+- name: Configure backupninja
+  become: yes
+  copy: src=configs/dumps.mysql dest=/etc/backup.d/ owner=root mode=0600
+  tags:
+   - backup
+   - db
+
 # Parsoid, bower and maildev depend on NodeSource (https://nodejs.org/en/download/package-manager)
 - name: Add apt source for NodeSoure 8.x
   become: yes

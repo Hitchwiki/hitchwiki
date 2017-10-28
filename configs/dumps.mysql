@@ -1,0 +1,5 @@
+databases   = all
+backupdir   = /var/backups/mysql
+hotcopy     = no
+sqldump     = yes
+compress = yes

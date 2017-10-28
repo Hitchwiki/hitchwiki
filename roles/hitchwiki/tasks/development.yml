@@ -1,0 +1,28 @@
+---
+# Tasks for development setup
+
+- name: Install Maildev
+  include_tasks: maildev.yml
+  when: env == 'dev' and not state_maildev
+
+- name: Install PHPMyAdmin
+  include_tasks: phpmyadmin.yml
+  when: env == 'dev' and not state_phpmyadmin
+
+- name: Create MW bot users
+  become: yes
+  command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
+  with_items:
+    - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchhiker, flags:  }
+  register: mw_users
+  when: env == 'dev'
+
+- name: Set user's email
+  command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
+  with_items: { Hitchwiki, Hitchbot, Hitchhiker }
+  register: user_mail
+  when: env == 'dev'
+
+...

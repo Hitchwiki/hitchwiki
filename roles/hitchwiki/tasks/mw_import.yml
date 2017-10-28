@@ -30,25 +30,12 @@
   command: chdir={{ dir.wiki }}/extensions/SemanticMediaWiki php ./maintenance/setupStore.php --quiet --conf {{ dir.mwconf }}
   register: setup_smw
 
-- name: Set user's email
-  command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
-  with_items: { Hitchwiki, Hitchbot, Hitchhiker }
-  register: user_mail
-
-- name: Import Semantic templates and other MediaWiki special pages
-  become: yes
-  command: chdir=/var/www ./scripts/import_pages.sh
-  register: import_pages
-  ignore_errors: yes
-- debug:
-    var: import_pages.stdout_lines
-
 - name: Run pending jobs and clear the queue
   command: chdir={{ dir.wiki }} php ./maintenance/runJobs.php
   register: mw_jobs
 
 - name: Finish Mediawiki import
   set_fact: state_mw_import=true cacheable=true
-  when: interwiki|succeeded and mw_update|succeeded and mw_antispoof|succeeded and setup_smw|succeeded and mw_users|succeeded and user_mail|succeeded and import_pages|succeeded and mw_jobs|succeeded
+  when: interwiki|succeeded and mw_update|succeeded and mw_antispoof|succeeded and setup_smw|succeeded and mw_jobs|succeeded
 
 ...

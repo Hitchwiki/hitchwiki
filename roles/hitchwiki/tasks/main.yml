@@ -31,22 +31,8 @@
 
 # Development
 
-- name: Install Maildev
-  include_tasks: maildev.yml
-  when: env == 'dev' and not state_maildev
-
-- name: Install PHPMyAdmin
-  include_tasks: phpmyadmin.yml
-  when: env == 'dev' and not state_phpmyadmin
-
-- name: Create MW bot users
-  become: yes
-  command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
-  with_items:
-    - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
-    - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
-    - { name: Hitchhiker, flags:  }
-  register: mw_users
+- name: Setup development services
+  include_tasks: development.yml
   when: env == 'dev'
 
 # Production

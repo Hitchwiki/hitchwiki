@@ -1,5 +1,4 @@
 ---
-
 # As root
 - name: Change hostname
   become: yes
@@ -29,8 +28,6 @@
 
 - name: Add {{ user }}'s ssh key for local login
   remote_user: "{{ user }}"
-  # TODO
-  #lineinfile: line=
   shell: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 - name: Install pip
