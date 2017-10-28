@@ -26,19 +26,17 @@ logs
 *.log
 
 # Local configs
-/configs/settings.ini
 /configs/settings.yml
-/configs/vagrant.yaml
 /configs/authorized_keys
 
 # Other
 /public/google*.html
-/scripts/vendor/bash_ini_parser
 /dumps/
 *~
 
 # Admin tools
 /public/phpmyadmin
+/public/mustangostang
 /public/sqlbuddy
 
 # OS

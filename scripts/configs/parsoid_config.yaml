@@ -36,24 +36,25 @@ services:
 
         - # This is the only required parameter,
           # the URL of you MediaWiki API endpoint.
-          uri: 'http://hitchwiki.test/en/api.php'
+          uri: 'http://{{ domain }}/en/api.php'
+
           # The "domain" is used for communication with Visual Editor
           # and RESTBase.  It defaults to the hostname portion of
           # the `uri` property below, but you can manually set it
           # to an arbitrary string.
-          domain: 'hitchwiki.test'  # optional
+          domain: '{{ domain }}'
 
         - # Hitchwiki
           uri: 'http://hitchwiki.org/en/api.php'
-          domain: 'hitchwiki.org'  # optional
+          domain: 'hitchwiki.org'
 
         - # Trashwiki
           uri: 'http://trashwiki.org/en/api.php'
-          domain: 'trashwiki.org'  # optional
+          domain: 'trashwiki.org'
 
         - # Nomadwiki
           uri: 'http://nomadwiki.org/en/api.php'
-          domain: 'nomadwiki.org'  # optional
+          domain: 'nomadwiki.org'
 
           # To specify a proxy (or proxy headers) specific to this prefix
           # (which overrides defaultAPIProxyURI). Alternatively, set `proxy`

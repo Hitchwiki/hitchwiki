@@ -26,11 +26,11 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
   $wgVirtualRestConfig['modules']['parsoid'] = array(
           // URL to the Parsoid instance
           // Use port 8142 if you use the Debian package
-          'url' => 'http://' . $hwConfig["general"]["domain"] . ':8142',
+          'url' => 'http://' . $hwConfig["domain"] . ':8142',
           // Parsoid "domain"
-          'domain' => $hwConfig["general"]["domain"],
+          'domain' => $hwConfig["domain"],
           // Parsoid "prefix"
-          'prefix' => $hwConfig["general"]["domain"]
+          'prefix' => $hwConfig["domain"]
   );
 
   // Extra settings for VisualEditor
@@ -49,7 +49,7 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
  * WikiEditor (code)
  * https://www.mediawiki.org/wiki/Extension:WikiEditor
  */
-wfLoadExtension('WikiEditor');
+//wfLoadExtension('WikiEditor');
 // Enables use of WikiEditor by default but still allows users to disable it in preferences
 $wgDefaultUserOptions['usebetatoolbar'] = 1;
 
@@ -121,11 +121,12 @@ wfLoadExtension('DismissableSiteNotice');
  * from `./scripts/server_install.sh` file. It's to ensure we don't load them
  * too early in process and cause DB errors.
  */
+  wfLoadExtension('PageForms');
+
 if (file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
   require_once "$IP/extensions/SemanticMediaWiki/SemanticMediaWiki.php";
   enableSemantics();
   require_once "$IP/extensions/Maps/Maps.php";
-  wfLoadExtension('PageForms');
 
   // Sets whether help information on the edit page is displayed
   $smwgEnabledEditPageHelp = false;
@@ -155,7 +156,7 @@ if (file_exists("$IP/extensions/SemanticMediaWikiEnabled")) {
  * ParserFunctions
  * https://www.mediawiki.org/wiki/Extension:ParserFunctions
  */
-wfLoadExtension('ParserFunctions');
+//wfLoadExtension('ParserFunctions');
 // Enable old string functions (needed at our semantic templates)
 $wgPFEnableStringFunctions = true;
 
@@ -164,7 +165,7 @@ $wgPFEnableStringFunctions = true;
  * - Grant sysops permissions to edit interwiki data
  * - See Database settings to understand how Interwiki settings are shared between wikis
  */
-wfLoadExtension('Interwiki');
+//wfLoadExtension('Interwiki');
 $wgGroupPermissions['sysop']['interwiki'] = true;
 // To create a new user group that may edit interwiki data
 // (bureaucrats can add users to this group)
@@ -266,7 +267,7 @@ $wgVectorBetaWinter = true;
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
-wfLoadExtension('LocalisationUpdate');
+//wfLoadExtension('LocalisationUpdate');
 $wgLocalisationUpdateDirectory = "$IP/cache";
 
 /**
@@ -281,7 +282,7 @@ $wgMobileFrontendLogo = $wgScriptPath . "/../wiki-mobilelogo.png"; // Should be 
  * Rename user
  * https://www.mediawiki.org/wiki/Extension:Renameuser
  */
-wfLoadExtension('Renameuser');
+//wfLoadExtension('Renameuser');
 $wgGroupPermissions['sysop']['renameuser'] = true;
 
 
@@ -324,12 +325,19 @@ require_once "$IP/extensions/HWComments/HWComments.php"; // Comments -feature
 wfLoadExtension('HWLocationInput'); // `HW_Location` input type for PageForms extension
 
 // Vendor configs for HW extensions
-// See `settings.ini`
-$hwGeonamesUsername = array_key_exists('geonames_username', $hwConfig['vendor']) ? $hwConfig['vendor']['geonames_username'] : false;
+// See `settings.yml`
+$hwGeonamesUsername = $hwConfig['mediawiki']['geonames']['username'];
+$hwMapboxUsername = $hwConfig['mediawiki']['mapbox']['username'];
+$hwMapboxAccessToken = $hwConfig['mediawiki']['mapbox']['access_token'];
+$hwMapboxMapkeyStreets = $hwConfig['mediawiki']['mapbox']['mapkey_streets'];
+$hwMapboxMapkeySatellite = $hwConfig['mediawiki']['mapbox']['mapkey_satellite'];
+/*
+//$hwGeonamesUsername = array_key_exists(['geonames']['username'], $hwConfig['mediawiki']) ? $hwConfig['vendor']['geonames_username'] : false;
 $hwMapboxUsername = array_key_exists('mapbox_username', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_username'] : false;
 $hwMapboxAccessToken = array_key_exists('mapbox_access_token', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_access_token'] : false;
 $hwMapboxMapkeyStreets = array_key_exists('mapbox_mapkey_streets', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_streets'] : false;
 $hwMapboxMapkeySatellite = array_key_exists('mapbox_mapkey_satellite', $hwConfig['vendor']) ? $hwConfig['vendor']['mapbox_mapkey_satellite'] : false;
+*/
 
 // Default settings for HW extensions
 $hwDefaultCenter = array(48.6908333333, 9.14055555556); // `[(float) latitude, (float) longitude]` (Europe)

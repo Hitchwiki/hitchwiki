@@ -11,20 +11,6 @@
   apt: name={{ item }} state=present
   with_items: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-apcu, php-gettext }
 
-- name: Activate apache2 in Monit
-  become: yes
-  file: state=link src=/etc/monit/conf-available/apache2 path=/etc/monit/conf-enabled/apache2
-  notify:
-    - reload monit
-
-- meta: flush_handlers
-
-- name: Enable apache mod rewrite
-  become: yes
-  apache2_module: name=rewrite state=present
-  notify:
-  - apache
-
 - name: Allow apache override to all
   become: yes
   replace:
@@ -32,21 +18,13 @@
     regexp: 'AllowOverride None'
     replace: 'AllowOverride All'
 
-- name: Validate apache config syntax
-  shell: /usr/sbin/apache2ctl -f /etc/apache2/apache2.conf -t
-  register: validate_apache_syntax
-- debug:
-    var: validate_apache_syntax.stderr_lines
-
 - name: Configure Hitchwiki for Apache2
   become: yes
-  file: state=link src={{ dir.conf }}/apache-hitchwiki.conf path=/etc/apache2/sites-available/hitchwiki.conf
+  template: src={{ dir.conf }}/apache-hitchwiki.conf dest=/etc/apache2/sites-available/hitchwiki.conf
 
 - name: Activate Hitchwiki in Apache2
   become: yes
   file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf
-  notify:
-  - apache
 
 - name: Remove default Apache2 site
   become: yes
@@ -66,12 +44,21 @@
       php_value post_max_size 10M
       php_value upload_max_filesize 8M
 
-- name: Monitor mysql
+- name: Validate apache config syntax
   become: yes
-  monit: name=mysql state=monitored
-  ignore_errors: yes
+  shell: /usr/sbin/apache2ctl -f /etc/apache2/apache2.conf -t
+  register: validate_apache_syntax
+- debug:
+    var: validate_apache_syntax.stderr_lines
+
+- name: Enable apache mod rewrite
+  become: yes
+  apache2_module: name=rewrite state=present
 
 - name: Finish apache installation
   set_fact: state_web=true cacheable=true
+  when: validate_apache_syntax|succeeded
+  notify:
+   - apache
 
 ...

@@ -5,23 +5,7 @@
 
 - name: Configure Monit
   become: yes
-  blockinfile:
-    path: /etc/monitrc
-    create: yes
-    mode: 0700
-    block: |
-      set alert {{ admin_contact }}
-      set alert {{ mediawiki.emergency_contact }} not on { instance, action }
-      set httpd port 2812
-          use address localhost  # only accept connection from localhost
-          allow localhost        # allow localhost to connect to the server and  
-          allow admin:monit      # require user 'admin' with password 'monit'
-      include /etc/monit/conf-enabled/*
-      include /etc/monit/monitrc.d/*
-
-- name: Activate openssh-server in Monit
-  become: yes
-  file: state=link src=/etc/monit/conf-available/openssh-server path=/etc/monit/conf-enabled/openssh-server
+  template: src={{ dir.conf }}/monitrc dest=/etc/monitrc mode=0700
 
 - name: Check monit syntax
   become: yes
@@ -32,17 +16,11 @@
 - debug:
     msg: "{{ monit_syntax.stdout_lines }}"
 
-- name: Reload monit
+- name: Restart monit
   become: yes
-  command: monit reload
+  service: name=monit state=restarted
   register: monit_reloaded
-  when: "'OK' in monit_syntax.stdout"
-
-- name: Monitor openssh-server
-  become: yes
-  monit: name=openssh-server state=monitored
-  when: monit_reloaded|succeeded
-  ignore_errors: yes # TODO check why this fails with: process not presently configured with monit
+  when: monit_syntax|succeeded
 
 - name: Monit is set tup
   set_fact: state_monit=True cacheable=true

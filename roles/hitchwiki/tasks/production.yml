@@ -11,6 +11,7 @@
 
 - name: Setup TLS
   include_tasks: tls.yml
+  when: not state_https
 
 - name: Production environment is set up
   set_fact: state_production=true cacheable=true

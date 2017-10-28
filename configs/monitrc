@@ -1,0 +1,120 @@
+set daemon 60
+set alert {{ admin_contact }}
+set alert {{ mediawiki.emergency_contact }} not on { instance, action }
+set pidfile /var/run/monit.pid
+set log /var/log/monit.log
+#set mailserver localhost PORT 1025
+
+set httpd port 2812
+    use address localhost  # only accept connection from localhost
+    allow localhost        # allow localhost to connect to the server and
+    allow admin:monit       # require user 'admin' with password 'monit'
+
+check system $HOST
+
+
+
+####################### MAILDEV #######################
+
+#check process maildev with pidfile /run/maildev.pid
+# group services
+# start program = "/etc/init.d/maildev start" with timeout 60 seconds
+# restart program  = "/etc/init.d/maildev restart"
+# stop program  = "/etc/init.d/maildev stop"
+
+
+
+####################### PARSOID #######################
+
+check process parsoid with pidfile /run/parsoid.pid
+ group services
+ start program = "/etc/init.d/parsoid start" with timeout 60 seconds
+ restart program  = "/etc/init.d/parsoid restart"
+ stop program  = "/etc/init.d/parsoid stop"
+
+
+
+####################### APACHE #######################
+
+ check process apache with pidfile /var/run/apache2/apache2.pid
+   group www
+   group apache
+   group services
+   start program = "/etc/init.d/apache2 start"
+   restart program = "/usr/sbin/apache2ctl graceful"
+   stop program  = "/etc/init.d/apache2 stop"
+   if 4 restarts within 20 cycles then timeout
+   if failed host localhost port 80 with protocol http and request "/server-status" with timeout 25 seconds for 4 times within 5 cycles then restart
+   depend apache_bin
+   depend apache_rc
+
+ check file apache_bin with path /usr/sbin/apache2
+   group apache
+   include /etc/monit/templates/rootbin
+
+ check file apache_rc with path /etc/init.d/apache2
+   group apache
+   include /etc/monit/templates/rootbin
+
+
+
+####################### MYSQL #######################
+
+check process mariadb with pidfile /var/run/mysqld/mysqld.pid
+   group database
+   group mysql
+   group services
+   start program = "/etc/init.d/mysql start"
+   restart program = "/etc/init.d/mysql restart"
+   stop  program = "/etc/init.d/mysql stop"
+   if failed host localhost port 3306 protocol mysql with timeout 15 seconds for 3 times within 4 cycles then restart
+   if failed unixsocket /var/run/mysqld/mysqld.sock protocol mysql for 3 times within 4 cycles then restart
+   if 5 restarts with 5 cycles then timeout
+   depend mysql_bin
+   depend mysql_rc
+
+ check file mysql_bin with path /usr/sbin/mysqld
+   group mysql
+   include /etc/monit/templates/rootbin
+
+ check file mysql_rc with path /etc/init.d/mysql
+   group mysql
+   include /etc/monit/templates/rootbin
+
+
+
+####################### SSHD #######################
+
+ check process sshd with pidfile /var/run/sshd.pid
+   group system
+   group sshd
+   group services
+   start program = "/etc/init.d/ssh start"
+   stop  program = "/etc/init.d/ssh stop"
+   if failed host localhost port 22 with proto ssh then restart
+   if 5 restarts with 5 cycles then timeout
+   depend on sshd_bin
+   depend on sftp_bin
+   depend on sshd_rc
+   depend on sshd_rsa_key
+   depend on sshd_dsa_key
+
+ check file sshd_bin with path /usr/sbin/sshd
+   group sshd
+   include /etc/monit/templates/rootbin
+
+ check file sftp_bin with path /usr/lib/openssh/sftp-server
+   group sshd
+   include /etc/monit/templates/rootbin
+
+ check file sshd_rsa_key with path /etc/ssh/ssh_host_rsa_key
+   group sshd
+   include /etc/monit/templates/rootstrict
+
+ check file sshd_dsa_key with path /etc/ssh/ssh_host_dsa_key
+   group sshd
+   include /etc/monit/templates/rootstrict
+
+ check file sshd_rc with path /etc/ssh/sshd_config
+   group sshd
+   include /etc/monit/templates/rootrc

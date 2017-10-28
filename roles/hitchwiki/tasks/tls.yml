@@ -1,21 +1,66 @@
 ---
 # Setup TLS
 
-# TODO untested: self signed certificate
-- include_tasks: tls_selfsigned.yml
-  when: env == 'dev'
+# Let's Encrypt - certbot
+- include_tasks: letsencrypt.yml
+  register: certbot
+  when: env == 'production' and domain
 
-# TODO untested: Let's Encrypt - apache mod md
+# TODO check for release of: Let's Encrypt - apache mod md
 # "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
 #- include_tasks: tls_md.yml
 #  when: mediawiki.protocol == 'https' and env == 'production'
 
-# Let's Encrypt - certbot
-- include_tasks: letsencrypt.yml
-  when: env == 'production'
+- include_tasks: tls_selfsigned.yml
+  when: not certbot|succeeded
 
-- name: Is https setup?
-  debug:
-    var: state_https
+- name: Enable ssl and headers modules for Apache
+  become: yes
+  apache2_module: name={{item}} state=present
+  with_items: { ssl, headers }
+  when: state_https
+
+- name: Enable SSL Virtual Host
+  become: yes
+  command: a2ensite default-ssl
+  when: state_https
+
+- name: Enable ssl-params.conf file
+  become: yes
+  command: a2enconf ssl-params
+  when: state_https
+
+- name: Create Apache SSL configuration
+  become: yes
+  template: src={{ dir.conf }}/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
+  creates: /etc/apache2/sites-available/default-ssl.conf
+  when: state_https
+
+- name: Set Apache SSL params
+  become: yes
+  template: src={{ dir.conf }}/ssl-params.conf dest=/etc/apache2/conf-available/ssl-params.conf
+  creates: /etc/apache2/conf-available/ssl-params.conf
+  when: state_https
+
+- name: Redirect non-HTTPS requests
+  become: yes
+  lineinfile:
+    path: /etc/apache2/sites-enabled/hitchwiki.conf 
+    insertafter: '^  DocumentRoot'
+    regexp: '^  Redirect "http://$"'
+    line: "  Redirect \"http://$\" \"https://{{ domain }}\""
+    state: present
+  when: state_https
+
+- name: Apache syntax check
+  become: yes
+  command: apache2ctl configtest
+  register: syntaxcheck
+  when: state_https
+  notify:
+   - apache
+
+- meta: flush_handlers
+  when: syntaxcheck|succeeded
 
 ...

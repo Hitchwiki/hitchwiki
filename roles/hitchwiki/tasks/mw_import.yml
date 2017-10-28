@@ -1,96 +1,63 @@
 ---
-# Import content
+# Import MW content
 
-- name: Setup database for several MW extensions (SemanticMediaWiki, AntiSpoof etc.)
-  become: yes
-  command: chdir={{ dir.wiki }} php maintenance/update.php --quick --conf "{{ dir.mwconf }}"
-  register: mw_extensions
-  ignore_errors: yes
-- debug:
-    msg: "{{ mw_extensions.stderr_lines }}{{ mw_extensions.stdout_lines }}"
+- name: Configure Hitchwiki
+  template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+
+- name: Import interwiki table - https://www.mediawiki.org/wiki/Extension:Interwiki
+  shell: mysql {{ db_credentials }} {{ mediawiki.db.database }} < "{{ dir.script }}/configs/interwiki.sql"
+  register: interwiki
+
+- name: Enable Semantic Mediawiki extension
+  file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
+  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+  # basically SMW extensions are not included in MediaWiki before this
+  # file exists, because it would cause errors when running
+  # `maintenance/install.php`.
+
+- name: Run the update script - https://www.mediawiki.org/wiki/Manual:Upgrading
+  shell: "cd {{ dir.wiki }}; php maintenance/update.php --quick --conf {{ dir.mwconf }}"
+  register: mw_update
 
 - name: Pre-populate the AntiSpoof extension's table
   become: yes
-  command: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
   register: mw_antispoof
-  ignore_errors: yes
-- debug:
-    msg: "{{ mw_antispoof.stderr_lines }}{{ mw_antispoof.stdout_lines }}"
 
-- name: Create MediaWiki users
+# SMW
+- name: Setup Semantic Mediawiki
+  # https://www.semantic-mediawiki.org/wiki/Help:Maintenance_script_%22setupStore.php%22
+  command: chdir={{ dir.wiki }}/extensions/SemanticMediaWiki php ./maintenance/setupStore.php --quiet --conf {{ dir.mwconf }}
+  register: setup_smw
+
+- name: Create users
   become: yes
-  # TODO use vault
-  shell: |
-    set -e
-    source {{ dir.script }}/_path_resolve.sh
-    echo "Importing Semantic content..."
-    cd "{{ dir.wiki }}"
-    echo "Create hitchwiki account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchwiki {{ phpmyadmin_password }}
-    echo "Create bot account"
-    php maintenance/createAndPromote.php --bureaucrat --sysop --bot --force Hitchbot {{ phpmyadmin_password }}
-    echo "Create dummy account"
-    php maintenance/createAndPromote.php Hitchhiker {{ phpmyadmin_password }}
-    echo "Confirm emails for created users"
-    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchwiki@localhost',  user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchwiki'"
-    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchbot@localhost',   user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchbot'"
-    mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = 'hitchhiker@localhost', user_email_authenticated = '20141218000000' WHERE user_name = 'Hitchhiker'"
+  command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
+  with_items:
+    - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchhiker, flags:  }
   register: mw_users
-  ignore_errors: yes
-- debug:
-    msg: "{{ mw_users.stderr_lines }}{{ mw_users.stdout_lines }}"
+
+- name: Set user's email
+  command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
+  with_items: { Hitchwiki, Hitchbot, Hitchhiker }
+  register: user_mail
 
 - name: Import Semantic templates and other MediaWiki special pages
   become: yes
-  shell: |
-    set -e
-    source {{dir.script}}/_path_resolve.sh
-    cd {{ dir.wiki }}
-    if [ ! -f "{{ dir.pages }}/_pagelist.txt" ]; then
-      warn "{{ dir.pages }}/_pagelist.txt does not exist! Aborting."
-      exit 1
-    fi
-    source {{ dir.script }}/vendor/filelines2array.sh
-    fileLines2Array {{ dir.pages }}/_pagelist.txt
-    let i=0
-    for l in "${MAPFILE[@]}"
-    do
-      PAGE="${MAPFILE[$i]}"
-      echo -n "Importing '$PAGE'..."
-      if [ -z "${PAGE}" ]; then
-        warn "Filename empty!"
-        continue
-      fi
-      if [ -f "$PAGESDIR/$PAGE" ]; then
-        # Supported parameters of https://www.mediawiki.org/wiki/Manual:Edit.php:
-        #
-        # Parameter      Description
-        # --------------------------
-        # -u <user>      Username
-        # -s <summary>   Edit summary
-        # -m             Minor edit
-        # -b             Bot (hidden) edit
-        # -a             Enable autosummary
-        # --no-rc        Do not show the change in recent changes
-        php maintenance/edit.php --no-rc -u Hitchbot -b -s "Importing semantic structure." "$PAGE" < "{{ dir.pages }}/$PAGE"
-        php maintenance/protect.php --user Hitchbot "$PAGE"
-        echo "done."
-      else
-        warn "Could not load file contents for '$PAGE' - file does not exist."
-      fi
-      echo ""
-      let i++
-    done
+  command: chdir=/var/www ./scripts/import_pages.sh
   register: import_pages
   ignore_errors: yes
 - debug:
-    msg: "{{ import_pages.stderr_lines }}{{ import_pages.stdout_lines }}"
+    var: import_pages.stdout_lines
+
+- name: Run pending jobs and clear the queue
+  command: chdir={{ dir.wiki }} php ./maintenance/runJobs.php
+  register: mw_jobs
 
 - name: Finish Mediawiki import
   set_fact: state_mw_import=true cacheable=true
-  when: mw_extensions|succeeded and mw_antispoof|succeeded and mw_users|succeeded and import_pages|succeeded
-  register: mw_import_finished
-- set_fact: state_mw_import=false
-  when: mw_import_finished|skipped
+  when: interwiki|succeeded and mw_update|succeeded and mw_antispoof|succeeded and setup_smw|succeeded and mw_users|succeeded and user_mail|succeeded and import_pages|succeeded and mw_jobs|succeeded
 
 ...

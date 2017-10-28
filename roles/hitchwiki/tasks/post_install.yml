@@ -1,0 +1,11 @@
+---
+  # These are not run automatically so we'll just manually invoke them.
+  # https://github.com/composer/composer/issues/1193
+- name: Run post-install scripts for a few extensions solve mw maps extension bug
+  command: chdir={{ dir.wiki }} composer run-script post-install-cmd -d ./extensions/{{ item }}
+  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
+
+- name: Run ./scripts/update.sh
+  command: chdir=/var/www ./scripts/update.sh
+
+...

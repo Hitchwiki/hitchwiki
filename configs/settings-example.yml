@@ -1,13 +1,12 @@
 domain: hitchwiki.test
 cookiedomain: .hitchwiki.test
-https: False
-env: "dev" # dev | production
-admin_contact: 
+env: "dev" # dev | production # enables HTTPS
+admin_contact: {{ mediawiki.emergency_contact }} # set your email here
 
 # Development variables
 phpmyadmin_password: autobahn
 #apt_proxy: IP address # Install apt-cacher-ng on the host to avoid downloading packages again.
-smtp: # MailDev is running at port 1025 at dev server https://github.com/djfarrelly/MailDev
+smtp: # MailDev runs at port 1025 at dev server https://github.com/djfarrelly/MailDev
   enabled: true # See http://hitchwiki.test:1080/
   host: localhost
   port: 1025
@@ -19,13 +18,17 @@ mediawiki:
   debug: False
   cache: False
   branch: REL1_29
+  protocol: http
   sitename: Hitchwiki
   metanamespace: Hitchwiki
+  secretkey: 
+  upgradekey:
   visible_to_search_engines: True
   use_smtp: True
   enable_api: True
   enable_write_api: True
   api_modules_createaccount: "ApiDisabled"
+  enableuseremail: false
   emergency_contact: "contact@hitchwiki.test"
   password_sender: "noreply@hitchwiki.test"
   db:
@@ -52,10 +55,7 @@ mediawiki:
     mapkey_satellite: kil7hee6
   geonames:
     username: hitchwiki
-    # use these instead of the above if geonames requests are being throttled
-    # during migration. keep this list in the end of the file, as "[]" causes
-    # bash_ini_parser to crash (we don't need these variables in bash)
-    # alternatives: { hitchwiki, hitchwiki2, hitchwiki3 }
+    usernames: { hitchwiki, hitchwiki2, hitchwiki3 }
 
 # Variables for ansible provisioning
 #  https://docs.ansible.com/ansible/latest/playbooks_variables.html

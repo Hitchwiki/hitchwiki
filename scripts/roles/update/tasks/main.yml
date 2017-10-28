@@ -1,0 +1,5 @@
+---
+# Update LocalSettings.php
+- template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+
+...
