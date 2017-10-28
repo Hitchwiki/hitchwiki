@@ -39,6 +39,16 @@
   include_tasks: phpmyadmin.yml
   when: env == 'dev' and not state_phpmyadmin
 
+- name: Create MW bot users
+  become: yes
+  command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
+  with_items:
+    - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
+    - { name: Hitchhiker, flags:  }
+  register: mw_users
+  when: env == 'dev'
+
 # Production
 
 - name: Setup production environment

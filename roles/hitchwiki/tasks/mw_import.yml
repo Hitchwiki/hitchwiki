@@ -30,15 +30,6 @@
   command: chdir={{ dir.wiki }}/extensions/SemanticMediaWiki php ./maintenance/setupStore.php --quiet --conf {{ dir.mwconf }}
   register: setup_smw
 
-- name: Create users
-  become: yes
-  command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
-  with_items:
-    - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
-    - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
-    - { name: Hitchhiker, flags:  }
-  register: mw_users
-
 - name: Set user's email
   command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
   with_items: { Hitchwiki, Hitchbot, Hitchhiker }
