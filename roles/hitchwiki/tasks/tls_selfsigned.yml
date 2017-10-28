@@ -1,57 +1,40 @@
 ---
 # Transport Layer Security
 
+# Have we been here?
+- name: Looking for existing certificates
+  shell: [[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.1.key }} ]]
+  register: done
+  ignore_errors: yes
+- debug:
+    var: done
+
 # TODO https://www.jeffgeerling.com/blog/2017/self-signed-certificates-ansible-local-testing-nginx
 - name: Create self-signed certificate
   become: yes
   command: >
     openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 365
     -newkey rsa:4096 -sha256 -keyout {{ item.key }} -out {{ item.cert }}
+  creates: "{{ item.key }}"
   with_items: "{{ self_signed_certs }}"
+  register: key
+  when: done|failed
 
 - name: Generate a Diffie-Hellman group
   become: yes
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  creates: /etc/ssl/certs/dhparam.pem
   register: dhg
+  when: done|failed
 
-- name: Create SSL configuration for Apache
-  become: yes
-  template: src=configs/ssl-params.conf dest=/etc/apache2/conf-available/ssl-params.conf
+- set_fact:
+     cert: "{{ self_signed_certs.0.cert }}"
+     key: "{{ self_signed_certs.0.key }}"
+  register: selfsigned
+  when: done|succeeded or (dhg|succeeded and key|succeeded)
 
-- name: Modify default SSL VirtualHost configuration file for Apache
-  become: yes
-  template: src=configs/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
-
-- name: Redirect non-https requests
-  lineinfile:
-    - path: /etc/apache2/sites-enabled/hitchwiki.conf 
-    - insertafter: '^  DocumentRoot'
-    - regexp: '^  Redirect "http:/{{ domain }}/$"'
-    - -line: '  Redirect "http:/{{ domain }}/$" "https://{{ domain }}"'
-
-- name: Enable ssl and headers modules for Apache
-  become: yes
-  apache2_module: name={{item}} state=present
-  with_items: { ssl, headers }
-
-- name: Enable SSL Virtual Host
-  become: yes
-  command: a2ensite default-ssl
-
-- name: Enable ssl-params.conf file
-  become: yes
-  command: a2enconf ssl-params
-
-- name: Apache config test
-  become: yes
-  command: apache2ctl configtest
-  register: syntaxcheck
-
-- name: Successfully setup self-signed certificate
-  set_fact: state_https=false cacheable=true
-  notify:
-  - apache
-  when: syntaxcheck|succeeded
-- meta: flush_handlers
+- name: Successfully created self-signed certificate
+  when: selfsigned|succeeded
+  set_fact: state_https=true cacheable=true
 
 ...
