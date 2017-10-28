@@ -68,7 +68,7 @@ If you have root access to a remote or local machine, you can deploy hitchwiki t
 git clone https://github.com/traumschule/hitchwiki -b ansible hitchwiki
 cd hitchwiki
 ```
-- Copy `configs/settings.yml` from `configs/settings-example.yml`
+- Copy `configs/settings.yml` from `configs/settings-example.yml` and define your `domain` as it used as hostname and in `/etc/hosts` on the (remote) system. You can set the username with `user` (default: hitchwiki).
 - Add the IP address to the `[remote]` section in `hosts`. You can as well use `localhost`.
 - Run `ssh-keygen` locally and add it to `/home/root/.ssh/authorized_keys` on your machine.
 - Add your public key in `~/.ssh/id_rsa.pub` to `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
