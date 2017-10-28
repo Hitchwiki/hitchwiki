@@ -13,6 +13,10 @@ dir:
   spyc: /var/www/public/mustangostang/spyc/Spyc.php
   log: /var/www/log
 
+apache:
+  user: www-data
+  group: www-data
+
 self_signed_certs:
   - key: /etc/ssl/private/server.key
     cert: /etc/ssl/certs/server.crt

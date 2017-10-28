@@ -12,14 +12,14 @@
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{ phpmyadmin_password }}"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{ phpmyadmin_password }}"
 
-- name: Add PHPMyAdmin configuration to Apache
-  become: true
-  lineinfile:
-    path: /etc/phpmyadmin/apache.conf
-    regexp: '(Alias /).*(/usr/share/phpmyadmin)'
-    line: '\1{{ dir.phpmyadmin }} \2'
-  notify:
-  - apache
+#- name: Add PHPMyAdmin configuration to Apache
+#  become: true
+#  lineinfile:
+#    path: /etc/phpmyadmin/apache.conf
+#    regexp: '(Alias /).*(/usr/share/phpmyadmin)'
+#    line: '{{ dir.phpmyadmin }} \2'
+#  notify:
+#  - apache
 
 - name: Finish PHPMyAdmin installation
   set_fact: state_phpmyadmin=true cacheable=true

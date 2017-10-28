@@ -2,7 +2,7 @@ set daemon 60
 set alert {{ admin_contact }}
 set alert {{ mediawiki.emergency_contact }} not on { instance, action }
 set pidfile /var/run/monit.pid
-set log /var/logs/monit.log
+set log /var/log/monit.log
 #set mailserver localhost PORT 1025
 
 set httpd port 2812

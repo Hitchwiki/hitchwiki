@@ -33,10 +33,10 @@
 - name: Create users
   become: yes
   command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
-  with_items:interwiki
+  with_items:
     - { name: Hitchwiki, flags: --bureaucrat --sysop --bot }
     - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
-    - { name: Hitchhiker, flags: }
+    - { name: Hitchhiker, flags:  }
   register: mw_users
 
 - name: Set user's email

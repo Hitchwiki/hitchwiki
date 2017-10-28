@@ -73,4 +73,13 @@
   listen:
     - maildev
 
+- name: Show databases
+  command: IFS=$'\n' echo "SHOW DATABASES;" | mysql {{ db_credentials }} | grep -E '^hitchwiki_en' | sed 's/^hitchwiki_//g'
+  register: tables
+  listen:
+    - languages
+    - databases
+- debug:
+    var: tables.stdout
+
 ...

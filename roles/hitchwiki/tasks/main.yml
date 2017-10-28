@@ -26,13 +26,10 @@
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
+  #include_tasks: mw_import.yml
   when: not state_mw
 
 # Development
-
-- name: Import Mediawiki content
-  include_tasks: mw_import.yml
-  when: not state_mw_import
 
 - name: Install Maildev
   include_tasks: maildev.yml
@@ -53,7 +50,11 @@
   monit: name=all state=monitored
   ignore_errors: yes
 
+# Finish!
 - meta: flush_handlers
+
+- name: Run post install scripts
+  include_tasks: post_install.yml
 
 - name: Status report
   include_tasks: status.yml
