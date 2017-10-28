@@ -12,6 +12,7 @@ dir:
   state: /var/www/group_vars/all
   spyc: /var/www/public/mustangostang/spyc/Spyc.php
   log: /var/www/log
+  dump: /var/www/dumps
 
 apache:
   user: www-data

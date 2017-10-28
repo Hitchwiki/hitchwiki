@@ -13,17 +13,6 @@ set httpd port 2812
 check system $HOST
 
 
-
-####################### MAILDEV #######################
-
-#check process maildev with pidfile /run/maildev.pid
-# group services
-# start program = "/etc/init.d/maildev start" with timeout 60 seconds
-# restart program  = "/etc/init.d/maildev restart"
-# stop program  = "/etc/init.d/maildev stop"
-
-
-
 ####################### PARSOID #######################
 
 check process parsoid with pidfile /run/parsoid.pid

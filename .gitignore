@@ -9,7 +9,6 @@ node_modules/
 .vagrant
 
 # Ansible
-./group_vars
 hosts
 *.retry
 
