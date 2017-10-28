@@ -61,6 +61,19 @@
   notify:
   - apt
 
+# Parsoid, bower and maildev depend on NodeSource (https://nodejs.org/en/download/package-manager)
+- name: Add apt source for NodeSoure 8.x
+  become: yes
+  apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_8.x xenial main"
+
+- name: Install nodejs
+  become: yes
+  apt: name=nodejs state=present update_cache=yes
+
+- name: Link nodejs to node
+  become: yes
+  file: state=link src=/usr/bin/nodejs path=/usr/local/bin/node
+
 - name: Install bower
   become: yes
   npm: name=bower version=~1.8 state=present global=yes
