@@ -59,7 +59,7 @@
 
 - name: Configure backupninja
   become: yes
-  copy: src=configs/dumps.mysql dest=/etc/backup.d/ owner=root mode=0600
+  template: src=configs/dumps.mysql dest=/etc/backup.d/ owner=root mode=0600
   tags:
    - backup
    - db

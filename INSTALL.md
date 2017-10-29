@@ -68,26 +68,42 @@ If you have root access to a remote or local machine, you can deploy hitchwiki t
 git clone https://github.com/traumschule/hitchwiki -b ansible hitchwiki
 cd hitchwiki
 ```
-- Copy `configs/settings.yml` from `configs/settings-example.yml` and define your `domain` as it used as hostname and in `/etc/hosts` on the (remote) system. You can set the username with `user` (default: hitchwiki).
-- Add the IP address to the `[remote]` section in `hosts`. You can as well use `localhost`.
-- Run `ssh-keygen` locally and add it to `/home/root/.ssh/authorized_keys` on your machine.
-- Add your public key in `~/.ssh/id_rsa.pub` to `configs/authorized_keys`. This file will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine. For example use `cp ~/.ssh/id_rsa.pub configs/authorized_keys`.
-- (optional) Change `user` and `hostname` in `roles/remote/vars/main.yml`
-- (optional) Add to your local ~/.ssh/config:
+- Copy `configs/settings-example.yml` to `configs/settings.yml`  and define your `domain` (it will be set as remote hostname and in `/etc/hosts` on the (remote) system). You can change the username with `user` (default: hitchwiki).
+- Add the IP address to the `[remote]` section in `hosts`. You can as well use `localhost`:
+```
+hw-dev ansible_ssh_host={{ remote }} ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
+```
+- Run `ssh-keygen` locally
+- Add to your local ~/.ssh/config:
 ```
     Host hw-dev
-      HostName {{ ip address }}
+      HostName {{ remote ip address }}
       User {{ user }} # default: hitchwiki
 ```
-To prepare a remote system:
+- Add your public key in `~/.ssh/id_rsa.pub` to `configs/authorized_keys` (it will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine):
 ```bash
-ansible-playbooks deploy_remote.yml
+cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
 ```
-To test ansible locally, run
+- Copy `configs/authorized_keys` (local) to `/home/root/.ssh/authorized_keys` (remote):
 ```bash
-ansible-playbooks hitchwiki.yml
+rsync ~/.ssh/id_rsa.pub root@remote:.ssh/authorized_keys
+``'
+- Prepare the remote system:
+```bash
+./scripts/deploy_remote.sh # this will run `ansible-playbooks ./scripts/deploy.yml`
 ```
-When errors happen, fix them in `./roles/*/tasks/main.yml` and check the syntax with
+- Open `hosts` in your preferred editor and move the remote to the '[hitchwiki]' group and run
+```bash
+ansible-playbook hitchwiki.yml
+```
+or ssh in before (recommended):
+```
+ssh user@remote
+cd ~/src
+./scripts/setup_hitchwiki.sh # this will run `ansible-playbooks hitchwiki.yml`
+```
+
+When errors happen, report them to [our issue tracker](https://github.com/Hitchwiki/hitchwiki/issues) or try to fix (start reading in `hitchwiki.yml` and `roles/hitchwiki/tasks/main.yml`. After changes check the syntax with
 ```bash
 ansible-playbook hitchwiki.yml --syntax-check
 ```
@@ -95,7 +111,7 @@ Show hosts (configured in `hosts`):
 ```bash
 ansible hitchwiki --list-hosts
 ```
-There is still a lot to do. Just risk a `rgrep TODO roles`. Note that setup scripts are based on Ubuntu.
+To see open tasks run `rgrep TODO roles` or check the [ansible pull request](https://github.com/Hitchwiki/hitchwiki/pull/167). Note that setup scripts are based on Ubuntu.
 
 ##### What ansible does
 - Upgrade distribution packages
