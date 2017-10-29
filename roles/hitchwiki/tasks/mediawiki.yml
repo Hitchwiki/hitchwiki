@@ -4,6 +4,7 @@
 # Prepare database
 - name: Drop Mediawiki database
   mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
+
 - name: Create database
   mysql_db: name={{ mediawiki.db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
 
@@ -70,9 +71,15 @@
 
 - name: Download Vector skin
   git:
-    clone: yes
     repo: https://phabricator.wikimedia.org/diffusion/SVEC/Vector
     dest: "{{ dir.wiki }}/skins/Vector"
+    depth: 1
+  ignore_errors: yes
+
+- name: Download LocalisationUpdate - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+  git:
+    repo: https://github.com/wikimedia/mediawiki-extensions-LocalisationUpdate
+    dest: "{{ dir.wiki }}/extensions/LocalisationUpdate"
     depth: 1
   ignore_errors: yes
 

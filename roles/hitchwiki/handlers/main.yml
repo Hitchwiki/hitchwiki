@@ -14,6 +14,13 @@
     - apt
     - update system
 
+- name: Start monit
+  become: yes
+  service: name=monit state=restarted
+  listen:
+    - start monit
+    - restart monit
+
 # Database
 - name: Restart mysql
   become: yes
@@ -72,6 +79,12 @@
   #service: name=maildev enabled=yes state=started
   listen:
     - maildev
+
+- name: Stop maildev
+  become: yes
+  shell: kill $(pidof node /usr/local/bin/maildev)
+  listen:
+    - stop maildev
 
 - name: Show databases
   command: IFS=$'\n' echo "SHOW DATABASES;" | mysql {{ db_credentials }} | grep -E '^hitchwiki_en' | sed 's/^hitchwiki_//g'

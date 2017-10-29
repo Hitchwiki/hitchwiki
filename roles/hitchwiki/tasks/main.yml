@@ -2,12 +2,12 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
-#- name: Check status
-#  include_tasks: status.yml
+- name: On first run following tests are likely to fail
+  include_tasks: status.yml
 
-- name: Setup Monit
-  include_tasks: monit.yml
-  when: not state_monit
+- name: Prepare system
+  include_tasks: system.yml
+  when: not state_system
 
 - name: Setup database server
   include_tasks: database.yml
@@ -17,37 +17,43 @@
   include_tasks: apache.yml
   when: not state_web
 
-- set_fact: https=True
-  when: mediawiki.protocol == 'https'
-
-- name: Enable TLS
-  include_tasks: tls.yml
-  when: https and not state_https
-
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  #include_tasks: mw_import.yml
   when: not state_mw
 
-# Development
+- set_fact: https=True
+  when: mediawiki.protocol == 'https' or env == 'production'
 
-- name: Setup development services
-  include_tasks: development.yml
-  when: env == 'dev'
+- name: Test https://{{domain}}
+  when: https
+  uri: url=https://{{domain}} validate_certs=no
+  register: tls_test
 
-# Production
+- name: Setup TLS
+  include_tasks: tls.yml
+  register: tls
+  when: not 'OK' in tls_test.msg and https
 
-- name: Setup production environment
-  include_tasks: production.yml
-  when: env == 'production'
+- name: Setup environment
+  include_tasks: "{{ env }}.yml"
+  register: environment
+  when: state_db and state_web and state_mw and not tls|failed
 
 # Finish!
 - meta: flush_handlers
+  when: environment|succeeded
+
+- name: Run tests again
+  include_tasks: status.yml
+  register: tests
 
 - name: Run post install scripts
-  include_tasks: post_install.yml
+  include_tasks: scripts/roles/update/tasks/main.yml
+  register: update
+  when: environment|succeeded and tests|succeeded
 
-- name: Status report
-  include_tasks: status.yml
+- name: Finish
+  include_tasks: _finished.yml
+  when: update|succeded
 
 ...

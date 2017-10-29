@@ -28,5 +28,7 @@
 
 - name: Finish parsoid installation
   set_fact: state_parsoid=true cacheable=true
+  notify:
+   - parsoid
 
 ...

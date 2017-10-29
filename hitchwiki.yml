@@ -10,9 +10,9 @@
   gather_facts: no
 
   pre_tasks:
-    - name: Prepare system
-      include_tasks: roles/hitchwiki/tasks/system.yml
-      when: not state_system or state_system is undefined
+    - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
+      become: yes
+      raw: apt-get install -yq python-simplejson
 
 - name: Setup hitchwiki
   hosts: all

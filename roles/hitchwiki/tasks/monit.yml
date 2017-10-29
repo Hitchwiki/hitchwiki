@@ -7,17 +7,14 @@
   become: yes
   template: src={{ dir.conf }}/monitrc dest=/etc/monit/monitrc mode=0700
 
-- name: Check monit syntax
+- name: Check syntax
   become: yes
   command: monit -t
   register: monit_syntax
 
-- name: Restart monit
-  become: yes
-  service: name=monit state=restarted
-
-- name: Monit is set tup
+- name: Monit is set up
   set_fact: state_monit=True cacheable=true
+  when: monit_syntax|succeeded
 
 # fails in 2.4 https://github.com/ansible/ansible/issues/30614
 #- name: Monitor sshd in monit

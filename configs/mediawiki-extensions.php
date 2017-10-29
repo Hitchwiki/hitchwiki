@@ -267,7 +267,7 @@ $wgVectorBetaWinter = true;
  * LocalisationUpdate
  * https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
  */
-//wfLoadExtension('LocalisationUpdate');
+wfLoadExtension('LocalisationUpdate');
 $wgLocalisationUpdateDirectory = "$IP/cache";
 
 /**

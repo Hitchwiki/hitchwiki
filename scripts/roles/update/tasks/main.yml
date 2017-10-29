@@ -1,5 +1,39 @@
 ---
-# Update LocalSettings.php
-- template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+# Hitchwiki update: update MediaWiki, its database, extensions and assets
+- name: Run pending jobs and clear the queue
+  command: chdir={{ dir.wiki }} php ./maintenance/runJobs.php
+
+- name: Update LocalSettings.php
+  template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+
+- name: Update Hitchwiki dependencies using composer.local.json
+  command: chdir={{ dir.wiki }} composer update --no-progress --no-interaction
+
+- name: Update VisualEditor
+  shell: cd "{{ dir.wiki }}/extensions/VisualEditor" git pull; git submodule update --init
+
+- name: Run update script for MediaWiki
+  command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
+  ignore_errors: yes
+
+- name: Run update script for Semantic MediaWiki
+  command: chdir={{ dir.wiki }} php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v
+  ignore_errors: yes
+
+- name: Run post-install scripts for HW extensions
+  # These are not run automatically so we'll just manually invoke them.
+  # https://github.com/composer/composer/issues/1193
+  command: chdir={{ dir.wiki }} composer run-script post-update-cmd -d ./extensions/{{item}}
+  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
+
+- name: Localisation update - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+  command: chdir={{ dir.wiki }} php extensions/LocalisationUpdate/update.php --quiet
+  ignore_errors: yes # TODO
+
+- name: Import forms, templates etc.
+  command: chdir={{ dir.root }}/.. "{{ dir.script }}/import_pages.sh"
+  register: input
+- debug:
+    var: input.stdout_lines
 
 ...

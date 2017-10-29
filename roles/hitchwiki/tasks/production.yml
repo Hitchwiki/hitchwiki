@@ -1,17 +1,40 @@
 ---
 # Productive environment
 
-#- name: Setup Monit
-#  include_tasks: monit.yml
-# TODO change monit password
-# TODO disable phpmyadmin
-# TODO disable maildev
-# TODO change db password
-# TODO test TLS
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not state_monit
+  notify:
+    - restart monit
 
 - name: Setup TLS
   include_tasks: tls.yml
   when: not state_https
+
+- name: Disable maildev
+  become: yes
+  file: path=/etc/init.d/maildev state=absent
+  notify:
+    - stop maildev
+
+- name: Remove PHPMyAdmin
+  become: yes
+  apt: name=phpmyadmin state=absent
+
+- name: Secure DB server
+  # https://mariadb.com/kb/en/library/mysql_secure_installation
+  # https://github.com/twitter/mysql/blob/master/scripts/mysql_secure_installation.sh#L170
+  # Make sure that NOBODY can access the server without a password
+  shell: |
+    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password = '{{ mediawiki.db.password }}'  WHERE User = 'root'"
+    mysql {{ db_credentials }} -e "DROP USER ''@'localhost'"
+    mysql {{ db_credentials }} -e "DROP USER ''@'$(hostname)'"
+    mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+    mysql -e "FLUSH PRIVILEGES"
+  register: secure_db
+  ignore_errors: yes
+- debug:
+    var: secure_db.stderr_lines
 
 - name: Production environment is set up
   set_fact: state_production=true cacheable=true

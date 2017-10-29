@@ -139,10 +139,16 @@ This is done once at install, but needs to be done each time somebody changes co
     ansible-playbook hitchwiki.yml --syntax-check
     ```
 
-### HTTPS
-To test encryption test provisioning, set `https: True` in `settings.yml` (the variable name may change in the future).
-- _staging (development):_ see `roles/hitchwiki/tasks/tls_selfsigned.yml`
-- _production:_ used `certbot`. If you like, uncomment and test the unreleased [mod_md](https://github.com/icing/mod_md) for [ACME in apache 2.4.x](https://letsencrypt.org/2017/10/17/acme-support-in-apache-httpd.html) in `roles/hitchwiki/tasks/tls.yml`.
+### Security (production environment)
+- To enable TLS set `env: production` or `mediawiki.protocol: https` in `configs/settings.yml`. And don't forget to define a valid `domain` to request certificate from letsencrypt. Otherwise a self-signed certificate is created. For details see `roles/hitchwiki/tasks/tls.yml` and included files.
+- change `mediawiki.db.password` in `configs/settings.yml`
+- change the password in `configs/monitrc`, it will be copied to `/etc/monit/monitrc`.
+- run `ansible-playbook hitchwiki.yml` (again).
+- check that your server redirects to https afterwards.
+- remove `.ssh/id_rsa` from the server.
+Database backups are stored in `var/backup/mysql`.
+
+Note: If you had apache2, mysqld, parsoid or monit running before, please stop them during installation, or related tasks will be skipped. They'll be started automatically.
 
 ###  Database access
 #### From the app
