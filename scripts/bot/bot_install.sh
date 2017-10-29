@@ -17,7 +17,7 @@ source "$SCRIPTDIR/_settings.sh"
 WIKIBOTDIR="$SCRIPTDIR/bot"
 
 sudo apt-get install python-pip python-dev libmysqlclient-dev
-sudo pip install MySQL-python requests httplib2 ftfy
+sudo pip install MySQL-python requests httplib2 ftfy==4.4.3
 
 cd "$WIKIBOTDIR"
 if cd ".cache"; then

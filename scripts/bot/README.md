@@ -14,13 +14,22 @@ _cd_ into this folder and run (inside Vagrant, if using it):
 ./bot_install.sh
 ```
 
+Following files from the live hitchwiki.org need to be present in `/dumps/`:
+- old-images.tar.gz
+- old-hitchwiki.sql
+- old-hitchwiki_maps.sql
+- old-hitchwiki_rate.sql
+- hitchwiki_en.sql
+- hitchwiki_maps.sql
+- hitchwiki_rate.sql
+
 ## Tool list
 
 _cd_ into this folder before running the chosen command.
 
 ```bash
 # Annotate place articles with geographical semantic templates
-python pywikibot-core/pwb.py migrate/article.py
+python pywikibot-core/pwb.py migrate/articlemigrate.py
 ```
 
 ```bash
