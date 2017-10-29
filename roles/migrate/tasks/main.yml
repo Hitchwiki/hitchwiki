@@ -1,0 +1,125 @@
+---
+
+#- name: Make wiki read-only #134
+#  lineinfile:
+#    path: "{{ dir.wiki }}/LocalSettings.php"
+#    regexp: '^$wgReadOnly'
+#    line: $wgReadOnly = 'This wiki is currently in read-only mode because of an ongoing upgrade.';
+#    state: present
+
+- name: Backup database
+  become: yes
+  command: backupninja
+  #shell: "mysqldump {{ db_credentials }} {{ mediawiki.db.database }} > {{ dir.dump }}/hitchwiki-dev-en_$(date '+%Y%m%d').sql"
+
+- name: Download current dump (flat)
+  uri: url=http://hitchwiki.org/dumps/hitchwiki-current-en.xml dest="{{ dir.dump }}/hitchwiki-current-en.xml"
+  register: download
+  failed_when: download.status != 200 and download.status != 304
+  # http://hitchwiki.org/en/Hitchwiki:Database_dumps
+
+- set_fact:
+    dump_path: "{{ dir.dump }}/hitchwiki-current-en.xml"
+    mwdumper_jar: "{{ dir.script }}/vendor/mwdumper/target/mwdumper-1.25.jar"
+
+# Import https://meta.wikimedia.org/wiki/Help:Import
+
+#- name: Install xml2sql
+#  become: yes
+#  apt: name=libdbix-xml-rdb-perl state=present
+#  # libdbix-xml-rdb-perl: /usr/share/doc/libdbix-xml-rdb-perl/examples/xml2sql.pl.gz
+
+#- name: Import hitchwiki_en (xml2sql)
+#  command: 
+#  register: xml2sql
+  # https://metacpan.org/release/DBIx-XML_RDB
+
+- name: Check for mwdumper
+  shell: "[ -f {{mwdumper_jar}} ]"
+  register: mwdumper_present
+  ignore_errors: yes
+
+
+# mwdumper - https://meta.wikimedia.org/wiki/Data_dumps/mwdumper
+- name: Clone mwdumper
+  git:
+    clone: yes
+    repo: https://phabricator.wikimedia.org/diffusion/MWDU/mwdumper.git
+    dest: "{{ dir.script }}/vendor/mwdumper"
+    depth: 1
+  when: mwdumper_present|failed
+
+- name: Install java
+  when: mwdumper_present|failed
+  become: yes
+  apt: name={{item}} state=present
+  with_items: { openjdk-8-jdk, maven }
+
+- name: Build mwdumper
+  command: chdir="{{ dir.script }}/vendor/mwdumper" mvn install && mvn package
+  when: mwdumper_present|failed
+  register: mwdumper_build
+
+- name: Clear table
+  shell: mysql {{db_credentials}} truncate table page
+
+- name: Import hitchwiki_en with MWDumper
+  when: mwdumper_present|succeeded  or mwdumper_build|succeeded
+  shell: "java -jar {{mwdumper_jar}} --format=sql:1.25 '{{ dump_path }}' | mysql {{ db_credentials }} {{ mediawiki.db.database }}"
+  register: mwdumper_import
+  failed_when: mwdumper_import.rc != 1
+  # ERROR 1146 (42S02) at line 31: Table 'hitchwiki_en.text' doesn't exist
+  # https://meta.wikimedia.org/wiki/Data_dumps/mwdumper#mwdumper_installation_notes
+  # tweaks: java -Xmx512m -Xms128m -XX:NewSize=32m -XX:MaxNewSize=64m -XX:SurvivorRatio=6 -XX:+UseParallelGC -XX:GCTimeRatio=9 -XX:AdaptiveSizeDecrementScaleFactor=1 -server -jar mwdumper.jar [...]
+  # alternative:  java -jar mwdumper.jar --format=sql:1.5 <xml dump file name> > output_filename.sql
+  # mysql <dbname> < output_filename.sql
+  # post-scripts:
+  #  maintenance/populateParentId.php
+  #  maintenance/populateRevisionLength.php
+  #  maintenance/populateRevisionSha1.php
+
+
+#  when: xml2sql|failed
+  # https://www.mediawiki.org/wiki/Manual:MWDumper
+
+- name: Import hitchwiki_en with importDump.php (slow)
+  #shell: mysql {{ db_credentials }} {{ mediawiki.db.database }} < "{{ dir.dump }}/hitchwiki-full-en.xml"
+  command: chdir={{ dir.wiki }} php ./maintenance/importDump.php "--conf LocalSettings.php < {{ dir.dump }}/hitchwiki-full-en.xml"
+  when: xml2sql|failed and mwdumper_import|failed
+  # https://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
+
+- name: Rebuild Recent:Changes
+  command: chdir={{ dir.wiki }} php maintenance/rebuildrecentchanges.php
+  # https://www.mediawiki.org/wiki/Manual:Rebuildrecentchanges.php
+
+- name: Rebuild wiki pages
+  command: chdir={{dir.wiki}}/maintenance php rebuildall.php
+#  when: xml2sql|failed
+
+- name: Import Semantic templates
+  command: chdir={{dir.root}}/.. ./scripts/import_pages.sh
+
+#- name: Restore dump
+#  command: mysql {{ db_credentials }} {{ mediawiki.db.database }} < {{ dir.dump }}/hitchwiki-dev-en_$(date "+%Y%m%d").sql
+#- name: Migrate old contents 
+  # https://github.com/Hitchwiki/hitchwiki/issues/69
+#  command: chdir={{ dir.script }}/bot bot_install.sh
+
+#- name: Remove all infobox templates #121
+
+  # TODO
+  # - Reduce warnings #133
+  # - Check for errors #78
+  # - Preserve spot author id during migration #81
+
+#- name: Make wiki writable again
+#  lineinfile:
+#    path: "{{ dir.wiki }}/LocalSettings.php"
+#    regexp: '^$wgReadOnly'
+#    state: absent
+
+# References
+# templates https://github.com/Hitchwiki/hitchwiki/issues/122
+# Location templates https://github.com/Hitchwiki/hitchwiki/issues/129
+
+...

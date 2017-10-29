@@ -37,6 +37,7 @@ logs
 /public/phpmyadmin
 /public/mustangostang
 /public/sqlbuddy
+/scripts/vendor
 
 # OS
 .DS_STORE
