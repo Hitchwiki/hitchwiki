@@ -2,9 +2,6 @@
 # Playbook to test content migration to hitchwiki v3
 # https://github.com/Hitchwiki/hitchwiki/labels/migrate
 
-# Blocked by
-# - city circles https://github.com/Hitchwiki/hitchwiki/issues/137
-
 - hosts: all
   gather_facts: no
 
