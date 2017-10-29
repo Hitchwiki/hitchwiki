@@ -8,6 +8,14 @@
   shell: mysql {{ db_credentials }} {{ mediawiki.db.database }} < "{{ dir.script }}/configs/interwiki.sql"
   register: interwiki
 
+- name: Run update script for MediaWiki
+  command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
+  register: mw_update
+
+- name: Pre-populate the AntiSpoof extension's table
+  shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  register: mw_antispoof
+
 - name: Enable Semantic Mediawiki extension
   file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
   # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
@@ -15,19 +23,23 @@
   # file exists, because it would cause errors when running
   # `maintenance/install.php`.
 
-- name: Pre-populate the AntiSpoof extension's table
-  become: yes
-  shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
-  register: mw_antispoof
-
-# SMW
 - name: Setup Semantic Mediawiki
   # https://www.semantic-mediawiki.org/wiki/Help:Maintenance_script_%22setupStore.php%22
   command: chdir={{ dir.wiki }}/extensions/SemanticMediaWiki php ./maintenance/setupStore.php --quiet --conf {{ dir.mwconf }}
-  register: setup_smw
+  register: smw_setup
+
+- name: Run update script for Semantic MediaWiki
+  command: chdir={{ dir.wiki }} php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v
+  register: smw_update
+
+- name: Run post-install scripts for HW extensions
+  # These are not run automatically so we'll just manually invoke them.
+  # https://github.com/composer/composer/issues/1193
+  command: chdir={{ dir.wiki }} composer run-script post-update-cmd -d ./extensions/{{item}}
+  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
 
 - name: Finish Mediawiki import
   set_fact: state_mw_import=true cacheable=true
-  when: interwiki|succeeded and mw_update|succeeded and mw_antispoof|succeeded and setup_smw|succeeded and mw_jobs|succeeded
+  when: interwiki|succeeded and mw_update|succeeded and mw_antispoof|succeeded and smw_setup|succeeded and smw_update|succeeded
 
 ...

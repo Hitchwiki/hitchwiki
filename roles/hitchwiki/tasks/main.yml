@@ -28,6 +28,7 @@
   when: https
   uri: url=https://{{domain}} validate_certs=no
   register: tls_test
+  ignore_errors: yes
 
 - name: Setup TLS
   include_tasks: tls.yml

@@ -32,7 +32,7 @@
 
 - name: Clean out folder created by Apache installer
   become: yes
-  file: state=absent path={{ dir.root }}/html
+  file: state=absent path={{ dir.root }}/../html
 
 - name: Increase upload limit in php.ini
   become: yes

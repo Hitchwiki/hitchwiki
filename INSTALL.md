@@ -103,6 +103,13 @@ cd ~/src
 ./scripts/setup_hitchwiki.sh # this will run `ansible-playbooks hitchwiki.yml`
 ```
 
+If a chapter ran successfully, it will be skipped next. To rerun the related service needs to be stopped:
+- system: remove /etc/ansible/facts.d
+- db: stop mariadb
+- web: stop apache2
+- mw: stop parsoid
+- production: stop monit
+
 When errors happen, report them to [our issue tracker](https://github.com/Hitchwiki/hitchwiki/issues) or try to fix (start reading in `hitchwiki.yml` and `roles/hitchwiki/tasks/main.yml`. After changes check the syntax with
 ```bash
 ansible-playbook hitchwiki.yml --syntax-check
@@ -157,11 +164,12 @@ This is done once at install, but needs to be done each time somebody changes co
 
 ### Security (production environment)
 - To enable TLS set `env: production` or `mediawiki.protocol: https` in `configs/settings.yml`. And don't forget to define a valid `domain` to request certificate from letsencrypt. Otherwise a self-signed certificate is created. For details see `roles/hitchwiki/tasks/tls.yml` and included files.
-- change `mediawiki.db.password` in `configs/settings.yml`
-- change the password in `configs/monitrc`, it will be copied to `/etc/monit/monitrc`.
-- run `ansible-playbook hitchwiki.yml` (again).
-- check that your server redirects to https afterwards.
-- remove `.ssh/id_rsa` from the server.
+- If you set up letsencrypt before, copy your backup to `/etc/letsencrypt`.
+- Change `mediawiki.db.password` in `configs/settings.yml`.
+- Change the password in `configs/monitrc`, it will be copied to `/etc/monit/monitrc`.
+- Run `ansible-playbook hitchwiki.yml` (again).
+- Check that your server redirects to https afterwards.
+- Remove `.ssh/id_rsa` from the server.
 Database backups are stored in `var/backup/mysql`.
 
 Note: If you had apache2, mysqld, parsoid or monit running before, please stop them during installation, or related tasks will be skipped. They'll be started automatically.

@@ -13,17 +13,21 @@
 
 - name: Configure MariaDB not to prompt for passwords
   become: true
-  shell: |
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password" {{ mediawiki.db.password }}
-    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password" {{ mediawiki.db.password }}
+  command: |
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password {{ mediawiki.db.password }}"
+    debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password {{ mediawiki.db.password }}"
 
 - name: Install MariaDB
   become: true
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
+  notify:
+    - start db
+
+- meta: flush_handlers
 
 - name: Set db user password
-  shell: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
+  command: mysqladmin -u{{mediawiki.db.username}} password "{{ mediawiki.db.password }}"
   ignore_errors: yes
 
 - name: Secure MariaDB root user

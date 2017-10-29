@@ -69,14 +69,22 @@
 - debug:
     var: mw_install.stderr_lines
 
+- name: Is Vector skin present?
+  shell: "[ -d {{ dir.wiki }}/skins/Vector ]"
+  register: vector
 - name: Download Vector skin
+  when: vector|failed
   git:
     repo: https://phabricator.wikimedia.org/diffusion/SVEC/Vector
     dest: "{{ dir.wiki }}/skins/Vector"
     depth: 1
   ignore_errors: yes
 
+- name: Is LocalisationUpdate extension present?
+  shell: "[ -d {{ dir.wiki }}/extensions/LocalisationUpdate ]"
+  register: localisation
 - name: Download LocalisationUpdate - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
+  when: localisation|failed
   git:
     repo: https://github.com/wikimedia/mediawiki-extensions-LocalisationUpdate
     dest: "{{ dir.wiki }}/extensions/LocalisationUpdate"

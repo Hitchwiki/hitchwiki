@@ -16,10 +16,6 @@
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
 
-- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
-  become: yes
-  file: state=directory path=/etc/ansible/facts.d/
-
 - name: Store versions script
   become: yes
   blockinfile:
@@ -82,7 +78,11 @@
   npm: name=bower version=~1.8 state=present global=yes
 
 - name: Install shyaml to parse yml files
-  pip: name=shyaml state=present chdir={{ dir.script }}/vendor extra_args=--user
+  pip: name=shyaml state=present extra_args=--user
+
+- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
+  become: yes
+  file: state=directory path=/etc/ansible/facts.d/
 
 - name: Finish system preparation
   set_fact: state_system=true cacheable=true

@@ -14,21 +14,18 @@
 
 - name: Run update script for MediaWiki
   command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
-  ignore_errors: yes
+  register: mw_update
+  ignore_errors: yes # TODO check errors
+  fails_when: mw_update.rc != 1
 
-- name: Run update script for Semantic MediaWiki
-  command: chdir={{ dir.wiki }} php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v
-  ignore_errors: yes
-
-- name: Run post-install scripts for HW extensions
-  # These are not run automatically so we'll just manually invoke them.
-  # https://github.com/composer/composer/issues/1193
-  command: chdir={{ dir.wiki }} composer run-script post-update-cmd -d ./extensions/{{item}}
-  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
+- name: Pre-populate the AntiSpoof extension's table
+  shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
+  register: mw_antispoof
 
 - name: Localisation update - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
   command: chdir={{ dir.wiki }} php extensions/LocalisationUpdate/update.php --quiet
-  ignore_errors: yes # TODO
+  ignore_errors: yes # TODO check errors
+  fails_when: mw_update.rc != 1
 
 - name: Import forms, templates etc.
   command: chdir={{ dir.root }}/.. "{{ dir.script }}/import_pages.sh"

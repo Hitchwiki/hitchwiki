@@ -30,7 +30,7 @@
     mysql {{ db_credentials }} -e "DROP USER ''@'localhost'"
     mysql {{ db_credentials }} -e "DROP USER ''@'$(hostname)'"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
-    mysql -e "FLUSH PRIVILEGES"
+    mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
   register: secure_db
   ignore_errors: yes
 - debug:

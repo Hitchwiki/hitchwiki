@@ -20,13 +20,6 @@
   register: key
   when: done|failed
 
-- name: Generate a Diffie-Hellman group
-  become: yes
-  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-  creates: /etc/ssl/certs/dhparam.pem
-  register: dhg
-  when: done|failed
-
 - set_fact:
      cert: "{{ self_signed_certs.0.cert }}"
      key: "{{ self_signed_certs.0.key }}"

@@ -14,6 +14,25 @@
 - include_tasks: tls_selfsigned.yml
   when: not certbot|succeeded
 
+- name: Create Apache SSL configuration
+  become: yes
+  template: src={{ dir.conf }}/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
+  creates: /etc/apache2/sites-available/default-ssl.conf
+  when: state_https
+
+- name: Set Apache SSL params
+  become: yes
+  template: src={{ dir.conf }}/ssl-params.conf dest=/etc/apache2/conf-available/ssl-params.conf
+  creates: /etc/apache2/conf-available/ssl-params.conf
+  when: state_https
+
+- name: Generate a Diffie-Hellman group
+  become: yes
+  command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  creates: /etc/ssl/certs/dhparam.pem
+  register: dhg
+  when: state_https
+
 - name: Enable ssl and headers modules for Apache
   become: yes
   apache2_module: name={{item}} state=present
@@ -28,18 +47,6 @@
 - name: Enable ssl-params.conf file
   become: yes
   command: a2enconf ssl-params
-  when: state_https
-
-- name: Create Apache SSL configuration
-  become: yes
-  template: src={{ dir.conf }}/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
-  creates: /etc/apache2/sites-available/default-ssl.conf
-  when: state_https
-
-- name: Set Apache SSL params
-  become: yes
-  template: src={{ dir.conf }}/ssl-params.conf dest=/etc/apache2/conf-available/ssl-params.conf
-  creates: /etc/apache2/conf-available/ssl-params.conf
   when: state_https
 
 - name: Redirect non-HTTPS requests

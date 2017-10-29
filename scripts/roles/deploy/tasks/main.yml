@@ -20,11 +20,18 @@
     line: "{{user}} ALL=NOPASSWD:ALL"
  
 - name: Set /root/.ssh/authorized_keys from local `configs/authorized_keys`
-  authorized_key: user={{ user }} state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
+  authorized_key: user={{ user }} state=present key="{{ lookup('file', '../configs/authorized_keys') }}"
 
-- name: Add {{ user }}'s public ssh key to root's authorized_keys
+- name: Add {{ user }}'s public ssh key to its own authorized_keys (to run ansible remotely)
   remote_user: "{{ user }}"
-  shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+  shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /home/{{ user }}/.ssh/authorized_keys
+
+- name: Set remote `hosts`
+  remote_user: "{{ user }}"
+  shell: echo -e "[hitchwiki]\nlocalhost" > /home/{{ user }}/src/hosts
+
+- name: Copy settings.yml # from local to remote
+  copy: src=../configs/settings.yml dest=/home/{{ user }}/src/configs/settings.yml owner={{ user }} group={{ user }}
 
 - name: Install pip
   apt: name={{ item }} state=present

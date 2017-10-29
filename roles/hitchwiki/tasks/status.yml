@@ -1,19 +1,9 @@
 ---
 # Status report
 
-- name: Is the webserver reachable?
-  uri: url=http://localhost
-  register: apache
-  ignore_errors: yes
-
-- name: Is mysql started?
-  shell: "[[ -a /var/run/mysqld/mysqld.sock ]]"
-  register: mysql
-  ignore_errors: yes
-
-- name: Is parsoid started?
-  uri: url=http://localhost:8142
-  register: parsoid
+- name: Is facts.d present?
+  shell: "[ -d /etc/ansible/facts.d ]"
+  register: spyc
   ignore_errors: yes
 
 - name: Is monit started?
@@ -22,13 +12,23 @@
   register: monit
   ignore_errors: yes
 
-- name: Is spyc installed?
-  shell: "[[ -d {{ dir.root }}/mustangostang ]]"
-  register: spyc
+- name: Is the webserver reachable?
+  uri: url=http://localhost
+  register: apache
+  ignore_errors: yes
+
+- name: Is mysql started?
+  shell: "[ -e /var/run/mysqld/mysqld.sock ]"
+  register: mysql
+  ignore_errors: yes
+
+- name: Is parsoid started?
+  uri: url=http://localhost:8142
+  register: parsoid
   ignore_errors: yes
 
 - name: Is TLS enabled?
-  shell: "[[ -f /etc/apache2/sites-enabled/default-ssl.conf ]]"
+  shell: "[ -f /etc/apache2/sites-enabled/default-ssl.conf ]"
   register: tls
   ignore_errors: yes
 
