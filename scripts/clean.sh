@@ -18,7 +18,6 @@ echo ""
 echo "Cleaning up files and folders created by Hitchwiki install..."
 
 # Remove Ansible files
-rm -fr ./group_vars
 rm -f ./*.retry
 
 # Remove Mediawiki folder

@@ -2,7 +2,7 @@ domain: hitchwiki.test
 cookiedomain: .hitchwiki.test
 env: dev # dev | production # enables HTTPS
 user: hitchwiki # used in deploy_remote.yml playbook
-admin_contact: {{ mediawiki.emergency_contact }} # set your email here
+admin_contact: "{{ mediawiki.emergency_contact }}" # set your email here
 
 # Development variables
 phpmyadmin_password: autobahn
