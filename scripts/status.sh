@@ -37,8 +37,25 @@ echo "  certbot: $(which certbot)" >> $sf
 echo "  monit: $monit_bin" >> $sf
 echo "  backup: $(which backupninja)" >> $sf
 
-# chapters
-echo -e "\nstate:" >> $sf
+echo "started:"
+apache=false
+parsoid=false
+maildev=false
+phpmyadmin=false
+monit=false 
+[[ $(ps ax|grep maildev|wc -l) -gt 0 ]] && maidev=true
+[ -e /var/run/apache2/apache2.pid ] && apache=true
+[[ -n $monit_bin ]] && [ $(monit status) ] && monit=true
+test $url apache Mediawiki
+test $url:8142 parsoid Parsoid
+test $url:1080 maildev MailDev
+test $url/phpmyadmin phpmyadmin phpMyAdmin
+for app in apache parsoid maildev phpmyadmin monit
+do echo "  $app=${!app}" >> $s
+done
+
+# configured
+echo -e "\nconfigured:" >> $sf
 system=false
 db=false
 web=false
@@ -53,16 +70,14 @@ phpmyadmin=false
 dev=false
 [ -d /etc/ansible/facts.d ] && system=true
 [ -e /var/run/mysqld/mysqld.sock ] && db=true
-[ -e /var/run/apache2/apache2.pid ] && web=true
-[ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
+[ -e /etc/apache2/sites-available/hitchwiki.conf ] && web=true
+[ -f /var/www/public/wiki/extensions/SemanticMediaWikiEnabled ] && mw=true
+[ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true
+[ -f /etc/apache2/sites-enabled/default-ssl.conf ] || [ -f /etc/ssl/private/server.key ] && tls=true
 [ -f /etc/letsencrypt/live/beta.hitchwiki.org/fullchain.pem ] && cert=true
-[[ -n $monit_bin ]] && [ $(monit status) ] && monit=true
+[ -f /etc/monit/monitrc ] && monit=true
 [[ -n $monit_bin ]] && [[ ${1+$monit+$tls+$cert} -gt 3 ]] && production=true
-test $url mw Mediawiki
-test $url:8142 parsoid Parsoid
-test $url:1080 maildev MailDev
-test $url/phpmyadmin phpmyadmin phpMyAdmin
-[[ ${1+$maildev+$phpmyadmin} -gt 2 ]] && dev=true
+[ -f /etc/init.d/maildev ] && maildev=true && dev=trueq
 
 for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev
 do echo "  $chapter: ${!chapter}" >> $sf
@@ -79,7 +94,7 @@ echo "  monit: $monit_syntax" >> $sf
 
 # versions
 echo -e "\nversions:" >> $sf
-[[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1)
+[[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1|cut -d':'-f2)
 [[ -n $openssl_bin ]] && openssl_ver=$(openssl version)
 echo "  apache2: $apache_ver" >> $sf
 echo "  openssl: openssl_ver" >> $sf

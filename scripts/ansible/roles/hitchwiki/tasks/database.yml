@@ -34,7 +34,7 @@
 
 - name: Secure MariaDB root user
   shell: |
-    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password=PASSWORD('{{ mediawiki.db.password }}') WHERE User='{{ mediawiki.db.username }}'"
+    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password=('{{ mediawiki.db.password }}') WHERE User='{{ mediawiki.db.username }}'"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='{{ mediawiki.db.username }}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
@@ -42,7 +42,8 @@
   register: secure_db
 
 - name: Finish dbserver installation
-  set_fact: finish_db=true cacheable=true
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
   notify: "restart db"
   when: secure_db
 

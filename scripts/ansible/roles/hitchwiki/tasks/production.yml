@@ -9,11 +9,12 @@
 
 - name: Setup TLS
   include_tasks: tls.yml
-  when: not state_https
+  when: not configured.tls
 
 - name: Disable maildev
   become: yes
   file: path=/etc/init.d/maildev state=absent
+  when: configured.maildev
   notify:
     - stop maildev
 
@@ -27,7 +28,7 @@
   # Make sure that NOBODY can access the server without a password
   shell: |
     mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password = '{{ mediawiki.db.password }}'  WHERE User = 'root'"
-    mysql {{ db_credentials }} -e "DROP USER ''@'localhost'"
+    #mysql {{ db_credentials }} -e "DROP USER ''@'localhost'"
     mysql {{ db_credentials }} -e "DROP USER ''@'$(hostname)'"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
@@ -37,7 +38,8 @@
     var: secure_db.stderr_lines
 
 - name: Production environment is set up
-  set_fact: state_production=true cacheable=true
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
   when: state_https and state_monit
 
 ...

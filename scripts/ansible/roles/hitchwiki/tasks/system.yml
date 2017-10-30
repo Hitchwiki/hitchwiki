@@ -69,6 +69,7 @@
   file: state=directory path=/etc/ansible/facts.d/
 
 - name: Finish system preparation
-  set_fact: state_system=true cacheable=true
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
 
 ...

@@ -2,6 +2,7 @@
 # Hitchwiki update: update MediaWiki, its database, extensions and assets
 - name: Run pending jobs and clear the queue
   command: chdir={{ dir.wiki }} php ./maintenance/runJobs.php
+  ignore_errors: yes # TODO check errors
 
 - name: Update LocalSettings.php
   template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
@@ -21,6 +22,7 @@
 - name: Pre-populate the AntiSpoof extension's table
   shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
   register: mw_antispoof
+  ignore_errors: yes # TODO check errors
 
 - name: Localisation update - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
   command: chdir={{ dir.wiki }} php extensions/LocalisationUpdate/update.php --quiet

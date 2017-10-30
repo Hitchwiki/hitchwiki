@@ -4,16 +4,17 @@
 - set_fact:
     statefile: /etc/facts.d/state.yml
 - file: state=absent path={{ statefile }}
-
-- name: Check status
+  become: yes
+- name: Run status.sh
   become: yes
   shell: "{{ dir.script }}/status.sh"
   register: state
   ignore_errors: yes
-- include_vars: "{{ statefile }}"
 
-- debug: msg={{ item }}
-  with_items: "cat {{myfile|quote}"
+- name: Configured
+  include_vars: "{{ statefile }}"
+- debug:
+    var: configured
 
 - shell: |
     echo "
@@ -31,9 +32,12 @@
     #                                                                     #
     #######################################################################
     Tip: Run 'rgrep TODO roles' to see open tasks."
-  when: state.system and state.web and state.db and state.mw and state.parsoid (state.production or not env == 'production')
+  when: configured.system and configured.web and configured.db and configured.mw and configured.parsoid
   register: outro
 - debug:
     var: outro.stdout_lines
+
+- debug:
+    var: started
 
 ...

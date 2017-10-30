@@ -3,42 +3,38 @@
 # based on install_funcs.sh by pgouveia.
 
 - name: Check status
-  shell: "{{dir.script}}/status.sh"
-- include_vars: "{{ statefile }}"
+  include_tasks: roles/status/tasks/main.yml
 
 - name: Prepare system
   include_tasks: system.yml
-  when: not state.system
+  when: not configured.system
 
 - name: Setup database server
   include_tasks: database.yml
-  when: not state.db
+  when: not configured.db
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not state.web
+  when: not configured.web
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not state.mw
+  when: not configured.mw
 
 - set_fact: https=True
   when: mediawiki.protocol == 'https' or env == 'production'
 
-- name: Test https://{{domain}}
-  when: https
-  uri: url=https://{{domain}} validate_certs=no
-  register: tls_test
-  ignore_errors: yes
-
 - name: Setup TLS
   include_tasks: tls.yml
-  register: tls
-  when: not 'OK' in tls_test.msg and https
+  when: not configured.tls and https
 
-- name: Setup environment
-  include_tasks: "{{ env }}.yml"
-  register: environment
-  when: state.db and state.web and state.mw and not tls|failed
+- name: Setup dev environment
+  include_tasks: dev.yml
+  when: not configured.dev && env == 'dev'
 
+- name: Setup production environment
+  include_tasks: production.yml
+  when: not configured.production and env == 'production'
+
+- meta: flush_handlers
 ...

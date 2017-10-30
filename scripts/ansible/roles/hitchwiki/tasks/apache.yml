@@ -56,7 +56,8 @@
   apache2_module: name=rewrite state=present
 
 - name: Finish apache installation
-  set_fact: state_web=true cacheable=true
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
   when: validate_apache_syntax|succeeded
   notify:
    - apache

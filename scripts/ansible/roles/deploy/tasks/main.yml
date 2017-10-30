@@ -1,10 +1,6 @@
 ---
 # Run as root
 # used variables: domain, user
-#- name: Change hostname to '{{ domain }}'
-#  become: yes
-#  hostname: name={{ domain }}
-
 - name: Add '{{ domain }}' to `/etc/hosts`
   become: yes
   lineinfile:
@@ -83,6 +79,10 @@
   become: yes
   file: state=link force=yes src="/home/{{ user }}/src" path=/var/www
   ignore_errors: yes
+
+- name: Change hostname to '{{ domain }}'
+  become: yes
+  hostname: name={{ domain }}
 
 - name: Preparation finished, now run '~/src/scripts/setup_hitchwiki.sh' remotely.
   set_fact: state_prepare=True

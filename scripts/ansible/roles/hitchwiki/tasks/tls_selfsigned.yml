@@ -15,7 +15,6 @@
   command: >
     openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 365
     -newkey rsa:4096 -sha256 -keyout {{ item.key }} -out {{ item.cert }}
-  creates: "{{ item.key }}"
   with_items: "{{ self_signed_certs }}"
   register: key
   when: done|failed
@@ -28,6 +27,7 @@
 
 - name: Successfully created self-signed certificate
   when: selfsigned|succeeded
-  set_fact: state_https=true cacheable=true
+ shell: "{{ dir.script }}/status.sh"
+  become: yes
 
 ...

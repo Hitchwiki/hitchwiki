@@ -126,6 +126,7 @@
   # See https://github.com/Hitchwiki/hitchwiki/issues/109
 
 - name: Finish Mediawiki installation
-  set_fact: state_mw=true cacheable=true
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
 
 ...
