@@ -48,13 +48,4 @@
   include_tasks: status.yml
   register: tests
 
-- name: Run post install scripts
-  include_tasks: scripts/roles/update/tasks/main.yml
-  register: update
-  when: environment|succeeded and tests|succeeded
-
-- name: Finish
-  include_tasks: _finished.yml
-  when: update|succeded
-
 ...

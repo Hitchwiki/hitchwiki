@@ -1,0 +1,66 @@
+---
+# As root
+- name: Change hostname to '{{ domain }}'
+  hostname: name={{ domain }}
+
+- name: Add '{{ domain }}' to `/etc/hosts`
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127.0.0.1'
+    line: 127.0.0.1 localhost {{ domain }}
+
+- name: Add user {{ user }}
+  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
+  # https://docs.ansible.com/ansible/latest/user_module.html
+
+- name: Add {{ user }} to sudoers
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^{{user}}'
+    line: "{{user}} ALL=NOPASSWD:ALL"
+ 
+- name: Set /root/.ssh/authorized_keys from local `configs/authorized_keys`
+  authorized_key: user={{ user }} state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
+  # This path may not be found when links in `scripts/ansible` are broken
+
+- name: Add {{ user }}'s public ssh key to its own authorized_keys (to run ansible remotely)
+  remote_user: "{{ user }}"
+  shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /home/{{ user }}/.ssh/authorized_keys
+
+- name: Install pip
+  apt: name={{ item }} state=present
+  with_items: { git, python-pip }
+
+- name: Update pip and install ansible
+  pip: name={{ item }} state=latest
+  with_items: { pip, ansible }
+
+- name: Clone hitchwiki repository
+  remote_user: "{{ user }}"
+  git:
+    dest: "/home/{{ user }}/src"
+    repo: https://github.com/traumschule/hitchwiki # TODO change later
+    version: ansible
+    depth: 1
+
+- name: Grant /home/{{ user }}/src to {{ user }}
+  file: path=/home/{{ user }}/src owner={{ user }} group={{ user }} recurse=yes
+
+- name: Copy settings.yml # from local to remote
+  copy: src=configs/settings.yml dest=/home/{{ user }}/src/configs/settings.yml owner={{user}} group={{user}}
+  # This path may not be found when links in `scripts/ansible` are broken
+
+- name: Set remote `hosts`
+  remote_user: "{{ user }}"
+  shell: echo -e "[hitchwiki]\nlocalhost" > /home/{{ user }}/src/scripts/ansible/hosts
+
+- name: Link /home/{{ user }}/src to /var/www
+  become: yes
+  file: state=link force=yes src="/home/{{ user }}/src" path=/var/www
+  ignore_errors: yes
+
+- name: Setup Hitchwiki on {{ domain }}
+  remote_user: "{{ user }}"
+  shell: ~/scripts/setup_hitchwiki.sh
+
+...
