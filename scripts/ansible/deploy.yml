@@ -2,7 +2,7 @@
 # This play expects root access on a remote debian system (or derivate with present apt).
 # It will create a hitchwiki user, checkout the repository and install ansible
 
-# See INSTALL.md => Run Ansible without vagrant
+# See INSTALL.md => Installing using vagrant
 - hosts: hitchwiki
   gather_facts: no
   pre_tasks:

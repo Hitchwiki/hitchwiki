@@ -16,20 +16,6 @@
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
 
-- name: Store versions script
-  become: yes
-  blockinfile:
-    path: /etc/ansible/facts.d/apps.fact
-    #mode: a+x
-    create: yes
-    marker: "" #"# {mark} ANSIBLE MANAGED BLOCK"
-    block: |
-      #!/bin/bash
-      echo "[versions]
-      echo "apache2=$(apache2ctl -V|head -n1)"
-      echo "openssl=$(openssl version)"
-      for app in php npm node bower composer; do version=$($app --version|head -n1); echo "$app=$version"; done
-
 - name: Use apt-cacher
   become: yes
   lineinfile:

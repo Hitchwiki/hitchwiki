@@ -30,9 +30,15 @@ Vagrant set's up and provisions a Vagrant box with [Ansible](https://www.ansible
     ```
 1. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
 You can [modify your sudoers file](https://github.com/smdahlen/vagrant-hostmanager#passwordless-sudo) to stop Vagrant asking for password each time.
-1. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `setup_ssl` to `true` in `configs/settings.yml`
+1. Open [http://hitchwiki.test/](http://hitchwiki.test/) in your browser. [*https*://hitchwiki.test/](https://hitchwiki.test/) works if you set `mediawiki.protocol: https` in `configs/settings.yml`
 
-As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `hitchwiki.yml`.
+`hosts` should look like this:
+```bash
+[hitchwiki]
+192.168.33.10
+```
+As soon as Vagrant started the machine, [Ansible](https://docs.ansible.com/ansible/latest/intro.html) runs the [Playbook](https://docs.ansible.com/ansible/latest/playbooks_intro.html) `deploy.yml`.
+Note that the group `[hitchwiki]` in `./hosts` must contain a line with the domain specified in `settings.yml` for ansible to work.
 
 After setup your virtual machine is running. Suspend the virtual machine by typing `vagrant suspend`.
 When you're ready to begin working again, just `vagrant up` to continue and `vagrant provision` if the first run ended with errors.
@@ -63,62 +69,95 @@ If for some reason you want to have clean Vagrant setup, database and MediaWiki 
 This will basically run `vagrant destroy` and clean out all the custom files created during previous provision.
 
 #### Run Ansible without vagrant
-If you have root access to a remote or local machine, you can deploy hitchwiki there:
+If you have root access to a remote or local machine, you can deploy hitchwiki there.
+
+##### Do once
 ```bash
 git clone https://github.com/traumschule/hitchwiki -b ansible hitchwiki
 cd hitchwiki
 ```
 - Copy `configs/settings-example.yml` to `configs/settings.yml`  and define your `domain` (it will be set as remote hostname and in `/etc/hosts` on the (remote) system). You can change the username with `user` (default: hitchwiki).
-- Add the IP address to the `[remote]` section in `hosts`. You can as well use `localhost`:
-```
-hw-dev ansible_ssh_host={{ remote }} ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
-```
 - Run `ssh-keygen` locally
-- Add to your local ~/.ssh/config:
-```
-    Host hw-dev
-      HostName {{ remote ip address }}
-      User {{ user }} # default: hitchwiki
-```
 - Add your public key in `~/.ssh/id_rsa.pub` to `configs/authorized_keys` (it will be copied to `/home/{{ user }}/.ssh/authorized_keys` on the remote machine):
 ```bash
 cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
 ```
-- Copy `configs/authorized_keys` (local) to `/home/root/.ssh/authorized_keys` (remote):
-```bash
-rsync ~/.ssh/id_rsa.pub root@remote:.ssh/authorized_keys
-``'
-- Prepare the remote system:
-```bash
-./scripts/deploy_remote.sh # this will run `ansible-playbooks ./scripts/deploy.yml`
+- Add to your local ~/.ssh/config:
 ```
-- Open `hosts` in your preferred editor and move the remote to the '[hitchwiki]' group and run
+    Host SOME_ALIAS
+      HostName IP_ADDRESS
+      User hitchwiki
+```
+
+##### For every server
+First run `git pull` and check for changes in `configs/settings-example.yml`.
+
+1. `deploy_remote.sh`: prepares one new host, useful when you already have managed machines like vagrant and don't want to redeploy them.
+- Add the IP address to the `[remote]` section in `hosts`. You can use as well `localhost`:
+```
+[hitchwiki]
+192.168.33.10
+
+[remote]
+some_remote_ip ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
+```
+- Run `ssh remote`, then `ssh localhost` and pass the host verification.
+- If you already have an account for letsencrypt archived, it should be extracted to `/etc/letsencrypt`:
 ```bash
+# locally
+rsync letsencrypt.tar.xz hw-dev:
+#remote as root
+tar xf letsencrypt.tar.xz
+etc/letsencrypt /etc/
+```
+- Run `scripts/deploy_remote.sh ADDRESS`
+```
+This will
+- Ask for the root password to copy `configs/authorized_keys` (local) to `/home/root/.ssh/authorized_keys` (remote)
+- create `hitchwiki` user and grant it sudo rights (change the username with `export REMOTE_USER=someone` before)
+- clone the Hitchwiki repository to `/home/hitchwiki/src`
+- copy `configs/settings.yml` to `~/src/configs/` (make sure it exists)
+
+2. `setup_hitchwiki.sh`: Next ssh to the target and execute `~/src/scripts/setup_hitchwiki.sh` (fastest). For more than one remote you can take advantage of ansible's parallelization to manage multiple targets at the same time. Add desired hosts to the group `[hitchwiki]` in `hosts` (local) and run `~/src/scripts/setup_hitchwiki.sh` or
+```bash
+cd scripts/ansible
 ansible-playbook hitchwiki.yml
 ```
-or ssh in before (recommended):
+
+3. `update.sh`: If you already deployed several machines and want to update them, run `scripts/update.sh` locally or
+```bash
+cd scripts/ansible
+ansible-playbook update.yml
 ```
-ssh user@remote
-cd ~/src
-./scripts/setup_hitchwiki.sh # this will run `ansible-playbooks hitchwiki.yml`
+Because of mediawiki's poor error handling, this script cannot not run twice without errors.
+
+4. rerun chapters: If you later want to rerun the whole process, or parts of it, read on. Usually passed chapters will be skipped on reruns. If you want to repeat some tasks, you need to know, how ansible know, if a chapter can be skipped (see `scripts/ansible/roles/hitchwiki/tasks/status.yml`). Depending of what to do again run:
+- system: `rm -r /etc/ansible/facts.d`
+- db: `service mariadb stop`
+- web: `apache2ctl stop`
+- mw: `service parsoid stop`
+- tls: `rm /etc/apache2/sites-enabled/default-ssl.conf`
+- production: `monit stop` (Note this is necessary for each above as monit would restart it automatically)
+TODO In the future this somehow brittle system may be replaced.
+There is also `scripts/stop_all.sh` to be run with root privileges.
+
+5. update mediawiki: On a new Mediawiki release for example one would need to
+- change the `mediawiki.branch` in `configs/settings.yml`
+- run `update.sh` to recreate `LocalSettings.php`
+- stop monit and parsoid
+- run 
+```bash
+cd scripts/ansible
+ansible-playbook hitchwiki.yml
 ```
 
-If a chapter ran successfully, it will be skipped next. To rerun the related service needs to be stopped:
-- system: remove /etc/ansible/facts.d
-- db: stop mariadb
-- web: stop apache2
-- mw: stop parsoid
-- production: stop monit
+When errors happen, `script` from the package `bsdutils` is quite handy to log and uploud them to [issue tracker](https://github.com/Hitchwiki/hitchwiki/issues).
+ 
+If you feel lucky and want fix errors or add a feature, check `hitchwiki.yml` and `roles/hitchwiki/tasks/main.yml` and read about the structure of [playbooks](https://docs.ansible.com/ansible/latest/playbooks_intro.html). After changing the code it is recommended to validate the syntax with `ansible-playbook hitchwiki.yml --syntax-check`. It is also advised to get familiar with the [scripts](https://github.com/Hitchwiki/hitchwiki/tree/master/scripts#generic-scripts).
 
-When errors happen, report them to [our issue tracker](https://github.com/Hitchwiki/hitchwiki/issues) or try to fix (start reading in `hitchwiki.yml` and `roles/hitchwiki/tasks/main.yml`. After changes check the syntax with
-```bash
-ansible-playbook hitchwiki.yml --syntax-check
-```
-Show hosts (configured in `hosts`):
-```bash
-ansible hitchwiki --list-hosts
-```
-To see open tasks run `rgrep TODO roles` or check the [ansible pull request](https://github.com/Hitchwiki/hitchwiki/pull/167). Note that setup scripts are based on Ubuntu.
+`ansible hitchwiki --list-hosts` will show the hosts (configured in `scripts/ansible/hosts`):
+
+See open tasks with `rgrep TODO roles` or check the [ansible pull request](https://github.com/Hitchwiki/hitchwiki/pull/167). Note that setup scripts are based on Ubuntu.
 
 ##### What ansible does
 - Upgrade distribution packages
@@ -133,6 +172,8 @@ To see open tasks run `rgrep TODO roles` or check the [ansible pull request](htt
 - Create three users (see below)
 - Install Parsoid server and VisualEditor extension
 - Install Mediawiki extensions
+- Setup Maildev and PHPMyadmin (development)
+- Setup Monit and Certbot (production)
 Depending on your connection this will take some time (40mb for MW alone).
 
 ### Pre-created users (user/pass)

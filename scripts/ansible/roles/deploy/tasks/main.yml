@@ -1,5 +1,6 @@
 ---
-# Do as root
+# Run as root
+# used variables: domain, user
 #- name: Change hostname to '{{ domain }}'
 #  become: yes
 #  hostname: name={{ domain }}
@@ -47,8 +48,6 @@
     dest: "/home/{{ user }}/src"
     repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
-    depth: 1
-    force: yes
 
 - name: Grant /home/{{ user }}/src to {{ user }}
   become: yes
@@ -66,8 +65,7 @@
   file: state=link force=yes src="/home/{{ user }}/src" path=/var/www
   ignore_errors: yes
 
-- name: Preparation finished! Starting Hitchwiki deployment.
-  remote_user: "{{ user }}"
-  shell: ~/src/scripts/setup_hitchwiki.sh
+- name: Preparation finished, now run '~/src/scripts/setup_hitchwiki.sh' remotely.
+  set_fact: state_prepare=True
 
 ...

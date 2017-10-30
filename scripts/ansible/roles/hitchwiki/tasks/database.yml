@@ -2,33 +2,42 @@
 # Setup database server
 
 - name: Add repository for MariaDB
-  become: true
+  become: yes
   apt_repository:
     repo: deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main
     state: present
 
 - name: Add key for MariaDB
-  become: true
+  become: yes
   apt_key: state=present id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
 
 - name: Configure MariaDB not to prompt for passwords
-  become: true
+  become: yes
   command: |
     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password password {{ mediawiki.db.password }}"
     debconf-set-selections <<< "mariadb-server-10.2 mysql-server/root_password_again password {{ mediawiki.db.password }}"
 
 - name: Install MariaDB
-  become: true
+  become: yes
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
-  notify:
-    - start db
+  notify: "restart db"
+
+- name: Restart mysql
+  become: yes
+  service: name=mysql state=restarted
 
 - meta: flush_handlers
 
 - name: Set db user password
   command: mysqladmin -u{{mediawiki.db.username}} password "{{ mediawiki.db.password }}"
+  register: set_password
   ignore_errors: yes
+
+- name: Set db user password
+  when: set_password|failed
+  command: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
+  register: set_password_again
 
 - name: Secure MariaDB root user
   shell: |
@@ -37,8 +46,6 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
-  notify:
-    - mariadb
 
 - name: Finish dbserver installation
   set_fact: state_db=true cacheable=true

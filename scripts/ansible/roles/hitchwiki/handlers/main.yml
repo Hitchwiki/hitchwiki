@@ -22,16 +22,14 @@
     - restart monit
 
 # Database
-- name: Restart mysql
+- name: restart db
   become: yes
   service: name=mariadb state=restarted
-  listen:
-    - start db
-    - restart db
-    - mariadb
-    - mysql
-    - restart mysql
-    - restart mariadb
+  notify: "start db"
+
+- name: start db
+  become: yes
+  service: name=mariadb state=started
 
 # Webserver
 - name: Restart apache

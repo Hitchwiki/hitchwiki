@@ -10,16 +10,9 @@
       become: yes
       raw: sudo apt-get install -yq python-simplejson
 
-- name: Deploy system
+- name: Prepare environment
   hosts: remote
   roles:
     - deploy
 
-- name: Setup hitchwiki
-  hosts: remote
-  remote_user: "{{ user }}"
-  roles:
-    - hitchwiki
-    - update
-    - status
 ...

@@ -16,7 +16,7 @@
   command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
   register: mw_update
   ignore_errors: yes # TODO check errors
-  fails_when: mw_update.rc != 1
+  failed_when: mw_update.rc != 1
 
 - name: Pre-populate the AntiSpoof extension's table
   shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
@@ -25,7 +25,7 @@
 - name: Localisation update - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
   command: chdir={{ dir.wiki }} php extensions/LocalisationUpdate/update.php --quiet
   ignore_errors: yes # TODO check errors
-  fails_when: mw_update.rc != 1
+  failed_when: mw_update.rc != 1
 
 - name: Import forms, templates etc.
   command: chdir={{ dir.root }}/.. "{{ dir.script }}/import_pages.sh"

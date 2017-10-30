@@ -27,28 +27,33 @@
   # TODO bonus point: parse key & cert file from output
 
 - name: Request certificate
+  when: not certificates.stdout.find("{{ domain }}") or certificates.stdout.find("No certs found")
   become: yes
-  command: certbot run -n -i apache -d {{ domain }}
+  shell: certbot run -n -i apache -d {{ domain }}
+  register: certbot
   # run non-interactively, install via apache for {{ domain }}
   # authentification, webroot and keysize are configure via cli.ini above
-  register: certbot
   # don't request again when certificates exist at /etc/letsencrypt/live/$domain
-  when: not certificates.stdout.find(domain)
+
 - debug:
     var: certbot.stdout_lines
-  when: not certificates.stdout.find(domain)
+
+- name: Do we have certificates?
+  shell: [ -f /etc/letsencrypt/live/{{ domain }}/fullchain.pem ] && [ "/etc/letsencrypt/live/{{ domain }}/privkey.pem" ]
+  register: certifcates_exist
+  ignore_errors: yes
 
 - set_fact:
      cert: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
      key: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   register: letsencrypt
-  when: certificates.stdout.find(domain) or certbot|succeeded
+  when: certifcates_exist|succeeded
 
 - name: Add cron job for renewal
   cron: name=certbot special_time=monthly job="certbot renew --pre-hook \"service apache2 stop\" --post-hook \"service apache2 start\""
   # alternative: renew --quiet --no-self-upgrade
   # https://github.com/geerlingguy/ansible-role-certbot/blob/master/tasks/renew-cron.yml
-  when: certificates.stdout.find(domain) or certbot|succeeded
+  when: certifcates_exist|succeeded
 
 # https://docs.ansible.com/ansible/latest/letsencrypt_module.html
 #- letsencrypt:
@@ -62,8 +67,8 @@
 #   https://www.jeffgeerling.com/blog/2016/remove-single-certbot-letsencrypt-certificate-server
 #   certbot delete --cert-name example.com
 
-- name: Certbot run succuessfull, check /var/log/letsencrypt.log for details
+- name: Certbot run successfull, check /var/log/letsencrypt.log for details
   set_fact: state_https=true cacheable=true
-  when: certbot|succeeded
+  when: certifcates_exist|succeeded
 
 ...
