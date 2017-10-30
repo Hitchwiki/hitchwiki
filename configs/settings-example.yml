@@ -61,6 +61,7 @@ mediawiki:
 # Variables for ansible provisioning
 #  https://docs.ansible.com/ansible/latest/playbooks_variables.html
 vagrant:
+  hostname: hitchwiki.test
   private_network_ip: "192.168.33.10" # Sets IP address for the Virtual Machine
   hostmanager_enabled: True  # Set `false` to use only private network IP to access the server.
                              # Vagrant won't therefore modify your `/etc/hosts` file neither.

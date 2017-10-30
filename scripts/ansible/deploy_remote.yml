@@ -8,11 +8,18 @@
   pre_tasks:
     - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
       become: yes
-      raw: apt-get install -yq python-simplejson
+      raw: sudo apt-get install -yq python-simplejson
 
 - name: Deploy system
   hosts: remote
   roles:
     - deploy
 
+- name: Setup hitchwiki
+  hosts: remote
+  remote_user: "{{ user }}"
+  roles:
+    - hitchwiki
+    - update
+    - status
 ...

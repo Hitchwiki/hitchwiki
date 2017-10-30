@@ -10,6 +10,7 @@ node_modules/
 
 # Ansible
 hosts
+host_vars
 *.retry
 
 # Folder created by Apache installer
@@ -40,3 +41,4 @@ logs
 
 # OS
 .DS_STORE
+*.swp

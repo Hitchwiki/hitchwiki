@@ -3,16 +3,23 @@
 # It will create a hitchwiki user, checkout the repository and install ansible
 
 # See INSTALL.md => Run Ansible without vagrant
-- hosts: remote
+- hosts: hitchwiki
   gather_facts: no
   pre_tasks:
     - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
       become: yes
-      raw: apt-get install -yq python-simplejson
+      raw: sudo apt-get install -yq python-simplejson
 
 - name: Deploy system
-  hosts: remote
+  hosts: hitchwiki
   roles:
     - deploy
 
+- name: Setup hitchwiki
+  hosts: hitchwiki
+  remote_user: "{{ user }}"
+  roles:
+    - hitchwiki
+    - update
+    - status
 ...

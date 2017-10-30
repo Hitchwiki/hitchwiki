@@ -1,4 +1,3 @@
 set -e
-dir=$(dirname $0)
-cd $dir/..
+cd $(dirname $0)/ansible
 ansible-playbook hitchwiki.yml
