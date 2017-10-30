@@ -88,12 +88,13 @@ cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
       HostName IP_ADDRESS
       User hitchwiki
 ```
+- If your hosts runs apt-cacher-ng, you can set `apt_proxy: hostname|ip address` in `scripts/ansible/host_vars/HOSTNAME` to avoid multiple downloads.
 
 ##### For every server
 First run `git pull` and check for changes in `configs/settings-example.yml`.
 
-1. `deploy_remote.sh`: prepares one new host, useful when you already have managed machines like vagrant and don't want to redeploy them.
-- Add the IP address to the `[remote]` section in `hosts`. You can use as well `localhost`:
+1. `./scripts/deploy_remote.sh`: prepares one new host, useful when you already have managed machines like vagrant and don't want to redeploy them.
+- Add the IP address to the `[remote]` section in `hosts`. You can also use `localhost`:
 ```
 [hitchwiki]
 192.168.33.10
@@ -105,12 +106,12 @@ some_remote_ip ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
 - If you already have an account for letsencrypt archived, it should be extracted to `/etc/letsencrypt`:
 ```bash
 # locally
-rsync letsencrypt.tar.xz hw-dev:
+rsync letsencrypt.tar.xz remote:
 #remote as root
 tar xf letsencrypt.tar.xz
-etc/letsencrypt /etc/
+mv etc/letsencrypt /etc/
 ```
-- Run `scripts/deploy_remote.sh ADDRESS`
+- Run `scripts/deploy_remote.sh ADDRESS`, then ssh into it and run `
 ```
 This will
 - Ask for the root password to copy `configs/authorized_keys` (local) to `/home/root/.ssh/authorized_keys` (remote)
@@ -118,20 +119,20 @@ This will
 - clone the Hitchwiki repository to `/home/hitchwiki/src`
 - copy `configs/settings.yml` to `~/src/configs/` (make sure it exists)
 
-2. `setup_hitchwiki.sh`: Next ssh to the target and execute `~/src/scripts/setup_hitchwiki.sh` (fastest). For more than one remote you can take advantage of ansible's parallelization to manage multiple targets at the same time. Add desired hosts to the group `[hitchwiki]` in `hosts` (local) and run `~/src/scripts/setup_hitchwiki.sh` or
+2. `setup_hitchwiki.sh` (remote): Next ssh to the target and execute `~/src/scripts/setup_hitchwiki.sh` (fastest). For more than one remote you can take advantage of ansible's parallelization to manage multiple targets at the same time. This is slower depending on your connection speed. Add desired hosts to the group `[hitchwiki]` in `hosts` (local) and run `./scripts/setup_hitchwiki.sh` (local) or
 ```bash
 cd scripts/ansible
 ansible-playbook hitchwiki.yml
 ```
 
-3. `update.sh`: If you already deployed several machines and want to update them, run `scripts/update.sh` locally or
+3. `update.sh`: This is run by the update. If you want to update again later, run `scripts/update.sh` locally or
 ```bash
 cd scripts/ansible
 ansible-playbook update.yml
 ```
-Because of mediawiki's poor error handling, this script cannot not run twice without errors.
+This will run `git pull` and several Mediawiki maintenance tasks. Because of mediawiki's poor error handling, this script cannot not run twice without errors.
 
-4. rerun chapters: If you later want to rerun the whole process, or parts of it, read on. Usually passed chapters will be skipped on reruns. If you want to repeat some tasks, you need to know, how ansible know, if a chapter can be skipped (see `scripts/ansible/roles/hitchwiki/tasks/status.yml`). Depending of what to do again run:
+4. rerun chapters: If you want to rerun the whole process, or parts of it, read on. Usually passed chapters will be skipped on reruns. `scripts/ansible/roles/status/tasks/main.yml` executes `scripts/status.sh` and reads the created `/etc/facts.d/state.yml` to decide, which chapters to skip. To trick it, run
 - system: `rm -r /etc/ansible/facts.d`
 - db: `service mariadb stop`
 - web: `apache2ctl stop`

@@ -12,6 +12,7 @@ node_modules/
 hosts
 host_vars
 *.retry
+state.yml
 
 # Folder created by Apache installer
 /html

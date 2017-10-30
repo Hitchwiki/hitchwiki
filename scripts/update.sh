@@ -14,7 +14,7 @@ if [ ! -f Vagrantfile ]; then # an arbirtrary file that appears only once in the
     echo "Aborting."
     exit 1
 fi
-
+git pull
 ansible-playbook ./scripts/update.yml
 
 echo "All done!"

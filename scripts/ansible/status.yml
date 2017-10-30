@@ -1,14 +1,16 @@
 ---
 # This helper role
-# - execute `scripts/status.sh` to print a status report on stdout showm in ansible.
-# - logs the state of the environment to `scripts/ansible/state.yml`
-# - loads `state.yml`
+# - execute `scripts/status.sh` to print a status report on stdout that can be shown in ansible.
+# - logs the state of the environment to `scripts/ansible/.state.yml`
+# - loads `.state.yml`
+# - prints a message when everything is finished
 
 # If you include this role at the beginning of your book, you can inspect it with
 #- debug:
 #    var: state
 
-- hosts: all
+- name: Show status
+  hosts: all
   gather_facts: no
   roles:
     - status

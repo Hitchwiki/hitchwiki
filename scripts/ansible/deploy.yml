@@ -17,7 +17,6 @@
 
 - name: Setup hitchwiki
   hosts: hitchwiki
-  remote_user: "{{ user }}"
   roles:
     - hitchwiki
     - update

@@ -2,24 +2,25 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
-- name: On first run following tests are likely to fail
-  include_tasks: status.yml
+- name: Check status
+  shell: "{{dir.script}}/status.sh"
+- include_vars: "{{ statefile }}"
 
 - name: Prepare system
   include_tasks: system.yml
-  when: not state_system
+  when: not state.system
 
 - name: Setup database server
   include_tasks: database.yml
-  when: not state_db
+  when: not state.db
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not state_web
+  when: not state.web
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not state_mw
+  when: not state.mw
 
 - set_fact: https=True
   when: mediawiki.protocol == 'https' or env == 'production'
@@ -38,14 +39,6 @@
 - name: Setup environment
   include_tasks: "{{ env }}.yml"
   register: environment
-  when: state_db and state_web and state_mw and not tls|failed
-
-# Finish!
-- meta: flush_handlers
-  when: environment|succeeded
-
-- name: Run tests again
-  include_tasks: status.yml
-  register: tests
+  when: state.db and state.web and state.mw and not tls|failed
 
 ...

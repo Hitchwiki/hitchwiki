@@ -33,6 +33,18 @@
   remote_user: "{{ user }}"
   shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /home/{{ user }}/.ssh/authorized_keys
 
+- name: Use apt-cacher
+  become: yes
+  lineinfile:
+    path: /etc/apt/apt.conf.d/apt-cacher-ng
+    create: yes
+    regexp: '^Acquire::http::Proxy'
+    line: >
+      Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";
+      Acquire::https::Proxy "false"; # or enable "PassThroughPattern: .*" in /etc/apt-cacher-ng/acng.conf
+      # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
+  when: apt_proxy is defined
+
 - name: Install pip
   become: yes
   apt: name={{ item }} state=present
@@ -42,21 +54,28 @@
   pip: name={{ item }} state=latest
   with_items: { pip, ansible }
 
+- shell: "[ -d /home/{{ user }}/src ]"
+  register: src_exists
+  ignore_errors: yes
+
 - name: Clone hitchwiki repository
-  remote_user: "{{ user }}"
+  become: yes
   git:
     dest: "/home/{{ user }}/src"
     repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
+  when: src_exists|failed
 
 - name: Grant /home/{{ user }}/src to {{ user }}
   become: yes
   file: path=/home/{{ user }}/src owner={{ user }} group={{ user }} recurse=yes
 
 - name: Copy settings.yml # from local to remote
+  become: yes
   copy: src=configs/settings.yml dest=/home/{{ user }}/src/configs/settings.yml owner={{user}} group={{user}}
 
 - name: Set remote `hosts`
+  become: yes
   remote_user: "{{ user }}"
   shell: echo -e "[hitchwiki]\nlocalhost" > /home/{{ user }}/src/scripts/ansible/hosts
 

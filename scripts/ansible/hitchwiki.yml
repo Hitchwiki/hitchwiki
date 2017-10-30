@@ -10,6 +10,15 @@
   hosts: all
   roles:
     - hitchwiki
+
+- name: Update hitchwiki
+  hosts: all
+  roles:
     - update
+
+- name: Show status
+  hosts: all
+  roles:
     - status
+
 ...

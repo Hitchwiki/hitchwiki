@@ -21,20 +21,13 @@
   become: yes
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
-  notify: "restart db"
 
-- name: Restart mysql
-  become: yes
-  service: name=mysql state=restarted
-
-- meta: flush_handlers
-
-- name: Set db user password
+- name: Set db user password (without password)
   command: mysqladmin -u{{mediawiki.db.username}} password "{{ mediawiki.db.password }}"
   register: set_password
   ignore_errors: yes
 
-- name: Set db user password
+- name: Set db user password (with password)
   when: set_password|failed
   command: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
   register: set_password_again
@@ -46,9 +39,11 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
+  register: secure_db
 
 - name: Finish dbserver installation
-  set_fact: state_db=true cacheable=true
-
+  set_fact: finish_db=true cacheable=true
+  notify: "restart db"
+  when: secure_db
 
 ...
