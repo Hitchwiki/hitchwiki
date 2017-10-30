@@ -81,6 +81,8 @@
 - name: Stop maildev
   become: yes
   shell: kill $(pidof node /usr/local/bin/maildev)
+  when: started.maildev
+  ignore_errors: yes
   listen:
     - stop maildev
 

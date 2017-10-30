@@ -3,7 +3,7 @@
 
 # Have we been here?
 - name: Looking for existing certificates
-  shell: [[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.1.key }} ]]
+  shell: "[[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.1.key }} ]]"
   register: done
   ignore_errors: yes
 - debug:
@@ -23,11 +23,11 @@
      cert: "{{ self_signed_certs.0.cert }}"
      key: "{{ self_signed_certs.0.key }}"
   register: selfsigned
-  when: done|succeeded or (dhg|succeeded and key|succeeded)
+  when: done|succeeded or key|succeeded
 
 - name: Successfully created self-signed certificate
   when: selfsigned|succeeded
- shell: "{{ dir.script }}/status.sh"
+  shell: "{{ dir.script }}/status.sh"
   become: yes
 
 ...

@@ -21,7 +21,7 @@ function test {
   tag=$3
   html=$(wget -q $url -O -)
   lines=$(echo $html|grep -i $tag|wc -l)
-  [[ $lines -gt 0 ]] && ${!2}=true
+  [[ $lines -gt 0 ]] && return true
 } 
 
 # binaries
@@ -37,21 +37,22 @@ echo "  certbot: $(which certbot)" >> $sf
 echo "  monit: $monit_bin" >> $sf
 echo "  backup: $(which backupninja)" >> $sf
 
-echo "started:"
+echo "started:" >> $sf
 apache=false
+mysql=false
 parsoid=false
 maildev=false
 phpmyadmin=false
-monit=false 
-[[ $(ps ax|grep maildev|wc -l) -gt 0 ]] && maidev=true
+monit=false
+[ -e /var/run/mysqld/mysqld.sock ] && mysql=true
 [ -e /var/run/apache2/apache2.pid ] && apache=true
 [[ -n $monit_bin ]] && [ $(monit status) ] && monit=true
-test $url apache Mediawiki
-test $url:8142 parsoid Parsoid
-test $url:1080 maildev MailDev
-test $url/phpmyadmin phpmyadmin phpMyAdmin
-for app in apache parsoid maildev phpmyadmin monit
-do echo "  $app=${!app}" >> $s
+apache=test $url apache Mediawiki
+parsoid=test $url:8142 parsoid Parsoid
+maildev=test $url:1080 maildev MailDev
+phpmyadmin=test $url/phpmyadmin phpmyadmin phpMyAdmin
+for app in apache mysql parsoid maildev phpmyadmin monit
+do echo "  $app=${!app}" >> $sf
 done
 
 # configured
@@ -69,7 +70,7 @@ maildev=false
 phpmyadmin=false
 dev=false
 [ -d /etc/ansible/facts.d ] && system=true
-[ -e /var/run/mysqld/mysqld.sock ] && db=true
+ && db=true
 [ -e /etc/apache2/sites-available/hitchwiki.conf ] && web=true
 [ -f /var/www/public/wiki/extensions/SemanticMediaWikiEnabled ] && mw=true
 [ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true
@@ -87,19 +88,20 @@ done
 echo -e "\nsyntax:" >> $sf
 apache_syntax=false
 monit_syntax=false
-[[ -n $apachectl_bin ]] && [[ $($apachectl_bin -t) -ne "Syntax OK" ]] && apache_syntax=true
+#syntax=$($apachectl_bin -t)
+#[[ -n $apachectl_bin ]] && [[ "$syntax" -ne "Syntax OK" ]] && apache_syntax=true
 [[ -n $monit_bin ]] && [[ $($monit_bin -t|grep "Control file syntax OK"|wc -l) -gt 0 ]] && monit_syntax=true
 echo "  apache: $apache_syntax" >> $sf
 echo "  monit: $monit_syntax" >> $sf
 
 # versions
 echo -e "\nversions:" >> $sf
-[[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1|cut -d':'-f2)
+[[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1|cut -f 2 -d':')
 [[ -n $openssl_bin ]] && openssl_ver=$(openssl version)
 echo "  apache2: $apache_ver" >> $sf
 echo "  openssl: openssl_ver" >> $sf
 for app in php npm node bower composer
-do 
+do
   bin=$(which $app)
   [[ -n $bin ]] && version=$($app --version |head -n1)
   echo "  $app: $version" >> $sf

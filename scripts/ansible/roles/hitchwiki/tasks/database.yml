@@ -22,20 +22,11 @@
   apt: update_cache=yes package={{ item }} state=present
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
 
-- name: Set db user password (without password)
-  command: mysqladmin -u{{mediawiki.db.username}} password "{{ mediawiki.db.password }}"
-  register: set_password
-  ignore_errors: yes
-
-- name: Set db user password (with password)
-  when: set_password|failed
-  command: mysqladmin {{ db_credentials }} password "{{ mediawiki.db.password }}"
-  register: set_password_again
-
 - name: Secure MariaDB root user
   shell: |
-    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password=('{{ mediawiki.db.password }}') WHERE User='{{ mediawiki.db.username }}'"
-    mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='{{ mediawiki.db.username }}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+    #mysqladmin -u{{ mediawiki.db.user }} password {{ mediawiki.db.password }}
+    mysql {{ db_credentials }} -e "UPDATE mysql.user SET Password='{{ mediawiki.db.password }}' WHERE User='{{ mediawiki.db.username }}'"
+    #mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User='{{ mediawiki.db.username }}' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"

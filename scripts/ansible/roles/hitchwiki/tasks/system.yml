@@ -48,6 +48,7 @@
 - name: Add apt source for NodeSoure 8.x
   become: yes
   apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_8.x xenial main"
+  # TODO add key 1655A0AB68576280
 
 - name: Install nodejs
   become: yes
@@ -71,5 +72,6 @@
 - name: Finish system preparation
   become: yes
   shell: "{{ dir.script }}/status.sh"
-
+- debug:
+    var: configured
 ...
