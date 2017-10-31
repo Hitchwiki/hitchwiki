@@ -12,42 +12,47 @@
 #  when: mediawiki.protocol == 'https' and env == 'production'
 
 - include_tasks: tls_selfsigned.yml
-  when: not certifcates_exist|succeeded
+  when: not certificates_exist|succeeded
 
-- name: Create Apache SSL configuration
-  become: yes
-  template: src={{ dir.conf }}/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
-  creates: /etc/apache2/sites-available/default-ssl.conf
-  when: certifcates_exist|succeeded
+- name: Do we have certificates?
+  shell: "[ -f {{ cert }} ] && [ -f {{ key }} ]"
+  register: tls
+  ignore_errors: yes
 
 - name: Set Apache SSL params
   become: yes
   template: src={{ dir.conf }}/ssl-params.conf dest=/etc/apache2/conf-available/ssl-params.conf
   creates: /etc/apache2/conf-available/ssl-params.conf
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
 
 - name: Generate a Diffie-Hellman group
   become: yes
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
   creates: /etc/ssl/certs/dhparam.pem
   register: dhg
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
 
 - name: Enable ssl and headers modules for Apache
   become: yes
   apache2_module: name={{item}} state=present
   with_items: { ssl, headers }
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
 
 - name: Enable SSL Virtual Host
   become: yes
   command: a2ensite default-ssl
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
+
+- name: Create Apache SSL configuration
+  become: yes
+  template: src={{ dir.conf }}/default-ssl.conf dest=/etc/apache2/sites-available/default-ssl.conf
+  creates: /etc/apache2/sites-available/default-ssl.conf
+  when: tls|succeeded
 
 - name: Enable ssl-params.conf file
   become: yes
   command: a2enconf ssl-params
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
 
 - name: Redirect non-HTTPS requests
   become: yes
@@ -57,20 +62,22 @@
     regexp: '^  Redirect "http://$"'
     line: "  Redirect \"http://$\" \"https://{{ domain }}\""
     state: present
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
 
 - name: Apache syntax check
   become: yes
   command: apache2ctl configtest
   register: syntaxcheck
-  when: certifcates_exist|succeeded
+  when: tls|succeeded
+
+- name: Finished TLS setup
+  when: syntaxcheck|succeeded
+  become: yes
+  shell: "{{ dir.script }}/status.sh"
   notify:
    - apache
 
 - meta: flush_handlers
   when: syntaxcheck|succeeded
-
-- shell: "{{ dir.script }}/status.sh"
-  become: yes
 
 ...

@@ -1,5 +1,7 @@
 set daemon 60
 set alert {{ admin_contact }}
+set pidfile /var/run/monit.pid
+set logfile /var/log/monit.log
 
 set httpd port 2812
     use address localhost  # only accept connection from localhost

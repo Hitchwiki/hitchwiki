@@ -3,7 +3,7 @@
 
 - name: Setup Monit
   include_tasks: monit.yml
-  when: not state_monit
+  when: not configured.monit
   notify:
     - restart monit
 
@@ -41,6 +41,6 @@
 - name: Production environment is set up
   become: yes
   shell: "{{ dir.script }}/status.sh"
-  when: state_https and state_monit
+  when: configured.monit and configured.tls
 
 ...

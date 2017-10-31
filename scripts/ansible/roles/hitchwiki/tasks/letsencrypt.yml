@@ -39,21 +39,21 @@
     var: certbot.stdout_lines
 
 - name: Do we have certificates?
-  shell: "[ -f /etc/letsencrypt/live/{{ domain }}/fullchain.pem ] && [ /etc/letsencrypt/live/{{ domain }}/privkey.pem ]"
-  register: certifcates_exist
+  shell: "[ -f /etc/letsencrypt/live/{{ domain }}/fullchain.pem ] && [ -f /etc/letsencrypt/live/{{ domain }}/privkey.pem ]"
+  register: certificates_exist
   ignore_errors: yes
 
 - set_fact:
      cert: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
      key: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   register: letsencrypt
-  when: certifcates_exist|succeeded
+  when: certificates_exist|succeeded
 
 - name: Add cron job for renewal
   cron: name=certbot special_time=monthly job="certbot renew --pre-hook \"service apache2 stop\" --post-hook \"service apache2 start\""
   # alternative: renew --quiet --no-self-upgrade
   # https://github.com/geerlingguy/ansible-role-certbot/blob/master/tasks/renew-cron.yml
-  when: certifcates_exist|succeeded
+  when: certificates_exist|succeeded
 
 # https://docs.ansible.com/ansible/latest/letsencrypt_module.html
 #- letsencrypt:
@@ -70,6 +70,7 @@
 - name: Certbot run successfull, check /var/log/letsencrypt.log for details
   become: yes
   shell: "{{ dir.script }}/status.sh"
-  when: certifcates_exist|succeeded
+  when: certificates_exist|succeeded
   notify: "apache"
+
 ...
