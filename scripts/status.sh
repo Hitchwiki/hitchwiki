@@ -76,8 +76,8 @@ dev=false
 [ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true
 [ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
 [ -f /etc/letsencrypt/live/beta.hitchwiki.org/fullchain.pem ] && cert=true
-[[ -n $monit_bin ]] && monit status >/dev/null && monit=true
-[[ $monit && $tls && $cert ]] && production=true
+[[ -n $monit_bin ]] && monit status 2>1 > /dev/null && monit=true
+[ $(($monit + $tls + $cert)) == 3 ] && production=true
 [ -f /etc/init.d/maildev ] && maildev=true && dev=true
 
 for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev
@@ -88,9 +88,8 @@ done
 echo -e "\nsyntax:" >> $sf
 apache_syntax=false
 monit_syntax=false
-#syntax=$($apachectl_bin -t)
-[[ $(apache2ctl -t 2>&1|grep OK|wc -l) == 1 ]] && apache_syntax=true
-[[ -n $monit_bin ]] && [[ $($monit_bin -t|grep "Control file syntax OK"|wc -l) -gt 0 ]] && monit_syntax=true
+[[ $(apache2ctl -t 2>&1|grep OK|wc -l) -gt 0 ]] && apache_syntax=true
+[[ -n $monit_bin ]] && [[ $($monit_bin -t 2>&1|grep "Control file syntax OK"|wc -l) -gt 0 ]] && monit_syntax=true
 echo "  apache: $apache_syntax" >> $sf
 echo "  monit: $monit_syntax" >> $sf
 

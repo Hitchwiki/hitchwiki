@@ -48,7 +48,6 @@
 
 - name: Update pip and install ansible
   pip: name={{ item }} state=latest
-  when: false # TODO enable
   with_items: { pip, ansible }
 
 - shell: "[ -d /home/{{ user }}/src ]"

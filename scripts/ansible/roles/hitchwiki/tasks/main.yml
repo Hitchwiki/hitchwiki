@@ -30,11 +30,11 @@
 
 - name: Setup dev environment
   include_tasks: dev.yml
-  when: not configured.dev && env == 'dev'
+  when: env == 'dev' && not configured.dev
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: not configured.production and env == 'production'
+  when: env == 'production' && not configured.production
 
 - meta: flush_handlers
 
