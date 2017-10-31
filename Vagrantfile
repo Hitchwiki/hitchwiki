@@ -27,7 +27,9 @@ Vagrant.configure("2") do |config|
   config.hostmanager.manage_guest = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
-  config.ssh.username = "hitchwiki"
+  config.ssh.username = "ubuntu"
+#  config.ssh.username = "hitchwiki"
+  config.ssh.password = settings["phpmyadmin_password"]
   config.ssh.private_key_path = "~/.ssh/id_rsa"
 
   config.vm.define "hitchwiki" do |node|

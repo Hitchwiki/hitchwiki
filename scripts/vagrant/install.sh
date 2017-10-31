@@ -25,10 +25,9 @@ for app in vagrant ansible; do
   else
     echo "- $app: $bin"
     $bin --version
+    [[ $app -eq "vagrant" ]] && echo "Note: Vagrant prior 1.8.2 will fail."
   fi
 done
-echo "Note: Vagrant prior 1.8.2 will fail."
-
 echo -e $sep
 echo "All fine, let's roll ..."
 vagrant plugin install vagrant-hostmanager

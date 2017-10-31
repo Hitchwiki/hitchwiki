@@ -44,28 +44,10 @@
     - webserver
     - restart webserver
 
-- debug:
-    var: apache_restart.stderr_lines
-
-- lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  web'
-    line: '  web: True'
-  when: apache_restart|succeeded
-  notify:
-  - load
-- lineinfile:
-    path: "{{ dir.state }}"
-    regexp: '^  web'
-    line: '  web: False'
-  when: apache_restart|failed
-  notify:
-  - load
-
 # Mediawiki handlers
 - name: Restart Parsoid
   become: yes
-  monit: name=parsoid state=restarted
+  service: name=parsoid state=started
   listen:
     - parsoid
     - restart parsoid

@@ -4,22 +4,17 @@
 - name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
   become: yes
   file: state=directory path=/etc/ansible/facts.d/
-
-- set_fact:
-    statefile: /etc/ansible/facts.d/state.yml
-- file: state=absent path={{ statefile }}
-  become: yes
 - name: Run status.sh
   become: yes
   shell: "{{ dir.script }}/status.sh"
+- name: Set statefile
+  set_fact:
+    statefile: /etc/ansible/facts.d/state.yml
 - name: Grant {{ statefile }} to user {{ user }}
   become: yes
   file: path={{ statefile }} owner={{ user }} group={{ user }}
-
-- name: Configured
+- name: Load statefile
   include_vars: "{{ statefile }}"
-- debug:
-    var: configured
 
 - shell: |
     echo "
@@ -41,7 +36,10 @@
   register: outro
 - debug:
     var: outro.stdout_lines
+  when: not outro|skipped
 
+- debug:
+    var: configured
 - debug:
     var: started
 

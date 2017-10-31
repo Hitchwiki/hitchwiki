@@ -12,6 +12,10 @@
   command: monit -t
   register: monit_syntax
 
+- name: Reload monit
+  become: yes
+  command: monit reload
+
 - name: Monit is set up
   set_fact: state_monit=True cacheable=true
   when: monit_syntax|succeeded
