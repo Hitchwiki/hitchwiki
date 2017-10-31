@@ -59,7 +59,5 @@
   become: yes
   shell: "{{ dir.script }}/status.sh"
   when: validate_apache_syntax|succeeded
-  notify:
-   - apache
 
 ...

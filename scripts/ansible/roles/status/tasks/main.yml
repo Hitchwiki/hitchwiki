@@ -1,15 +1,20 @@
 ---
 
 # Status report
+- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
+  become: yes
+  file: state=directory path=/etc/ansible/facts.d/
+
 - set_fact:
-    statefile: /etc/facts.d/state.yml
+    statefile: /etc/ansible/facts.d/state.yml
 - file: state=absent path={{ statefile }}
   become: yes
 - name: Run status.sh
   become: yes
   shell: "{{ dir.script }}/status.sh"
-  register: state
-  ignore_errors: yes
+- name: Grant {{ statefile }} to user {{ user }}
+  become: yes
+  file: path={{ statefile }} owner={{ user }} group={{ user }}
 
 - name: Configured
   include_vars: "{{ statefile }}"

@@ -37,4 +37,9 @@
   when: not configured.production and env == 'production'
 
 - meta: flush_handlers
+
+- name: Print status
+  include_tasks: roles/status/tasks/main.yml
+  notify: "update system"
+
 ...

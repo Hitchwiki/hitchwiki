@@ -128,5 +128,7 @@
 - name: Finish Mediawiki installation
   become: yes
   shell: "{{ dir.script }}/status.sh"
+  notify:
+   - apache
 
 ...

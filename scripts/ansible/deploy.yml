@@ -15,10 +15,4 @@
   roles:
     - deploy
 
-- name: Setup hitchwiki
-  hosts: hitchwiki
-  roles:
-    - hitchwiki
-    - update
-    - status
 ...

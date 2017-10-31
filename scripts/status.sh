@@ -5,8 +5,8 @@ cd $(dirname $0)/ansible
 sf=state.yml
 
 if [[ $(whoami) == 'root' ]] ; then
-  [ -d /etc/facts.d ] || mkdir /etc/facts.d
-  sf=/etc/facts.d/state.yml
+  [ -d /etc/ansible/facts.d ] || mkdir /etc/ansible/facts.d
+  sf=/etc/ansible/facts.d/state.yml
 fi
 [ -f $sf ] && rm $sf
 echo "# Ansible installation report" >> $sf
@@ -69,8 +69,8 @@ production=false
 maildev=false
 phpmyadmin=false
 dev=false
-[ -d /etc/ansible/facts.d ] && system=true
- && db=true
+[ -d /usr/local/bin/node ] && system=true
+[ -d /etc/mysql ] && db=true
 [ -e /etc/apache2/sites-available/hitchwiki.conf ] && web=true
 [ -f /var/www/public/wiki/extensions/SemanticMediaWikiEnabled ] && mw=true
 [ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true

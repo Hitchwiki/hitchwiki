@@ -8,6 +8,7 @@
 - name: This should show path settings or `group_vars/hitchwiki` is missing
   debug:
     var: dir
+  failed_when: dir is undefined
 
 - name: Set language
   lineinfile: 
@@ -30,7 +31,7 @@
 
 - name: Remove apt source of NodeSoure 8.x # to avoid dependency problems
   become: yes
-  apt_repository: filename=nodesource.list state=absent repo="deb https://deb.nodesource.com/node_8.x xenial main"
+  apt_repository: filename=nodesource.list state=absent
 
 - name: Install helper tools
   become: yes
@@ -64,10 +65,6 @@
 
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present extra_args=--user
-
-- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
-  become: yes
-  file: state=directory path=/etc/ansible/facts.d/
 
 - name: Finish system preparation
   become: yes
