@@ -77,7 +77,7 @@ dev=false
 [ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
 [ -f /etc/letsencrypt/live/beta.hitchwiki.org/fullchain.pem ] && cert=true
 [[ -n $monit_bin ]] && monit status 2>1 > /dev/null && monit=true
-[ $(($monit + $tls + $cert)) == 3 ] && production=true
+[ $monit == "true" ] && [ $tls == "true" ] && [ $cert == "true" ] && production=true
 [ -f /etc/init.d/maildev ] && maildev=true && dev=true
 
 for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev

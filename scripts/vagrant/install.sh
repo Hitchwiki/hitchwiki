@@ -25,7 +25,7 @@ for app in vagrant ansible; do
   else
     echo "- $app: $bin"
     $bin --version
-    [[ $app -eq "vagrant" ]] && echo "Note: Vagrant prior 1.8.2 will fail."
+    if [[ $app -eq "vagrant" ]] ; then echo "Note: Vagrant prior 1.8.2 will fail." ; fi
   fi
 done
 echo -e $sep

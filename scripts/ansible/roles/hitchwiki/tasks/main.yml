@@ -2,12 +2,17 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
+- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
+  become: yes
+  file: state=directory path=/etc/ansible/facts.d/
+
 - name: Check status
   include_tasks: roles/status/tasks/main.yml
 
 - name: Prepare system
   include_tasks: system.yml
   when: not configured.system
+  notify: "update system"
 
 - name: Setup database server
   include_tasks: database.yml
@@ -40,6 +45,6 @@
 
 - name: Print status
   include_tasks: roles/status/tasks/main.yml
-  notify: "update system"
+
 
 ...

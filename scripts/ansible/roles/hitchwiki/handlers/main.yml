@@ -9,7 +9,7 @@
 # System
 - name: Update system
   become: yes
-  apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes
+  apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes allow_unauthenticated=yes
   listen:
     - apt
     - update system

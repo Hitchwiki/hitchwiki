@@ -1,9 +1,6 @@
 ---
 
 # Status report
-- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
-  become: yes
-  file: state=directory path=/etc/ansible/facts.d/
 - name: Run status.sh
   become: yes
   shell: "{{ dir.script }}/status.sh"
@@ -15,6 +12,11 @@
   file: path={{ statefile }} owner={{ user }} group={{ user }}
 - name: Load statefile
   include_vars: "{{ statefile }}"
+
+- debug:
+    var: configured
+- debug:
+    var: started
 
 - shell: |
     echo "
@@ -32,15 +34,10 @@
     #                                                                     #
     #######################################################################
     Tip: Run 'rgrep TODO roles' to see open tasks."
-  when: configured.system and configured.web and configured.db and configured.mw and configured.parsoid
+  when: configured.system and configured.web and configured.db and configured.mw and configured.parsoid and started.apache and started.mysql and started.parsoid
   register: outro
 - debug:
     var: outro.stdout_lines
   when: not outro|skipped
-
-- debug:
-    var: configured
-- debug:
-    var: started
 
 ...
