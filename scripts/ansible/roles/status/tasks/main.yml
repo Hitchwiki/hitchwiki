@@ -1,17 +1,10 @@
 ---
-
 # Status report
 - name: Run status.sh
   become: yes
   shell: "{{ dir.script }}/status.sh"
-- name: Set statefile
-  set_fact:
-    statefile: /etc/ansible/facts.d/state.yml
-- name: Grant {{ statefile }} to user {{ user }}
-  become: yes
-  file: path={{ statefile }} owner={{ user }} group={{ user }}
 - name: Load statefile
-  include_vars: "{{ statefile }}"
+  include_vars: "{{ dir.statefile }}"
 
 - debug:
     var: configured

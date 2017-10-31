@@ -5,8 +5,10 @@ cd $(dirname $0)/ansible
 sf=state.yml
 
 if [[ $(whoami) == 'root' ]] ; then
-  [ -d /etc/ansible/facts.d ] || mkdir /etc/ansible/facts.d
+  [ -d /etc/ansible/facts.d ] || mkdir -p /etc/ansible/facts.d
   sf=/etc/ansible/facts.d/state.yml
+  touch $sf
+  chmod a+r $sf
 fi
 [ -f $sf ] && rm $sf
 echo "# Ansible installation report" >> $sf

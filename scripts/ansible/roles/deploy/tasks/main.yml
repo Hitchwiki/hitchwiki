@@ -47,7 +47,8 @@
   with_items: { git, python-pip }
 
 - name: Update pip and install ansible
-  pip: name={{ item }} state=latest
+  become: yes
+  pip: name={{ item }} state=latest umask=0022
   with_items: { pip, ansible }
 
 - shell: "[ -d /home/{{ user }}/src ]"

@@ -2,10 +2,6 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
-- name: Create facts.d (http://jpmens.net/2015/01/29/caching-facts-in-ansible/)
-  become: yes
-  file: state=directory path=/etc/ansible/facts.d/
-
 - name: Check status
   include_tasks: roles/status/tasks/main.yml
 
@@ -39,7 +35,7 @@
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: env == 'production' && not configured.production
+  when: env == 'production' && not configured.production && not started.monit
 
 - meta: flush_handlers
 

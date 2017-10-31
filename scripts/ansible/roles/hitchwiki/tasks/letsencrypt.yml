@@ -27,7 +27,7 @@
   # TODO bonus point: parse key & cert file from output
 
 - name: Request certificate
-  when: not certificates.stdout.find(domain) or certificates.stdout.find("No certs found")
+  when: not certificates.stdout_lines.find(domain) or certificates.stdout_lines.find("No certs found")
   become: yes
   shell: certbot run -n -i apache -d {{ domain }}
   register: certbot

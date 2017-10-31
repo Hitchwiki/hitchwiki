@@ -65,3 +65,30 @@ vagrant:
   private_network_ip: "192.168.33.10" # Sets IP address for the Virtual Machine
   hostmanager_enabled: True  # Set `false` to use only private network IP to access the server.
                              # Vagrant won't therefore modify your `/etc/hosts` file neither.
+
+dir:
+  root: /var/www/public
+  conf: /var/www/configs
+  script: /var/www/scripts
+  pages: /var/www/scripts/pages
+  settings: /var/www/configs/settings.yml
+  wikifolder: wiki
+  wiki: /var/www/public/wiki
+  mwconf: /var/www/public/wiki/LocalSettings.php
+  dumps: /var/www/dumps
+  phpmyadmin: /usr/share/phpmyadmin
+  state: /var/www/group_vars/all
+  spyc: /var/www/public/mustangostang/spyc/Spyc.php
+  log: /var/www/log
+  dump: /var/www/dumps
+  state: /etc/ansible/facts.d/state.yml
+
+apache:
+  user: www-data
+  group: www-data
+
+self_signed_certs:
+  - key: /etc/ssl/private/server.key
+    cert: /etc/ssl/certs/server.crt
+
+db_credentials: "-u {{ mediawiki.db.username }} -p{{ mediawiki.db.password }}"
