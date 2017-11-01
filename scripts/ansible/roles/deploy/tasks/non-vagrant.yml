@@ -1,0 +1,49 @@
+---
+# prepare repository when non run with vagrant
+
+- name: Add user {{ user }}
+  become: yes
+  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
+  # https://docs.ansible.com/ansible/latest/user_module.html
+
+- name: Add {{ user }} to sudoers
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^{{user}}'
+    line: "{{user}} ALL=NOPASSWD:ALL"
+
+- set_fact:
+    root: "/home/{{ user }}/src"
+
+- name: Does {{ root }} exist?
+  shell: "[ -d {{ root }} ]"
+  register: root_exists
+  ignore_errors: yes
+
+- name: Clone hitchwiki repository
+  become: yes
+  git:
+    dest: "{{ root }}"
+    repo: https://github.com/traumschule/hitchwiki # TODO change later
+    version: ansible
+  when: root_exists|failed
+
+- name: Grant {{ root }} to {{ user }}
+  become: yes
+  file: path={{ root }} owner={{ user }} group={{ user }} recurse=yes
+
+- name: Copy settings.yml # from local to remote
+  become: yes
+  copy: src=configs/settings.yml dest={{ root }}/configs/settings.yml owner={{user}} group={{user}}
+
+- name: Set remote `hosts`
+  become: yes
+  remote_user: "{{ user }}"
+  shell: echo -e "[hitchwiki]\nlocalhost" > {{ root }}/scripts/ansible/hosts
+
+- name: Link {{ root }} to /var/www
+  become: yes
+  file: state=link force=yes src={{ root }} path=/var/www
+
+...

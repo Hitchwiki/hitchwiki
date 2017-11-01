@@ -1,30 +1,33 @@
 ---
 # Run as root
-# used variables: domain, user
-- name: Add '{{ domain }}' to `/etc/hosts`
-  become: yes
-  lineinfile:
-    path: /etc/hosts
-    regexp: '^127.0.0.1'
-    line: 127.0.0.1 localhost {{ domain }}
+- name: Does settings.yml exist?
+  include_vars: configs/settings.yml
 
-- name: Add user {{ user }}
-  become: yes
-  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
-  # https://docs.ansible.com/ansible/latest/user_module.html
+- name: Do we run inside vagrant?
+  shell: "[ -d /var/www/configs ]"
+  register: vagrant
+  ignore_errors: yes
 
-- name: Add {{ user }} to sudoers
-  become: yes
-  lineinfile:
-    path: /etc/sudoers
-    regexp: '^{{user}}'
-    line: "{{user}} ALL=NOPASSWD:ALL"
- 
+- name: Set root to /var/www
+  set_fact:
+    root: /var/www
+    user: ubuntu
+  when: vagrant|succeeded
+
+- name: Prepare repository
+  include_tasks: non-vagrant.yml
+  when: vagrant|failed
+
+- name: Generate ssh key
+  shell: ssh-keygen -qf ~/.ssh/id_rsa -P ""
+  when: vagrant|succeeded
+
 - name: Allow keys in `configs/authorized_keys` to connect as {{ user }}
   become: yes
   authorized_key: user={{ user }} state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
 
 - name: Allow {{ user }} to connect without password
+  # necessary for ansible to connect to localhost
   become: yes
   remote_user: "{{ user }}"
   shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /home/{{ user }}/.ssh/authorized_keys
@@ -51,41 +54,18 @@
   pip: name={{ item }} state=latest umask=0022
   with_items: { pip, ansible }
 
-- shell: "[ -d /home/{{ user }}/src ]"
-  register: src_exists
-  ignore_errors: yes
-
-- name: Clone hitchwiki repository
+- name: Add '{{ domain }}' to `/etc/hosts`
   become: yes
-  git:
-    dest: "/home/{{ user }}/src"
-    repo: https://github.com/traumschule/hitchwiki # TODO change later
-    version: ansible
-  when: src_exists|failed
-
-- name: Grant /home/{{ user }}/src to {{ user }}
-  become: yes
-  file: path=/home/{{ user }}/src owner={{ user }} group={{ user }} recurse=yes
-
-- name: Copy settings.yml # from local to remote
-  become: yes
-  copy: src=configs/settings.yml dest=/home/{{ user }}/src/configs/settings.yml owner={{user}} group={{user}}
-
-- name: Set remote `hosts`
-  become: yes
-  remote_user: "{{ user }}"
-  shell: echo -e "[hitchwiki]\nlocalhost" > /home/{{ user }}/src/scripts/ansible/hosts
-
-- name: Link /home/{{ user }}/src to /var/www
-  become: yes
-  file: state=link force=yes src="/home/{{ user }}/src" path=/var/www
-  ignore_errors: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127.0.0.1'
+    line: 127.0.0.1 localhost {{ domain }}
 
 - name: Change hostname to '{{ domain }}'
   become: yes
   hostname: name={{ domain }}
 
-- name: Preparation finished, now ssh in and run '~/src/scripts/setup_hitchwiki.sh'.
+- name: Preparation finished, now ssh in and run '{{ root }}/scripts/setup_hitchwiki.sh'.
   set_fact: state_prepare=True
 
 ...

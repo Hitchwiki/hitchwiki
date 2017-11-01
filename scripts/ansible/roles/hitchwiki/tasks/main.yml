@@ -2,6 +2,15 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pgouveia.
 
+- name: Has configs/settings-example.yml been copied to configs/settings.yml?
+  include_vars: ./configs/settings.yml
+  when: lookup('file', 'configs/settings.yml')
+
+- name: This should show path settings or settings.yml is not up to date
+  debug:
+    var: dir
+  failed_when: dir is undefined
+
 - name: Check status
   include_tasks: roles/status/tasks/main.yml
 
@@ -23,19 +32,21 @@
   when: not configured.mw
 
 - set_fact: https=True
-  when: mediawiki.protocol == 'https' or env == 'production'
+  when: 'https' in mediawiki.protocol or 'production' in env
+
+- debug: msg="{{ mediawiki.protocol }} {{ env }}"
 
 - name: Setup TLS
   include_tasks: tls.yml
-  when: not configured.tls and https
+  when: https and not configured.tls
 
 - name: Setup dev environment
   include_tasks: dev.yml
-  when: env == 'dev' && not configured.dev
+  when: env == 'dev' and not configured.dev
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: env == 'production' && not configured.production && not started.monit
+  when: env == 'production' and not configured.production and not started.monit
 
 - meta: flush_handlers
 

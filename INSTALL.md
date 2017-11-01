@@ -144,13 +144,10 @@ There is also `scripts/stop_all.sh` to be run with root privileges.
 
 5. update mediawiki: On a new Mediawiki release for example one would need to
 - change the `mediawiki.branch` in `configs/settings.yml`
-- run `update.sh` to recreate `LocalSettings.php`
-- stop monit and parsoid
-- run 
-```bash
-cd scripts/ansible
-ansible-playbook hitchwiki.yml
-```
+- stop monit and parsoid: `sudo service monit stop; sudo service parsoid stop`
+- run `./scripts/update.sh` to recreate `LocalSettings.php`
+- run `./scripts/setup_mediawiki.sh`
+- start monit: `sudo service monit start`
 
 When errors happen, `script` from the package `bsdutils` is quite handy to log and uploud them to [issue tracker](https://github.com/Hitchwiki/hitchwiki/issues).
  

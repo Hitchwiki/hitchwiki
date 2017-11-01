@@ -115,11 +115,10 @@
 
 - name: Import Mediawiki content # MW db actions
   include_tasks: mw_import.yml
-  when: not state_mw_import
 
 - name: Install Parsoid
   include_tasks: parsoid.yml
-  when: not state.parsoid
+  when: not configured.parsoid
 
 - name: Add cron job for daily localisation updates
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"

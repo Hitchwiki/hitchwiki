@@ -1,15 +1,6 @@
 ---
 # Common tasks
 
-- name: Has configs/settings-example.yml been copied to configs/settings.yml?
-  include_vars: ./configs/settings.yml
-  when: lookup('file', 'configs/settings.yml')
-
-- name: This should show path settings or `group_vars/hitchwiki` is missing
-  debug:
-    var: dir
-  failed_when: dir is undefined
-
 - name: Set language
   lineinfile: 
     path: .profile
@@ -49,7 +40,10 @@
 - name: Add apt source for NodeSoure 8.x
   become: yes
   apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_8.x xenial main"
-  # TODO add key 1655A0AB68576280
+
+- name: Add node key
+  become: yes
+  apt_key: id=1655A0AB68576280 state=present
 
 - name: Install nodejs
   become: yes
@@ -66,9 +60,17 @@
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present extra_args=--user
 
+- name: Create and add swapfile
+  global: yes
+  command: chdir=/root |
+    fallocate --length {{ swap.size }} swapfile
+    mkswap swapfile
+    chmod 0600 swapfile
+    swapon swapfile
+  when: swap is defined and swap.enabled and swap.size
+
 - name: Finish system preparation
   become: yes
   shell: "{{ dir.script }}/status.sh"
-- debug:
-    var: configured
+
 ...

@@ -7,6 +7,7 @@ admin_contact: "{{ mediawiki.emergency_contact }}" # set your email here
 # Development variables
 phpmyadmin_password: autobahn
 #apt_proxy: IP address # Install apt-cacher-ng on the host to avoid downloading packages again.
+
 smtp: # MailDev runs at port 1025 at dev server https://github.com/djfarrelly/MailDev
   enabled: true # See http://hitchwiki.test:1080/
   host: localhost
@@ -77,11 +78,11 @@ dir:
   mwconf: /var/www/public/wiki/LocalSettings.php
   dumps: /var/www/dumps
   phpmyadmin: /usr/share/phpmyadmin
-  state: /var/www/group_vars/all
   spyc: /var/www/public/mustangostang/spyc/Spyc.php
   log: /var/www/log
   dump: /var/www/dumps
   state: /etc/ansible/facts.d/state.yml
+  discourse: /var/www/scripts/vendor/discourse
 
 apache:
   user: www-data
@@ -92,3 +93,7 @@ self_signed_certs:
     cert: /etc/ssl/certs/server.crt
 
 db_credentials: "-u {{ mediawiki.db.username }} -p{{ mediawiki.db.password }}"
+
+swap: # to let changes take effect delete `/usr/local/bin/node` and rerun `setup_hitchwiki.sh`
+  enabled: false # set true if you run out of memory
+  size: 8GB # see `man fallocate` for the correct format

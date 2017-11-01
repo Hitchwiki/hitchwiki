@@ -4,7 +4,7 @@
 # Let's Encrypt - certbot
 - include_tasks: letsencrypt.yml
   register: certbot
-  when: env == 'production' and domain
+  when: env == 'production' and https and domain
 
 # TODO check for release of: Let's Encrypt - apache mod md
 # "unless it's at least beta-level, we should use just letsencrypt's certbot+cron"
@@ -12,7 +12,7 @@
 #  when: mediawiki.protocol == 'https' and env == 'production'
 
 - include_tasks: tls_selfsigned.yml
-  when: not certificates_exist|succeeded
+  when: https and certificates_exist|failed
 
 - name: Do we have certificates?
   shell: "[ -f {{ cert }} ] && [ -f {{ key }} ]"

@@ -1,9 +1,16 @@
 ---
 # Hitchwiki handlers
 
-- name: load
-  include_vars: group_vars/all
+- name: Refresh status
+  become: yes
+  command: "{{ dir.script }}/status.sh"
+  notify:
+    - load
+  listen: "save"
+- name: Load variables
+  include_vars: "{{ dir.state }}"
   listen:
+    - load
     - reload
 
 # System
@@ -55,7 +62,7 @@
 # Development environment
 - name: Start maildev
   become: yes
-  command: maildev --smtp 1025 --silent
+  command: maildev --smtp 1025 --silent &
   #service: name=maildev enabled=yes state=started
   listen:
     - maildev
