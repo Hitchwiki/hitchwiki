@@ -31,6 +31,7 @@ logs
 /configs/authorized_keys
 
 # Other
+/scripts/vendor
 /public/google*.html
 /dumps/
 *~

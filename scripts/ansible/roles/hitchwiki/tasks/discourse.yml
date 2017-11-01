@@ -1,7 +1,110 @@
 ---
-# TODO Discourse https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+# Set up Discourse
+# https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
 
-- name: Discourse is not set up.
-  set_fact: state_discourse=false cacheable=true
+- name: Add ppa:chris-lea/redis-server
+  become: yes
+  apt_repository: state=present repo=ppa:chris-lea/redis-server
+
+- name: Install discoure dependencies
+  become: yes
+  apt: update_cache=yes name={{item}} state=present
+  with_items: { python-software-properties, expect, debconf-utils, build-essential, zlib1g-dev, libssl-dev, openssl, libcurl4-openssl-dev, libreadline6-dev, libpcre3, libpcre3-dev, postgresql, postgresql-contrib-9.5, libpq-dev, postgresql-server-dev-9.5, redis-server, advancecomp, gifsicle, jhead, jpegoptim, libjpeg-turbo-progs, optipng, pngcrush, pngquant, gnupg2, ruby-dev, rubygems-integration, python-psycopg2 }
+
+- name: Set discourse dir
+  set_fact: discourse_dir={{ dir.root }}/../scripts/vendor/discourse
+
+- name: Clone discourse
+  git:
+    repo: https://github.com/discourse/discourse.git
+    dest: "{{ discourse_dir }}"
+    depth: 1
+#    force: yes
+
+- name: Add rvm ppa
+  become: yes
+  apt_repository:
+    state: present
+    repo: ppa:rael-gc/rvm
+
+- name: Install rvm
+  become: yes
+  apt: name=rvm state=present update_cache=yes
+
+- name: Configure gem
+  lineinfile:
+    path: ~/.gemrc
+    line: "gem: --no-document"
+
+- name: Set rvm path
+  set_fact: rvm_bin=~/.rvm/bin/rvm
+
+- name: Configure rvm
+  shell: |
+    {{ rvm_bin }} install 2.3.4
+    {{ rvm_bin }} --default use 2.3.4
+    # If this error out check https://rvm.io/integration/gnome-terminal
+
+- name: Install bundler and mailcatcher
+  become: yes
+  shell: gem install --no-document bundler mailcatcher
+#  gem: name={{item}} state=present user_install=yes executable=~/.gem/ruby/2.3.0/bin
+#  with_items: { bundler, mailcatcher }
+   # Fails with: permission denied
+
+- name: Install nvm
+  become: yes
+  npm: name=nvm state=present path=/app/location global=yes
+
+#- name: Install Node
+#  become: yes
+#  shell: |
+#    nvm install nodejs
+#    nvm alias default node
+
+- name: Install svgo
+  become: yes
+  npm: name=svgo global=yes #phantomjs-prebuilt 
+
+- name: Create role hitchwiki
+  #postgresql_user: name=hitchwiki role_attr_flags=SUPERUSER #login_user=postgres
+  become_user: postgres
+  shell: createuser hitchwiki --superuser
+  # https://www.postgresql.org/docs/9.1/static/database-roles.html
+  ignore_errors: yes
+
+- name: Add discourse database
+  postgresql_db: name=discourse login_user={{ user }}
+  # https://www.postgresql.org/docs/9.1/static/tutorial-createdb.html  
+
+- name: Grant database to user discourse
+  postgresql_user: name=discourse password=discourse db=discourse role_attr_flags=CREATEDB,NOSUPERUSER login_user={{ user }}
+  # state=present #login_user=hitchwiki # login_password=postgres login_password=postgres
+
+- name: Bundle install
+  command: chdir={{ discourse_dir }} bundle install
+
+- name: Create database
+  command: chdir={{ discourse_dir }} bundle exec rake db:drop db:create db:migrate
+
+- name: Discourse is set up.
+  command: |
+    echo "Discourse is set up.
+      Following commands are available (run from {{ discourse_dir }}):
+       - Run specs: bundle exec rake autospec # CTRL + C to stop
+       - Create admin account: bundle exec rake admin:create
+       - Run sidekiq: mailcatcher # open http://localhost:1080 to see the emails, stop with `pkill -f mailcatcher`
+                      bundle exec sidekiq # open http://localhost:3000/sidekiq to see queues
+                      bundle exec rails server
+       - Launch discourse: bundle exec rails s -b 0.0.0.0 # Point your browser to http://localhost:3000
+       For details see {{ discourse_dir }}/README.md and `scripts/ansible/roles/hitchwiki/tasks/discourse.yml`
+       More info: 
+       - https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+       - vagrant setup: https://github.com/discourse/discourse/blob/master/docs/VAGRANT.md
+       - development setup: https://github.com/discourse/discourse/blob/master/docs/DEVELOPER-ADVANCED.md
+       - setup with docker: https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+    "
+  register: info
+- debug: var=info.stdout_lines
 
 ...
