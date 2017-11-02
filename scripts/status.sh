@@ -54,7 +54,7 @@ monit=false
 check_url $url:1080 maildev MailDev
 check_url $url/phpmyadmin phpmyadmin phpMyAdmin
 for app in apache mysql parsoid maildev phpmyadmin monit
-do echo "  $app=${!app}" >> $sf
+do echo "  $app: ${!app}" >> $sf
 done
 
 # configured
@@ -78,7 +78,7 @@ dev=false
 [ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true
 [ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
 [ -f /etc/letsencrypt/live/beta.hitchwiki.org/fullchain.pem ] && cert=true
-[[ -n $monit_bin ]] && monit status 2>1 > /dev/null && monit=true
+[[ -n $monit_bin ]] && [[ ! $(monit status 2>&1 >/dev/null) ]] && monit=true
 [ $monit == "true" ] && [ $tls == "true" ] && [ $cert == "true" ] && production=true
 [ -f /etc/init.d/maildev ] && maildev=true && dev=true
 

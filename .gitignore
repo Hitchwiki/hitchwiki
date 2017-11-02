@@ -9,6 +9,7 @@ node_modules/
 .vagrant
 
 # Ansible
+hosts
 host_vars
 *.retry
 state.yml

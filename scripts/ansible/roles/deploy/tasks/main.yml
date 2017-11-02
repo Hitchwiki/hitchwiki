@@ -18,13 +18,20 @@
   include_tasks: non-vagrant.yml
   when: vagrant|failed
 
+- shell: "[ -f ~/.ssh/id_rsa ]"
+  register: key_exists
+  ignore_errors: yes
 - name: Generate ssh key
   shell: ssh-keygen -qf ~/.ssh/id_rsa -P ""
-  when: vagrant|succeeded
+  when: vagrant|succeeded and key_exists|failed
 
+- shell: "[ -f /var/www/configs/authorized_keys ]"
+  register: keys
+  ignore_errors: yes
 - name: Allow keys in `configs/authorized_keys` to connect as {{ user }}
   become: yes
   authorized_key: user={{ user }} state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
+  when: keys|succeeded
 
 - name: Allow {{ user }} to connect without password
   # necessary for ansible to connect to localhost
