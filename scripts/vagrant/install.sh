@@ -32,5 +32,8 @@ echo -e $sep
 echo "All fine, let's roll ..."
 vagrant plugin install vagrant-hostmanager
 
-# This will go through scripts/server_install.sh on first run
+echo "Prepare vagrant box"
 vagrant up
+echo "Setup hitchwiki"
+echo "localhost" >> hosts
+vagrant ssh -c /var/www/scripts/setup_hitchwiki.sh
