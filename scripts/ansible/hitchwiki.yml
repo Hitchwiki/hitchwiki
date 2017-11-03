@@ -14,13 +14,15 @@
       raw: sudo apt-get install -yq python-simplejson
     - name: Check if ssh key exists
       shell: "[ -f ~/.ssh/id_rsa ]"
-      register: done_deploy
+      register: deploy_done
       ignore_errors: yes
-    - import_role: deploy
+    - import_role: name=deploy
       when: deploy_done|failed
 
 - name: Setup hitchwiki
   hosts: all
+
+  roles:
     - hitchwiki
 
 ...

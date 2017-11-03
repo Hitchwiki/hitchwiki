@@ -61,14 +61,14 @@
   pip: name={{ item }} state=latest umask=0022
   with_items: { pip, ansible }
 
-- name: Add '{{ domain }}' to `/etc/hosts`
+- name: Add {{ domain }} to `/etc/hosts`
   become: yes
   lineinfile:
     path: /etc/hosts
     regexp: '^127.0.0.1'
     line: 127.0.0.1 localhost {{ domain }}
 
-- name: Change hostname to '{{ domain }}'
+- name: Change hostname to {{ domain }}
   become: yes
   hostname: name={{ domain }}
 

@@ -2,7 +2,7 @@
 # Import MW content
 
 - name: Configure Hitchwiki
-  template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+  template: src=configs/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
 
 - name: Import interwiki table - https://www.mediawiki.org/wiki/Extension:Interwiki
   shell: mysql {{ db_credentials }} {{ mediawiki.db.database }} < "{{ dir.script }}/configs/interwiki.sql"

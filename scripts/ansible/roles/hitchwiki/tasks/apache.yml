@@ -20,7 +20,7 @@
 
 - name: Configure Hitchwiki for Apache2
   become: yes
-  template: src={{ dir.conf }}/apache-hitchwiki.conf dest=/etc/apache2/sites-available/hitchwiki.conf
+  template: src=configs/apache-hitchwiki.conf dest=/etc/apache2/sites-available/hitchwiki.conf
 
 - name: Activate Hitchwiki in Apache2
   become: yes
@@ -50,14 +50,10 @@
   register: validate_apache_syntax
 - debug:
     var: validate_apache_syntax.stderr_lines
+  when: validate_apache_syntax.stderr_lines
 
 - name: Enable apache mod rewrite
   become: yes
   apache2_module: name=rewrite state=present
-
-- name: Finish apache installation
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
-  when: validate_apache_syntax|succeeded
 
 ...

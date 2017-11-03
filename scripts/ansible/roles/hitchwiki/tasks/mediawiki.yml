@@ -4,6 +4,7 @@
 # Prepare database
 - name: Drop Mediawiki database
   mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
+  when: mediawiki.db.clean_on_setup is defined and mediawiki.db.clean_on_setup
 
 - name: Create database
   mysql_db: name={{ mediawiki.db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
@@ -13,6 +14,7 @@
   become: yes
   file: state=absent path={{ dir.wiki }}
   with_items: "{ {{ dir.wiki }} composer.lock }"
+  when: mediawiki.clean_on_setup is defined and mediawiki.clean_on_setup
 
 - name: Install mediawiki
   composer: command=install no_dev=True working_dir=/var/www/
@@ -29,17 +31,16 @@
 
 - name: Grant extensions folder to ansible user
   become: yes
-  file: state=directory path={{dir.wiki}} recurse=yes owner=1050 group=1050 mode=774
+  at: command="chown 1050 1050 -R {{dir.wiki}}" count=1 units=minutes
+  #file: state=directory path={{dir.wiki}} recurse=yes owner=1050 group=1050 mode=774
 
 - name: Configure composer
-  template: src={{ dir.conf }}/composer.local.json dest={{ dir.wiki }}/composer.local.json
+  template: src=configs/composer.local.json dest={{ dir.wiki }}/composer.local.json
 
 - name: Download basic MediaWiki extensions
 #  become: yes
   composer: command=update no_dev=True working_dir={{ dir.wiki }}
   register: composer_update
-- debug:
-    var: composer_update.stderr_lines
 
 - name: Setup Mediawiki extensions
   composer: working_dir={{dir.wiki}} command=run-script no_dev=True arguments="post-install-cmd -d ./extensions/{{ item }}"
@@ -65,31 +66,6 @@
     --dbtype mysql --pass {{ phpmyadmin_password }} \
     --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
   register: mw_install
-  ignore_errors: yes
-- debug:
-    var: mw_install.stderr_lines
-
-- name: Is Vector skin present?
-  shell: "[ -d {{ dir.wiki }}/skins/Vector ]"
-  register: vector
-- name: Download Vector skin
-  when: vector|failed
-  git:
-    repo: https://phabricator.wikimedia.org/diffusion/SVEC/Vector
-    dest: "{{ dir.wiki }}/skins/Vector"
-    depth: 1
-  ignore_errors: yes
-
-- name: Is LocalisationUpdate extension present?
-  shell: "[ -d {{ dir.wiki }}/extensions/LocalisationUpdate ]"
-  register: localisation
-- name: Download LocalisationUpdate - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
-  when: localisation|failed
-  git:
-    repo: https://github.com/wikimedia/mediawiki-extensions-LocalisationUpdate
-    dest: "{{ dir.wiki }}/extensions/LocalisationUpdate"
-    depth: 1
-  ignore_errors: yes
 
 # MW visual editor
 - name: Install MW visual editor
@@ -106,7 +82,8 @@
 
 - name: Grant wiki folder to webuser group
   become: yes
-  file: path={{ dir.wiki }} recurse=yes group={{ apache.group }}
+  at: command="chgrp {{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
+  #file: path={{ dir.wiki }} recurse=yes group={{ apache.group }}
 
 - name: Grant wiki files to webuser
   become: yes
@@ -123,11 +100,5 @@
 - name: Add cron job for daily localisation updates
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
   # See https://github.com/Hitchwiki/hitchwiki/issues/109
-
-- name: Finish Mediawiki installation
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
-  notify:
-   - apache
 
 ...

@@ -13,6 +13,7 @@ hosts
 host_vars
 *.retry
 state.yml
+status
 
 # Folder created by Apache installer
 /html

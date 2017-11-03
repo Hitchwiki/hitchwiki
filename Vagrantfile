@@ -27,21 +27,21 @@ Vagrant.configure("2") do |config|
   config.hostmanager.manage_guest = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
-
+#  config.ssh.username = "hitchwiki"
+#  config.ssh.password = "autobahn"
+#  config.ssh.password = "ubuntu"
+  config.ssh.port = "2222"
+#  config.ssh.keys_only = true
+#  config.ssh.insert_key = true
+#  config.ssh.private_key_path = "~/.ssh/id_rsa"
+  # https://www.vagrantup.com/docs/vagrantfile/ssh_settings.html
 
   config.vm.define "hitchwiki" do |node|
     node.vm.box = "ubuntu/xenial64"
     node.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=755"]
     node.vm.network :private_network, ip: settings["vagrant"]["private_network_ip"]
-    #node.vm.hostname = settings["domain"]
     node.vm.hostname = settings["vagrant"]["hostname"]
-    node.vm.ssh.user = "hitchwiki"
-    node.vm.ssh.port = "2222"
-    node.vm.ssh.insert_key = true
-    node.vm.ssh.private_key_path = "~/.ssh/id_rsa"
-    node.vm.ssh.extra_args = "-o NoHostAuthenticationForLocalhost"
-  # https://www.vagrantup.com/docs/vagrantfile/ssh_settings.html
-  config.vm.post_up_message = "The box is prepared. Now run 'vagrant ssh -c '/var/www/scripts/setup_hitchwiki.sh'"
+
     # Provision machine using Ansible
     # https://www.vagrantup.com/docs/provisioning/ansible.html
     config.vm.provision :ansible do |ansible|

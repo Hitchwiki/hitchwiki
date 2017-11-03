@@ -30,11 +30,5 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.user WHERE User=''"
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
-  register: secure_db
-
-- name: Finish dbserver installation
-  when: secure_db|succeeded
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
 
 ...

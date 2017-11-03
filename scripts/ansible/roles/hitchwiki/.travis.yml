@@ -1,4 +1,5 @@
 ---
+# See https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 language: python
 python: "2.7"
 

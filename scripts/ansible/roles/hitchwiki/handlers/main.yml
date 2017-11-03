@@ -4,11 +4,18 @@
 - name: Refresh status
   become: yes
   command: "{{ dir.script }}/status.sh"
+  listen:
+    - save
+    - status
   notify:
+    - fetch status
     - load
-  listen: "save"
+- name: Retrieve summary
+  fetch: src={{ dir.state }} dest=status/{{ ansible_host }}/ flat=yes
+  listen: "fetch status"
+  notify: "load"
 - name: Load variables
-  include_vars: "{{ dir.state }}"
+  include_vars: "status/{{ ansible_host }}/state.yml"
   listen:
     - load
     - reload

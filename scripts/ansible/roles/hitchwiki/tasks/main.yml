@@ -1,20 +1,26 @@
 ---
 # Setup hitchwiki
-# based on install_funcs.sh by pgouveia.
+# based on install_funcs.sh by pmgouveia.
 
-- name: Has configs/settings-example.yml been copied to configs/settings.yml?
-  include_vars: ./configs/settings.yml
-  when: lookup('file', 'configs/settings.yml')
+- shell: "[ -d /etc/ansible/facts.d ]"
+  ignore_errors: yes
+  notify: status
 
-- name: This should show path settings or settings.yml is not up to date
+- name: Fetch remote settings
+  fetch: src=/var/www/configs/settings.yml dest=status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
+
+- name: Load settings
+  include_vars: "{{ item }}"
+  with_first_found:
+    - status/{{ ansible_host }}/settings.yml
+    - configs/settings.yml
+    - configs/settings-example.yml
+
+- name: Check if settings.yml is up to date
+  failed_when: dir is undefined
   debug:
     var: dir
-  failed_when: dir is undefined
 
-- name: Refresh status
-  become: yes
-  command: "{{ dir.script }}/status.sh"
-  notify: "load"
 - meta: flush_handlers
 
 - name: Prepare system
@@ -34,11 +40,11 @@
   include_tasks: mediawiki.yml
   when: not configured.mw
 
-- set_fact: https=True
+- name: Is TLS requested?
+  debug: msg="{{ env }} / {{ mediawiki.protocol }}"
+- name: Activate TLS
+  set_fact: https=True
   when: "'https' in mediawiki.protocol or 'production' in env"
-
-- debug: msg="{{ mediawiki.protocol }} {{ env }}"
-
 - name: Setup TLS
   include_tasks: tls.yml
   when: https and not configured.tls
@@ -54,7 +60,7 @@
 - meta: flush_handlers
 
 - name: Update mediawiki
-  include_role: update
+  include_role: name=update
 
 - name: Update status
   become: yes

@@ -33,12 +33,14 @@ mediawiki:
   enableuseremail: false
   emergency_contact: "contact@hitchwiki.test"
   password_sender: "noreply@hitchwiki.test"
+  clean_on_setup: false
   db:
     host: localhost
     username: root
     password: root
     database: hitchwiki_en
     prefix: hw_
+    clean_on_setup: false
   user:
     Hitchwiki: "{{ phpmyadmin_password }}"
     Hitchbot: "{{ phpmyadmin_password }}"
