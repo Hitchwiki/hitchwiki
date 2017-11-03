@@ -1,17 +1,6 @@
 ---
 # Status report
 
-- name: Refresh status
-  become: yes
-  command: "{{ dir.script }}/status.sh"
-- name: Load variables
-  include_vars: "{{ dir.state }}"
-
-- debug:
-    var: configured
-- debug:
-    var: started
-
 - shell: |
     echo "
     #######################################################################
@@ -29,10 +18,21 @@
     #          (Tip: Run 'rgrep TODO roles' to see open tasks.)           #
     #######################################################################
     "
-  when: configured.system and configured.web and configured.db and configured.mw and configured.parsoid and started.apache and started.mysql and started.parsoid
+  when: no_outro is undefined and configured.system and configured.web and configured.db and configured.mw and configured.parsoid and started.apache and started.mysql and started.parsoid
   register: outro
 - debug:
     var: outro.stdout_lines
   when: not outro|skipped
+
+- name: Finished chapters
+  debug:
+    msg: "{{ configured }}"
+- name: Started services
+  debug:
+    msg: "{{ started }}"
+  
+#- debug:
+#    var: "{{ item }}"
+#  with_items: { configured, started }
 
 ...
