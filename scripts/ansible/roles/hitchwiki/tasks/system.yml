@@ -3,7 +3,7 @@
 
 - name: Set language
   lineinfile: 
-    path: .profile
+    path: ~/.profile
     line: |
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
@@ -14,7 +14,7 @@
     path: /etc/apt/apt.conf.d/apt-cacher-ng
     create: yes
     regexp: '^Acquire::http::Proxy'
-    line: >
+    line: |
       Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";
       Acquire::https::Proxy "false"; # or enable "PassThroughPattern: .*" in /etc/apt-cacher-ng/acng.conf
       # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
@@ -22,7 +22,7 @@
 
 - name: Remove apt source of NodeSoure 8.x # to avoid dependency problems
   become: yes
-  apt_repository: filename=nodesource.list state=absent repo="deb https://deb.nodesource.com/node_8.x xenial main"
+  apt_repository: state=absent filename=nodesource.list repo="deb https://deb.nodesource.com/node_8.x xenial main"
 
 - name: Install helper tools
   become: yes
@@ -43,7 +43,8 @@
 
 - name: Add node key
   become: yes
-  apt_key: id=1655A0AB68576280 state=present
+  apt_key: state=present id=1655A0AB68576280 url=http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY
+  ignore_errors: yes # TODO "key does not seem to have been added"
 
 - name: Install nodejs
   become: yes
@@ -61,7 +62,7 @@
   pip: name=shyaml state=present extra_args=--user
 
 - name: Create and add swapfile
-  global: yes
+  become: yes
   command: chdir=/root |
     fallocate --length {{ swap.size }} swapfile
     mkswap swapfile

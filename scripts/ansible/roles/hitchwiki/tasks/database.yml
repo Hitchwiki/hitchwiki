@@ -31,10 +31,6 @@
     mysql {{ db_credentials }} -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
     mysql {{ db_credentials }} -e "FLUSH PRIVILEGES"
   register: secure_db
-  ignore_errors: yes
-
-- debug:
-    var: secure_db.stderr_lines
 
 - name: Finish dbserver installation
   when: secure_db|succeeded

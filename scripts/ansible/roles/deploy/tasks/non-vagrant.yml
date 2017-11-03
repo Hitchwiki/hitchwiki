@@ -40,7 +40,7 @@
 - name: Set remote `hosts`
   become: yes
   remote_user: "{{ user }}"
-  shell: echo -e "[hitchwiki]\nlocalhost" > {{ root }}/scripts/ansible/hosts
+  shell: echo -e "[hitchwiki]\nlocalhost ansible_connection=local" > {{ root }}/scripts/ansible/hosts
 
 - name: Link {{ root }} to /var/www
   become: yes

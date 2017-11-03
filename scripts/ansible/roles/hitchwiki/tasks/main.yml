@@ -11,8 +11,11 @@
     var: dir
   failed_when: dir is undefined
 
-- name: Check status
-  include_tasks: roles/status/tasks/main.yml
+- name: Refresh status
+  become: yes
+  command: "{{ dir.script }}/status.sh"
+  notify: "load"
+- meta: flush_handlers
 
 - name: Prepare system
   include_tasks: system.yml
@@ -32,7 +35,7 @@
   when: not configured.mw
 
 - set_fact: https=True
-  when: 'https' in mediawiki.protocol or 'production' in env
+  when: "'https' in mediawiki.protocol or 'production' in env"
 
 - debug: msg="{{ mediawiki.protocol }} {{ env }}"
 
@@ -50,6 +53,14 @@
 
 - meta: flush_handlers
 
+- name: Update mediawiki
+  include_role: update
+
+- name: Update status
+  become: yes
+  command: "{{ dir.script }}/status.sh"
+  notify: "load"
+- meta: flush_handlers
 - name: Print status
   include_tasks: roles/status/tasks/main.yml
 

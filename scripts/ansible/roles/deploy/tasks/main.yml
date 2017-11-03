@@ -72,7 +72,4 @@
   become: yes
   hostname: name={{ domain }}
 
-- name: Preparation finished, now ssh in and run '{{ root }}/scripts/setup_hitchwiki.sh'.
-  set_fact: state_prepare=True
-
 ...
