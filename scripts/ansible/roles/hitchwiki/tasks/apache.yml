@@ -24,7 +24,7 @@
 
 - name: Activate Hitchwiki in Apache2
   become: yes
-  file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf
+  file: state=link src=/etc/apache2/sites-available/hitchwiki.conf path=/etc/apache2/sites-enabled/hitchwiki.conf force=yes
 
 - name: Remove default Apache2 site
   become: yes

@@ -12,9 +12,11 @@ I will
 Be sure that this is your intention."; exit; fi
 cd $(dirname $0)/..
 ./scripts/stop_all.sh
-apt-get -yqq purge 
+echo "Purging $APT"
+apt-get -yqq purge $APT
 apt-get -yq autoremove
 apt-get -yq autoclean
-rm -fr $REMOVE
+echo "Removing $PATHS"
+rm -fr $PATHS
 deluser $USER
 echo "Done."

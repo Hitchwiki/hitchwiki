@@ -1,6 +1,7 @@
 ---
 # Hitchwiki handlers
 
+# Installation report
 - name: Refresh status
   become: yes
   command: "{{ dir.script }}/status.sh"
@@ -23,10 +24,11 @@
 # System
 - name: Update system
   become: yes
-  apt: update_cache=yes upgrade=dist autoremove=yes autoclean=yes allow_unauthenticated=yes
+  apt: allow_unauthenticated=yes update_cache=yes autoremove=yes autoclean=yes upgrade=dist
   listen:
     - apt
     - update system
+  ignore_errors: yes # TODO this is not failsave https://github.com/ansible/ansible/issues/30169
 
 - name: Start monit
   become: yes
@@ -44,6 +46,15 @@
 - name: start db
   become: yes
   service: name=mariadb state=started
+
+- name: Show databases
+  command: IFS=$'\n' echo "SHOW DATABASES;" | mysql {{ db_credentials }} | grep -E '^hitchwiki_en' | sed 's/^hitchwiki_//g'
+  register: tables
+  listen:
+    - languages
+    - databases
+- debug:
+    var: tables.stdout
 
 # Webserver
 - name: Restart apache
@@ -80,14 +91,5 @@
   ignore_errors: yes
   listen:
     - stop maildev
-
-- name: Show databases
-  command: IFS=$'\n' echo "SHOW DATABASES;" | mysql {{ db_credentials }} | grep -E '^hitchwiki_en' | sed 's/^hitchwiki_//g'
-  register: tables
-  listen:
-    - languages
-    - databases
-- debug:
-    var: tables.stdout
 
 ...
