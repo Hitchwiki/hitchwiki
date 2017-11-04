@@ -70,7 +70,6 @@
 - name: Start maildev
   become: yes
   command: maildev --smtp 1025 --silent &
-  #service: name=maildev enabled=yes state=started
   listen:
     - maildev
 

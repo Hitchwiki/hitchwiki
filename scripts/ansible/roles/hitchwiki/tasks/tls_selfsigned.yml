@@ -3,7 +3,7 @@
 
 # Have we been here?
 - name: Looking for existing certificates
-  shell: "[[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.1.key }} ]]"
+  shell: "[[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.0.cert }} ]]"
   register: done
   ignore_errors: yes
 - debug:

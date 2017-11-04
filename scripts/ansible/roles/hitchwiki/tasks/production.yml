@@ -1,12 +1,6 @@
 ---
 # Productive environment
 
-- name: Setup Monit
-  include_tasks: monit.yml
-  when: not configured.monit
-  notify:
-    - restart monit
-
 - name: Setup TLS
   include_tasks: tls.yml
   when: not configured.tls

@@ -30,15 +30,15 @@
 
 - name: Setup database server
   include_tasks: database.yml
-  when: not configured.db
+  when: not configured.db and not started.mysql
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not configured.web
+  when: not configured.web and not started.apache
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not configured.mw
+  when: not configured.mw and not started.parsoid
 
 - name: Is TLS requested?
   debug: msg="{{ env }} / {{ mediawiki.protocol }}"
@@ -56,6 +56,12 @@
 - name: Setup production environment
   include_tasks: production.yml
   when: env == 'production' and not configured.production and not started.monit
+
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not configured.monit
+  notify:
+    - restart monit
 
 - meta: flush_handlers
 
