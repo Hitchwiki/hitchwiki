@@ -30,15 +30,15 @@
 
 - name: Setup database server
   include_tasks: database.yml
-  when: not configured.db and not started.mysql
+  when: not configured.db or not started.mysql
 
 - name: Setup webserver
   include_tasks: apache.yml
-  when: not configured.web and not started.apache
+  when: not configured.web or not started.apache
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
-  when: not configured.mw and not started.parsoid
+  when: not configured.mw or not started.parsoid
 
 - name: Update mediawiki
   include_role: name=update
