@@ -27,12 +27,6 @@
     regexp: '^{{user}}'
     line: "{{user}} ALL=NOPASSWD:ALL"
 
-# Prepare repository (non vagrant)
-- name: Prepare repository
-  when: ansible_user != "ubuntu"
-  remote_user: "{{ user }}"
-  include_tasks: non-vagrant.yml
-
 # Install dependencies
 - name: Use apt-cacher
   become: yes
@@ -46,7 +40,7 @@
       # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
   when: apt_proxy is defined
 
-- name: Install pip
+- name: Install git and pip
   become: yes
   apt: name={{ item }} state=present
   with_items: { git, python-pip }
@@ -55,5 +49,11 @@
   become: yes
   pip: name={{ item }} state=latest umask=0022
   with_items: { pip, ansible }
+
+# Prepare repository (non vagrant)
+- name: Prepare repository
+  when: ansible_user != "ubuntu"
+  remote_user: "{{ user }}"
+  include_tasks: non-vagrant.yml
 
 ...

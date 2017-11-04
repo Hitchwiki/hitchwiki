@@ -53,7 +53,7 @@
 
 - name: Setup Monit
   include_tasks: monit.yml
-  when: not started.monit and not configured.monit
+  when: not configured.monit
   notify:
     - restart monit
     - apt

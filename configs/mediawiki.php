@@ -107,7 +107,9 @@ $wgCacheEpoch    = max($wgCacheEpoch, $configdate);
 $wgScriptPath       = '/'  . $hwLang;
 $wgScriptExtension  = '.php';
 $wgArticlePath      = "{$wgScriptPath}/$1";
+$wgArticlePath      = str_replace('//', '/', $wgArticlePath);
 $wgScript           = "{$wgScriptPath}/index.php";
+$wgScript           = str_replace('//', '/', $wgScript);
 $wgUsePathInfo      = true;
 $wgCookieDomain     = '{{ cookiedomain }}';
 

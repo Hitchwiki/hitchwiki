@@ -66,7 +66,6 @@ mw=false
 parsoid=false
 monit=false
 tls=false
-cert=false
 production=false
 maildev=false
 phpmyadmin=false
@@ -77,12 +76,11 @@ dev=false
 [ -f /var/www/public/wiki/extensions/SemanticMediaWikiEnabled ] && mw=true
 [ -f /etc/mediawiki/parsoid/config.yaml ] && parsoid=true
 [ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
-[ -f /etc/letsencrypt/live/beta.hitchwiki.org/fullchain.pem ] && cert=true
 [[ -n $monit_bin ]] && [[ ! $(monit status 2>&1 >/dev/null) ]] && monit=true
 [ $monit == "true" ] && [ $tls == "true" ] && [ $cert == "true" ] && production=true
 [ -f /etc/init.d/maildev ] && maildev=true && dev=true
 
-for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev
+for chapter in system db web tls mw parsoid monit production maildev phpmyadmin dev
 do echo "  $chapter: ${!chapter}" >> $sf
 done
 

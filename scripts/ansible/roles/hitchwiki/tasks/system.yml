@@ -31,6 +31,10 @@
       # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
   when: apt_proxy is defined
 
+- name: Install apt-transport-https
+  become: yes
+  apt: state=present name=apt-transport-https
+
 - name: Remove apt source of NodeSoure 8.x # to avoid dependency problems
   become: yes
   apt_repository: state=absent filename=nodesource.list repo="deb https://deb.nodesource.com/node_8.x xenial main"
