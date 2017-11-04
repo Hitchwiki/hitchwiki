@@ -17,6 +17,9 @@
     version: ansible
   when: root_exists|failed
 
+- name: Grant {{ root }} to {{ user }}
+  file: state=directory path={{ root }} recurse=yes owner={{ user }} group={{ apache.group }}
+
 - name: Link {{ root }} to /var/www
   file: state=link force=yes src={{ root }} path=/var/www owner={{ user }} group={{ user }}
 

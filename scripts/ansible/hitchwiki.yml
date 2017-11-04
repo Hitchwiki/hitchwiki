@@ -1,5 +1,5 @@
 ---
-# Ansible playbook for hitchwiki
+# Ansible playbook to setup hitchwiki inside vagrant
 #   https://docs.ansible.com/ansible/latest/playbooks_intro.html
 # Vagrant starts ansible after bringing up the machine (ubuntu/xenial)
 #   https://docs.ansible.com/ansible/latest/guide_vagrant.html
@@ -8,6 +8,8 @@
 
 - hosts: all
   gather_facts: no
+  vars_files:
+    - configs/settings.yml
   pre_tasks:
     - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
       raw: sudo apt-get install -yq python-simplejson
@@ -16,10 +18,9 @@
 
 - name: Setup hitchwiki
   hosts: all
-  pre_tasks:
-    - include_vars: configs/settings.yml
+  vars_files:
+    - configs/settings.yml
   remote_user: "{{ user }}"
-
   roles:
     - hitchwiki
 
