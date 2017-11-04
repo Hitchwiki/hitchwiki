@@ -29,7 +29,7 @@
 - name: Request certificate
   when: not domain in certificates.stdout or "No certs found" in certificates.stdout
   become: yes
-  shell: certbot run -n -i apache -d {{ domain }}
+  shell: certbot run -n -i apache -d {{ domain }} --agree-tos
   register: certbot
   # run non-interactively, install via apache for {{ domain }}
   # authentification, webroot and keysize are configure via cli.ini above

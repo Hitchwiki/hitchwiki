@@ -15,6 +15,8 @@
     - status/{{ ansible_host }}/settings.yml
     - configs/settings.yml
     - configs/settings-example.yml
+    - /var/www/configs/settings.yml
+    - /var/www/configs/settings-example.yml
 
 - name: Check if settings.yml is up to date
   failed_when: dir is undefined
