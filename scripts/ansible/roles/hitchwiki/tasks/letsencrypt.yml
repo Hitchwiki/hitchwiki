@@ -37,13 +37,15 @@
 
 - debug:
     var: certbot.stdout_lines
+  when: not domain in certificates.stdout or "No certs found" in certificates.stdout
 
 - name: Do we have certificates?
   shell: "[ -f /etc/letsencrypt/live/{{ domain }}/fullchain.pem ] && [ -f /etc/letsencrypt/live/{{ domain }}/privkey.pem ]"
   register: certificates_exist
   ignore_errors: yes
 
-- set_fact:
+- name: Certbot run successfull, check /var/log/letsencrypt.log for details
+  set_fact:
      cert: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
      key: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   register: letsencrypt
@@ -54,6 +56,7 @@
   # alternative: renew --quiet --no-self-upgrade
   # https://github.com/geerlingguy/ansible-role-certbot/blob/master/tasks/renew-cron.yml
   when: certificates_exist|succeeded
+  notify: "apache"
 
 # https://docs.ansible.com/ansible/latest/letsencrypt_module.html
 #- letsencrypt:
@@ -66,11 +69,5 @@
 # certificate removal
 #   https://www.jeffgeerling.com/blog/2016/remove-single-certbot-letsencrypt-certificate-server
 #   certbot delete --cert-name example.com
-
-- name: Certbot run successfull, check /var/log/letsencrypt.log for details
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
-  when: certificates_exist|succeeded
-  notify: "apache"
 
 ...

@@ -40,6 +40,9 @@
   include_tasks: mediawiki.yml
   when: not configured.mw and not started.parsoid
 
+- name: Update mediawiki
+  include_role: name=update
+
 - name: Is TLS requested?
   debug: msg="{{ env }} / {{ mediawiki.protocol }}"
 - name: Activate TLS
@@ -62,16 +65,8 @@
   when: not configured.monit
   notify:
     - restart monit
+    - status
 
-- meta: flush_handlers
-
-- name: Update mediawiki
-  include_role: name=update
-
-- name: Update status
-  become: yes
-  command: "{{ dir.script }}/status.sh"
-  notify: "load"
 - meta: flush_handlers
 - name: Print status
   include_tasks: roles/status/tasks/main.yml

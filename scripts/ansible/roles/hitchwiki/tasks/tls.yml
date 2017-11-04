@@ -53,14 +53,31 @@
 
 - name: Redirect non-HTTPS requests
   become: yes
-  lineinfile:
+  blockinfile:
     path: /etc/apache2/sites-enabled/hitchwiki.conf 
     insertafter: '^  DocumentRoot'
-    regexp: '^  Redirect "http://$"'
-    line: "  Redirect \"http://$\" \"https://{{ domain }}\""
+    block: |
+        RewriteEngine on
+        RewriteCond %{HTTP:X-Forwarded-Proto} !https
+        RewriteRule (.*) https://{{ domain }}/$1 [R=301,L]
     state: present
   when: tls|succeeded
-
+  # Redirect "/" "https://{{ domain }}/
+  # redirect loop https://stackoverflow.com/questions/18328601/redirect-loop-while-redirecting-all-http-requests-to-https-using-htaccess
+  # if syntax https://httpd.apache.org/docs/2.4/mod/core.html#if
+  # variables https://httpd.apache.org/docs/2.4/expr.html
+  # https://httpd.apache.org/docs/2.4/rewrite/remapping.html
+  # https://httpd.apache.org/docs/current/rewrite/advanced.html#redirectanchors
+  # More options
+  #RewriteEngine on
+  #RewriteCond %{HTTPS} off
+  #RewriteRule (.*) https://%{HTTP_HOST}%{
+  #ReWriteCond %{SERVER_PORT} 80
+  #RewriteCond %{HTTPS} off
+  #RewriteCond %{HTTPS} !on
+  #RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  #RewriteCond %{HTTP:X-Forwarded-SSL} =off
+  
 - name: Apache syntax check
   become: yes
   command: apache2ctl configtest

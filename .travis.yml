@@ -3,6 +3,9 @@
 # syntax check: https://lint.travis-ci.org/
 language: python
 python: "2.7"
+branches:
+  only:
+    - ansible
 
 before_install:
   # Make sure everything's up to date.
@@ -13,7 +16,7 @@ install:
   - pip install ansible
 
   # Add ansible.cfg to pick up roles path.
-  - echo -e "[defaults]\nroles_path = scripts/ansible/roles" > ansible.cfg
+  - echo -e "[defaults]\nroles_path = ../" > ansible.cfg
 
 script:
   # Test syntax
