@@ -12,7 +12,7 @@
 - name: Load settings
   include_vars: "{{ item }}"
   with_first_found:
-    - status/{{ ansible_host }}/settings.yml
+    - "status/{{ ansible_host }}/settings.yml"
     - configs/settings.yml
     - configs/settings-example.yml
     - /var/www/configs/settings.yml
@@ -56,10 +56,6 @@
 - name: Setup Monit
   include_tasks: monit.yml
   when: not configured.monit
-  notify:
-    - restart monit
-    - apt
-    - status
 
 - meta: flush_handlers
 

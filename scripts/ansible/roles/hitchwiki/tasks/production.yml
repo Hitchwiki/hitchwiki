@@ -6,6 +6,7 @@
   when: configured.maildev
   notify:
     - stop maildev
+  ignore_errors: yes
 
 - name: Remove PHPMyAdmin
   become: yes
