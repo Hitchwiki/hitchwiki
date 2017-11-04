@@ -16,7 +16,7 @@ install:
 
 script:
   # Test syntax
-  ansible-playbook -i tests/inventory tests/test.yml --syntax-check
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook.
   - "ansible-playbook -i tests/inventory tests/test.yml --connection=local -b"
