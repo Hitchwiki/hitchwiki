@@ -19,20 +19,22 @@
 - name: Install mediawiki
   composer: command=install no_dev=True working_dir=/var/www/
 
+- name: Grant wiki folder to ansible user
+  become: yes
+  #at: command="chown 1050.{{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
+  command: "chown 1050.{{ apache.group }} -R {{ dir.wiki }}"
+  #file: state=directory path={{ dir.wiki }} recurse=yes owner=1050 group={{ apache.group }} #mode=774
+  # TODO fatal: [vagrant]: FAILED! => {"changed": false, "failed": true, "module_sderr": "Shared connection to 127.0.0.1 closed.\r\n", "module_stdout": "\r\n", "msg": "MODULE FAILURE", "rc": 0}
+
 - name: Create wiki directories
   become: yes
-  file: state=directory path={{ item }} owner=1050 group=1050 mode=664
+  file: state=directory path={{ item }} owner=1050 group={{ apache.group }} mode=664
   with_items:
     - "{{ dir.root }}/tmp/sessions"
     - "{{ dir.wiki }}/cache"
     - "{{ dir.wiki }}/images/cache"
     - "{{ dir.wiki }}/dumps"
     - "{{ dir.wiki }}/extensions"
-
-- name: Grant extensions folder to ansible user
-  become: yes
-  #at: command="chown 1050 1050 -R {{ dir.wiki }}" count=1 units=minutes
-  file: state=directory path={{ dir.wiki }} recurse=yes owner=1050 group=1050 mode=774
 
 - name: Configure composer
   template: src=configs/composer.local.json dest={{ dir.wiki }}/composer.local.json
@@ -85,7 +87,7 @@
   at: command="chgrp {{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
   #file: path={{ dir.wiki }} recurse=yes group={{ apache.group }}
 
-- name: Grant wiki files to webuser
+- name: Grant wiki settings to webuser
   become: yes
   file: path={{ dir.conf }}/{{item}} group={{ apache.group }}
   with_items: { mediawiki-lang.php, languages.ini, mediawiki-extensions.php }

@@ -16,6 +16,8 @@
 
 - name: Setup hitchwiki
   hosts: all
+  pre_tasks:
+    - include_vars: configs/settings.yml
   remote_user: "{{ user }}"
 
   roles:

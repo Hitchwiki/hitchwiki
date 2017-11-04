@@ -29,8 +29,9 @@
 
 # Prepare repository (non vagrant)
 - name: Prepare repository
-  include_tasks: non-vagrant.yml
   when: ansible_user != "ubuntu"
+  remote_user: "{{ user }}"
+  include_tasks: non-vagrant.yml
 
 # Install dependencies
 - name: Use apt-cacher
