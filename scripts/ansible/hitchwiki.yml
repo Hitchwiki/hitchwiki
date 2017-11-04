@@ -10,17 +10,13 @@
   gather_facts: no
   pre_tasks:
     - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
-      become: yes
       raw: sudo apt-get install -yq python-simplejson
-    - name: Check if ssh key exists
-      shell: "[ -f ~/.ssh/id_rsa ]"
-      register: deploy_done
-      ignore_errors: yes
     - import_role: name=deploy
-      when: deploy_done|failed
+      when: ansible_user == 'ubuntu'
 
 - name: Setup hitchwiki
   hosts: all
+  remote_user: "{{ user }}"
 
   roles:
     - hitchwiki

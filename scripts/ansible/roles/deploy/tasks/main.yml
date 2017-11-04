@@ -1,44 +1,38 @@
 ---
-# Run as root
-- name: Does settings.yml exist?
-  include_vars: configs/settings.yml
+# Prepare user
+- debug: var=ansible_user
 
-- name: Do we run inside vagrant?
-  shell: "[ -d /var/www/configs ]"
-  register: vagrant
-  ignore_errors: yes
+- name: Load settings
+  include_vars: "{{ item }}"
+  with_first_found:
+    - configs/settings.yml
+    - configs/settings-example.yml
 
-- name: Set root to /var/www
-  set_fact:
-    root: /var/www
-    user: ubuntu
-  when: vagrant|succeeded
+- name: Add user {{ user }}
+  become: yes
+  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
+  # https://docs.ansible.com/ansible/latest/user_module.html
 
+- name: Add authorized_keys for {{ user }}
+  become: yes
+  authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
+  with_first_found:
+    - configs/authorized_keys
+    - ~/.ssh/id_rsa.pub
+
+- name: Add {{ user }} to sudoers
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^{{user}}'
+    line: "{{user}} ALL=NOPASSWD:ALL"
+
+# Prepare repository (non vagrant)
 - name: Prepare repository
   include_tasks: non-vagrant.yml
-  when: vagrant|failed
+  when: ansible_user != "ubuntu"
 
-- shell: "[ -f ~/.ssh/id_rsa ]"
-  register: key_exists
-  ignore_errors: yes
-- name: Generate ssh key
-  shell: ssh-keygen -qf ~/.ssh/id_rsa -P ""
-  when: vagrant|succeeded and key_exists|failed
-
-- shell: "[ -f /var/www/configs/authorized_keys ]"
-  register: keys
-  ignore_errors: yes
-- name: Allow keys in `configs/authorized_keys` to connect as {{ user }}
-  become: yes
-  authorized_key: user={{ user }} state=present key="{{ lookup('file', 'configs/authorized_keys') }}"
-  when: keys|succeeded
-
-- name: Allow {{ user }} to connect without password
-  # necessary for ansible to connect to localhost
-  become: yes
-  remote_user: "{{ user }}"
-  shell: cat /home/{{ user }}/.ssh/id_rsa.pub >> /home/{{ user }}/.ssh/authorized_keys
-
+# Install dependencies
 - name: Use apt-cacher
   become: yes
   lineinfile:
@@ -60,16 +54,5 @@
   become: yes
   pip: name={{ item }} state=latest umask=0022
   with_items: { pip, ansible }
-
-- name: Add {{ domain }} to `/etc/hosts`
-  become: yes
-  lineinfile:
-    path: /etc/hosts
-    regexp: '^127.0.0.1'
-    line: 127.0.0.1 localhost {{ domain }}
-
-- name: Change hostname to {{ domain }}
-  become: yes
-  hostname: name={{ domain }}
 
 ...

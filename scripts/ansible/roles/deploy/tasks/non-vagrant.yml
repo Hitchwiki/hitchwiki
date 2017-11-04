@@ -1,20 +1,8 @@
 ---
 # prepare repository when non run with vagrant
 
-- name: Add user {{ user }}
-  become: yes
-  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
-  # https://docs.ansible.com/ansible/latest/user_module.html
-
-- name: Add {{ user }} to sudoers
-  become: yes
-  lineinfile:
-    path: /etc/sudoers
-    regexp: '^{{user}}'
-    line: "{{user}} ALL=NOPASSWD:ALL"
-
-- set_fact:
-    root: "/home/{{ user }}/src"
+- name: Set root
+  set_fact: root=~/src
 
 - name: Does {{ root }} exist?
   shell: "[ -d {{ root }} ]"
@@ -22,28 +10,31 @@
   ignore_errors: yes
 
 - name: Clone hitchwiki repository
-  become: yes
+  remote_user: "{{ user }}"
   git:
     dest: "{{ root }}"
     repo: https://github.com/traumschule/hitchwiki # TODO change later
     version: ansible
   when: root_exists|failed
 
-- name: Grant {{ root }} to {{ user }}
+- name: Link {{ root }} to /var/www
   become: yes
-  file: path={{ root }} owner={{ user }} group={{ user }} recurse=yes
+  file: state=link force=yes src={{ root }} path=/var/www owner={{ user }} group={{ user }}
 
 - name: Copy settings.yml # from local to remote
   become: yes
-  copy: src=configs/settings.yml dest={{ root }}/configs/settings.yml owner={{user}} group={{user}}
+  copy: src={{ item }} dest={{ root }}/configs/settings.yml owner={{user}} group={{user}}
+  with_first_found:
+    - configs/settings.yml
+    - configs/settings-example.yml
 
-- name: Set remote `hosts`
-  become: yes
-  remote_user: "{{ user }}"
-  shell: echo -e "[hitchwiki]\nlocalhost ansible_connection=local" > {{ root }}/scripts/ansible/hosts
-
-- name: Link {{ root }} to /var/www
-  become: yes
-  file: state=link force=yes src={{ root }} path=/var/www
+- name: Create ansible hosts file
+  lineinfile:
+    path: "{{ root }}/scripts/ansible/hosts"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    line: |
+      [hitchwiki]
+      localhost ansible_connection=local
 
 ...

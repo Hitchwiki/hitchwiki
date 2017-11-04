@@ -8,6 +8,17 @@
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
 
+- name: Add {{ domain }} to `/etc/hosts`
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127.0.0.1'
+    line: 127.0.0.1 localhost {{ domain }}
+
+- name: Change hostname to {{ domain }}
+  become: yes
+  hostname: name={{ domain }}
+
 - name: Use apt-cacher
   become: yes
   lineinfile:
@@ -69,9 +80,5 @@
     chmod 0600 swapfile
     swapon swapfile
   when: swap is defined and swap.enabled and swap.size
-
-- name: Finish system preparation
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
 
 ...
