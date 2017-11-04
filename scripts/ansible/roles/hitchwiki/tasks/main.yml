@@ -20,7 +20,6 @@
   failed_when: dir is undefined
   debug:
     var: dir
-
 - meta: flush_handlers
 
 - name: Prepare system
@@ -52,24 +51,25 @@
   include_tasks: tls.yml
   when: https and not configured.tls
 
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not started.monit and not configured.monit
+  notify:
+    - restart monit
+    - status
+
+- meta: flush_handlers
+
 - name: Setup dev environment
   include_tasks: dev.yml
   when: env == 'dev' and not configured.dev
 
 - name: Setup production environment
   include_tasks: production.yml
-  when: env == 'production' and not configured.production and not started.monit
-
-- name: Setup Monit
-  include_tasks: monit.yml
-  when: not configured.monit
-  notify:
-    - restart monit
-    - status
+  when: env == 'production' and not configured.production
 
 - meta: flush_handlers
 - name: Print status
   include_tasks: roles/status/tasks/main.yml
-
 
 ...

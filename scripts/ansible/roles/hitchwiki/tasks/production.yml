@@ -1,10 +1,5 @@
 ---
 # Productive environment
-
-- name: Setup TLS
-  include_tasks: tls.yml
-  when: not configured.tls
-
 - name: Disable maildev
   become: yes
   file: path=/etc/init.d/maildev state=absent
@@ -31,10 +26,5 @@
   ignore_errors: yes
 - debug:
     var: secure_db.stderr_lines
-
-- name: Production environment is set up
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
-  when: configured.monit and configured.tls
 
 ...
