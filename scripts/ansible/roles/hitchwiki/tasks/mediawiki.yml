@@ -21,7 +21,7 @@
 
 - name: Create wiki directories
   become: yes
-  file: state=directory path={{ item }} owner=1050 group={{ apache.group }} mode=664
+  file: state=directory path={{ item }} owner=1050 group={{ apache.group }} mode=774
   with_items:
     - "{{ dir.root }}/tmp/sessions"
     - "{{ dir.wiki }}/cache"
@@ -32,15 +32,7 @@
 - name: Configure composer
   template: src=configs/composer.local.json dest={{ dir.wiki }}/composer.local.json
 
-- name: Grant wiki folder to ansible user
-  become: yes
-  #at: command="chown 1050.{{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
-  #command: "chown 1050.{{ apache.group }} -R {{ dir.wiki }}"
-  file: state=directory path={{ dir.wiki }} recurse=yes owner=1050 group={{ apache.group }} #mode=774
-  # TODO fatal: [vagrant]: FAILED! => {"changed": false, "failed": true, "module_sderr": "Shared connection to 127.0.0.1 closed.\r\n", "module_stdout": "\r\n", "msg": "MODULE FAILURE", "rc": 0}
-
 - name: Download basic MediaWiki extensions
-#  become: yes
   composer: command=update no_dev=True working_dir={{ dir.wiki }}
   register: composer_update
 
