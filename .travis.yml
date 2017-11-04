@@ -17,15 +17,15 @@ install:
 
   # Add ansible.cfg to pick up roles path.
   #- echo -e "[defaults]\nroles_path = scripts/ansible/roles" > ansible.cfg
-  - export ANSIBLE_ROLES_PATH=scripts/ansible/roles/hitchwiki
+  - export ANSIBLE_ROLES_PATH=scripts/ansible/roles
   - cd scripts/ansible
 
 script:
   # Test syntax
-  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
+  - ansible-playbook -i roles/hitchwiki/tests/inventory roles/hitchwiki/tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local -b"
+  - ansible-playbook -i roles/hitchwiki/tests/inventory roles/hitchwiki/tests/test.yml --connection=local -b
 
   # Run the role/playbook again, checking to make sure it's idempotent.
 #- >
