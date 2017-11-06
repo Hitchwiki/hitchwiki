@@ -32,6 +32,7 @@ logs
 
 # Other
 /scripts/vendor
+/public/discourse
 /public/google*.html
 /dumps/
 *~

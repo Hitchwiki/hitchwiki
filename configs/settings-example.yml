@@ -1,4 +1,5 @@
-domain: hitchwiki.test
+domain: hitchwiki.test # mediawiki
+domain2: talk.hitchwiki.test #  discourse
 cookiedomain: .hitchwiki.test
 env: dev # dev | production # enables HTTPS
 user: hitchwiki # used in deploy_remote.yml playbook
@@ -15,6 +16,12 @@ smtp: # MailDev runs at port 1025 at dev server https://github.com/djfarrelly/Ma
   auth: false # Should we use SMTP authentication (true or false)
   username:
   password:
+
+discourse: # for production environment only, consider to enable a swap file below
+  enabled: enabled
+  dir: "{{ dir.root }}/discourse"
+  domain: "{{ domain2 }}"
+  port: 3010
 
 mediawiki:
   debug: False

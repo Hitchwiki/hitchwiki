@@ -1,0 +1,264 @@
+---
+# TODO Discourse https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+# docker: http://www.techsupportpk.com/2016/12/how-to-set-up-discourse-on-ubuntu-1604.html
+# nginx: https://www.rosehosting.com/blog/how-to-install-and-setup-discourse-on-an-ubuntu-12-04-vps/
+
+- name: Add ppa:chris-lea/redis-server
+  become: yes
+  apt_repository: state=present repo=ppa:chris-lea/redis-server
+
+- name: Install discoure dependencies
+  become: yes
+  apt: update_cache=yes name={{item}} state=present
+  with_items: { python-software-properties, expect, debconf-utils, build-essential, zlib1g-dev, libssl-dev, openssl, libcurl4-openssl-dev, libreadline6-dev, libpcre3, libpcre3-dev, postgresql, postgresql-contrib-9.5, libpq-dev, postgresql-server-dev-9.5, redis-server, advancecomp, gifsicle, jhead, jpegoptim, libjpeg-turbo-progs, optipng, pngcrush, pngquant, gnupg2, ruby-dev, rubygems-integration, python-psycopg2 }
+
+- name: Clone discourse
+  git:
+    repo: https://github.com/discourse/discourse.git
+    dest: "{{ discourse.dir }}"
+    depth: 1
+#    force: yes
+
+- name: Configure gem
+  lineinfile:
+    path: ~/.gemrc
+    line: "gem: --no-document"
+    state: present
+    create: yes
+
+- name: Add rvm ppa
+  become: yes
+  apt_repository:
+    state: present
+    repo: ppa:rael-gc/rvm
+
+#- name: Install rvm
+#  become: yes
+#  apt: name=rvm state=present update_cache=yes
+
+- name: Install rvm
+  shell: |
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+    \curl -O https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer
+    \curl -O https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer.asc
+    gpg --verify rvm-installer.asc
+    chmod +x rvm-installer
+    sudo bash rvm-installer stable
+    export PATH=$PATH:/usr/share/rvm/bin
+  # https://rvm.io/rvm/security
+  # https://github.com/rvm/rvm
+
+- name: Set rvm path
+  set_fact: rvm_bin=/usr/share/rvm/bin/rvm
+
+- name: Configure rvm
+  become: yes
+  shell: |
+    bash --login # https://rvm.io/integration/gnome-terminal
+    {{ rvm_bin }} install 2.4.2
+    {{ rvm_bin }} --default 2.4.2
+    {{ rvm_bin }} get master
+    {{ rvm_bin }} cleanup all
+  # https://rvm.io/rvm/upgrading  
+  ignore_errors: yes
+  
+- name: Install bundler and mailcatcher
+  become: yes
+#  shell: gem install --no-document bundler mailcatcher
+  gem: name={{item}} state=present user_install=yes #executable=~/.gem/ruby/2.3.0/bin
+  with_items: { bundler, mailcatcher }
+  # Fails with: permission denied
+
+- name: Install nvm
+  become: yes
+  npm: name=nvm state=present path=/app/location global=yes
+
+#- name: Install Node
+#  become: yes
+#  shell: |
+#    nvm install nodejs
+#    nvm alias default node
+
+- name: Install svgo
+  become: yes
+  npm: name=svgo global=yes #phantomjs-prebuilt 
+
+- name: Stop apache2 # to free memory
+  become: yes
+  command: apache2ctl stop
+  ignore_errors: yes
+
+- name: Use system libraries for nokogiri
+  become: yes
+  command: chdir={{ discourse.dir }} bundle config build.nokogiri --use-system-libraries
+- name: Install nokogiri
+  become: yes
+  gem: name=nokogiri version=1.8.1 state=present
+- name: Install cppjieba_rb
+  become: yes
+  gem: name=cppjieba_rb version=0.3.0 state=present
+- name: Bundle install
+  become: yes
+  command: chdir={{ discourse.dir }} bundle install
+- name: Install sassc
+  become: yes
+  gem: name=sassc version=1.11.2 state=present
+- name: Install foreman
+  become: yes
+  gem: name=foreman state=present
+
+# Database
+# Why does discourse not support MariaDB (search) https://meta.discourse.org/t/why-not-support-mysql/2568/44
+- name: Create postgres role hitchwiki
+  become_user: postgres
+  shell: createuser hitchwiki --superuser
+  # https://www.postgresql.org/docs/9.1/static/database-roles.html
+  register: pgrole
+  changed_when: "'already exists' not in pgrole.stderr"
+  ignore_errors: yes
+
+- name: Add discourse database
+  postgresql_db: name=discourse login_user={{ user }}
+  # https://www.postgresql.org/docs/9.1/static/tutorial-createdb.html  
+
+- name: Grant database to user discourse
+  postgresql_user: name=discourse password=discourse db=discourse role_attr_flags=CREATEDB,NOSUPERUSER login_user={{ user }}
+  # state=present #login_user=hitchwiki # login_password=postgres login_password=postgres
+
+- name: Create database
+  command: chdir={{ discourse.dir }} bundle exec rake db:create db:migrate
+  ignore_errors: yes
+
+# Apache + init script
+- name: Check for letsencrypt certificates for {{ discourse.domain }}
+  command: certbot certificates
+  become: yes
+  register: certificates
+
+- name: Request certificate
+  when: "not discourse.domain in certificates.stdout or 'No certs found' in certificates.stdout"
+  become: yes
+  shell: certbot run -n -i apache -d {{ discourse.domain }} --agree-tos
+  register: certbot
+
+- name: Do we have certificates?
+  shell: "[ -f /etc/letsencrypt/live/{{ discourse.domain }}/fullchain.pem ] && [ -f /etc/letsencrypt/live/{{ discourse.domain }}/privkey.pem ]"
+  register: certificates_exist
+
+- name: Enable apache mod_proxy
+  become: yes
+  apache2_module: name=proxy state=present
+
+- name: Add apache config
+  become: yes
+  template: src={{ dir.conf }}/apache-discourse.conf dest=/etc/apache2/sites-enabled/discourse.conf
+
+- name: Check syntax
+  become: yes
+  command: apache2ctl -t
+  register: apache_syntax
+  ignore_errors: yes
+  notify: apache
+- file: state=absent path=/etc/apache2/sites-enabled/discourse.conf
+  become: yes
+  when: apache_syntax|failed
+
+- name: Configure foreman - https://ddollar.github.io/foreman
+  blockinfile:
+    path: ~/.env
+    state: present
+    create: yes  
+    block: |
+      PORT={{ discourse.port }}
+      RAILS_ENV=production
+      RUBY_GC_MALLOC_LIMIT=90000000
+- shell: export rvmsudo_secure_path=1
+
+- name: Start discouse
+  #when: env == 'dev' # TODO this is not the best way to run the server
+  shell: chdir={{ discourse.dir }} bundle exec rails s -p {{ discourse.port }} 2>&1 |tee -a {{ dir.root }}/../logs/discouese.log &
+  register: discourse_server
+- debug: var=discourse_server.stderr_lines
+
+- name: Add discourse service
+  when: 0 and env == 'production'
+  command: chdir={{ discourse.dir }} rvmsudo foreman export systemd /etc/systemd/system -a discourse -u hitchwiki --port {{ discourse.port }} --log /var/log/discourse
+  # https://blog.oestrich.org/2017/02/foreman-systemd-export/
+  #command: chdir={{ discourse.dir }} rvmsudo foreman export inittab /etc/init.d/discourse -a discourse --port {{ discourse.port }} --log /var/log/discourse --user {{ user }}
+  # alternative: gem install god http://godrb.com/
+- command: systemctl daemon-reload
+  when: 0 and env == 'production'
+  become: yes
+
+- name: Start discourse
+  when: 0 and env == 'production'
+  become: yes
+  command: service discourse-web@.service start
+  #service: name={{ item }} enabled=yes state=started
+  #with_items: { discourse, discourse-web, discourse-web@.service }
+  # TODO => Could not find the requested service
+  register: discourse_service
+  notify: "apache start"
+
+- name: Add discourse to monit
+  when: 0
+  become: yes
+  blockinfile:
+    path: /etc/monit/monitrc
+    state: present
+    block: |
+      ####################### DISCOURSE #######################
+      check process parsoid with pidfile /run/discourse.pid
+      group services
+      start program =   "service discourse-web@.service start" with timeout 60 seconds
+      restart program = "service discourse-web@.service restart"
+      stop program  =   "service discourse-web@.service stop"
+
+- name: Reload monit
+  when: 0
+  become: yes
+  command: monit -t
+  register: monit_syntax
+  ignore_errors: yes
+
+- blockinfile:
+    path: /etc/monit/monitrc
+    state: absent
+    block: |
+      ####################### DISCOURSE #######################
+      check process parsoid with pidfile /run/discourse.pid
+      group services
+      start program =   "service discourse-web@.service start" with timeout 60 seconds
+      restart program = "service discourse-web@.service restart"
+      stop program  =   "service discourse-web@.service stop"
+  when: monit_syntax|failed
+  become: yes
+
+- name: Reload monit
+  when: monit_syntax|succeeded
+  become: yes
+  command: monit reload
+
+- name: Discourse is set up.
+  command: |
+    echo "Discourse is set up.
+      Following commands are available (run from {{ discourse.dir }}):
+       - Run specs: bundle exec rake autospec # CTRL + C to stop
+       - Create admin account: bundle exec rake admin:create
+       - Run sidekiq: mailcatcher # open http://localhost:1080 to see the emails, stop with `pkill -f mailcatcher`
+                      bundle exec sidekiq # open http://localhost:3000/sidekiq to see queues
+                      bundle exec rails server
+       - Launch discourse: bundle exec rails s -b 0.0.0.0 # Point your browser to http://localhost:3000
+       For details see {{ discourse.dir }}/README.md and `scripts/ansible/roles/hitchwiki/tasks/discourse.yml`
+       More info: 
+       - https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+       - vagrant setup: https://github.com/discourse/discourse/blob/master/docs/VAGRANT.md
+       - development setup: https://github.com/discourse/discourse/blob/master/docs/DEVELOPER-ADVANCED.md
+       - setup with docker: https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
+    "
+  register: info
+  when: discourse_service|succeeded or discourse_service|succeeded
+- debug: var=info.stdout_lines
+  when: info|succeeded
+
+...
