@@ -38,9 +38,8 @@
 - debug:
     var: secure_db.stderr_lines
 
-- name: Production environment is set up
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
-  when: configured.monit and configured.tls
+- name: Setup discourse
+  include_tasks: discourse.yml
+  when: discourse is defined and discourse.enabled and not configured.discourse
 
 ...

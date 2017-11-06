@@ -1,0 +1,10 @@
+---
+# Setup discourse, don't forget to configure it in your settings.yml
+# Details in roles/discourse/tasks/main.yml
+
+- name: Setup discourse
+  hosts: all
+  roles:
+    - { role: discourse, when: discourse.enabled }
+
+...

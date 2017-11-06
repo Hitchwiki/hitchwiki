@@ -69,6 +69,7 @@ production=false
 maildev=false
 phpmyadmin=false
 dev=false
+discourse=false
 [ -f /usr/local/bin/node ] && system=true
 [ -d /etc/mysql ] && db=true
 [ -e /etc/apache2/sites-available/hitchwiki.conf ] && web=true
@@ -79,8 +80,8 @@ dev=false
 [[ -n $monit_bin ]] && monit status 2>1 > /dev/null && monit=true
 [ $(($monit + $tls + $cert)) == 3 ] && production=true
 [ -f /etc/init.d/maildev ] && maildev=true && dev=true
-
-for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev
+[ -f /etc/init.d/discourse ] || [ -d /var/www/public/discourse/public ] &&  discourse=true
+for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev discourse
 do echo "  $chapter: ${!chapter}" >> $sf
 done
 

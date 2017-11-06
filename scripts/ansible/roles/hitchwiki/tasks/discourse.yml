@@ -1,7 +1,0 @@
----
-# TODO Discourse https://github.com/discourse/discourse/blob/master/docs/INSTALL.md
-
-- name: Discourse is not set up.
-  set_fact: state_discourse=false cacheable=true
-
-...

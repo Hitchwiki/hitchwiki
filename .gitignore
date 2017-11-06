@@ -13,6 +13,7 @@ hosts
 host_vars
 *.retry
 state.yml
+status
 
 # Folder created by Apache installer
 /html
@@ -31,6 +32,8 @@ logs
 /configs/authorized_keys
 
 # Other
+/scripts/vendor
+/public/discourse
 /public/google*.html
 /dumps/
 *~
