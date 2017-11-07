@@ -14,12 +14,16 @@
   # https://docs.ansible.com/ansible/latest/user_module.html
 
 - name: Add authorized_keys for {{ user }}
+  when: "'travis' not in ansible_user"
   become: yes
   authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
   with_first_found:
     - configs/authorized_keys
     - ~/.ssh/id_rsa.pub
-  when: ansible_user != 'travis'
+  register: add_ssh_key
+  skip: true
+- debug: msg="You won't be able to connect to this machine via ssh key. Did you run 'ssh-keygen'?"
+  when: not add_ssh_key|succeeded
 
 - name: Add {{ user }} to sudoers
   become: yes
@@ -60,7 +64,8 @@
 - set_fact: root={{ ansible_env.PWD }}/../../..
   when: ansible_user == "travis"
 - name: Link {{ root }} to /var/www
-  file: state=link force=yes src={{ root }} path=/var/www owner={{ user }} group={{ user }}
-  when: ansible_user == "travis"
+  when: "'travis' not in ansible_user"
+  file: state=link src={{ root }} path=/var/www owner={{ user }} group={{ user }}
+  ignore_errors: yes
 
 ...
