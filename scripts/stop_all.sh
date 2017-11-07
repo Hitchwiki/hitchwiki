@@ -4,6 +4,8 @@ if [ $(whoami) != 'root' ]; then echo "I need more rights! (give me names and I 
 if [ $1 ]; then services="$@" ; fi
 echo "Database backup"
 backupninja
+#echo "Drop databases"
+#mysql -uroot -proot hitchwiki_en -e "DROP DATABASE hitchwiki_en" # TODO
 for service in $services; do
   bin=$(which $service)
   echo "Stopping $service"

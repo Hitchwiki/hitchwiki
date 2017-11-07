@@ -65,7 +65,7 @@
 - set_fact: root={{ ansible_env.PWD }}/../../..
   when: ansible_user == "travis"
 - name: Link {{ root }} to /var/www
-  when: "'travis' not in ansible_user"
+  when: "'travis' in ansible_user"
   file: state=link src={{ root }} path=/var/www owner={{ user }} group={{ user }}
   ignore_errors: yes
 
