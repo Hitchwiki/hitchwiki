@@ -39,11 +39,11 @@
   become: yes
   apt_repository: state=absent filename=nodesource.list repo="deb https://deb.nodesource.com/node_8.x xenial main"
 
-- name: Add universe to the sources
+- name: Add universe to sources.list
+  when: "ansible_distribution is defined and ansible_distribution == 'Ubuntu'"
   become: yes
-  #apt_repository: state=present repo="deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
   shell: add-apt-repository universe
-  when: defined ansible_distribution_release and defined ansible_distribution and ansible_distribution == "Ubuntu"
+  #apt_repository: state=present repo="deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
   # https://github.com/ansible/ansible/issues/2352#issuecomment-94190482
   # travis: No package matching 'php-apcu' is available, https://launchpad.net/ubuntu/+source/php-apcu
 
