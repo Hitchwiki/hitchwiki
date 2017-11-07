@@ -31,14 +31,6 @@
       # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
   when: apt_proxy is defined
 
-- name: Add universe to the sources
-  become: yes
-  #apt_repository: state=present repo="deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
-  shell: add-apt-repository universe
-  when: ansible_distribution == "Ubuntu"
-
-  # https://github.com/ansible/ansible/issues/2352#issuecomment-94190482
-
 - name: Install apt-transport-https
   become: yes
   apt: state=present name=apt-transport-https
@@ -50,7 +42,7 @@
 - name: Install helper tools
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: { unattended-upgrades, composer, npm, tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban, htop, backupninja, ack-grep, nano, emacs24-nox, nullmailer, w3m, php-apcu, zsh }
+  with_items: { unattended-upgrades, npm, tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban, htop, backupninja, ack-grep, nano, emacs24-nox, nullmailer, w3m, php-apcu, zsh }
 
 - name: Configure backupninja
   become: yes

@@ -1,7 +1,14 @@
 ---
 # See https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 # syntax check: https://lint.travis-ci.org/
-dist: xenial
+
+# https://docs.travis-ci.com/user/reference/trusty
+# TODO enable when travis updated their chef scripts to support xenial (travis-ci/travis-ci#5821)
+# dist: xenial # needed for composer
+sudo: required
+services:
+  - docker
+
 language: python
 python: "2.7"
 branches:
