@@ -1,6 +1,7 @@
 ---
 # See https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 # syntax check: https://lint.travis-ci.org/
+dist: xenial
 language: python
 python: "2.7"
 branches:
