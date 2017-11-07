@@ -18,10 +18,11 @@
   become: yes
   authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
   with_first_found:
-    - configs/authorized_keys
-    - ~/.ssh/id_rsa.pub
+    - files:
+      - configs/authorized_keys
+      - ~/.ssh/id_rsa.pub
+      skip: true
   register: add_ssh_key
-  skip: true
 - debug: msg="You won't be able to connect to this machine via ssh key. Did you run 'ssh-keygen'?"
   when: not add_ssh_key|succeeded
 
