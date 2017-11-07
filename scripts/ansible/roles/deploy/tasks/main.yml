@@ -19,6 +19,7 @@
   with_first_found:
     - configs/authorized_keys
     - ~/.ssh/id_rsa.pub
+  when: ansible_user != 'travis'
 
 - name: Add {{ user }} to sudoers
   become: yes
@@ -52,8 +53,14 @@
 
 # Prepare repository (non vagrant)
 - name: Prepare repository
-  when: ansible_user != "ubuntu"
+  when: ansible_user != "ubuntu" and ansible_user != "travis"
   remote_user: "{{ user }}"
   include_tasks: non-vagrant.yml
+
+- set_fact: root={{ ansible_env.PWD }}/../../..
+  when: ansible_user == "travis"
+- name: Link {{ root }} to /var/www
+  file: state=link force=yes src={{ root }} path=/var/www owner={{ user }} group={{ user }}
+  when: ansible_user == "travis"
 
 ...
