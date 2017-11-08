@@ -60,6 +60,7 @@
     --dbtype mysql --pass {{ phpmyadmin_password }} \
     --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
   register: mw_install
+  ignore_errors: yes # this fails on reruns if mediawiki.clean_on_setup is not true
 
 # MW visual editor
 - name: Install MW visual editor
