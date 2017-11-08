@@ -6,13 +6,14 @@
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
 #   https://github.com/geerlingguy/ansible-role-apache
 
-- name: Install Apache2 with PHP7 and extensions
+- name: Install Apache2
   become: yes
   apt: name={{ item }} state=present
-  with_items: { apache2, phpmyadmin, php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-memcache, php-pear, php-imagick, php-gettext, php-xml, php-json }
+  with_items: { apache2, phpmyadmin, php-memcache, php-pear, php-imagick, php-gettext, php-xml, php-json }
 
-- name: Install php-apcu
-  apt: name=php-apcu state=present
+- name: Install PHP7
+  apt: name={{item}} state=present
+  with_items: { php7.0, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-apcu }
   ignore_errors: yes # travis / trusty fails on this
 
 - name: Allow apache override to all

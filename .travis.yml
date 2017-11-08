@@ -14,8 +14,11 @@ python: "2.7"
 branches:
   only:
     - ansible
-
+addons:
+  mariadb: '10.0'
 before_install:
+  # Add php7.0 backports - https://launchpad.net/~nschloe/+archive/ubuntu/php-backports
+  - sudo add-apt-repository ppa:nschloe/php-backports
   # Make sure everything's up to date.
   - sudo apt-get update -qq
 
