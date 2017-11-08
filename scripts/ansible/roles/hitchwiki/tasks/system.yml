@@ -50,7 +50,7 @@
 - name: Install helper tools
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: { unattended-upgrades, npm, tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban, htop, backupninja, ack-grep, nano, emacs24-nox, nullmailer, w3m, php-apcu, zsh }
+  with_items: { unattended-upgrades, npm, tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, python-software-properties, fail2ban, htop, backupninja, ack-grep, nano, emacs24-nox, nullmailer, w3m, zsh }
 
 - name: Configure backupninja
   become: yes
