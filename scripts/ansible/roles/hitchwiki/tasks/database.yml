@@ -1,10 +1,20 @@
 ---
 # Setup database server
 
-- name: Add repository for MariaDB
+- debug: var={{item}}
+  with_items: { ansible_distribution, ansible_distribution_release }
+- name: Add repository for MariaDB (Ubuntu)
+  when: ansible_distribution == 'Ubuntu'
   become: yes
   apt_repository:
-    repo: deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main
+    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+
+- name: Add repository for MariaDB (Debian)
+  when: ansible_distribution == 'Debian'
+  become: yes
+  apt_repository:
+    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/debian {{ ansible_distribution_release }} main"
     state: present
 
 - name: Add apt key for MariaDB
