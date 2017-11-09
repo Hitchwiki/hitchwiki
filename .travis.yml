@@ -24,11 +24,12 @@ before_install:
 install:
   - docker exec -t hitchwiki bash -c "apt-get update -qq &&
     apt-get install -y software-properties-common python-pip &&
-    add-apt-repository universe && apt-get update -qq"
+    add-apt-repository universe && apt-get update -qq &&
+    pip install --upgrade pip &&
+    pip install ansible"
 
 script:
-  - docker exec -t hitchwiki bash -c "cd /travis/scripts/ansible &&
-    pip install ansible &&
+  - docker exec -t hitchwiki bash -c "cd /travis/scripts/ansible && ls -lh &&
     export ANSIBLE_ROLES_PATH=$(pwd)/roles &&
     ansible-playbook -i tests/inventory tests/test.yml --syntax-check &&
     ansible-playbook -i tests/inventory tests/test.yml --connection=local -b &&
