@@ -55,26 +55,20 @@
 # Webserver
 - name: restart apache
   become: yes
-  service: name=apache2 state=restarted
+  service: name=apache2 enabled=yes state=restarted
   register: apache_restart
-  listen:
-    - apache
-    - apache2
-    - restart apache2
-    - webserver
-    - restart webserver
 
 # Mediawiki handlers
-- name: restart Parsoid
+- name: start parsoid
   become: yes
-  service: name=parsoid state=started
+  service: name=parsoid enables=yes state=restarted
   listen:
-    - parsoid
+    - restart parsoid
 
 # Development environment
 - name: start maildev
   become: yes
-  service: name=maildev state=started enabled=yes
+  service: name=maildev enabled=yes state=started
   listen:
     - maildev
   ignore_errors: yes 

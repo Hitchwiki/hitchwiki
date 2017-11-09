@@ -14,8 +14,8 @@
   with_first_found:
     - "status/{{ ansible_host }}/settings.yml"
     - configs/settings.yml
-    - configs/settings-example.yml
     - /var/www/configs/settings.yml
+    - configs/settings-example.yml
     - /var/www/configs/settings-example.yml
 
 - name: Check if relevant variables are defined
@@ -41,31 +41,42 @@
 - name: Setup database server
   include_tasks: database.yml
   when: not configured.db or not started.mysql
+  notify: "restart db"
 
 - name: Setup webserver
   include_tasks: apache.yml
   when: not configured.web or not started.apache
+  notify: restart apache
 
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
   when: not configured.mw or not started.parsoid
+  notify:
+    - restart apache
+    - start parsoid
+
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not configured.monit
+  notify: restart monit
 
 - name: Setup dev environment
   include_tasks: dev.yml
   when: env == 'dev' and not configured.dev
+  notify:
+    - restart apache
+    - start maildev
 
 - name: Setup production environment
   include_tasks: production.yml
   when: env == 'production' and not configured.production
+  notify: restart db
 
 - debug: msg="{{ env }} / {{ mediawiki.protocol }}"
 - name: Enable TLS
   include_tasks: tls.yml
   when: mediawiki.protocol == 'https' or env == 'production'
-
-- name: Setup Monit
-  include_tasks: monit.yml
-  when: not configured.monit
+  notify: restart apache
 
 - name: Update mediawiki
   include_role: name=update

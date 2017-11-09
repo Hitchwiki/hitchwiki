@@ -19,7 +19,6 @@
   lineinfile: path=/etc/default/maildev state=present create=yes line="PORT=1025"
 
 - name: Create Maildev startup symlink
-  # TODO insserv Script maildev is broken - incomplete LSB comment.
   become: true
   file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev
   notify: maildev
