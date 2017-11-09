@@ -40,9 +40,7 @@
 # Database
 - name: restart db
   become: yes
-  service: name={{item}} enabled=yes state=restarted
-  with_items: [ mariadb, mysql, mysqld ]
-  ignore_errors: yes
+  service: name=mysql enabled=yes state=restarted
   listen: "start db"
 
 - name: Show databases

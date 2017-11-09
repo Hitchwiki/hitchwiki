@@ -26,7 +26,7 @@
 - name: Install system tools
   become: yes
   apt: name={{ item }} state=present
-  with_items: { git, python-pip, openssh-client, sudo }
+  with_items: { git, python-pip, openssh-client, sudo, at }
 
 - name: Update pip and install ansible
   become: yes
@@ -64,12 +64,5 @@
   when: ansible_user != "ubuntu" and ansible_user != "travis"
   remote_user: "{{ user }}"
   include_tasks: non-vagrant.yml
-
-- set_fact: root={{ ansible_env.PWD }}/../../..
-  when: ansible_user == "travis"
-- name: Link {{ root }} to /var/www
-  when: "'travis' in ansible_user"
-  file: state=link src={{ root }} path=/var/www owner={{ user }} group={{ user }}
-  ignore_errors: yes
 
 ...
