@@ -29,8 +29,7 @@ install:
     pip install ansible"
 
 script:
-  - docker exec -t hitchwiki bash -c "cd /travis/scripts/ansible &&
-    export ANSIBLE_ROLES_PATH=$(pwd)/roles &&
+  - docker exec -t hitchwiki bash -c "cd /var/www/scripts/ansible &&
     ansible-playbook -i tests/inventory tests/test.yml --syntax-check &&
     ansible-playbook -i tests/inventory tests/test.yml --connection=local -b &&
-    curl http://localhost/"
+    curl http://localhost/ || exit 1"
