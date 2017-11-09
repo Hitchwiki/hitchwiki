@@ -24,21 +24,28 @@
     var: dir
 - meta: flush_handlers
 
+# import versus include https://serverfault.com/questions/875247/whats-the-difference-between-include-tasks-and-import-tasks
+# - use import when you deal with logical "units" , for example to separate long list of tasks into subtask files
+# - use include to deal with different workflows and take decisions based on some dynamically gathered facts
+# At compile time 'configured' is undefined, so we need to use include_tasks with the downside that handlers can't be called
+# Tradeoffs and Pitfalls Between Includes and Imports https://docs.ansible.com/ansible/devel/playbooks_reuse.html
+#  "You cannot use notify to trigger a handler name which comes from inside a dynamic include (see note below)."
+
 - name: Prepare system
-  import_tasks: system.yml
+  include_tasks: system.yml
   when: not configured.system
   notify: "update system"
 
 - name: Setup database server
-  import_tasks: database.yml
+  include_tasks: database.yml
   when: not configured.db or not started.mysql
 
 - name: Setup webserver
-  import_tasks: apache.yml
+  include_tasks: apache.yml
   when: not configured.web or not started.apache
 
 - name: Setup Mediawiki
-  import_tasks: mediawiki.yml
+  include_tasks: mediawiki.yml
   when: not configured.mw or not started.parsoid
 
 - name: Setup dev environment
@@ -59,7 +66,7 @@
   when: https and not configured.tls
 
 - name: Setup Monit
-  import_tasks: monit.yml
+  include_tasks: monit.yml
   when: not configured.monit
 
 - meta: flush_handlers
@@ -68,6 +75,6 @@
   include_role: name=update
 
 - name: Print status
-  import_tasks: roles/status/tasks/main.yml
+  include_tasks: roles/status/tasks/main.yml
 
 ...
