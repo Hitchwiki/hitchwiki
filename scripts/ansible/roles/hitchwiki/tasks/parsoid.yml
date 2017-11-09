@@ -20,14 +20,9 @@
   become: yes
   template: src=scripts/configs/parsoid_config.yaml dest=/etc/mediawiki/parsoid/config.yaml owner={{ apache.user }} force=no
 
-# TODO do we need to overwrite the packaged version?
-#- name: Create Parsoid init script
-#  become: yes
-#  shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
-
-- name: Finish parsoid installation
+- name: Create Parsoid init script
   become: yes
-  shell: "{{ dir.script }}/status.sh"
+  shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
   notify:
    - parsoid
 

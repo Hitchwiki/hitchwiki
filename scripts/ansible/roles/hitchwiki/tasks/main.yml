@@ -56,14 +56,13 @@
   include_tasks: production.yml
   when: env == 'production' and not configured.production
 
-- name: Is TLS requested?
-  debug: msg="{{ env }} / {{ mediawiki.protocol }}"
-- name: Activate TLS
-  set_fact: https=True
-  when: "'https' in mediawiki.protocol or 'production' in env"
+- name: Enable TLS
+  set_fact: enable_https=True
+  when: mediawiki.protocol.find('https') or env.find('production')
+- debug: msg="{{ env }} / {{ mediawiki.protocol }}"
 - name: Setup TLS
   include_tasks: tls.yml
-  when: https and not configured.tls
+  when: enable_https and not configured.tls
 
 - name: Setup Monit
   include_tasks: monit.yml

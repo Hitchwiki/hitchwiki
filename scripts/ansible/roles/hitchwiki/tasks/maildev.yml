@@ -15,14 +15,13 @@
   become: true
   file: state=link src={{ dir.script }}/init_maildev.sh path=/etc/init.d/maildev mode='755'
 
+- name: Configure Maildev
+  lineinfile: path=/etc/default/maildev state=present create=yes line="PORT=1025"
+
 - name: Create Maildev startup symlink
   # TODO insserv Script maildev is broken - incomplete LSB comment.
   become: true
   file: state=link src=/etc/init.d/maildev path=/etc/rc3.d/S99maildev
-  notify:
-  - maildev
-
-- name: Finish Maildev installation
-  set_fact: state_maildev=true cacheable=true
+  notify: maildev
 
 ...

@@ -3,11 +3,11 @@
 
 - name: Install Maildev
   include_tasks: maildev.yml
-  when: env == 'dev' and not state_maildev
+  when: env.find('dev') and not configured.maildev
 
 - name: Install PHPMyAdmin
   include_tasks: phpmyadmin.yml
-  when: env == 'dev' and not state_phpmyadmin
+  when: env.find('dev') and not started.phpmyadmin
 
 - name: Create MW bot users
   become: yes
@@ -23,6 +23,6 @@
   command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
   with_items: { Hitchwiki, Hitchbot, Hitchhiker }
   register: user_mail
-  when: env == 'dev'
+  when: env.find('dev')
 
 ...
