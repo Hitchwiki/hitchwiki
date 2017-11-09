@@ -1,30 +1,16 @@
 ---
 # Composer
-- name: Download Composer installer.
-  get_url:
-      url: https://getcomposer.org/installer
-      dest: /tmp/composer-installer.php
-      mode: 0755
-
-- name: Run Composer installer.
+- name: Install composer (php)
   become: yes
-  command: >
-      php composer-installer.php
-      chdir=/tmp
-      creates={{ composer_path }}
-
-- name: Move Composer into globally-accessible location.
-  become: yes
-  shell: >
-      mv /tmp/composer.phar {{ composer_path }}
-      creates={{ composer_path }}
-
-# Bower
-- name: Install bower 1.8
-  become: yes
-  npm: name=bower version='1.8' state=present global=yes
-
-- name: Finish composer installation
-  set_fact: state_composer=true cacheable=true
+  shell: |
+    cd /tmp
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+  register: composer_php
+  # https://getcomposer.org/download/
+  # alternative: https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
+- debug: var=composer_php
 
 ...

@@ -25,24 +25,29 @@
 - meta: flush_handlers
 
 - name: Prepare system
-  include_tasks: system.yml
+  import_tasks: system.yml
   when: not configured.system
   notify: "update system"
 
 - name: Setup database server
-  include_tasks: database.yml
+  import_tasks: database.yml
   when: not configured.db or not started.mysql
 
 - name: Setup webserver
-  include_tasks: apache.yml
+  import_tasks: apache.yml
   when: not configured.web or not started.apache
 
 - name: Setup Mediawiki
-  include_tasks: mediawiki.yml
+  import_tasks: mediawiki.yml
   when: not configured.mw or not started.parsoid
 
-- name: Update mediawiki
-  include_role: name=update
+- name: Setup dev environment
+  include_tasks: dev.yml
+  when: env == 'dev' and not configured.dev
+
+- name: Setup production environment
+  include_tasks: production.yml
+  when: env == 'production' and not configured.production
 
 - name: Is TLS requested?
   debug: msg="{{ env }} / {{ mediawiki.protocol }}"
@@ -54,21 +59,15 @@
   when: https and not configured.tls
 
 - name: Setup Monit
-  include_tasks: monit.yml
+  import_tasks: monit.yml
   when: not configured.monit
 
 - meta: flush_handlers
 
-- name: Setup dev environment
-  include_tasks: dev.yml
-  when: env == 'dev' and not configured.dev
+- name: Update mediawiki
+  include_role: name=update
 
-- name: Setup production environment
-  include_tasks: production.yml
-  when: env == 'production' and not configured.production
-
-- meta: flush_handlers
 - name: Print status
-  include_tasks: roles/status/tasks/main.yml
+  import_tasks: roles/status/tasks/main.yml
 
 ...

@@ -28,7 +28,11 @@
   become: yes
   apt: update_cache=yes package={{ item }} state=present allow_unauthenticated=yes
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
+  notify: "start db"
 
+- meta: flush_handlers
+
+# Mariadb should run at this point
 - name: Secure MariaDB root user
   shell: |
     mysqladmin -u{{ mediawiki.db.username }} password {{ mediawiki.db.password }} || mysqladmin  {{ db_credentials }} password {{ mediawiki.db.password }}

@@ -14,12 +14,12 @@
     path: /etc/hosts
     regexp: '^127.0.0.1'
     line: 127.0.0.1 localhost {{ domain }}
-  ignore_errors: yes # fails for docker
+  ignore_errors: yes # fails for docker https://stackoverflow.com/questions/28327458/how-to-add-my-containers-hostname-to-etc-hosts
 
 - name: Change hostname to {{ domain }}
   become: yes
   hostname: name={{ domain }}
-  ignore_errors: yes # fails for docker
+  ignore_errors: yes # fails for docker http://blog.jonathanargentiero.com/docker-sed-cannot-rename-etcsedl8ysxl-device-or-resource-busy/
 
 - name: Use apt-cacher
   become: yes
@@ -61,10 +61,13 @@
 
 - name: Add node key
   become: yes
-  apt_key: state=present id=1655A0AB68576280 url=http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY
+  apt_key: state=present url=http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY
   register: node_key
   ignore_errors: yes # TODO "key does not seem to have been added"
 - debug: var=node_key
+- shell: wget http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY -O -|apt-key add -
+  become: yes
+  when: node_key|failed
 
 - name: Install nodejs
   become: yes

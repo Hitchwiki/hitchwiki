@@ -1,5 +1,9 @@
 ---
 
+- name: Install PHPMyAdmin
+  become: yes
+  apt: name=phpmyadmin state=present
+
 - name: Configure PHPMyAdmin
   become: true
   command: |

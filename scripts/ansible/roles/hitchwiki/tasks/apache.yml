@@ -6,22 +6,11 @@
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
 #   https://github.com/geerlingguy/ansible-role-apache
 
-- name: Install Apache2
+- name: Install Apache2 with PHP7 and extensions
   become: yes
   apt: name={{ item }} state=present
-  with_items: { apache2, php-pear, php-gettext, php-xml, php-json }
-
-- name: Install PHP7
-  become: yes
-  apt: name={{item}} state=present
-  with_items: { php7.0, php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache }
-  ignore_errors: yes # travis / trusty fails on this
-
-- name: Install extensions
-  become: yes
-  apt: name={{item}} state=present
-  with_items: { phpmyadmin, php-imagick, php-memcache } # add when needed: php-apcu
-  ignore_errors: yes # travis / trusty fails on this
+  with_items: { apache2, php-pear, php-gettext, php-xml, php-json, php7.0, php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-imagick, php-memcache }
+  # add when needed: php-apcu (note php7.0-opcache above)
 
 - name: Allow apache override to all
   become: yes
@@ -54,16 +43,15 @@
     block: |
       php_value post_max_size 10M
       php_value upload_max_filesize 8M
-  ignore_errors: yes # travis / trusty fails on this
 
 - name: Validate apache config syntax
   become: yes
   shell: /usr/sbin/apache2ctl -f /etc/apache2/apache2.conf -t
   register: validate_apache_syntax
+  ignore_errors: yes
 - debug:
     var: validate_apache_syntax.stderr_lines
-  when: validate_apache_syntax.stderr_lines
-  ignore_errors: yes
+  when: validate_apache_syntax|failed
 
 - name: Enable apache mod rewrite
   become: yes
@@ -74,20 +62,8 @@
   become: yes
   apt: name=composer state=present
   register: composer_apt
-  ignore_errors: yes
-  # Composer was introduced in ubuntu xenial, but travis only supports trusty (travis-ci/travis-ci#5821)
-
-- name: Install composer (php)
-  become: yes
-  shell: |
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-  register: composer_php
+  ignore_errors: yes # Composer was introduced in ubuntu xenial, but travis only supports trusty (travis-ci/travis-ci#5821)
+- include_tasks: composer.yml
   when: composer_apt|failed
-  # https://getcomposer.org/download/
-  # alternative: https://getcomposer.org/doc/faqs/how-to-install-composer-programmatically.md
-- debug: var=composer_php
 
 ...
