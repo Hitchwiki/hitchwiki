@@ -7,7 +7,7 @@
 
 - name: Install PHPMyAdmin
   include_tasks: phpmyadmin.yml
-  when: not started.phpmyadmin
+  when: not configured.phpmyadmin
 
 - name: Create MW bot users
   become: yes

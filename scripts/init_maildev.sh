@@ -15,7 +15,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Maildev service"
 NAME=maildev
 DAEMON=maildev
-DAEMON_ARGS="--smtp $PORT --silent"
+DAEMON_ARGS="--smtp $PORT --silent &"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
