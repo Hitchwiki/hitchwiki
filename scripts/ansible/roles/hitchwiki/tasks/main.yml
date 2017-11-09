@@ -18,10 +18,12 @@
     - /var/www/configs/settings.yml
     - /var/www/configs/settings-example.yml
 
-- name: Check if settings.yml is up to date
-  failed_when: dir is undefined
-  debug:
-    var: dir
+- name: Check if relevant variables are defined
+  debug: var={{item}}
+  register: var
+  failed_when: var is undefined
+  with_items: { dir, domain, env, admin_contact, mediawiki.protocol, apache.user }
+
 - meta: flush_handlers
 
 # import versus include https://serverfault.com/questions/875247/whats-the-difference-between-include-tasks-and-import-tasks
@@ -58,7 +60,7 @@
 
 - name: Enable TLS
   set_fact: enable_https=True
-  when: mediawiki.protocol.find('https') or env.find('production')
+  when: mediawiki.protocol == 'https' or env == 'production'
 - debug: msg="{{ env }} / {{ mediawiki.protocol }}"
 - name: Setup TLS
   include_tasks: tls.yml
@@ -68,10 +70,11 @@
   include_tasks: monit.yml
   when: not configured.monit
 
-- meta: flush_handlers
-
 - name: Update mediawiki
   include_role: name=update
+  notify: status
+
+- meta: flush_handlers
 
 - name: Print status
   include_tasks: roles/status/tasks/main.yml

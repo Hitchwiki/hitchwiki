@@ -79,9 +79,11 @@ discourse=false
 [ -f /etc/apache2/sites-enabled/default-ssl.conf ] && tls=true
 [[ -n $monit_bin ]] && [[ ! $(monit status 2>&1 >/dev/null) ]] && monit=true
 [ $monit == "true" ] && [ $tls == "true" ] && production=true
-[ -f /etc/init.d/maildev ] && maildev=true && dev=true
+[ -d /usr/share/phpmyadmin/ ] && phpmyadmin=true
+[ -f /etc/init.d/maildev ] && maildev=true
+[ $phpmyadmin == 'true' ] && [ $maildev == 'true' ] && dev=true
 [ -f /etc/init.d/discourse ] || [ -d /var/www/public/discourse/public ] &&  discourse=true
-for chapter in system db web tls cert mw parsoid monit production maildev phpmyadmin dev discourse
+for chapter in system db web tls mw parsoid monit production maildev phpmyadmin dev discourse
 do echo "  $chapter: ${!chapter}" >> $sf
 done
 
