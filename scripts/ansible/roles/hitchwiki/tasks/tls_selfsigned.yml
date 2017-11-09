@@ -3,31 +3,29 @@
 
 # Have we been here?
 - name: Looking for existing certificates
-  shell: [[ -f {{ self_signed_certs.0.key }} ]] && [[ -f {{ self_signed_certs.0.cert }} ]]
-  register: done
+  shell: >
+    [[ -f {{ self_signed_certs.0.key }} ]] &&
+    [[ -f {{ self_signed_certs.0.cert }} ]]
+  register: cert_exists
   ignore_errors: yes
 - debug:
-    var: done
+    var: cert_exists
 
-# TODO https://www.jeffgeerling.com/blog/2017/self-signed-certificates-ansible-local-testing-nginx
+# https://www.jeffgeerling.com/blog/2017/self-signed-certificates-ansible-local-testing-nginx
 - name: Create self-signed certificate
   become: yes
   command: >
     openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 365
     -newkey rsa:4096 -sha256 -keyout {{ item.key }} -out {{ item.cert }}
   with_items: "{{ self_signed_certs }}"
-  register: key
-  when: done|failed
+  register: create_key
+  when: cert_exists|failed
 
-- set_fact:
+- name: Successfully created self-signed certificate
+  set_fact:
      cert: "{{ self_signed_certs.0.cert }}"
      key: "{{ self_signed_certs.0.key }}"
   register: selfsigned
-  when: done|succeeded or key|succeeded
-
-- name: Successfully created self-signed certificate
-  when: selfsigned|succeeded
-  shell: "{{ dir.script }}/status.sh"
-  become: yes
+  when: cert_exists|succeeded or create_key|succeeded
 
 ...
