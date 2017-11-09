@@ -40,12 +40,10 @@
 # Database
 - name: restart db
   become: yes
-  service: name=mariadb state=restarted
-  notify: "start db"
-
-- name: start db
-  become: yes
-  service: name=mariadb state=started
+  service: name={{item}} enabled=yes state=restarted
+  with_items: [ mariadb, mysql, mysqld ]
+  ignore_errors: yes
+  listen: "start db"
 
 - name: Show databases
   command: IFS=$'\n' echo "SHOW DATABASES;" | mysql {{ db_credentials }} | grep -E '^hitchwiki_en' | sed 's/^hitchwiki_//g'
