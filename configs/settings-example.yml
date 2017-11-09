@@ -18,7 +18,7 @@ smtp: # MailDev runs at port 1025 at dev server https://github.com/djfarrelly/Ma
   password:
 
 discourse: # for production environment only, consider to enable a swap file below
-  enabled: enabled
+  enabled: false
   dir: "{{ dir.root }}/discourse"
   domain: "{{ domain2 }}"
   port: 3010
@@ -40,14 +40,14 @@ mediawiki:
   enableuseremail: false
   emergency_contact: "contact@hitchwiki.test"
   password_sender: "noreply@hitchwiki.test"
-  clean_on_setup: false
+  clean_on_setup: true
   db:
     host: localhost
     username: root
     password: root
     database: hitchwiki_en
     prefix: hw_
-    clean_on_setup: false
+    clean_on_setup: true
   user:
     Hitchwiki: "{{ phpmyadmin_password }}"
     Hitchbot: "{{ phpmyadmin_password }}"
