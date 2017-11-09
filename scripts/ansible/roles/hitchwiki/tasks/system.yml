@@ -14,10 +14,12 @@
     path: /etc/hosts
     regexp: '^127.0.0.1'
     line: 127.0.0.1 localhost {{ domain }}
+  ignore_errors: yes # fails for docker
 
 - name: Change hostname to {{ domain }}
   become: yes
   hostname: name={{ domain }}
+  ignore_errors: yes # fails for docker
 
 - name: Use apt-cacher
   become: yes
