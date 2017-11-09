@@ -59,9 +59,14 @@
     regexp: '^{{user}}'
     line: "{{user}} ALL=NOPASSWD:ALL"
 
-# Prepare repository (non vagrant)
+# Prepare repository
+- name: Check for /var/www/scripts
+  stat:
+    path: /var/www/scripts
+    register: scripts_dir
+  # https://docs.ansible.com/ansible/latest/stat_module.html
 - name: Prepare repository
-  when: ansible_user != "ubuntu" and ansible_user != "travis"
+  when: not scripts_dir.stat.exists
   remote_user: "{{ user }}"
   include_tasks: non-vagrant.yml
 

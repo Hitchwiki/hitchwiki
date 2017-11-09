@@ -20,6 +20,8 @@
 - name: Grant {{ root }} to {{ user }}
   file: state=directory path={{ root }} recurse=yes owner={{ user }} group={{ apache.group }}
 
+- name: Clean /var/www
+  file: state=absent path=/var/www
 - name: Link {{ root }} to /var/www
   file: state=link force=yes src={{ root }} path=/var/www owner={{ user }} group={{ user }}
 
