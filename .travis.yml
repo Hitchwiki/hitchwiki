@@ -1,54 +1,38 @@
 ---
-# See https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 # syntax check: https://lint.travis-ci.org/
 
-# https://docs.travis-ci.com/user/reference/trusty
+# Based on https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
+# and http://romanvm.pythonanywhere.com/post/using-docker-travis-continuous-integration-25/
+
+sudo: required # https://docs.travis-ci.com/user/reference/trusty
+
 # TODO enable when travis updated their chef scripts to support xenial (travis-ci/travis-ci#5821)
-sudo: false # Container-based run
-dist: xenial # needed for composer
-services:
-  - docker
-addons:
-  mariadb: '10.0'
+#dist: xenial # needed for php7 and composer
 
 language: python
 python: "2.7"
-branches:
-  only:
-    - ansible
+
+services:
+  - docker
+
+#addons:
+#  mariadb: '10.0'
 
 before_install:
-  # Add php7.0 backports - https://launchpad.net/~nschloe/+archive/ubuntu/php-backports
-  - sudo add-apt-repository -y ppa:nschloe/php-backports # for trusty only
-  # Make sure everything's up to date.
-  - sudo add-apt-repository universe
-  - sudo apt-get update -qq
-  # Install Apache2 with PHP7
-  - sudo apt-get -y apache2 php-pear php-gettext php-xml php-json php7.0 php7.0-cli libapache2-mod-php7.0 php7.0-mysql php7.0-curl php7.0-gd php7.0-intl php7.0-imap php7.0-mcrypt php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-mbstring php7.0-opcache
+  - docker run -d --name ubuntu-test -v $(pwd):/travis ubuntu:latest tail -f /dev/null # pull latest ubuntu LTS
+  - docker ps # show running containers
 
 install:
-  # Install Ansible.
-  - pip install ansible
-
-  # Add ansible.cfg to pick up roles path.
-  #- echo -e "[defaults]\nroles_path = scripts/ansible/roles" > ansible.cfg
-  #- export ANSIBLE_ROLES_PATH=scripts/ansible/roles
-  - cd scripts/ansible
-  - export ANSIBLE_ROLES_PATH=$(pwd)/roles
+  - docker exec -t hitchwiki bash -c "
+    add-apt-repository universe;
+    apt-get update -qq;
+    apt-get install -y apache2 php-pear php-gettext php-xml php-json php7.0 php7.0-cli libapache2-mod-php7.0 php7.0-mysql php7.0-curl php7.0-gd php7.0-intl php7.0-imap php7.0-mcrypt php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php7.0-mbstring php7.0-opcache;
+    pip install ansible;
+    cd scripts/ansible;
+    export ANSIBLE_ROLES_PATH=$(pwd)/roles"
 
 script:
-  # Test syntax
-  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
-
-  # Run the role/playbook with ansible-playbook.
-  - ansible-playbook -i tests/inventory tests/test.yml --connection=local -b
-
-  # Run the role/playbook again, checking to make sure it's idempotent.
-#- >
-#  ansible-playbook -i tests/inventory tests/test.yml --connection=local -b
-#  | grep -q 'changed=0.*failed=0'
-#  && (echo 'Idempotence test: pass' && exit 0)
-#  || (echo 'Idempotence test: fail' && exit 1)
-
-  # Request a page via the web server, to make sure it's running and responds.
-  - "curl http://localhost/"
+  - docker exec -t hitchwiki bash -c "cd /travis;
+    ansible-playbook -i tests/inventory tests/test.yml --syntax-check &&
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local -b &&
+    curl http://localhost/"

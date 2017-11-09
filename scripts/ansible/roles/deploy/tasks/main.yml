@@ -1,6 +1,8 @@
 ---
 # Prepare user
 - debug: var=ansible_user
+- debug: var=ansible_distribution
+- debug: var=ansible_distribution_release
 
 - name: Load settings
   include_vars: "{{ item }}"
