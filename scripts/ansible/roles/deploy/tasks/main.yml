@@ -1,5 +1,5 @@
 ---
-# Prepare user
+# Prepare system to install hitchwiki
 - debug: var=ansible_user
 - debug: var=ansible_distribution
 - debug: var=ansible_distribution_release
@@ -10,6 +10,30 @@
     - configs/settings.yml
     - configs/settings-example.yml
 
+# Install dependencies
+- name: Use apt-cacher
+  become: yes
+  lineinfile:
+    path: /etc/apt/apt.conf.d/apt-cacher-ng
+    create: yes
+    regexp: '^Acquire::http::Proxy'
+    line: >
+      Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";
+      Acquire::https::Proxy "false"; # or enable "PassThroughPattern: .*" in /etc/apt-cacher-ng/acng.conf
+      # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
+  when: apt_proxy is defined
+
+- name: Install system tools
+  become: yes
+  apt: name={{ item }} state=present
+  with_items: { git, python-pip, openssh-client, sudo }
+
+- name: Update pip and install ansible
+  become: yes
+  pip: name={{ item }} state=latest umask=0022
+  with_items: { pip, ansible }
+
+# Prepare user
 - name: Add user {{ user }}
   become: yes
   user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
@@ -34,29 +58,6 @@
     path: /etc/sudoers
     regexp: '^{{user}}'
     line: "{{user}} ALL=NOPASSWD:ALL"
-
-# Install dependencies
-- name: Use apt-cacher
-  become: yes
-  lineinfile:
-    path: /etc/apt/apt.conf.d/apt-cacher-ng
-    create: yes
-    regexp: '^Acquire::http::Proxy'
-    line: >
-      Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";
-      Acquire::https::Proxy "false"; # or enable "PassThroughPattern: .*" in /etc/apt-cacher-ng/acng.conf
-      # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
-  when: apt_proxy is defined
-
-- name: Install git and pip
-  become: yes
-  apt: name={{ item }} state=present
-  with_items: { git, python-pip }
-
-- name: Update pip and install ansible
-  become: yes
-  pip: name={{ item }} state=latest umask=0022
-  with_items: { pip, ansible }
 
 # Prepare repository (non vagrant)
 - name: Prepare repository
