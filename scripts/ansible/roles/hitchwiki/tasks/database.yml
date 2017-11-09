@@ -1,8 +1,5 @@
 ---
 # Setup database server
-
-- debug: var=ansible_distribution
-- debug: var=ansible_distribution_release
 - name: Add repository for MariaDB (Ubuntu)
   when: ansible_distribution == 'Ubuntu'
   become: yes
