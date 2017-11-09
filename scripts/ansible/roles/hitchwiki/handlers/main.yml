@@ -11,10 +11,12 @@
   notify:
     - fetch status
     - load
+
 - name: Retrieve summary
   fetch: src={{ dir.state }} dest=status/{{ ansible_host }}/ flat=yes
   listen: "fetch status"
   notify: "load"
+
 - name: Load variables
   include_vars: "status/{{ ansible_host }}/state.yml"
   listen:
@@ -22,19 +24,17 @@
     - reload
 
 # System
-- name: Update system
+- name: update system
   become: yes
   apt: allow_unauthenticated=yes update_cache=yes autoremove=yes autoclean=yes upgrade=dist
   listen:
     - apt
-    - update system
   ignore_errors: yes # TODO this is not failsave https://github.com/ansible/ansible/issues/30169
 
-- name: Start monit
+- name: start monit
   become: yes
   service: name=monit state=restarted
   listen:
-    - start monit
     - restart monit
 
 # Database
@@ -53,39 +53,36 @@
     var: tables.stdout
 
 # Webserver
-- name: Restart apache
+- name: restart apache
   become: yes
   service: name=apache2 state=restarted
   register: apache_restart
   listen:
     - apache
-    - restart apache
     - apache2
     - restart apache2
     - webserver
     - restart webserver
 
 # Mediawiki handlers
-- name: Restart Parsoid
+- name: restart Parsoid
   become: yes
   service: name=parsoid state=started
   listen:
     - parsoid
-    - restart parsoid
 
 # Development environment
-- name: Start maildev
+- name: start maildev
   become: yes
-  command: maildev --smtp 1025 --silent &
+  service: name=maildev state=started enabled=yes
   listen:
     - maildev
+  ignore_errors: yes 
 
-- name: Stop maildev
+- name: stop maildev
   become: yes
   shell: kill $(pidof node /usr/local/bin/maildev)
   when: started.maildev
   ignore_errors: yes
-  listen:
-    - stop maildev
 
 ...
