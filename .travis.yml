@@ -4,8 +4,8 @@
 
 # https://docs.travis-ci.com/user/reference/trusty
 # TODO enable when travis updated their chef scripts to support xenial (travis-ci/travis-ci#5821)
-# dist: xenial # needed for composer
-sudo: required
+sudo: false # Container-based run
+dist: xenial # needed for composer
 services:
   - docker
 addons:

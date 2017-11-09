@@ -9,12 +9,12 @@
 - name: Install Apache2
   become: yes
   apt: name={{ item }} state=present
-  with_items: { apache2, php7.0, php-pear, php-gettext, php-xml, php-json }
+  with_items: { apache2, php-pear, php-gettext, php-xml, php-json }
 
 - name: Install PHP7
   become: yes
   apt: name={{item}} state=present
-  with_items: { php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache }
+  with_items: { php7.0, php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache }
   ignore_errors: yes # travis / trusty fails on this
 
 - name: Install extensions
@@ -51,7 +51,6 @@
   blockinfile:
     path: /etc/php/7.0/cli/php.ini
     state: present
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
     block: |
       php_value post_max_size 10M
       php_value upload_max_filesize 8M
