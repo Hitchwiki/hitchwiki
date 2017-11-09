@@ -61,9 +61,8 @@
 
 # Prepare repository
 - name: Check for /var/www/scripts
-  stat:
-    path: /var/www/scripts
-    register: scripts_dir
+  stat: path=/var/www/scripts
+  register: scripts_dir
   # https://docs.ansible.com/ansible/latest/stat_module.html
 - name: Prepare repository
   when: not scripts_dir.stat.exists
