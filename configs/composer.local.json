@@ -219,18 +219,6 @@
     {
       "type": "package",
       "package": {
-        "name": "ApiSandbox",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-ApiSandbox/archive/REL1_26.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "MultimediaViewer",
         "version": "@dev",
         "type": "mediawiki-extension",
@@ -377,7 +365,6 @@
     "DismissableSiteNotice": "@dev",
     "GeoCrumbs": "@dev",
     "TorBlock": "@dev",
-    "ApiSandbox": "@dev",
     "MultimediaViewer": "@dev",
     "AdminLinks": "@dev",
     "ReplaceText": "@dev",
