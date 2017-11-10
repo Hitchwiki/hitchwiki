@@ -2,7 +2,7 @@
 # Hitchwiki update: update MediaWiki, its database, extensions and assets
 - name: Run pending jobs and clear the queue
   command: chdir={{ dir.wiki }} php ./maintenance/runJobs.php
-  ignore_errors: yes # TODO check errors
+  #ignore_errors: yes # TODO check errors
 
 - name: Update LocalSettings.php
   template: src={{ dir.conf }}/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
@@ -17,22 +17,22 @@
   command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
   register: mw_update
   ignore_errors: yes # TODO check errors
-  failed_when: mw_update.rc != 1
+  #failed_when: mw_update.rc != 1
 
 - name: Pre-populate the AntiSpoof extension's table
   shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
   register: mw_antispoof
-  ignore_errors: yes # TODO check errors
+  #ignore_errors: yes # TODO check errors
 
 - name: Localisation update - https://www.mediawiki.org/wiki/Extension:LocalisationUpdate
   command: chdir={{ dir.wiki }} php extensions/LocalisationUpdate/update.php --quiet
   ignore_errors: yes # TODO check errors
-  failed_when: mw_update.rc != 1
+  #failed_when: mw_update.rc != 1
 
 - name: Import forms, templates etc.
   command: chdir={{ dir.root }}/.. "{{ dir.script }}/import_pages.sh"
   register: input
-- debug:
-    var: input.stdout_lines
+#- debug:
+#    var: input.stdout_lines
 
 ...

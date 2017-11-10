@@ -17,16 +17,6 @@ echo "date: $(date +%Y-%m-%d)" >> $sf
 echo "time: $(date +%H:%M)" >> $sf
 url="http://127.0.0.1"
 
-function check_url {
-  url=$1
-  name=$2
-  tag=$3
-  html=$(wget -q $url -O -)
-  lines=$(echo $html|grep -i $tag|wc -l)
-  [[ $lines -gt 0 ]] && name=true
-  name=false
-} 
-
 # binaries
 monit_bin=$(which monit)
 apache_bin=$(which apache2)
@@ -51,8 +41,9 @@ monit=false
 [ -f /var/run/apache2/apache2.pid ] && apache=true
 [ -f /var/run/parsoid.pid ] && parsoid=true
 [ -f /var/run/monit.pid ] && monit=true
-check_url $url:1080 maildev MailDev
-check_url $url/phpmyadmin phpmyadmin phpMyAdmin
+[ -f /var/run/maildev.pid ] && maildev=true
+curl $url:1080 && maildev=true
+curl $url/phpmyadmin && phpmyadmin=true
 for app in apache mysql parsoid maildev phpmyadmin monit
 do echo "  $app: ${!app}" >> $sf
 done

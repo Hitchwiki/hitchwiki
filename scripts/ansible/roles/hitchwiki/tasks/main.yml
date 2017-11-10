@@ -62,6 +62,10 @@
 
 - meta: flush_handlers
 
+- name: Restart monit
+  become: yes
+  service: name=monit enabled=yes state=restarted
+
 - name: Setup dev environment
   include_tasks: dev.yml
   when: env == 'dev' and not configured.dev
@@ -82,6 +86,14 @@
 
 - meta: flush_handlers
 
+- name: Restart apache
+  become: yes
+  service: name=apache2 enabled=yes state=restarted
+
+- name: restart parsoid
+  become: yes
+  service: name=parsoid enabled=yes state=restarted
+
 - name: Update mediawiki
   include_role: name=update
   notify: status
@@ -90,5 +102,9 @@
 
 - name: Print status
   include_tasks: roles/status/tasks/main.yml
+
+- name: Make sure necessary services are up
+  meta: end_play
+  when: not started.mysql or not started.apache or not started.parsoid or not started.monit
 
 ...
