@@ -42,8 +42,10 @@ monit=false
 [ -f /var/run/parsoid.pid ] && parsoid=true
 [ -f /var/run/monit.pid ] && monit=true
 [ -f /var/run/maildev.pid ] && maildev=true
-curl $url:1080 && maildev=true
-curl $url/phpmyadmin && phpmyadmin=true
+[ $(curl -s "$url" |grep -i hitchwiki|wc -l) != 0 ] && apache=true
+[ $(curl -s "$url:1080" |grep -i maildev|wc -l) != 0 ] && maildev=true
+[ $(curl -s "$url/phpmyadmin" |grep -i phpmyadmin|wc -l) != 0 ] && phpmyadmin=true
+[ $(curl -s "$url:8142" |grep -i parsoid|wc -l) != 0 ] && parsoid=true
 for app in apache mysql parsoid maildev phpmyadmin monit
 do echo "  $app: ${!app}" >> $sf
 done

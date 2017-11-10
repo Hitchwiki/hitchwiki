@@ -93,12 +93,12 @@
 - name: restart parsoid
   become: yes
   service: name=parsoid enabled=yes state=restarted
-
-- name: Update mediawiki
-  include_role: name=update
   notify: status
 
 - meta: flush_handlers
+
+- name: Update mediawiki
+  include_role: name=update
 
 - name: Print status
   include_tasks: roles/status/tasks/main.yml

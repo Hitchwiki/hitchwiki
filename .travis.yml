@@ -31,8 +31,8 @@ install:
 script:
   - docker exec -t hitchwiki bash -c "killall tail; cd /var/www/scripts/ansible &&
     ansible-playbook -i tests/inventory tests/test.yml --syntax-check &&
-    ansible-playbook -i tests/inventory tests/test.yml --connection=local -b &&
-    curl http://localhost/"
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local -b"
   - docker inspect -f {{.State.ExitCode}} hitchwiki
-
-
+  - curl http://localhost
+  - curl http://localhost:1080
+  - curl http://localhost/phpmyadmin
