@@ -23,7 +23,5 @@
 - name: Create Parsoid init script
   become: yes
   shell: cp {{ dir.script }}/configs/parsoid_initscript /etc/default/parsoid
-  notify:
-   - parsoid
 
 ...

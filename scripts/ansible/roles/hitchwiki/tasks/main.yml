@@ -60,6 +60,8 @@
   when: not configured.monit
   notify: restart monit
 
+- meta: flush_handlers
+
 - name: Setup dev environment
   include_tasks: dev.yml
   when: env == 'dev' and not configured.dev
@@ -77,6 +79,8 @@
   include_tasks: tls.yml
   when: mediawiki.protocol == 'https' or env == 'production'
   notify: restart apache
+
+- meta: flush_handlers
 
 - name: Update mediawiki
   include_role: name=update

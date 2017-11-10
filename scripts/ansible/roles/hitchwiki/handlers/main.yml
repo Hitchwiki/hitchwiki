@@ -27,13 +27,11 @@
 - name: update system
   become: yes
   apt: allow_unauthenticated=yes update_cache=yes autoremove=yes autoclean=yes upgrade=dist
-  listen:
-    - apt
   ignore_errors: yes # TODO this is not failsave https://github.com/ansible/ansible/issues/30169
 
 - name: start monit
   become: yes
-  service: name=monit state=restarted
+  service: name=monit enabled=yes state=restarted
   listen:
     - restart monit
 
@@ -49,14 +47,17 @@
   listen:
     - languages
     - databases
+  notify: db_tables
 - debug:
     var: tables.stdout
+  listen: db_tables
 
 # Webserver
 - name: restart apache
   become: yes
   service: name=apache2 enabled=yes state=restarted
-  register: apache_restart
+  listen:
+    - restart apache
 
 # Mediawiki handlers
 - name: start parsoid
