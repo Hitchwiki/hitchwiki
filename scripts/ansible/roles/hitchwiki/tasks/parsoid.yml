@@ -2,7 +2,7 @@
 # Parsoid is a NodeJS service used by VisualEditor (https://www.mediawiki.org/wiki/Parsoid/Setup)
 - name: Add Parsoid apt key
   become: yes
-  apt_key: id=90E9F83F22250DD7
+  apt_key: id=90E9F83F22250DD7 keyserver={{keyserver}}
 
 - name: Add Wikimedia repository
   become: yes

@@ -30,6 +30,9 @@
     - configs/settings-example.yml
     - /var/www/configs/settings-example.yml
 
+- set_fact: keyserver=hkp://keyserver.ubuntu.com:80
+  when: keyserver is not defined
+
 - name: Check if relevant variables are defined
   debug: var={{item}}
   register: var
