@@ -18,12 +18,11 @@ before_install:
   - docker run -d --name hitchwiki -v $(pwd):/var/www ubuntu:latest tail -f /dev/null # pull latest ubuntu LTS
 
 install:
-  - docker exec -t hitchwiki bash -c "apt-get update -qq &&
-    apt-get install -y software-properties-common python-pip &&
-    add-apt-repository universe && apt-get update -qq &&
-    pip install --upgrade pip &&
-    pip install ansible
-    echo '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts"
+  - docker exec hitchwiki bash -c 'apt-get update -qq;
+    apt-get install -qy python-pip;
+    pip install -q --upgrade pip;
+    pip install -q ansible;
+    echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
 
 script:
   - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 ansible-playbook /var/www/scripts/ansible/tests/test.yml --syntax-check
