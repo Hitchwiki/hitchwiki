@@ -1,12 +1,13 @@
 ---
 # syntax check: https://lint.travis-ci.org/
 
-# Based on https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
-# and http://romanvm.pythonanywhere.com/post/using-docker-travis-continuous-integration-25/
-# https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker
-# https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty
+# Based on:
+#  - https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
+#  - http://romanvm.pythonanywhere.com/post/using-docker-travis-continuous-integration-25/
+#  - https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker
+#  - https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty
 
-sudo: required # https://docs.travis-ci.com/user/reference/trusty
+sudo: required
 
 language: python
 python: "2.7"
@@ -23,11 +24,11 @@ install:
     pip install -q --upgrade pip;
     pip install -q ansible;
     mkdir /etc/ansible;
-    echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
+    echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
 
 script:
-  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 ansible-playbook /var/www/scripts/ansible/tests/test.yml --syntax-check
-  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 ansible-playbook /var/www/scripts/ansible/tests/test.yml
-  - docker inspect -f {{.State.ExitCode}} hitchwiki
-  - docker exec hitchwiki curl http://localhost
-  - docker exec hitchwiki curl http://localhost:1080
+  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1
+      ansible-playbook /var/www/scripts/ansible/tests/test.yml --syntax-check &&
+      ansible-playbook /var/www/scripts/ansible/tests/test.yml &&
+      curl -s http://localhost
+
