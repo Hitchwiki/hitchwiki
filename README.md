@@ -12,7 +12,7 @@ hitchhikers all around the world. We have information about how to
 hitch out of big cities, how to cover long distances, maps and many
 more tips.
 
-[![Build Status](https://travis-ci.org/traumschule/hitchwiki.svg?branch=ansible)](https://travis-ci.org/traumschule/hitchwiki)
+[![Build Status](https://travis-ci.org/Hitchwiki/hitchwiki.svg?branch=master)](https://travis-ci.org/Hitchwiki/hitchwiki)
 
 ## Help needed!
 _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_

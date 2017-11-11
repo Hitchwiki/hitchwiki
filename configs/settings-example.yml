@@ -1,6 +1,14 @@
+# Git repository for deploy_remote.sh
+repository:
+  url: https://github.com/Hitchwiki/hitchwiki
+  branch: master
+
+# Domain settings
 domain: hitchwiki.test # mediawiki
 domain2: talk.hitchwiki.test #  discourse
 cookiedomain: .hitchwiki.test
+
+# Environment
 env: dev # dev | production # enables HTTPS
 user: hitchwiki # used in deploy_remote.yml playbook
 admin_contact: "{{ mediawiki.emergency_contact }}" # set your email here

@@ -13,8 +13,8 @@
   remote_user: "{{ user }}"
   git:
     dest: "{{ root }}"
-    repo: https://github.com/traumschule/hitchwiki # TODO change later
-    version: ansible
+    repo: "{{ repository.url }}"
+    version: "{{ repository.branch }}"
   when: root_exists|failed
 
 - name: Grant {{ root }} to {{ user }}

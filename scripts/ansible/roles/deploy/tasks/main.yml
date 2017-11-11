@@ -40,7 +40,6 @@
   # https://docs.ansible.com/ansible/latest/user_module.html
 
 - name: Add authorized_keys for {{ user }}
-  when: "'travis' not in ansible_user"
   become: yes
   authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
   with_first_found:
