@@ -24,8 +24,8 @@ install:
       echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
 
 script:
-  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 cd /var/www/scripts/ansible &&
+  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 -c 'cd /var/www/scripts/ansible &&
       ansible-playbook tests/test.yml --syntax-check &&
       ansible-playbook tests/test.yml &&
-      curl -s http://localhost
+      curl -s http://localhost'
 
