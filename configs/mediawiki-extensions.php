@@ -30,7 +30,7 @@ if(file_exists("$IP/extensions/VisualEditor/VisualEditor.php")) {
           // Parsoid "domain"
           'domain' => $hwConfig["domain"],
           // Parsoid "prefix"
-          'prefix' => $hwConfig["domain"]
+          'prefix' => $hwConfig["mediawiki"]["db"]["prefix"]
   );
 
   // Extra settings for VisualEditor
