@@ -1,19 +1,77 @@
 ---
 # syntax check: https://lint.travis-ci.org/
+language: python
+python: "2.7"
+# python: "3" TODO test with ansible trunk
+git:
+  depth: 3
 
 # Based on:
 #  - https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 #  - http://romanvm.pythonanywhere.com/post/using-docker-travis-continuous-integration-25/
 #  - https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker
 #  - https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty
+#  - https://bertvv.github.io/notes-to-self/2015/12/13/testing-ansible-roles-with-travis-ci-part-2-multi-platform-tests/
 
 sudo: required
+#addons:
+#  hosts:
+#  - beta.hitchwiki.org
 
-language: python
-python: "2.7"
+env:
+  # https://hub.docker.com/_/ubuntu/
+  # https://launchpad.net/ubuntu
+  - >   
+    os=ubuntu version=latest container_id=$(mktemp)
+#    init=/sbin/init
+#    run_opts=""
+#  - > # TODO check if artful has ack-grep https://launchpad.net/ubuntu/+source/ack-grep
+#    container_id=$(mktemp)
+#    distribution=ubuntu
+#    version=rolling
+#    init=/sbin/init
+#    run_opts=""
+  # https://hub.docker.com/_/debian/
+  # https://www.debian.org/releases/
+  - >
+    os=debian version=latest container_id=$(mktemp)    
+#    init=/sbin/init
+#    run_opts=""
+#  - >
+#    container_id=$(mktemp)
+#    distribution=debian
+#    version=testing
+#    init=/sbin/init
+#    run_opts=""
+  # https://hub.docker.com/_/centos/
+  #https://bertvv.github.io/notes-to-self/2015/12/11/testing-ansible-roles-with-travis-ci-part-1-centos/
+
+#ansible:
+# - 2.4
+# - 2.5
+
+#mediawiki:
+# - 1.29
+# - 1.30
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: distribution=debian version=latest
 
 before_install:
-  - docker run -d --name hitchwiki -v $(pwd):/var/www ubuntu:latest tail -f /dev/null # pull latest ubuntu LTS
+  #- sudo apt-get update
+  # update docker
+  #- sudo apt-get upgrade lxc-docker
+  #- echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
+  #- sudo service docker restart
+  #- sleep 5
+  #- sudo docker pull ${distribution}${version}_v${ANSIBLE_VERSION}
+  #- docker build --rm=true --file=tests/Dockerfile.${distribution} --tag=${distribution}:ansible tests
+  #- docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distribution}:ansible "${init}" > "${container_id}"
+
+  - docker pull ${os}:${version}
+  - docker run -d --name hitchwiki -v $(pwd):/var/www ${os}:${version} tail -f /dev/null
 
 install:
   - docker exec hitchwiki bash -c 'apt-get update -qq &&
@@ -29,3 +87,28 @@ script:
       ansible-playbook tests/test.yml &&
       curl -s http://localhost'
 
+    # Idempotence test
+#  - >
+#    sudo docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
+#    | grep -q 'changed=0.*failed=0'
+#    && (echo 'Idempotence test: pass' && exit 0)
+#    || (echo 'Idempotence test: fail' && exit 1)
+
+    # Clean up
+  - sudo docker stop "$(cat ${container_id})"
+
+
+notifications: # https://docs.travis-ci.com/user/notifications
+  slack:
+    on_success: always
+    on_failure: always
+    rooms:
+      - secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
+    template:
+      - "%{repository_slug}/%{commit} [%{build_number}:%{result}] %{message} (%{commit_subject}, %{author}) %{compare_url}"
+  irc: 
+    channels:
+      - "chat.freenode.net#hitchhiking-dev"
+    template:
+      - "%{repository_slug}/%{commit} [%{build_number}:%{result}] %{message} (%{commit_subject}, %{author}) %{compare_url}"
+    use_notice: true
