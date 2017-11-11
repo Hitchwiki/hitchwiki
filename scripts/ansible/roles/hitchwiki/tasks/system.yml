@@ -8,18 +8,8 @@
       export LC_ALL="en_US.UTF-8"
       export LANGUAGE="en_US.UTF-8"
 
-- name: Add {{ domain }} to `/etc/hosts`
-  become: yes
-  lineinfile:
-    path: /etc/hosts
-    regexp: '^127.0.0.1'
-    line: 127.0.0.1 localhost {{ domain }}
-  ignore_errors: yes # fails for docker https://stackoverflow.com/questions/28327458/how-to-add-my-containers-hostname-to-etc-hosts
-
-- name: Change hostname to {{ domain }}
-  become: yes
-  hostname: name={{ domain }}
-  ignore_errors: yes # fails for docker http://blog.jonathanargentiero.com/docker-sed-cannot-rename-etcsedl8ysxl-device-or-resource-busy/
+- name: Set domain
+  include_tasks: domain.yml
 
 - name: Use apt-cacher
   become: yes
@@ -54,22 +44,9 @@
    - backup
    - db
 
-# Parsoid, bower and maildev depend on NodeSource (https://nodejs.org/en/download/package-manager)
-- name: Add apt source for NodeSoure 8.x
-  become: yes
-  apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_8.x xenial main"
-
-- name: Add node key
-  become: yes
-  apt_key: state=present url=http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY
-
-- name: Install nodejs
-  become: yes
-  apt: name=nodejs state=present update_cache=yes
-
-- name: Link nodejs to node
-  become: yes
-  file: state=link src=/usr/bin/nodejs path=/usr/local/bin/node
+- name: Install node
+  include_tasks: node.yml
+  # Parsoid, bower and maildev depend on NodeSource (https://nodejs.org/en/download/package-manager)
 
 - name: Install bower
   become: yes
@@ -78,7 +55,7 @@
 - name: Install shyaml to parse yml files
   pip: name=shyaml state=present extra_args=--user
 
-- name: Create and add swapfile
+- name: Create and activate swapfile
   become: yes
   command: chdir=/root |
     fallocate --length {{ swap.size }} swapfile

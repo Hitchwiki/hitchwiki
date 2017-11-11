@@ -16,7 +16,7 @@
 
 - name: Add apt key for MariaDB
   become: yes
-  apt_key: state=present id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
+  apt_key: state=present id=0xF1656F24C74CD1D8
 
 - name: Configure MariaDB not to prompt for passwords
   become: yes

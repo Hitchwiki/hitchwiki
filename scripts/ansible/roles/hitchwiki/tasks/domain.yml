@@ -1,0 +1,16 @@
+---
+# System wide domain settings
+- name: Add {{ domain }} to `/etc/hosts`
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127.0.0.1'
+    line: 127.0.0.1 localhost {{ domain }}
+  ignore_errors: yes # fails for docker https://stackoverflow.com/questions/28327458/how-to-add-my-containers-hostname-to-etc-hosts
+
+- name: Change hostname to {{ domain }}
+  become: yes
+  hostname: name={{ domain }}
+  ignore_errors: yes # fails for docker http://blog.jonathanargentiero.com/docker-sed-cannot-rename-etcsedl8ysxl-device-or-resource-busy/
+
+...

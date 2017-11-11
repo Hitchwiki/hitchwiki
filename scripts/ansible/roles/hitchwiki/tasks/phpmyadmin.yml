@@ -13,19 +13,14 @@
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password {{ mediawiki.db.password }}"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password {{ phpmyadmin_password }}"
     debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password {{ phpmyadmin_password }}"
-  # TODO maybe use https://docs.ansible.com/ansible/latest/dpkg_selections_module.html
-  # TODO Is it necessary to run this before the installation of the phpmyadmin package?
 
-#- name: Add PHPMyAdmin configuration to Apache
-#  become: true
-#  lineinfile:
-#    path: /etc/phpmyadmin/apache.conf
-#    regexp: '(Alias /).*(/usr/share/phpmyadmin)'
-#    line: '{{ dir.phpmyadmin }} \2'
-#  notify:
-#  - apache
-
-- name: Finish PHPMyAdmin installation
-  set_fact: state_phpmyadmin=true cacheable=true
+- name: Add PHPMyAdmin configuration to Apache
+  become: true
+  lineinfile:
+    path: /etc/phpmyadmin/apache.conf
+    regexp: '(Alias /).*(/usr/share/phpmyadmin)'
+    line: '\1 {{ dir.phpmyadmin }} \2'
+  notify:
+  - apache
 
 ...
