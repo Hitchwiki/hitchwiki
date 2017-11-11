@@ -12,23 +12,20 @@ sudo: required
 language: python
 python: "2.7"
 
-services:
-  - docker
-
 before_install:
   - docker run -d --name hitchwiki -v $(pwd):/var/www ubuntu:latest tail -f /dev/null # pull latest ubuntu LTS
 
 install:
-  - docker exec hitchwiki bash -c 'apt-get update -qq;
-    apt-get install -qqy python-pip;
-    pip install -q --upgrade pip;
-    pip install -q ansible;
-    mkdir /etc/ansible;
-    echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
+  - docker exec hitchwiki bash -c 'apt-get update -qq &&
+      apt-get install -qqy python-pip &&
+      pip install --upgrade pip &&
+      pip install ansible &&
+      mkdir /etc/ansible &&
+      echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
 
 script:
-  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1
-      ansible-playbook /var/www/scripts/ansible/tests/test.yml --syntax-check &&
-      ansible-playbook /var/www/scripts/ansible/tests/test.yml &&
+  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 cd /var/www/scripts/ansible &&
+      ansible-playbook tests/test.yml --syntax-check &&
+      ansible-playbook tests/test.yml &&
       curl -s http://localhost
 
