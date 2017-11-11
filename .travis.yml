@@ -3,20 +3,16 @@
 
 # Based on https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
 # and http://romanvm.pythonanywhere.com/post/using-docker-travis-continuous-integration-25/
+# https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker
+# https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty
 
 sudo: required # https://docs.travis-ci.com/user/reference/trusty
-
-# TODO enable when travis updated their chef scripts to support xenial (travis-ci/travis-ci#5821)
-#dist: xenial # needed for php7 and composer
 
 language: python
 python: "2.7"
 
 services:
   - docker
-
-#addons:
-#  mariadb: '10.0'
 
 before_install:
   - docker run -d --name hitchwiki -v $(pwd):/var/www ubuntu:latest tail -f /dev/null # pull latest ubuntu LTS
@@ -26,13 +22,12 @@ install:
     apt-get install -y software-properties-common python-pip &&
     add-apt-repository universe && apt-get update -qq &&
     pip install --upgrade pip &&
-    pip install ansible"
+    pip install ansible
+    echo '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts"
 
 script:
-  - docker exec -t hitchwiki bash -c "killall tail; cd /var/www/scripts/ansible &&
-    ansible-playbook -i tests/inventory tests/test.yml --syntax-check &&
-    ansible-playbook -i tests/inventory tests/test.yml --connection=local -b"
+  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 ansible-playbook /var/www/scripts/ansible/tests/test.yml --syntax-check
+  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 ansible-playbook /var/www/scripts/ansible/tests/test.yml
   - docker inspect -f {{.State.ExitCode}} hitchwiki
-  - curl http://localhost
-  - curl http://localhost:1080
-  - curl http://localhost/phpmyadmin
+  - docker exec hitchwiki curl http://localhost
+  - docker exec hitchwiki curl http://localhost:1080
