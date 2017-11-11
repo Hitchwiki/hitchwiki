@@ -19,9 +19,10 @@ before_install:
 
 install:
   - docker exec hitchwiki bash -c 'apt-get update -qq;
-    apt-get install -qy python-pip;
+    apt-get install -qqy python-pip;
     pip install -q --upgrade pip;
     pip install -q ansible;
+    mkdir /etc/ansible;
     echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
 
 script:
