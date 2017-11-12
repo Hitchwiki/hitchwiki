@@ -1,0 +1,60 @@
+---
+# Install nodejs
+#  - https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+#  - https://github.com/nodesource/distributions#debinstall
+
+- name: Add nodejs repository key
+  become: yes
+  apt_key: state=present id=1655A0AB68576280 keyserver={{keyserver}}
+  register: node_key
+  ignore_errors: yes
+- apt_key: state=present url=http://nsolid-deb.nodesource.com/gpgkey/NODESOURCE-NSOLID-GPG-SIGNING-KEY
+  become: yes
+  when: node_key|failed
+
+- name: Add apt source for NodeSoure 9.x
+  when: node_key|succeeded
+  become: yes
+  apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_9.x {{ansible_distribution_release}} main"
+  register: node_source
+  ignore_errors: yes
+
+- name: Install nodejs
+  when: node_source|succeeded
+  become: yes
+  apt: name=nodejs state=present update_cache=yes allow_unauthenticated=yes # TODO
+  register: node_install
+  ignore_errors: yes
+
+- tempfile:
+    state: file
+    prefix: nodejs-
+    suffix: .sh
+  when: not node_install|succeeded
+
+- name: Download Nodesource 9.x installer
+  when: not node_install|succeeded
+  uri: url=https://deb.nodesource.com/setup_9.x dest={{node_tmp.path}} mode=0700 status_code=200,304
+
+- name: Run installer (adds apt-key and nodesource.list
+  when: not node_install|succeeded
+  become: yes
+  shell: "{{node_tmp.path}}"
+
+- name: Install nodejs
+  when: not node_install|succeeded
+  become: yes
+  apt: name=nodejs state=present update_cache=yes
+
+- name: Link nodejs to node
+  become: yes
+  file: state=link src=/usr/bin/nodejs path=/usr/local/bin/node
+
+- name: Install bower
+  become: yes
+  npm: name=bower version=~1.8 state=present global=yes
+
+# alternative: yarn https://yarnpkg.com/en/docs/install#linux-tab
+#curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+#echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+#sudo apt-get update && sudo apt-get install yarn
