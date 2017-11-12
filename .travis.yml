@@ -57,7 +57,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - env: distribution=debian version=latest
+    - env: os=debian version=latest
 
 before_install:
   #- sudo apt-get update

@@ -2,6 +2,7 @@
 composer.phar
 composer.lock
 public/composer
+public/autoload.php
 public/bin
 node_modules/
 

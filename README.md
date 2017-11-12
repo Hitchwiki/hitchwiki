@@ -17,7 +17,7 @@ more tips.
 ## Help needed!
 _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
-Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
+Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki), our [scripts](scripts/README.md) and [ansible](scripts/ansible/README.md).
 
 ## Installing
 
