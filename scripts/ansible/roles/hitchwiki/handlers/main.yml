@@ -2,8 +2,7 @@
 # Hitchwiki handlers
 
 # Installation report
-- name: Refresh status
-  become: yes
+- name: refresh status
   command: "{{ dir.script }}/status.sh"
   listen:
     - save
@@ -12,13 +11,22 @@
     - fetch status
     - load
 
-- name: Retrieve summary
-  fetch: src={{ dir.state }} dest=status/{{ ansible_host }}/ flat=yes
+- name: retrieve status
+  fetch: src={{item}} dest=status/{{ ansible_host }}/ flat=yes
+  with_first_found:
+    - scripts/ansible/state.yml
+    - /var/www/scripts/ansible/state.yml
+    - /etc/ansible/facts.d/state.yml
   listen: "fetch status"
   notify: "load"
 
-- name: Load variables
-  include_vars: "status/{{ ansible_host }}/state.yml"
+- name: load status
+  include_vars: "{{item}}"
+  with_first_found:
+    - "status/{{ ansible_host }}/state.yml"
+    - "scripts/ansible/status/{{ ansible_host }}/state.yml"
+    - "/var/www/scripts/ansible/status/{{ ansible_host }}/state.yml"
+    - /etc/ansible/facts.d/state.yml
   listen:
     - load
     - reload

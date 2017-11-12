@@ -14,7 +14,7 @@ hosts
 host_vars
 *.retry
 state.yml
-/scripts/ansiblestatus/
+/scripts/ansible/status/
 
 # Folder created by Apache installer
 /html

@@ -1,17 +1,24 @@
 ---
 # Status report
 
+# TODO this code duplicates roles/hitchwiki/handlers/main.yml
 - name: Update status
   command: "scripts/status.sh"
 
-- name: Fetch summary
+- name: Fetch status
   fetch: src={{item}} dest=status/{{ ansible_host }}/ flat=yes
   with_first_found:
     - scripts/ansible/state.yml
+    - /var/www/scripts/ansible/state.yml
     - /etc/ansible/facts.d/state.yml
 
-- name: Load summary
-  include_vars: "status/{{ ansible_host }}/state.yml"
+- name: Load status
+  include_vars: "{{item}}"
+  with_first_found:
+    - "status/{{ ansible_host }}/state.yml"
+    - "scripts/ansible/status/{{ ansible_host }}/state.yml"
+    - "/var/www/scripts/ansible/status/{{ ansible_host }}/state.yml"
+    - /etc/ansible/facts.d/state.yml
 
 - name: Parse chapters
   set_fact:
