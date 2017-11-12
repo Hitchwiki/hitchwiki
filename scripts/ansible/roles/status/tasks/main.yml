@@ -5,7 +5,10 @@
   command: "scripts/status.sh"
 
 - name: Fetch summary
-  fetch: src=scripts/ansible/state.yml dest=status/{{ ansible_host }}/ flat=yes
+  fetch: src={{item}} dest=status/{{ ansible_host }}/ flat=yes
+  with_first_found:
+    - scripts/ansible/state.yml
+    - /etc/ansible/facts.d/state.yml
 
 - name: Load summary
   include_vars: "status/{{ ansible_host }}/state.yml"
