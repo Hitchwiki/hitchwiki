@@ -16,6 +16,7 @@
   file: state=link src={{ dir.script }}/init_maildev.sh path=/etc/init.d/maildev mode='755'
 
 - name: Configure Maildev
+  become: yes
   lineinfile: path=/etc/default/maildev state=present create=yes line="PORT=1025"
 
 - name: Create Maildev startup symlink
