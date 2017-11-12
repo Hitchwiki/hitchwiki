@@ -1,22 +1,23 @@
 ---
 # Setup database server
+
+- name: Add apt key for MariaDB
+  become: yes
+  apt_key: state=present id=0xF1656F24C74CD1D8 keyserver={{keyserver}}
+
 - name: Add repository for MariaDB (Ubuntu)
   when: ansible_distribution == 'Ubuntu'
   become: yes
-  apt_repository:
+  apt_repository: # xenial zesty artful
     repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu {{ ansible_distribution_release }} main"
     state: present
 
 - name: Add repository for MariaDB (Debian)
   when: ansible_distribution == 'Debian'
   become: yes
-  apt_repository:
+  apt_repository: # sid stretch
     repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/debian {{ ansible_distribution_release }} main"
     state: present
-
-- name: Add apt key for MariaDB
-  become: yes
-  apt_key: state=present id=0xF1656F24C74CD1D8 keyserver=hkp://keyserver.ubuntu.com:80
 
 - name: Configure MariaDB not to prompt for passwords
   become: yes

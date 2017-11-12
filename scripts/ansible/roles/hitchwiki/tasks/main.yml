@@ -2,15 +2,18 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pmgouveia.
 
-- shell: "[ -d /etc/ansible/facts.d ]"
-  ignore_errors: yes
+- stat: path=/etc/ansible/facts.d
+  register: facts_dir # check with facts_dir.stat.exists
   notify: status
+- meta: flush_handlers
 
 - name: Fetch remote settings
   fetch: src=/var/www/configs/settings.yml dest=status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
+  register: fetch_settings
 
 - name: Copy settings.yml # make sure MW finds it
-  copy: src={{item}} dest=/var/www/configs/settings.yml
+  when: fetch_settings|failed
+  copy: src={{item}} dest=/var/www/configs/settings.yml owner={{user}} group={{apache.group}}
   with_first_found:
     - "status/{{ ansible_host }}/settings.yml"
     - configs/settings.yml
@@ -26,6 +29,9 @@
     - /var/www/configs/settings.yml
     - configs/settings-example.yml
     - /var/www/configs/settings-example.yml
+
+- set_fact: keyserver=hkp://keyserver.ubuntu.com:80
+  when: keyserver is not defined
 
 - name: Check if relevant variables are defined
   debug: var={{item}}
