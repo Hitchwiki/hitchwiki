@@ -3,18 +3,11 @@
 # For details see `scripts/ansible/status.yml`
 cd $(dirname $0)/ansible
 sf=state.yml
-
-if [[ $(whoami) == 'root' ]] ; then
-  [ -d /etc/ansible/facts.d ] || mkdir -p /etc/ansible/facts.d
-  sf=/etc/ansible/facts.d/state.yml
-  touch $sf
-  chmod a+r $sf
-fi
-[ -f $sf ] && rm $sf
-echo "# Ansible installation report" >> $sf
-echo "timestamp: $(date +%s)" >> $sf
-echo "date: $(date +%Y-%m-%d)" >> $sf
-echo "time: $(date +%H:%M)" >> $sf
+echo "# Ansible status report
+status:
+  timestamp: $(date +%s)
+  creation_date: $(date +%Y-%m-%d)
+  creation_time: $(date +%H:%M)" > $sf
 url="http://127.0.0.1"
 
 # binaries
@@ -46,8 +39,13 @@ monit=false
 [ $(curl -s "$url:1080" |grep -i maildev|wc -l) != 0 ] && maildev=true
 [ $(curl -s "$url/phpmyadmin" |grep -i phpmyadmin|wc -l) != 0 ] && phpmyadmin=true
 [ $(curl -s "$url:8142" |grep -i parsoid|wc -l) != 0 ] && parsoid=true
+installation_finished=true
 for app in apache mysql parsoid maildev phpmyadmin monit
 do echo "  $app: ${!app}" >> $sf
+case $chapter in # skip non-mandatory services
+  (maildev|phpmyadmin)	continue
+esac
+[[ $chapter == 'false' ]] && installation_finished=false
 done
 
 # configured
@@ -78,6 +76,10 @@ discourse=false
 [ -f /etc/init.d/discourse ] || [ -d /var/www/public/discourse/public ] &&  discourse=true
 for chapter in system db web tls mw parsoid monit production maildev phpmyadmin dev discourse
 do echo "  $chapter: ${!chapter}" >> $sf
+case $chapter in # skip non-mandatory chapters
+  (tls|production|maildev|phpmyadmin|dev|discourse)	continue
+esac
+[[ $chapter == 'false' ]] && installation_finished=false
 done
 
 # syntax
@@ -90,15 +92,28 @@ echo "  apache: $apache_syntax" >> $sf
 echo "  monit: $monit_syntax" >> $sf
 
 # versions
+function get_version() {
+  version=false
+  app=$1
+  bin=$(which $1)
+  if [[ -n $2 ]]
+  then
+    [[ -n $bin ]] && version="'$($bin --version |head -n1|cut -f$2 -d' ')'"
+  else
+    [[ -n $bin ]] && version="'$($bin --version |head -n1)'"
+  fi
+  echo "  $app: $version" >> $sf
+}
 echo -e "\nversions:" >> $sf
-[[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1|cut -f 2 -d':')
-[[ -n $openssl_bin ]] && openssl_ver=$(openssl version)
-echo "  apache2: '$apache_ver'" >> $sf
-echo "  openssl: '$openssl_ver'" >> $sf
-for app in php npm node bower composer
-do
-  bin=$(which $app)
-  [[ -n $bin ]] && version=$($app --version |head -n1)
-  echo "  $app: '$version'" >> $sf
-done
+apache_ver=false
+openssl_ver=false
+[[ -n $apachectl_bin ]] && apache_ver="'$(apache2ctl -V|head -n1|cut -f2 -d'/')'"
+[[ -n $openssl_bin ]] && openssl_ver="'$(openssl version|head -n1|cut -f2 -d' ')'"
+for app in ansible pip; do get_version $app 2; done
+get_version mysql 3
+echo "  apache2: $apache_ver" >> $sf
+echo "  openssl: $openssl_ver" >> $sf
+for app in php npm node bower composer rvm
+do get_version $app 1; done
+
 cat $sf

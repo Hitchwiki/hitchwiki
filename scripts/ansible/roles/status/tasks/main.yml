@@ -1,37 +1,55 @@
 ---
 # Status report
 
-- shell: |
-    echo "
-    #######################################################################
-    #                                                                     #
-    #                     - Hitchwiki is installed -                      #
-    #                                                                     #
-    #    Point your browser to {{ domain }} or {{ ansible_host }}          
-    # - Suspend the virtual machine by calling 'vagrant suspend'.         #
-    # - When you're ready to begin working again, just run 'vagrant up'.  #
-    # - To re-install, run 'vagrant destroy && vagrant up'.               #
-    # - Read more at http://github.com/Hitchwiki/hitchwiki                #
-    #                                                                     #
-    #                 Have fun and happy hacking!                         #
-    #                                                                     #
-    #######################################################################
-    "
-  when: no_outro is undefined and configured.system and configured.web and configured.db and configured.mw and configured.parsoid and started.apache and started.mysql and started.parsoid
-  register: outro
-- debug:
-    var: outro.stdout_lines
-  when: not outro|skipped
+- name: Update status
+  command: "scripts/status.sh"
 
-- name: Finished chapters
-  debug:
-    msg: "{{ configured }}"
-- name: Started services
-  debug:
-    msg: "{{ started }}"
-  
-#- debug:
-#    var: "{{ item }}"
-#  with_items: { configured, started }
+- name: Fetch summary
+  fetch: src=scripts/ansible/state.yml dest=status/{{ ansible_host }}/ flat=yes
+
+- name: Load summary
+  include_vars: "status/{{ ansible_host }}/state.yml"
+
+- name: Parse chapters
+  set_fact:
+    chapters: "{{chapters}} {{item}}"
+  when: configured[item]
+  with_items: "{{configured}}"
+
+- name: Parse services
+  set_fact:
+    services: "{{services}} {{item}}"
+  when: started[item]
+  with_items: "{{started}}"
+
+- name: Show summary
+  vars:
+    status_msg: |
+      #######################################################################
+      #                                                                     #
+      #                - Hitchwiki installation report -                    #
+      #                                                                     #
+      #######################################################################
+      
+         - Passed chapters {{chapters}}
+      
+         - Started services: {{services}}
+      
+         - Point your browser to {{ lookup('pipe', 'hostname') }} or {{ ansible_host }}
+      
+      #######################################################################
+      #                                                                     #
+      # - Read more at http://github.com/Hitchwiki/hitchwiki                #
+      #                                                                     #
+      # - Suspend the virtual machine by calling 'vagrant suspend'.         #
+      # - When you're ready to begin working again, just run 'vagrant up'.  #
+      # - To re-install, run 'vagrant destroy && vagrant up'.               #
+      #                                                                     #
+      #                 Have fun and happy hacking!                         #
+      #                                                                     #
+      #######################################################################
+  debug: 
+    msg: "{{ status_msg.split('\n') }}"
+  when: no_outro is not defined
 
 ...

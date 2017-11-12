@@ -9,22 +9,11 @@
 #- debug:
 #    var: state
 
-- hosts: all
-  gather_facts: no
-  vars_files:
-    - configs/settings.yml
-  pre_tasks:
-    - name: Update status
-      command: "{{ dir.script }}/status.sh"
-    - name: Retrieve summary
-      fetch: src={{ dir.state }} dest=status/{{ ansible_host }}/ flat=yes
-    - name: Load summary
-      include_vars: "status/{{ ansible_host }}/state.yml"
-
-- name: Show summary
+- name: Hitchwiki installation report
   hosts: all
   vars:
-    no_outro: true
+    chapters:
+    services:
   gather_facts: no
   roles:
     - status
