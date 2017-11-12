@@ -93,12 +93,12 @@ echo "  monit: $monit_syntax" >> $sf
 echo -e "\nversions:" >> $sf
 [[ -n $apachectl_bin ]] && apache_ver=$(apache2ctl -V|head -n1|cut -f 2 -d':')
 [[ -n $openssl_bin ]] && openssl_ver=$(openssl version)
-echo "  apache2: $apache_ver" >> $sf
-echo "  openssl: openssl_ver" >> $sf
+echo "  apache2: '$apache_ver'" >> $sf
+echo "  openssl: '$openssl_ver'" >> $sf
 for app in php npm node bower composer
 do
   bin=$(which $app)
   [[ -n $bin ]] && version=$($app --version |head -n1)
-  echo "  $app: $version" >> $sf
+  echo "  $app: '$version'" >> $sf
 done
 cat $sf
