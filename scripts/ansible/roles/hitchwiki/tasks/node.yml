@@ -22,7 +22,7 @@
 - name: Install nodejs
   when: node_source|succeeded
   become: yes
-  apt: name=nodejs state=present update_cache=yes allow_unauthenticated=yes # TODO
+  apt: name=nodejs state=present update_cache=yes
   register: node_install
   ignore_errors: yes
 

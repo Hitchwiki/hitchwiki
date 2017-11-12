@@ -5,7 +5,7 @@
 
 - name: Configure Monit
   become: yes
-  template: src={{ dir.conf }}/monitrc dest=/etc/monit/monitrc mode=0700
+  template: src=configs/monitrc dest=/etc/monit/monitrc mode=0700
 
 - name: Check syntax
   become: yes

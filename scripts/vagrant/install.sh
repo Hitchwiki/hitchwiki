@@ -31,9 +31,4 @@ done
 echo -e $sep
 echo "All fine, let's roll ..."
 vagrant plugin install vagrant-hostmanager
-
-echo "Prepare vagrant box"
 vagrant up
-echo "Setup hitchwiki"
-echo "localhost ansible_connection=local ansible_user=hitchwiki" >> hosts
-vagrant ssh -c /var/www/scripts/setup_hitchwiki.sh --limit="localhost"
