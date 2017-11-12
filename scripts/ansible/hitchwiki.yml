@@ -6,16 +6,6 @@
 #   https://www.vagrantup.com/docs/provisioning/ansible.html
 # Nice read: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
 
-- hosts: all
-  gather_facts: no
-  vars_files:
-    - configs/settings.yml
-  pre_tasks:
-    - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
-      raw: sudo apt-get install -yq python-simplejson
-    - import_role: name=deploy
-      when: ansible_user == 'ubuntu'
-
 - name: Setup hitchwiki
   hosts: all
   vars_files:
