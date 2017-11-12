@@ -68,4 +68,9 @@
   remote_user: "{{ user }}"
   include_tasks: non-vagrant.yml
 
+- name: Update inventory
+  lineinfile:
+    path: /var/www/hosts
+    line: localhost ansible_connection=local ansible_user=hitchwiki
+
 ...
