@@ -104,8 +104,6 @@ notifications: # https://docs.travis-ci.com/user/notifications
     on_failure: always
     rooms:
       - secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
-    template:
-      - "%{repository_slug}/%{commit} [%{build_number}:%{result}] %{message} (%{commit_subject}, %{author}) %{compare_url}"
   irc: 
     channels:
       - "chat.freenode.net#hitchhiking-dev"
