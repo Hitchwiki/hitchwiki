@@ -22,16 +22,12 @@ sudo: required
 #  - beta.hitchwiki.org
 
 env:
-  # https://hub.docker.com/_/ubuntu/
-  # https://launchpad.net/ubuntu
+  # Ubuntu: https://hub.docker.com/_/ubuntu/ - https://launchpad.net/ubuntu
   - os=ubuntu version=latest container_id=$(mktemp)
   - os=ubuntu version=rolling container_id=$(mktemp)
-  # https://hub.docker.com/_/debian/
-  # https://www.debian.org/releases/
+  # Debian: https://hub.docker.com/_/debian/ - https://www.debian.org/releases/
   - os=debian version=latest container_id=$(mktemp)
-  - os=debianversion=testing container_id=$(mktemp)
-  # https://hub.docker.com/_/centos/
-  # https://bertvv.github.io/notes-to-self/2015/12/11/testing-ansible-roles-with-travis-ci-part-1-centos/
+  - os=debian version=testing container_id=$(mktemp)
 
 #ansible:
 # - 2.4
@@ -48,42 +44,39 @@ matrix:
     - env: os=ubuntu version=rolling
 
 before_install:
-  #- sudo apt-get update
   # update docker
-  #- sudo apt-get upgrade lxc-docker
+  #- sudo apt-get update && sudo apt-get upgrade lxc-docker
   #- echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
-  #- sudo service docker restart
-  #- sleep 5
+  #- sudo service docker restart && sleep 5
+  # build docker image
   #- sudo docker pull ${distribution}${version}_v${ANSIBLE_VERSION}
   #- docker build --rm=true --file=tests/Dockerfile.${distribution} --tag=${distribution}:ansible tests
   #- docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distribution}:ansible "${init}" > "${container_id}"
 
+  # pull and run prebuilt image
   - docker pull ${os}:${version}
-  - docker run -d --name hitchwiki -v $(pwd):/var/www ${os}:${version} tail -f /dev/null
+  - docker run -d --name "$(cat ${container_id})" -v $(pwd):/var/www ${os}:${version} tail -f /dev/null > "${container_id}"
 
 install:
-  - docker exec hitchwiki bash -c 'apt-get update -qq &&
+  - > # prepare ansible
+    docker exec "$(cat ${container_id})" bash -c 'apt-get update -qq &&
       apt-get install -qqy python-pip &&
       pip install --upgrade pip &&
       pip install ansible &&
-      mkdir /etc/ansible &&
-      echo -e "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts'
+      echo -e "[local]\nlocalhost ansible_connection=local" > /var/www/hosts'
 
-#before_script:
+before_script: # general settings
+  - export ansible_command='cd /var/www/scripts/ansible && ansible-playbook tests/test.yml'
 
-script:
-  - docker exec hitchwiki env ANSIBLE_FORCE_COLOR=1 bash -c 'cd /var/www/scripts/ansible &&
-      ansible-playbook tests/test.yml --syntax-check &&
-      ansible-playbook tests/test.yml &&
-      curl -s http://localhost'
+script: # run tests
+  - docker exec "$(cat ${container_id})" bash -c "$ansible_command --syntax-check"
+  - docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command"
 
-    # Idempotence test
-#  - >
-#    sudo docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
-#    | grep -q 'changed=0.*failed=0'
-#    && (echo 'Idempotence test: pass' && exit 0)
-#    || (echo 'Idempotence test: fail' && exit 1)
-
+  - > # Idempotence test
+    if [ "$TRAVIS_BRANCH" = "idempotence" ] ; then docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)"; fi
 
 after_failure:
   - echo $TRAVIS_TEST_RESULT
@@ -98,13 +91,13 @@ after_script:
     # Clean up
   - sudo docker stop "$(cat ${container_id})"
 
-
 notifications: # https://docs.travis-ci.com/user/notifications
   slack:
     on_success: always
     on_failure: always
     rooms:
-      - secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
+      #- secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
+      #- secure: ZM1Awjf0UTZoKu4+qzhtueaLMdUP52UzdYgpIxl0JiVUT1Au+7Yj9X8hINzXIbd60PvfIidQ/CBJYQQGds4wrXHYzIeyEhs7iY4vqu3sCP2aCBtPV2ZZ/jSW3UkF8Ww3WKcXiGd2IBjBxhv9MZxqNK21xMHohKAUZF1Bzv862YJPJDJ/Y6zIslfJs8zIa1lZU/q22kbeM4hYxT7QIXTj3drLKAMWDDVqm2eBE8n/cD6Wq6nI0zsj/AIV/zu5qYVMIXhdsIMu06nbI0qCiG4SPe7fE3Xyzl+MuGrnL5LfbK+9sQgiEFRPyN2dtZGKhtbYmT6i92FRr31a4y23HWSdEgTM2OOQGf/1SLEZYBw+ch3dlkGVmv+A0qUKC+MNsLO1hV5hnL6ISevrPzikHOmvc3JU9Ydf7DXK1XpAggoxb9B/+u0zRf3Aa7ovDmXzGbayN/XZ6PKHeRRZjjz0CtZj965QWvt84TpGxuyIu9svUpTLX7AgDjXKF5ILyMselbnF14lP23npd/7TC1Ayy4mc7WbfjYhR8UwL2aspqIZMQ1mbRyDMZXTmAmYrJoq+Ud1C7ZDF+QkRbazSfdm9BJpUmEw8atI/COq5owx16LLLD+6NVSxfsv9rMtrqluTqzgy0M1yo8xCStM+wIyr6QRFT/Khm9zLv0kIW+ZLv0QodTjY=
   irc: 
     channels:
       - "chat.freenode.net#hitchhiking-dev"
