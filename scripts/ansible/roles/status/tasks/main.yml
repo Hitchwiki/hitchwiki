@@ -80,4 +80,28 @@
     msg: "{{ summary.split('\n') }}"
   when: no_outro is not defined
 
+# Network test
+- name: Test https://localhost
+  when: mediawiki.protocol == 'https' or env == 'production'
+  uri: url=https://{{ item }} status_code=200,304
+  with_items:
+    - 127.0.0.1
+    - "{{ domain }}"
+  register: test_https
+  ignore_errors: yes
+
+- name: Test http://localhost
+  when: item is defined
+  uri: url=http://{{ item }} status_code=200,304
+  with_items:
+    - localhost
+    - 127.0.0.1
+    - "{{ hostvars.hostname }}"
+    - "{{ ansible_host }}"
+    - "{{ lookup('pipe', 'hostname') }}"
+    - "{{ domain }}"
+    - "{{ domain2 }}"
+  register: test_http
+  ignore_errors: yes
+
 ...
