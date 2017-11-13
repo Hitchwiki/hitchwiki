@@ -12,10 +12,10 @@
   become: yes
   when: node_key|failed
 
-- name: Add apt source for NodeSoure 9.x
+- name: Add apt source for NodeSoure 9.x for {{ os_version }}
   when: node_key|succeeded
   become: yes
-  apt_repository: filename=nodesource.list state=present repo="deb https://deb.nodesource.com/node_9.x {{ansible_distribution_release}} main"
+  apt_repository: filename=nodesource state=present repo="deb https://deb.nodesource.com/node_9.x {{os_version}} main"
   register: node_source
   ignore_errors: yes
 

@@ -9,14 +9,14 @@
   when: ansible_distribution == 'Ubuntu'
   become: yes
   apt_repository: # xenial zesty artful
-    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu {{ ansible_distribution_release }} main"
+    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu {{ os_version }} main"
     state: present
 
 - name: Add repository for MariaDB (Debian)
   when: ansible_distribution == 'Debian'
   become: yes
   apt_repository: # sid stretch
-    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/debian {{ ansible_distribution_release }} main"
+    repo: "deb [arch=amd64,i386,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.2/debian {{ os_version }} main"
     state: present
 
 - name: Configure MariaDB not to prompt for passwords

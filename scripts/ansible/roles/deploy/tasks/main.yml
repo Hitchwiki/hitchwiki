@@ -4,6 +4,12 @@
 - debug: var=ansible_distribution
 - debug: var=ansible_distribution_release
 
+- set_fact:
+    os_version: "{{ ansible_distribution_release }}"
+- set_fact:
+    os_version: stretch
+  when: os_version == 'NA'
+
 - name: Load settings
   include_vars: "{{ item }}"
   with_first_found:
