@@ -31,8 +31,12 @@
 - name: Install helper tools
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: { tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, fail2ban, htop, backupninja, ack-grep, nano, emacs-nox, nullmailer, w3m, zsh }
-  # TODO check if ack-grep migrated to artful https://launchpad.net/ubuntu/+source/ack-grep
+  with_items: { tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, fail2ban, htop, backupninja, nano, emacs-nox, nullmailer, w3m, zsh }
+
+- name: Install optional helpers
+  become: yes
+  apt: name=ack-grep state=present
+  ignore_errors: yes # TODO check if ack-grep migrated to artful https://launchpad.net/ubuntu/+source/ack-grep
 
 - name: Configure backupninja
   become: yes
