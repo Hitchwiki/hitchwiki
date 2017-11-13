@@ -1,20 +1,21 @@
 ---
-# This helper role
-# - execute `scripts/status.sh` to print a status report on stdout that can be shown in ansible.
-# - logs the state of the environment to `scripts/ansible/.state.yml`
-# - loads `.state.yml`
-# - prints a message when everything is finished
-
-# If you include this role at the beginning of your book, you can inspect it with
-#- debug:
-#    var: state
+# This playbook is used to gather status updates from all guests in logs/status/{{ansible_host}} (see below)
+#  - First scripts/status.sh is triggered remotely which writes to log/state.yml.
+#  - Then a report with passed chapters and started services is shown for each host.
+# When code/paths changed lately the update playbook should be run first to issue `git pull`.
 
 - name: Hitchwiki installation report
   hosts: all
+  gather_facts: no
   vars:
+    from_remote: true # inform the client that a fetch is necessary
+    dir:
+      script: /var/www/scripts
+      state: /etc/ansible/facts.d/state.yml # deprecated
+      #state: /var/www/logs/state.yml # TODO set this when all hosts are updated
+      log: "{{ lookup('pipe', 'pwd') }}/../../logs" # from remote we need to override the global here non-existent /var/www/logs
     chapters:
     services:
-  gather_facts: no
   roles:
     - status
 

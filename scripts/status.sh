@@ -1,8 +1,7 @@
 #!/bin/bash
 # This script will the installation status and print variables to `scripts/ansible/.state.yml`
 # For details see `scripts/ansible/status.yml`
-cd $(dirname $0)/ansible
-sf=state.yml
+sf=$(dirname $0)/../logs/state.yml
 echo "# Ansible status report
 status:
   timestamp: $(date +%s)

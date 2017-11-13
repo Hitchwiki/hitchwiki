@@ -1,0 +1,22 @@
+---
+# Hitchwiki installation status update
+
+- name: refresh status
+  become: yes # TODO deprecated
+  command: "{{dir.script}}/status.sh"
+  listen:
+    - status
+  notify:
+    - fetch statefile
+    - load status
+
+# For the status playbook we need to get the file first, store it in a local {{ dir.log }} and include it direct after (remote -> local -> remote)
+- name: fetch statefile
+  fetch: src={{dir.state}} dest={{dir.log}}/status/{{ ansible_host }}/ flat=yes
+  when: from_remote is defined and from_remote # status playbook
+
+- name: load status
+  include_vars: "{{item}}"
+  with_first_found:
+   - "{{dir.log}}/status/{{ ansible_host }}/state.yml" # if the file has been transferred before
+   - "{{dir.state}}" # the default location set in settings.yml

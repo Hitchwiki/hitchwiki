@@ -1,4 +1,4 @@
-Since November 2017 (#164) we use [ansible](https://github.com/ansible/ansible) to test and deploy Hitchwiki. It can provision a local vagrant box or deploy a remote server. There is ticket to track issues: #172. Feel free to subscribe and add your reports.
+[Since November 2017](https://github.com/Hitchwiki/hitchwiki/issues/164) we use [ansible](https://github.com/ansible/ansible) to test and deploy Hitchwiki. It can provision a local vagrant box or deploy to a remote server. Please add issues related to our ansible playbooks to [this ticket](https://github.com/Hitchwiki/hitchwiki/issues/172).
 
 [![Build Status](https://travis-ci.org/Hitchwiki/hitchwiki.svg?branch=master)](https://travis-ci.org/Hitchwiki/hitchwiki)
 

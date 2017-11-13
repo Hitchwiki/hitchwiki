@@ -96,9 +96,9 @@ dir:
   dumps: /var/www/dumps
   phpmyadmin: /usr/share/phpmyadmin
   spyc: /var/www/public/mustangostang/spyc/Spyc.php
-  log: /var/www/log
+  log: /var/www/logs
+  state: /var/www/logs/state.yml # currently hardcoded in status.sh and status.yml
   dump: /var/www/dumps
-  state: /etc/ansible/facts.d/state.yml
   discourse: /var/www/scripts/vendor/discourse
 
 apache:

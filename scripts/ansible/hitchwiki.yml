@@ -11,8 +11,11 @@
   vars_files:
     - configs/settings.yml
   remote_user: "{{ user }}"
+  pre_tasks:
+    - stat: path=/var/www/configs/settings.yml
+      register: root
   roles:
-    - deploy
+    - { role: deploy, when: not root.stat.exists }
     - hitchwiki
 
 ...

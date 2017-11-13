@@ -1,35 +1,7 @@
 ---
 # Hitchwiki handlers
 
-# Installation report
-- name: refresh status
-  command: "{{ dir.script }}/status.sh"
-  listen:
-    - save
-    - status
-  notify:
-    - fetch status
-    - load
-
-- name: retrieve status
-  fetch: src={{item}} dest=status/{{ ansible_host }}/ flat=yes
-  with_first_found:
-    - scripts/ansible/state.yml
-    - /var/www/scripts/ansible/state.yml
-    - /etc/ansible/facts.d/state.yml
-  listen: "fetch status"
-  notify: "load"
-
-- name: load status
-  include_vars: "{{item}}"
-  with_first_found:
-    - "status/{{ ansible_host }}/state.yml"
-    - "scripts/ansible/status/{{ ansible_host }}/state.yml"
-    - "/var/www/scripts/ansible/status/{{ ansible_host }}/state.yml"
-    - /etc/ansible/facts.d/state.yml
-  listen:
-    - load
-    - reload
+- import_tasks: roles/status/handlers/main.yml
 
 # System
 - name: update system
@@ -80,7 +52,7 @@
   service: name=maildev enabled=yes state=started
   listen:
     - maildev
-  ignore_errors: yes 
+  ignore_errors: yes
 
 - name: stop maildev
   become: yes
