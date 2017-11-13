@@ -22,12 +22,14 @@ sudo: required
 #  - beta.hitchwiki.org
 
 env:
-  # Ubuntu: https://hub.docker.com/_/ubuntu/ - https://launchpad.net/ubuntu
+  # Stable
   - os=ubuntu version=latest container_id=$(mktemp)
-  - os=ubuntu version=rolling container_id=$(mktemp)
-  # Debian: https://hub.docker.com/_/debian/ - https://www.debian.org/releases/
   - os=debian version=latest container_id=$(mktemp)
-  - os=debian version=testing container_id=$(mktemp)
+  # Testing
+  #- os=ubuntu version=rolling container_id=$(mktemp)
+  #- os=debian version=testing container_id=$(mktemp)
+  # Ubuntu: https://hub.docker.com/_/ubuntu/ - https://launchpad.net/ubuntu
+  # Debian: https://hub.docker.com/_/debian/ - https://www.debian.org/releases/
 
 #ansible:
 # - 2.4
