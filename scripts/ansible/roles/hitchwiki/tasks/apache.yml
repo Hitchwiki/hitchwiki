@@ -6,10 +6,24 @@
 #   https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/roles/php-fpm/tasks/main.yml
 #   https://github.com/geerlingguy/ansible-role-apache
 
+
+- name: Use PHP7.0
+  set_fact:
+    php_ver: 7.0
+    php_packages: [ php7.0, php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache ]
+- name: Use PHP7.1 #  https://launchpad.net/ubuntu/+source/php7.1
+  when: os_version == "artful" or os_version == "bionic"
+  set_fact:
+    php_ver: 7.1
+    php_packages: [ php7.1, php7.1-cli, libapache2-mod-php7.1, php7.1-mysql, php7.1-curl, php7.1-gd, php7.1-intl, php7.1-imap, php7.1-mcrypt, php7.1-pspell, php7.1-recode, php7.1-sqlite3, php7.1-tidy, php7.1-xmlrpc, php7.1-xsl, php7.1-mbstring, php7.1-opcache ]
+
 - name: Install Apache2 with PHP7 and extensions
   become: yes
   apt: name={{ item }} state=present
-  with_items: { apache2, php-pear, php-gettext, php-xml, php-json, php7.0, php7.0-cli, libapache2-mod-php7.0, php7.0-mysql, php7.0-curl, php7.0-gd, php7.0-intl, php7.0-imap, php7.0-mcrypt, php7.0-pspell, php7.0-recode, php7.0-sqlite3, php7.0-tidy, php7.0-xmlrpc, php7.0-xsl, php7.0-mbstring, php7.0-opcache, php-imagick, php-memcache }
+  with_items:
+    - [ apache2 ]
+    - "{{ php_packages }}"
+    - [ php-pear, php-gettext, php-xml, php-json, php-imagick, php-memcache ]
   # add when needed: php-apcu (note php7.0-opcache above)
 
 - name: Allow apache override to all
@@ -38,7 +52,7 @@
 - name: Increase upload limit in php.ini
   become: yes
   blockinfile:
-    path: /etc/php/7.0/cli/php.ini
+    path: "/etc/php/{{ php_ver }}/cli/php.ini"
     state: present
     block: |
       php_value post_max_size 10M
