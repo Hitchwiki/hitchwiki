@@ -2,7 +2,6 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - deploy
     - hitchwiki
 
 ...

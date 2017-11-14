@@ -2,20 +2,28 @@
 # Setup hitchwiki
 # based on install_funcs.sh by pmgouveia.
 
-- stat: path=/etc/ansible/facts.d
-  register: facts_dir # check with facts_dir.stat.exists
+- debug: var=ansible_user
+- debug: var=ansible_distribution
+- debug: var=ansible_distribution_release
+
+- set_fact:
+    os_version: "{{ ansible_distribution_release }}"
   notify: status
+- set_fact:
+    os_version: stretch
+  when: os_version == 'NA'
+
 - meta: flush_handlers
 
-- name: Fetch remote settings
-  fetch: src=/var/www/configs/settings.yml dest=status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
+- name: Fetch remote settings # store remote settings
+  fetch: src=/var/www/configs/settings.yml dest=logs/status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
   register: fetch_settings
 
 - name: Copy settings.yml # make sure MW finds it
   when: fetch_settings|failed
   copy: src={{item}} dest=/var/www/configs/settings.yml owner={{user}} group={{apache.group}}
   with_first_found:
-    - "status/{{ ansible_host }}/settings.yml"
+    - "logs/status/{{ ansible_host }}/settings.yml"
     - configs/settings.yml
     - /var/www/configs/settings.yml
     - configs/settings-example.yml

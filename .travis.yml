@@ -5,9 +5,12 @@ python: "2.7"
 # python: "3" TODO test with ansible trunk
 git:
   depth: 3
-#  branches:
-#    except:
-#    only:
+#branches:
+#  except:
+#  only:
+#    - master
+#    - testing
+#    - idempotence
 
 # Based on:
 #  - https://www.jeffgeerling.com/blog/testing-ansible-roles-travis-ci-github
@@ -24,26 +27,18 @@ sudo: required
 env:
   # Stable
   - os=ubuntu version=latest container_id=$(mktemp)
-  - os=debian version=latest container_id=$(mktemp)
+  #- os=debian version=latest container_id=$(mktemp)
   # Testing
-  - os=ubuntu version=rolling container_id=$(mktemp)
-  - os=debian version=testing container_id=$(mktemp)
+  #- os=ubuntu version=testing container_id=$(mktemp)
+  #- os=debian version=testing container_id=$(mktemp)
   # Ubuntu: https://hub.docker.com/_/ubuntu/ - https://launchpad.net/ubuntu
   # Debian: https://hub.docker.com/_/debian/ - https://www.debian.org/releases/
-
-#ansible:
-# - 2.4
-# - 2.5
-
-#mediawiki:
-# - 1.29
-# - 1.30
 
 matrix:
   fast_finish: true
   allow_failures:
     - env: os=debian
-    - env: os=ubuntu version=rolling
+    - env: version=testing
 
 before_install:
   # update docker
@@ -97,7 +92,7 @@ notifications: # https://docs.travis-ci.com/user/notifications
   slack:
     on_success: always
     on_failure: always
-    rooms:
+    #rooms:
       #- secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
       #- secure: ZM1Awjf0UTZoKu4+qzhtueaLMdUP52UzdYgpIxl0JiVUT1Au+7Yj9X8hINzXIbd60PvfIidQ/CBJYQQGds4wrXHYzIeyEhs7iY4vqu3sCP2aCBtPV2ZZ/jSW3UkF8Ww3WKcXiGd2IBjBxhv9MZxqNK21xMHohKAUZF1Bzv862YJPJDJ/Y6zIslfJs8zIa1lZU/q22kbeM4hYxT7QIXTj3drLKAMWDDVqm2eBE8n/cD6Wq6nI0zsj/AIV/zu5qYVMIXhdsIMu06nbI0qCiG4SPe7fE3Xyzl+MuGrnL5LfbK+9sQgiEFRPyN2dtZGKhtbYmT6i92FRr31a4y23HWSdEgTM2OOQGf/1SLEZYBw+ch3dlkGVmv+A0qUKC+MNsLO1hV5hnL6ISevrPzikHOmvc3JU9Ydf7DXK1XpAggoxb9B/+u0zRf3Aa7ovDmXzGbayN/XZ6PKHeRRZjjz0CtZj965QWvt84TpGxuyIu9svUpTLX7AgDjXKF5ILyMselbnF14lP23npd/7TC1Ayy4mc7WbfjYhR8UwL2aspqIZMQ1mbRyDMZXTmAmYrJoq+Ud1C7ZDF+QkRbazSfdm9BJpUmEw8atI/COq5owx16LLLD+6NVSxfsv9rMtrqluTqzgy0M1yo8xCStM+wIyr6QRFT/Khm9zLv0kIW+ZLv0QodTjY=
   irc: 

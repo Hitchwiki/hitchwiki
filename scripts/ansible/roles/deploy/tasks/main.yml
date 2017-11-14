@@ -1,14 +1,5 @@
 ---
 # Prepare system to install hitchwiki
-- debug: var=ansible_user
-- debug: var=ansible_distribution
-- debug: var=ansible_distribution_release
-
-- set_fact:
-    os_version: "{{ ansible_distribution_release }}"
-- set_fact:
-    os_version: stretch
-  when: os_version == 'NA'
 
 - name: Load settings
   include_vars: "{{ item }}"
@@ -16,67 +7,23 @@
     - configs/settings.yml
     - configs/settings-example.yml
 
-# Install dependencies
-- name: Use apt-cacher
-  become: yes
-  lineinfile:
-    path: /etc/apt/apt.conf.d/apt-cacher-ng
-    create: yes
-    regexp: '^Acquire::http::Proxy'
-    line: >
-      Acquire::http::Proxy "http://{{ apt_proxy }}:3142/";
-      Acquire::https::Proxy "false"; # or enable "PassThroughPattern: .*" in /etc/apt-cacher-ng/acng.conf
-      # See https://blog.packagecloud.io/eng/2015/05/05/using-apt-cacher-ng-with-ssl-tls/
-  when: apt_proxy is defined
+- name: Prepare user
+  include_tasks: user.yml
+  tags: user
 
-- name: Install system tools
-  become: yes
-  apt: name={{ item }} state=present
-  with_items: { git, python-pip, openssh-client, sudo, at }
+- name: Install dependencies
+  include_tasks: user.yml
+  tags: dependencies
 
-- name: Update pip and install ansible
-  become: yes
-  pip: name={{ item }} state=latest umask=0022
-  with_items: { pip, ansible }
-
-# Prepare user
-- name: Add user {{ user }}
-  become: yes
-  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
-  # https://docs.ansible.com/ansible/latest/user_module.html
-
-- name: Add authorized_keys for {{ user }}
-  become: yes
-  authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
-  with_first_found:
-    - files:
-      - configs/authorized_keys
-      - ~/.ssh/id_rsa.pub
-      skip: true
-  register: add_ssh_key
-- debug: msg="You won't be able to connect to this machine via ssh key. Did you run 'ssh-keygen'?"
-  when: not add_ssh_key|succeeded
-
-- name: Add {{ user }} to sudoers
-  become: yes
-  lineinfile:
-    path: /etc/sudoers
-    regexp: '^{{user}}'
-    line: "{{user}} ALL=NOPASSWD:ALL"
-
-# Prepare repository
 - name: Check for /var/www/scripts
   stat: path=/var/www/scripts
   register: scripts_dir
-  # https://docs.ansible.com/ansible/latest/stat_module.html
+  tags: repository
+
 - name: Prepare repository
   when: not scripts_dir.stat.exists
   remote_user: "{{ user }}"
-  include_tasks: non-vagrant.yml
-
-- name: Update inventory
-  lineinfile:
-    path: /var/www/hosts
-    line: localhost ansible_connection=local ansible_user=hitchwiki
+  include_tasks: repository.yml
+  tags: repository
 
 ...

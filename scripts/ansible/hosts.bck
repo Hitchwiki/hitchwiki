@@ -1,0 +1,5 @@
+[hitchwiki]
+vagrant ansible_host=127.0.0.1 ansible_user=ubuntu ansible_ssh_port=2222 ansible_ssh_private_key=~/src/hitchwiki/.vagrant/machines/hitchwiki/virtualbox/private_key
+vagrant_hitchwiki ansible_host=127.0.0.1 ansible_user=hitchwiki ansible_ssh_port=2222 private_key_file=~/.ssh/id_rsa
+beta ansible_host=46.101.117.158
+localhost ansible_connection=local ansible_user=hitchwiki

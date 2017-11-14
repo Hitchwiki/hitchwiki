@@ -31,7 +31,7 @@
 - name: Install helper tools
   become: yes
   apt: name={{ item }} state=present update_cache=yes
-  with_items: { tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, fail2ban, htop, backupninja, nano, emacs-nox, nullmailer, w3m, zsh }
+  with_items: { tmux, python-pip, vim, monit, curl, git, unzip, zip, imagemagick, build-essential, fail2ban, htop, backupninja, nano, emacs-nox, nullmailer, w3m, zsh, openssh-client, sudo, at }
 
 - name: Install optional helpers
   become: yes

@@ -11,8 +11,7 @@
     from_remote: true # inform the client that a fetch is necessary
     dir:
       script: /var/www/scripts
-      state: /etc/ansible/facts.d/state.yml # deprecated
-      #state: /var/www/logs/state.yml # TODO set this when all hosts are updated
+      state: /var/www/logs/state.yml
       log: "{{ lookup('pipe', 'pwd') }}/../../logs" # from remote we need to override the global here non-existent /var/www/logs
     chapters:
     services:

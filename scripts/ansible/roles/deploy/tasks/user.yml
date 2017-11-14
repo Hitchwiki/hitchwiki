@@ -1,0 +1,27 @@
+---
+# Prepare user
+- name: Add user {{ user }}
+  become: yes
+  user: generate_ssh_key=yes name={{ user }} uid=1050 shell=/bin/bash
+  # https://docs.ansible.com/ansible/latest/user_module.html
+
+- name: Add authorized_keys for {{ user }}
+  become: yes
+  authorized_key: user={{ user }} state=present key="{{ lookup('file', item) }}"
+  with_first_found:
+    - files:
+      - configs/authorized_keys
+      - ~/.ssh/id_rsa.pub
+      skip: true
+  register: add_ssh_key
+- debug: msg="You won't be able to connect to this machine via ssh key. Did you run 'ssh-keygen'?"
+  when: not add_ssh_key|succeeded
+
+- name: Add {{ user }} to sudoers
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^{{user}}'
+    line: "{{user}} ALL=NOPASSWD:ALL"
+
+...

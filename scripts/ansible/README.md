@@ -110,18 +110,69 @@ _[more](https://news.ycombinator.com/item?id=5933025)_
   - [pallet](https://news.ycombinator.com/item?id=5934158)
   - [cfengine)[https://cfengine.com/]
 
-## Travis and docker
+## Continuous Integration (CI)
+### Travis, vagrant, docker, circle
 - official doc(k)s: [docker](https://docs.travis-ci.com/user/docker), [build options(]https://docs.travis-ci.com/user/customizing-the-build), [sdk](https://docs.docker.com/develop/sdk), [images](https://hub.docker.com)
+- [vagrant provisioning with docker](https://www.vagrantup.com/docs/provisioning/docker.html)
 - howtos: [Docker for Admins](https://edenmal.net/2016/04/01/Docker-for-Admins-Workshop-v2), [docker + bluemix](https://ansi.23-5.eu/2017/07/docker-container-bluemix-cli-tools/), [docker composer](https://github.com/heroku/logplex/blob/master/.travis.yml)
 As we rely on packages from xenial and travis' still uses [ubunut old-LTS trusty](https://docs.travis-ci.com/user/reference/trusty), docker is our  way to run travis build tests. For ansible it is basically the same as vagrant.
 - [multi-platform-tests](https://bertvv.github.io/notes-to-self/2015/12/13/testing-ansible-roles-with-travis-ci-part-2-multi-platform-tests/) ([.travis.yml](https://github.com/weldpua2008/ansible-apache/blob/master/.travis.yml), [centos7](https://stackoverflow.com/questions/32535195/how-to-run-tests-on-centos-7-with-travis-ci))
 - [How I test Ansible configuration on 7 different OSes with Docker](https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker) ([examples](https://github.com/geerlingguy/ansible-for-devops), [.travis.yml](https://github.com/geerlingguy/ansible-role-java/blob/1.7.0/.travis.yml))
 - alternative init systems: [dumb-init](https://github.com/Yelp/dumb-init)
 
+### Circle
+### Codeship
+
 ## More
 - [security](https://news.ycombinator.com/item?id=5932823): [VPN and SSH](https://news.ycombinator.com/item?id=5934067)
 - [clustering](https://github.com/gyepisam/fcc-textify):  and 
 - [Immutable Servers](http://martinfowler.com/bliki/ImmutableServer.html
+
+# Concept
+Our use cases  need different preparation tasks
+- A VPS (production) => needs deployment
+- B vagrant (local VM)
+- C CI test (travis/circle/openship)
+- B+C: are prepared with sync/repo dir, root per default, dev/testing only
+  - vagrant is provisioned directly with hitchwiki playbook via ansible_local
+  - user and repo are managed by the provider
+
+1. - deploy_remote.sh: prepare to run hitchwiki playbook
+   - insert root key
+   - make sure ansible is installed
+   - create user to connect as (for role hitchwiki)
+   - clone repository if necessary
+   - ansible-pull github.com/.../deploy.yml (2+3)
+
+2. setup_hitchwiki.sh => hitchwiki .yml
+   - `roles/hitchwiki/tasks/main.yml` triggers `scripts/status.sh` and loads `logs/state.yml` (status handler) and calls
+     - status 
+     - config
+     - system
+     - db
+     - web
+     - mw
+     - tls
+     - monit
+     - prod/dev
+     - status
+     - mw update/content
+
+3. `status_all.sh`: runs `status.yml` playbook and gathers `state.yml` and `settings.yml` of all `hosts`
+
+# Git workflow (feature -> testing -> master -> stable)
+- testing: runs CI build tests for added latest features (test latest features and make sure all methods install before merging into ansible)
+- master: to be run with vagrant (development)
+- stable: commits tested with CI and vagrant migrate to stable for deployment (production)
+
+- new features start with latest master and merge into travis/testing when they pass local runs with vagrant:
+  - mw-no-errors
+  - discourse
+  - mw-postgres
+  - ansible2.5
+  - vagrant-travis
+  - nginx
+
 
 # Manuals
 
@@ -164,9 +215,8 @@ As we rely on packages from xenial and travis' still uses [ubunut old-LTS trusty
 # Ansible notes and snippets
 - [docs](https://docs.ansible.com), [tutorial](https://serversforhackers.com/c/an-ansible2-tutorial),  [modules](https://docs.ansible.com/ansible/latest/modules_by_category.html), [galaxy](https://galaxy.ansible.com) (examples)
 - [FAQ](https://docs.ansible.com/ansible/latest/faq.html), [Q&A](https://serverfault.com/questions/tagged/ansible?page=2&sort=newest&pagesize=15)
-- [playbooks](https://docs.ansible.com/ansible/latest/playbooks_reuse.html), [provisioning](https://www.vagrantup.com/docs/provisioning/ansible.html) ([intro](https://www.stavros.io/posts/example-provisioning-and-deployment-ansible/), [ansible.cfg](https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg), [tags](https://docs.ansible.com/ansible/latest/playbooks_tags.html), [advanced syntax](https://docs.ansible.com/ansible/latest/playbooks_advanced_syntax.html) (`!unsafe` and alike), [commandline tools](https://docs.ansible.com/ansible/latest/command_line_tools.html)
-- changes: [2.4](https://docs.ansible.com/ansible/latest/roadmap/ROADMAP_2_4.html), [staging](https://github.com/ansible/ansible/blob/devel/CHANGELOG.md)
-  - [loop](https://github.com/ansible/ansible/blob/d84df2405dc84c1af5d41ddf9c0c2b1d499026f4/docs/docsite/rst/playbooks_loops.rst), [split configs](https://github.com/ansible/proposals/issues/35). [inventory](https://github.com/ansible/proposals/issues/41)
+- [recycling](https://docs.ansible.com/ansible/latest/playbooks_reuse.html) [playbooks](https://docs.ansible.com/ansible/latest/playbooks.html), [provisioning](https://www.vagrantup.com/docs/provisioning/ansible.html) ([intro](https://www.stavros.io/posts/example-provisioning-and-deployment-ansible/), [ansible.cfg](https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg), [variables](https://docs.ansible.com/ansible/latest/playbooks_variables.html), [lookups](https://docs.ansible.com/ansible/latest/playbooks_lookups.html), [set_fact](https://docs.ansible.com/ansible/latest/set_fact_module.html), [set_stats](https://docs.ansible.com/ansible/latest/set_stats_module.html), [fact_cache](), [conditionals](https://docs.ansible.com/ansible/latest/playbooks_conditionals.html) (if/when), [loops](https://docs.ansible.com/ansible/latest/playbooks_loops.html#loop-control), [tags](https://docs.ansible.com/ansible/latest/playbooks_tags.html), [advanced syntax](https://docs.ansible.com/ansible/latest/playbooks_advanced_syntax.html) (`!unsafe` and alike), [commandline tools](https://docs.ansible.com/ansible/latest/command_line_tools.html)
+- changes: [2.4](https://docs.ansible.com/ansible/latest/roadmap/ROADMAP_2_4.html), [staging](https://github.com/ansible/ansible/blob/devel/CHANGELOG.md) (upcoming: [loops](https://github.com/ansible/ansible/blob/d84df2405dc84c1af5d41ddf9c0c2b1d499026f4/docs/docsite/rst/playbooks_loops.rst), [split configs](https://github.com/ansible/proposals/issues/35). [inventory](https://github.com/ansible/proposals/issues/41))
 
 ## Vagrantfile options
 ```

@@ -20,3 +20,5 @@
   with_first_found:
    - "{{dir.log}}/status/{{ ansible_host }}/state.yml" # if the file has been transferred before
    - "{{dir.state}}" # the default location set in settings.yml
+   - /var/www/logs/state.yml # dir.state as in settings-example.yml # TODO remove
+   - /etc/ansible/facts.d/state.yml # TODO deprecated

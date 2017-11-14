@@ -23,13 +23,13 @@
       #    - https://github.com/Hitchwiki/hitchwiki/blob/master/INSTALL.md  #
       #                                                                     #
 
-- name: Check chapters
+- name: Show finished chapters
   set_fact:
     chapters: "{{chapters}} {{item}}"
   when: configured[item]
   with_items: "{{configured}}"
 
-- name: Check services
+- name: Show started services
   set_fact:
     services: "{{services}} {{item}}"
   when: started[item]
