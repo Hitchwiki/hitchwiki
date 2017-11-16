@@ -23,7 +23,7 @@
         "version": "1.29.1",
         "type": "project",
         "dist": {
-          "url": "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-1.29.1.tar.gz",
+          "url": "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-1.29.2.tar.gz",
           "type": "tar"
         }
       }
