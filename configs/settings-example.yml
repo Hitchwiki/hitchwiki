@@ -1,8 +1,3 @@
-# Git repository for deploy_remote.sh
-repository:
-  url: https://github.com/Hitchwiki/hitchwiki
-  branch: master
-
 # Domain settings
 domain: hitchwiki.test # mediawiki
 domain2: talk.hitchwiki.test #  discourse
@@ -10,8 +5,14 @@ cookiedomain: .hitchwiki.test
 
 # Environment
 env: dev # dev | production # enables HTTPS
-user: hitchwiki # used in deploy_remote.yml playbook
+user: hitchwiki
 admin_contact: "{{ mediawiki.emergency_contact }}" # set your email here
+
+# Git repository for deploy_remote.sh
+repository:
+  url: https://github.com/Hitchwiki/hitchwiki
+  branch: master
+  path: /home/{{ user }}/src
 
 # Development variables
 phpmyadmin_password: autobahn
@@ -32,7 +33,7 @@ discourse: # for production environment only, consider to enable a swap file bel
   port: 3010
 
 mediawiki:
-  debug: False
+  debug: True
   cache: False
   branch: REL1_29
   protocol: http
@@ -55,7 +56,6 @@ mediawiki:
     password: root
     database: hitchwiki_en
     prefix: hw_
-    clean_on_setup: true
   user:
     Hitchwiki: "{{ phpmyadmin_password }}"
     Hitchbot: "{{ phpmyadmin_password }}"
@@ -74,7 +74,10 @@ mediawiki:
     mapkey_satellite: kil7hee6
   geonames:
     username: hitchwiki
-    usernames: { hitchwiki, hitchwiki2, hitchwiki3 }
+    usernames:
+      - hitchwiki
+      - hitchwiki2
+      - hitchwiki3
 
 # Variables for ansible provisioning
 #  https://docs.ansible.com/ansible/latest/playbooks_variables.html
@@ -85,6 +88,7 @@ vagrant:
                              # Vagrant won't therefore modify your `/etc/hosts` file neither.
 
 dir:
+  webroot: /var/www
   root: /var/www/public
   conf: /var/www/configs
   script: /var/www/scripts
