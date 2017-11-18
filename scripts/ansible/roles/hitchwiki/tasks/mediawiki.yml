@@ -1,10 +1,14 @@
 ---
 # Setup mediawiki with Parsoid and fill it with content
+# Note that the order of steps is relevant for MW to install with all extensions correctly.
 
 # Prepare database
 - name: Drop Mediawiki database
   mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
-  when: mediawiki.db.clean_on_setup is defined and mediawiki.db.clean_on_setup
+  # when: mediawiki.db.clean_on_setup is defined and mediawiki.db.clean_on_setup
+  # Leave commented or maintenances/update.php fails with:
+  #         "Function: Wikimedia\\Rdbms\\Database::sourceFile( /var/www/public/wiki/extensions/HWWaitingTime/sql/db-hw_waiting_time.sql )", 
+  #        "Error: 1050 Table 'hw_waiting_time' already exists (localhost)",
 
 - name: Create database
   mysql_db: name={{ mediawiki.db.database }} state=present encoding=utf8 collation=utf8_general_ci login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
@@ -40,30 +44,8 @@
   composer: working_dir={{dir.wiki}} command=run-script no_dev=True arguments="post-install-cmd -d ./extensions/{{ item }}"
   with_items: [ HWMap, HitchwikiVector, HWRatings, HWLocationInput ]
 
-#- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook
-  # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
-  #
-  # We are using GeoData's function in templates to index articles with spatial info
-  #
-  # TODO: any solution that is cleaner than this temporary dirty hack..
-  #echo "Stop Maps extension from setting up a {{#coordinates}} parser function hook..."
-  # sed -i -e '111i\ \ /*' -e '116i\ \ */' "$WIKIDIR/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
-  # sed -i -e '112i\ \ // This code block has been commented out by Hitchwiki install script.
-  # See scripts/server_install.sh for details\n' "$WIKIDIR/extensions/Maps/Maps.php"
-
-- name: Run Mediawiki install script - https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki
-  # sets up wiki in one language ("en") and creates admin user "hitchwiki" with password {{ phpmyadmin_password }}
-  # Usage: php install.php [--conf|--confpath|--dbname|--dbpass|--dbpassfile|--dbpath|--dbport|--dbprefix|--dbschema|--dbserver|--dbtype|--dbuser|--env-checks|--globals|--help|--installdbpass|--installdbuser|--lang|--memory-limit|--pass|--passfile|--profiler|--quiet|--scriptpath|--server|--wiki] [name] <admin>
-  command: chdir={{ dir.wiki }} php maintenance/install.php \
-    --dbuser {{ mediawiki.db.username }} --dbpass {{ mediawiki.db.password }} \
-    --dbname {{ mediawiki.db.database }} --dbprefix {{ mediawiki.db.prefix }} \
-    --dbtype mysql --pass {{ phpmyadmin_password }} \
-    --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
-  register: mw_install
-  ignore_errors: yes # this fails on reruns if mediawiki.clean_on_setup is not true
-
 # MW visual editor
-- name: Install MW visual editor
+- name: Download MW visual editor
   git:
     clone: yes
     repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
@@ -75,6 +57,51 @@
   # Since it requires submodules, we don't install this using composer
   # https://www.mediawiki.org/wiki/Extension:VisualEditor
 
+#- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook # untested
+#  shell: |
+#    sed -i -e '111i\ \ /*' -e '116i\ \ */' "{{ dir.wiki }}/extensions/Maps/Maps.php" # wrap damaging lines of code as a /* comment */
+#    sed -i -e '112i\ \ /* This code block has been commented out by the Hitchwiki installer.\n
+#    See scripts/ansible/roles/hitchwiki/tasks/mediawiki.yml for details */\n' "{{ dir.wiki }}/extensions/Maps/Maps.php"  
+  # We are using GeoData's function in templates to index articles with spatial info
+  # that conflicts with GeoData extensions's {{#coordinates}} parser function hook
+  # TODO find a solution that is cleaner than this temporary dirty hack..
+
+- name: Drop LocalSettings.php # or the install script would fail
+  file: state=absent path={{ dir.wiki }}/LocalSettings.php
+
+- name: Run Mediawiki install script - https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki
+  command: chdir={{ dir.wiki }} php maintenance/install.php \
+    --dbuser {{ mediawiki.db.username }} --dbpass {{ mediawiki.db.password }} \
+    --dbname {{ mediawiki.db.database }} --dbprefix {{ mediawiki.db.prefix }} \
+    --dbtype mysql --pass {{ phpmyadmin_password }} \
+    --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
+    # set up wiki in one language ("en") and creates admin user "hitchwiki" with password {{ phpmyadmin_password }}
+
+- name: Create LocalSettings.php
+  template: src=configs/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+
+- name: Enable MW debugging during installation
+  blockinfile:
+    path: "{{ dir.wiki }}/LocalSettings.php"
+    state: present
+    block: |
+      $wgShowExceptionDetails = true;
+      $wgShowDBErrorBacktrace = true;
+
+- name: Run update script for MediaWiki
+  command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
+  register: mw_update
+  ignore_errors: yes
+- debug:
+    var: mw_update.stderr_lines
+  when: mw_update.rc != 0
+
+- name: Import Mediawiki content # MW db actions
+  include_tasks: mw_import.yml
+
+- name: Update mediawiki
+  include_role: name=update
+
 - name: Grant wiki folder to webuser group
   become: yes
   at: command="chgrp {{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
@@ -85,9 +112,6 @@
   file: path={{ dir.conf }}/{{item}} group={{ apache.group }}
   with_items: { mediawiki-lang.php, languages.ini, mediawiki-extensions.php }
 
-- name: Import Mediawiki content # MW db actions
-  include_tasks: mw_import.yml
-
 - name: Install Parsoid
   include_tasks: parsoid.yml
   when: not configured.parsoid
@@ -95,5 +119,13 @@
 - name: Add cron job for daily localisation updates
   cron: name=LocalisationUpdate special_time=daily  job="php {{ dir.wiki }}/extensions/LocalisationUpdate/update.php --quiet"
   # See https://github.com/Hitchwiki/hitchwiki/issues/109
+
+- name: Start webservices
+  become: yes
+  service: name={{item}} enabled=yes state=restarted
+  with_items: { apache2, parsoid }
+
+- name: Test localhost
+  uri: url=http://localhost
 
 ...

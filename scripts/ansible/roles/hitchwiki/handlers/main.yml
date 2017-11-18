@@ -37,7 +37,7 @@
   become: yes
   service: name=apache2 enabled=yes state=restarted
   listen:
-    - restart apache
+    - apache
 
 # Mediawiki handlers
 - name: start parsoid

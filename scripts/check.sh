@@ -11,11 +11,11 @@ else
 fi
 cd $(dirname $0)/ansible
 set -e
-for role in hitchwiki deploy update status; do
+for role in hitchwiki update status; do
 ansible-playbook $role.yml --syntax-check
 done
 if [ "$1" = "all" ] ; then
-for role in hitchwiki deploy update status; do
+for role in hitchwiki update status; do
 ansible-playbook $role.yml --check
 done
 fi

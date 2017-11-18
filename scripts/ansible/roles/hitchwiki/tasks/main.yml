@@ -13,8 +13,6 @@
     os_version: stretch
   when: os_version == 'NA'
 
-- meta: flush_handlers
-
 - name: Fetch remote settings # store remote settings
   fetch: src=/var/www/configs/settings.yml dest=logs/status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
   register: fetch_settings
@@ -47,6 +45,10 @@
   failed_when: var is undefined
   with_items: { dir, domain, env, admin_contact, mediawiki.protocol, apache.user }
 
+- name: Check for spyc
+  stat: path=/var/www/public/mustangostang
+  register: spyc
+  notify: status
 - meta: flush_handlers
 
 # import versus include https://serverfault.com/questions/875247/whats-the-difference-between-include-tasks-and-import-tasks
@@ -74,20 +76,6 @@
 - name: Setup Mediawiki
   include_tasks: mediawiki.yml
   when: not configured.mw or not started.parsoid
-  notify:
-    - restart apache
-    - start parsoid
-
-- name: Setup Monit
-  include_tasks: monit.yml
-  when: not configured.monit
-  notify: restart monit
-
-- meta: flush_handlers
-
-- name: Restart monit
-  become: yes
-  service: name=monit enabled=yes state=restarted
 
 - name: Setup dev environment
   include_tasks: dev.yml
@@ -101,11 +89,24 @@
   when: env == 'production' and not configured.production
   notify: restart db
 
+- name: Disable MW debugging
+  blockinfile:
+    path: "{{dir.wiki}}/LocalSettings.php"
+    state: absent
+    block: |
+      $wgShowExceptionDetails = true;
+      $wgShowDBErrorBacktrace = true;
+
+- name: Setup Monit
+  include_tasks: monit.yml
+  when: not configured.monit
+
 - debug: msg="{{ env }} / {{ mediawiki.protocol }}"
 - name: Enable TLS
   include_tasks: tls.yml
   when: mediawiki.protocol == 'https' or env == 'production'
-  notify: restart apache
+  notify:
+    - restart apache
 
 - meta: flush_handlers
 
@@ -119,9 +120,6 @@
   notify: status
 
 - meta: flush_handlers
-
-- name: Update mediawiki
-  include_role: name=update
 
 - name: Print status
   include_tasks: roles/status/tasks/main.yml

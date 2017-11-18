@@ -2,24 +2,61 @@
 
 [![Build Status](https://travis-ci.org/Hitchwiki/hitchwiki.svg?branch=master)](https://travis-ci.org/Hitchwiki/hitchwiki)
 
+# Howto
+- [INSTALL.md](https://github.com/traumschule/hitchwiki/blob/ansible/INSTALL.md) and ansible notes below.
+
+## Run in a local Vagrant box
+```
+git clone https://github.com:traumschule/hitchwiki -b ansible
+cd hitchwiki && ./scripts/vagrant/install.sh
+# To use apt_cacher on localhost
+mkdir host_vars && echo "apt-proxy: localhost" > host_vars/vagrant
+# To rerun clean a build
+./scripts/vagrant/clean.sh
+git reset --hard && git pull
+./scripts/vagrant/install.sh
+```
+
+## Deploy to a new VPS
+- `deploy_remote.sh HOST [PORT]`: prepares and runs `hitchwiki.yml` playbook
+  - insert root key
+  - make sure ansible is installed
+  - ansible-pull -U $REPO -C $VERSION -d $WEBROOT scripts/ansible/hitchwiki.yml
+```
+# if you already have certificates for production:
+rsync -aP dumps/letsencrypt.tar.xz $remote:
+ssh $remote tar xf letsencrypt.tar.xz && sudo mv etc/letsencrypt/ /etc/
+```
+
+## Gather installation status
+- `status_all.sh`: runs `status.yml` playbook and gathers `state.yml` and `settings.yml` of all `hosts`
+
+## Reinstall Mediawiki
+```
+rm -r public/wiki
+sudo service parsoid stop
+./scripts/setup_hitchwiki.sh
+```
+
+# Where to get support
+## With Mediawiki
+- #mediawiki @ freenode
+- https://www.mediawiki.org/wiki/Project:Support_desk
+
+
 Table of Contents
 =================
-<!-- created with https://github.com/ekalinin/github-markdown-toc -->
-   * [HOWTO](#howto)
-      * [Run in a local Vagrant box](#run-in-a-local-vagrant-box)
-      * [Deploy to a new VPS](#deploy-to-a-new-vps)
-   * [Reinstall Mediawiki](#reinstall-mediawiki)
+
    * [Why Ansible?](#why-ansible)
       * [Alternatives / similar](#alternatives--similar)
+      * [Continuous Integration (CI)](#continuous-integration-ci)
+         * [Travis, vagrant, docker, circle](#travis-vagrant-docker-circle)
+         * [Circle](#circle)
+         * [Codeship](#codeship)
       * [More](#more)
-   * [Tasks](#tasks)
-      * [upcoming](#upcoming)
-      * [would be nice](#would-be-nice)
-      * [later/low prio](#laterlow-prio)
-         * [tests](#tests)
-            * [travis and docker](#travis-and-docker)
-         * [TODOs in code (low prio)](#todos-in-code-low-prio)
-         * [ignore_errors: yes mostly is a fallback for something that works](#ignore_errors-yes-mostly-is-a-fallback-for-something-that-works)
+   * [Concept](#concept)
+   * [Git workflow (feature -&gt; testing -&gt; master -&gt; stable)](#git-workflow-feature---testing---master---stable)
+   * [Manuals](#manuals)
       * [MW config](#mw-config)
       * [discourse](#discourse)
       * [matrix](#matrix)
@@ -38,45 +75,14 @@ Table of Contents
       * [callbacks](#callbacks)
       * [Start long running commands like downloads in background](#start-long-running-commands-like-downloads-in-background)
 
-# HOWTO
-See [INSTALL.md](https://github.com/traumschule/hitchwiki/blob/ansible/INSTALL.md) and ansible notes below.
-
-## Run in a local Vagrant box
-```
-git clone https://github.com:traumschule/hitchwiki -b ansible
-cd hitchwiki && ./scripts/vagrant/install.sh
-# To use apt_cacher on localhost
-mkdir host_vars && echo "apt-proxy: localhost" > host_vars/vagrant
-# To rerun clean a build
-./scripts/vagrant/clean.sh
-git reset --hard && git pull
-./scripts/vagrant/install.sh
-```
-
-## Deploy to a new VPS
-```
-export remote=HOST
-ssh root@$remote # asks for password and requests to change it
-./scripts/deploy_remote.sh $remote # adds ssh key, sets up environment and calls `ssh $remote /var/www/scripts/setup_hitchwiki.sh`
-
-# if you already have certificates for production: after wiki setup ansible starts TLS, before do something like:
-rsync -aP dumps/letsencrypt.tar.xz $remote:
-ssh $remote tar xf letsencrypt.tar.xz && sudo mv etc/letsencrypt/ /etc/
-```
-
-## Reinstall Mediawiki
-```
-rm -r public/wiki
-sudo service parsoid stop
-./scripts/setup_hitchwiki.sh
-```
+_Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)_
 
 ---
 
 # Why Ansible?
 - [easy deployment](https://www.stavros.io/posts/example-provisioning-and-deployment-ansible/)
 - [ansible fireball](https://news.ycombinator.com/item?id=5933126)
-encryption security](https://news.ycombinator.com/item?id=5933122)
+- [encryption & security](https://news.ycombinator.com/item?id=5933122)
 - One important difference: you don't have to install Ansible on the nodes you're managing, just Python >= 2.4 with a JSON module installed (default for 2.6 and later, available through simplejson for previous versions).
 - Also, Ansible does not require you to mess around with dependency lists to ensure that packages/files are installed in the right order - the order is built into the yaml config file. You don't lose any capability, you just gain (and this is my personal opinion) ease of understanding the order that operations will occur in.
 - Two reports:
@@ -95,20 +101,20 @@ _[more](https://news.ycombinator.com/item?id=5933025)_
 
 ## Alternatives / similar
 - [Comparison](https://news.ycombinator.com/item?id=5933349)
-- [thread on configuration management] (https://news.ycombinator.com/item?id=5932608) ([post-facto configuration tinkerers' vs. 'Clean-slate, Identifiable Environments](https://news.ycombinator.com/item?id=5933954)) with links to 
+- [thread on configuration management](https://news.ycombinator.com/item?id=5932608) (['post-facto configuration tinkerers' vs. 'Clean-slate, Identifiable Environments'](https://news.ycombinator.com/item?id=5933954)) with links to 
   - [vagrant](http://docs.vagrantup.com/v2/why-vagrant/) ([thread](https://news.ycombinator.com/item?id=5933871))
-  - [salt](http://docs.saltstack.com/topics/tutorials/quickstart.html): [logrotate module(https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.logrotate.html), [One-command Django and PostgreSQL development environment on Vagrant](https://github.com/wunki/django-salted)
+  - [salt](http://docs.saltstack.com/topics/tutorials/quickstart.html): [logrotate module](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.logrotate.html), [One-command Django and PostgreSQL development environment on Vagrant](https://github.com/wunki/django-salted)
   - [chef](https://docs.chef.io/resources.html#resources)
   - [puppet](http://docs.puppetlabs.com/learning/index.html) ([thread](https://news.ycombinator.com/item?id=5933641)): _[puppet vs. salt](https://news.ycombinator.com/item?id=5935204)_
   - [zeroMQ](https://news.ycombinator.com/item?id=5933068)
   - [commando.io](https://commando.io/)
   - [AMI](https://news.ycombinator.com/item?id=5934271)
-  - [PuPHPet](https://news.ycombinator.com/item?id=5932770] (GUI)
+  - [PuPHPet](https://news.ycombinator.com/item?id=5932770) (GUI)
   - [slaughter](https://github.com/skx/slaughter-example) (Perl)
   - [NixOS](https://news.ycombinator.com/item?id=5937371)
-  - [foreman](http://theforeman.org/))
+  - [foreman](http://theforeman.org)
   - [pallet](https://news.ycombinator.com/item?id=5934158)
-  - [cfengine)[https://cfengine.com/]
+  - [cfengine](https://cfengine.com)
 
 ## Continuous Integration (CI)
 ### Travis, vagrant, docker, circle
@@ -120,8 +126,18 @@ As we rely on packages from xenial and travis' still uses [ubunut old-LTS trusty
 - [How I test Ansible configuration on 7 different OSes with Docker](https://www.jeffgeerling.com/blog/2016/how-i-test-ansible-configuration-on-7-different-oses-docker) ([examples](https://github.com/geerlingguy/ansible-for-devops), [.travis.yml](https://github.com/geerlingguy/ansible-role-java/blob/1.7.0/.travis.yml))
 - alternative init systems: [dumb-init](https://github.com/Yelp/dumb-init)
 
-### Circle
+### Circle CI
+- [build variables](https://circleci.com/docs/1.0/environment-variables/#build-details)
+- deploy for any branch: _"If you are passing in the $CIRCLE_BRANCH for deploy, does that mean you want to deploy all branches? If so, you can just add a a wildcard to the branch value like: branch: /.*/_"
+
 ### Codeship
+- [twitter](https://twitter.com/dennisnewel)
+- [doc](https://documentation.codeship.com/general/all)
+ - [vm:trusty, no docker for free](https://documentation.codeship.com/general/about/vm-and-infrastructure/)
+ - [sudo](https://documentation.codeship.com/basic/builds-and-configuration/root-level-access/): _"Codeship does not allow root level access (i.e. commands run via sudo) for security reasons. If you are looking to install a dependency that’s not available via a language specific package manager (e.g. gem, pip, npm or a similar tool), please contact support@codeship.com or send us a message using our in-app messenger."_
+ - [security and privacy](https://documentation.codeship.com/general/about/security/)
+ - [notifications](https://documentation.codeship.com/general/account/notifications/?utm_source=FlexibleNotifications&utm_medium=CodeshipBlog#branch-matching)
+ - [disabling a project is not possible](https://community.codeship.com/t/is-there-an-easy-way-to-temporarily-disable-a-project-from-running-its-build/276/5)
 
 ## More
 - [security](https://news.ycombinator.com/item?id=5932823): [VPN and SSH](https://news.ycombinator.com/item?id=5934067)

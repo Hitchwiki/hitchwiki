@@ -1,4 +1,2 @@
-[hitchwiki]
-vagrant ansible_host=127.0.0.1 ansible_user=ubuntu ansible_ssh_port=2222
-[remote]
-beta ansible_host=46.101.117.158
+localhost ansible_connection=local
+# vagrant ansible_host=127.0.0.1 ansible_user=ubuntu ansible_ssh_port=2222

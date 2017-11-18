@@ -15,6 +15,12 @@
 - name: Reload monit
   become: yes
   command: monit reload
+  notify: restart monit
+- meta: flush_handlers
+
+- name: Restart monit
+  become: yes
+  service: name=monit enabled=yes state=restarted
 
 # fails in 2.4 https://github.com/ansible/ansible/issues/30614
 #- name: Monitor sshd in monit

@@ -29,9 +29,10 @@
   become: yes
   apt: update_cache=yes package={{ item }} state=present allow_unauthenticated=yes
   with_items: { mariadb-server, software-properties-common, python-mysqldb }
-  notify: "start db"
 
-- meta: flush_handlers
+- name: Start MariaDB
+  become: yes
+  service: name=mysql enabled=yes state=restarted
 
 # Mariadb should run at this point
 - name: Secure MariaDB root user

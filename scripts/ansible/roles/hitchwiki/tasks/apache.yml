@@ -23,8 +23,7 @@
   with_items:
     - [ apache2 ]
     - "{{ php_packages }}"
-    - [ php-pear, php-gettext, php-xml, php-json, php-imagick, php-memcache ]
-  # add when needed: php-apcu (note php7.0-opcache above)
+    - [ php-pear, php-gettext, php-xml, php-json, php-imagick, php-memcache, php-apcu ]
 
 - name: Allow apache override to all
   become: yes

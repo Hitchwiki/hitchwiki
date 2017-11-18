@@ -1,14 +1,6 @@
 ---
 # Tasks for development setup
 
-- name: Install Maildev
-  include_tasks: maildev.yml
-  when: not configured.maildev
-
-- name: Install PHPMyAdmin
-  include_tasks: phpmyadmin.yml
-  when: not configured.phpmyadmin
-
 - name: Create MW bot users
   become: yes
   command: chdir={{ dir.wiki }} php maintenance/createAndPromote.php {{ item.flags }} --force {{ item.name }} {{ phpmyadmin_password }}
@@ -17,10 +9,27 @@
     - { name: Hitchbot, flags: --bureaucrat --sysop --bot }
     - { name: Hitchhiker, flags:  }
   register: mw_users
+  ignore_errors: yes
+- debug:
+    var: mw_users.stderr_lines
+  when: mw_users|failed
 
-- name: Set user's email
+- name: Set user's email # TODO this should respect the prefix
+  #command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
   command: mysql {{ db_credentials }} {{ mediawiki.db.database }} -e "UPDATE {{ mediawiki.db.prefix }}user SET user_email = '{{ item }}@{{ domain }}',  user_email_authenticated = '20141218000000' WHERE user_name = '{{ item }}'"
   with_items: { Hitchwiki, Hitchbot, Hitchhiker }
-  register: user_mail
+  register: mw_user_mail
+  ignore_errors: yes
+- debug:
+    var: mw_user_mail.stderr_lines
+  when: mw_user_mail|failed
+
+- name: Install Maildev
+  include_tasks: maildev.yml
+  when: not configured.maildev
+
+- name: Install PHPMyAdmin
+  include_tasks: phpmyadmin.yml
+  when: not configured.phpmyadmin
 
 ...

@@ -12,8 +12,10 @@
     - files:
       - configs/authorized_keys
       - ~/.ssh/id_rsa.pub
+      - /root/.ssh/authorized_keys
       skip: true
   register: add_ssh_key
+  ignore_errors: yes
 - debug: msg="You won't be able to connect to this machine via ssh key. Did you run 'ssh-keygen'?"
   when: not add_ssh_key|succeeded
 

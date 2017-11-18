@@ -29,7 +29,7 @@ env:
   - os=ubuntu version=latest container_id=$(mktemp)
   #- os=debian version=latest container_id=$(mktemp)
   # Testing
-  #- os=ubuntu version=testing container_id=$(mktemp)
+  #- os=ubuntu version=rolling container_id=$(mktemp)
   #- os=debian version=testing container_id=$(mktemp)
   # Ubuntu: https://hub.docker.com/_/ubuntu/ - https://launchpad.net/ubuntu
   # Debian: https://hub.docker.com/_/debian/ - https://www.debian.org/releases/
@@ -41,18 +41,12 @@ matrix:
     - env: version=testing
 
 before_install:
-  # update docker
-  #- sudo apt-get update && sudo apt-get upgrade lxc-docker
-  #- echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
-  #- sudo service docker restart && sleep 5
-  # build docker image
-  #- sudo docker pull ${distribution}${version}_v${ANSIBLE_VERSION}
-  #- docker build --rm=true --file=tests/Dockerfile.${distribution} --tag=${distribution}:ansible tests
-  #- docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distribution}:ansible "${init}" > "${container_id}"
-
+  - echo "CheckHostIP no" > ~/.ssh/config
+  - ssh-keygen -N '' -f ~/.ssh/id_rsa
+  - cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
   # pull and run prebuilt image
   - docker pull ${os}:${version}
-  - docker run -d --name "$(cat ${container_id})" -v $(pwd):/var/www ${os}:${version} tail -f /dev/null > "${container_id}"
+  - docker run -d --name "$(cat ${container_id})" -p 5555:80 -p 5556:22 -v $(pwd):/var/www ${os}:${version} tail -f /dev/null > "${container_id}"
 
 install:
   - > # prepare ansible
@@ -68,6 +62,9 @@ before_script: # general settings
 script: # run tests
   - docker exec "$(cat ${container_id})" bash -c "$ansible_command --syntax-check"
   - docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command"
+  #- docker exec "$(cat ${container_id})" bash -c 'sudo /var/www/scripts/clean_server.sh'
+  #- ./scripts/deploy_remote.sh 127.0.0.1 5556
+  #- curl 127.0.0.1:5555
 
   - > # Idempotence test
     if [ "$TRAVIS_BRANCH" = "idempotence" ] ; then docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command
@@ -92,9 +89,8 @@ notifications: # https://docs.travis-ci.com/user/notifications
   slack:
     on_success: always
     on_failure: always
-    #rooms:
-      #- secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
-      #- secure: ZM1Awjf0UTZoKu4+qzhtueaLMdUP52UzdYgpIxl0JiVUT1Au+7Yj9X8hINzXIbd60PvfIidQ/CBJYQQGds4wrXHYzIeyEhs7iY4vqu3sCP2aCBtPV2ZZ/jSW3UkF8Ww3WKcXiGd2IBjBxhv9MZxqNK21xMHohKAUZF1Bzv862YJPJDJ/Y6zIslfJs8zIa1lZU/q22kbeM4hYxT7QIXTj3drLKAMWDDVqm2eBE8n/cD6Wq6nI0zsj/AIV/zu5qYVMIXhdsIMu06nbI0qCiG4SPe7fE3Xyzl+MuGrnL5LfbK+9sQgiEFRPyN2dtZGKhtbYmT6i92FRr31a4y23HWSdEgTM2OOQGf/1SLEZYBw+ch3dlkGVmv+A0qUKC+MNsLO1hV5hnL6ISevrPzikHOmvc3JU9Ydf7DXK1XpAggoxb9B/+u0zRf3Aa7ovDmXzGbayN/XZ6PKHeRRZjjz0CtZj965QWvt84TpGxuyIu9svUpTLX7AgDjXKF5ILyMselbnF14lP23npd/7TC1Ayy4mc7WbfjYhR8UwL2aspqIZMQ1mbRyDMZXTmAmYrJoq+Ud1C7ZDF+QkRbazSfdm9BJpUmEw8atI/COq5owx16LLLD+6NVSxfsv9rMtrqluTqzgy0M1yo8xCStM+wIyr6QRFT/Khm9zLv0kIW+ZLv0QodTjY=
+    rooms:
+      - secure: "PecrOjfk/uTPWyRLDw0phN0N8h0IfyMaDX/t8Xwaav5/knqPVSp0nfokw9qsApSwLkRiUAtBtLlY7UHzj/v3S2eLtUG8/FoE9u3IDviWX845UD0FzeWV9gEC1LusblhFlJoE+325n5L2UkT141Uw2RJPB0Xk/QbvZuybpGfb3Fg="
   irc: 
     channels:
       - "chat.freenode.net#hitchhiking-dev"

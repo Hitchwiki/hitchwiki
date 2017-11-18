@@ -1,0 +1,35 @@
+---
+# prepare repository when non run with vagrant
+
+- stat: path={{ dir.webroot }}/configs/settings-example.yml
+  register: root_exists
+
+- name: Clone hitchwiki repository
+  remote_user: "{{ user }}"
+  when: not root_exists.stat.exists
+  git:
+    dest: "{{ repository.path }}"
+    repo: "{{ repository.url }}"
+    version: "{{ repository.branch }}"
+
+- name: Create link {{ dir.webroot }} -> {{ repository.path }}
+  become: yes
+  file: state=link src={{ dir.webroot }} dest={{ repository.path }} owner={{ user }}
+
+- name: Grant {{ dir.webroot }} to {{ user }} and webuser group
+  become: yes
+  file: state=directory path={{ dir.webroot }} recurse=yes owner={{ user }} group={{ apache.group }}
+
+- name: Copy settings.yml # if run remotely this file copied from host to guest
+  copy: src={{ item }} dest={{ dir.webroot }}/configs/settings.yml owner={{user}} group={{user}}
+  with_first_found:
+    - configs/settings.yml
+    - configs/settings-example.yml
+
+- name: Create ansible hosts file
+  lineinfile:
+    path: "{{ dir.webroot }}/scripts/ansible/hosts"
+    owner: "{{ user }}"
+    line: localhost ansible_connection=local
+
+...

@@ -61,6 +61,7 @@ maildev=false
 phpmyadmin=false
 dev=false
 discourse=false
+[ -d /var/www/public/mustangostang ] && system=true
 [ -f /usr/local/bin/node ] && system=true
 [ -d /etc/mysql ] && db=true
 [ -e /etc/apache2/sites-enabled/hitchwiki.conf ] && web=true

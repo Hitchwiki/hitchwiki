@@ -42,15 +42,15 @@
     summary: |
       #######################################################################
       #                                                                     #
-      #           - YAY! Hitchwiki installation is finished! -              #
+      #                  - YAY! Hitchwiki is installed! -                   #
       #                                                                     #
       # - Point your browser to {{ hostname.stdout }} or {{ ansible_host }}
-      {{ info }}#                 Have fun and happy hacking!                         #
+      #{{ info }}#                 Have fun and happy hacking!                         #
       #                                                                     #
       #######################################################################
 
          - Passed chapters: {{chapters}}
-      
+
          - Started services: {{services}}
 - name: Installation incomplete.
   when: finished|skipped
@@ -60,20 +60,16 @@
       #                                                                     #
       #          The installation of Hitchwiki is not finished.             #
       #                                                                     #
-      #######################################################################
-
-         - Passed chapters: {{chapters}}
-      
-         - Started services: {{services}}
-
-      #######################################################################
-      #                                                                     #
-      # - Please take some time to report the content of the file
-      #   {{ dir.state }} to our ansible ticket at 
+      # - Please report the content of the file {{ dir.state }}
+      #   to our ansible ticket at
       #   https://github.com/Hitchwiki/hitchwiki/issues/172                 #
       {{ info }}#                 Good luck and have a nice day!                      #
       #                                                                     #
       #######################################################################
+
+         - Passed chapters: {{chapters}}
+
+         - Started services: {{services}}
       
 - name: Summary
   debug:

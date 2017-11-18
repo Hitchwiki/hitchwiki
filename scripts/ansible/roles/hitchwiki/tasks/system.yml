@@ -49,8 +49,8 @@
   include_tasks: node.yml
   # Parsoid, bower and maildev depend on NodeSource (https://nodejs.org/en/download/package-manager)
 
-- name: Install shyaml to parse yml files
-  pip: name=shyaml state=present extra_args=--user
+#- name: Install shyaml to parse yml files
+#  pip: name=shyaml state=present extra_args=--user
 
 - name: Create and activate swapfile
   become: yes

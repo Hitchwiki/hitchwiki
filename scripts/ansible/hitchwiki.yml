@@ -6,16 +6,41 @@
 #   https://www.vagrantup.com/docs/provisioning/ansible.html
 # Nice read: https://gitlab.com/osas/ansible-role-postgresql/blob/master/tasks/main.yml#L3
 
+  # This play expects root access (or sudo without password) on a remote debian system (or derivate with present apt).
+  # It will install dependenciesm create a hitchwiki user, checkout the repository and setup Hitchwiki
+
+# See INSTALL.md => Install with ansible without vagrant
+- hosts: all
+  gather_facts: no
+  pre_tasks:
+    - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
+      raw: sudo apt-get install -yq python-simplejson
+    - name: Load settings # if run remotely this file is copied from host to guest
+      include_vars: "{{ item }}"
+      with_first_found:
+       - configs/settings.yml
+       - configs/settings-example.yml
+
 - name: Setup hitchwiki
   hosts: all
-  vars_files:
-    - configs/settings.yml
   remote_user: "{{ user }}"
   pre_tasks:
-    - stat: path=/var/www/configs/settings.yml
-      register: root
+    - name: Install dependencies
+      include_tasks: roles/hitchwiki/tasks/dependencies.yml
+      tags: deps
+    - name: Check for /home/{{ user }}/src
+      stat: path=/home/{{ user }}/src
+      register: homedir
+    - name: Prepare user
+      when: not homedir.stat.exists
+      include_tasks: roles/hitchwiki/tasks/user.yml
+      tags: user
+    - name: Prepare repository
+      when: not homedir.stat.exists
+      remote_user: "{{ user }}"
+      include_tasks: roles/hitchwiki/tasks/repository.yml
+      tags: repo
   roles:
-    - { role: deploy, when: not root.stat.exists }
     - hitchwiki
 
 ...
