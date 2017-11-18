@@ -27,7 +27,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install requirements.txt
+            pip install ansible #requirements.txt
 
       - save_cache:
           paths:
@@ -38,8 +38,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            #if [ "$CIRCLE_BRANCH" = 'testing' ] || [ "$CIRCLE_BRANCH" = 'idempotence' ] 
-            #then exit 0 ; fi
+            if [ "$CIRCLE_BRANCH" = 'testing' ] || [ "$CIRCLE_BRANCH" = 'idempotence' ]
+            then exit 0 ; fi
             . venv/bin/activate
             cd scripts/ansible
             ansible-playbook tests/test.yml --syntax-check
