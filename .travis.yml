@@ -46,7 +46,7 @@ before_install:
   - cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
   # pull and run prebuilt image
   - docker pull ${os}:${version}
-  - docker run -d --name "$(cat ${container_id})" -p 5555:80 -p 5556:22 -v $(pwd):/var/www ${os}:${version} tail -f /dev/null > "${container_id}"
+  - docker run -d -h localhost --name "$(cat ${container_id})" -p 80:80 -p 5556:22 -v $(pwd):/var/www ${os}:${version} tail -f /dev/null > "${container_id}"
 
 install:
   - > # prepare ansible
@@ -63,8 +63,8 @@ script: # run tests
   - docker exec "$(cat ${container_id})" bash -c "$ansible_command --syntax-check"
   - docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command"
   #- docker exec "$(cat ${container_id})" bash -c 'sudo /var/www/scripts/clean_server.sh'
-  #- ./scripts/deploy_remote.sh 127.0.0.1 5556
-  #- curl 127.0.0.1:5555
+  - ./scripts/deploy_remote.sh 127.0.0.1 5556
+  - curl 127.0.0.1:80
 
   - > # Idempotence test
     if [ "$TRAVIS_BRANCH" = "idempotence" ] ; then docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command

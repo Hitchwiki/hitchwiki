@@ -107,18 +107,6 @@
   when: mediawiki.protocol == 'https' or env == 'production'
   notify:
     - restart apache
-
-- meta: flush_handlers
-
-- name: Restart apache
-  become: yes
-  service: name=apache2 enabled=yes state=restarted
-
-- name: restart parsoid
-  become: yes
-  service: name=parsoid enabled=yes state=restarted
-  notify: status
-
 - meta: flush_handlers
 
 - name: Print status

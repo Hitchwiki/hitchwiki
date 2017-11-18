@@ -45,7 +45,7 @@
       #                  - YAY! Hitchwiki is installed! -                   #
       #                                                                     #
       # - Point your browser to {{ hostname.stdout }} or {{ ansible_host }}
-      #{{ info }}#                 Have fun and happy hacking!                         #
+      {{ info }}#                 Have fun and happy hacking!                         #
       #                                                                     #
       #######################################################################
 

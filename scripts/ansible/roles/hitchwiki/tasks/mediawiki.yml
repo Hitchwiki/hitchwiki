@@ -131,6 +131,6 @@
   with_items: { apache2, parsoid }
 
 - name: Test localhost
-  uri: url=http://localhost
+  uri: url=http://127.0.0.1
 
 ...
