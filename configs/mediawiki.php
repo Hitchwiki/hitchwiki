@@ -23,10 +23,11 @@ ini_set('memory_limit', '64M');
 session_save_path( isset($hwConfig['session_save_path']) ? $hwConfig['session_save_path'] : $IP . '../../tmp/sessions' );
 
 # Load Hitchwiki Config
+#require '../autoload.php'; # this does not work multiple times, TODO investigate
+#use Symfony\Component\Yaml\Yaml;
+#$hwConfig = Yaml::parse(file_get_contents('{{ dir.settings }}'));
 require_once '{{ dir.spyc }}';
-if (!function_exists('spyc_load_file')) {
-  die('Missing `mustangostang/spyc`!');
-}
+if (!function_exists('spyc_load_file')) { die('Missing `mustangostang/spyc`!'); }
 $hwConfig = spyc_load_file('{{ dir.settings }}');
 
 if ($wgCommandLineMode) {
