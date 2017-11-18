@@ -1,13 +1,15 @@
 ---
 # Setup mediawiki with Parsoid and fill it with content
 # Note that the order of steps is relevant for MW to install with all extensions correctly.
+# https://github.com/Hitchwiki/hitchwiki/blob/master/scripts/server_install.sh
+# https://github.com/Hitchwiki/hitchwiki/blob/master/scripts/install_funcs.sh
 
 # Prepare database
 - name: Drop Mediawiki database
   mysql_db: name={{ mediawiki.db.database }} state=absent login_user={{ mediawiki.db.username }} login_password={{ mediawiki.db.password }}
   # when: mediawiki.db.clean_on_setup is defined and mediawiki.db.clean_on_setup
   # Leave commented or maintenances/update.php fails with:
-  #         "Function: Wikimedia\\Rdbms\\Database::sourceFile( /var/www/public/wiki/extensions/HWWaitingTime/sql/db-hw_waiting_time.sql )", 
+  #         "Function: Wikimedia\\Rdbms\\Database::sourceFile( /var/www/public/wiki/extensions/HWWaitingTime/sql/db-hw_waiting_time.sql )",
   #        "Error: 1050 Table 'hw_waiting_time' already exists (localhost)",
 
 - name: Create database
@@ -44,18 +46,11 @@
   composer: working_dir={{dir.wiki}} command=run-script no_dev=True arguments="post-install-cmd -d ./extensions/{{ item }}"
   with_items: [ HWMap, HitchwikiVector, HWRatings, HWLocationInput ]
 
-# MW visual editor
-- name: Download MW visual editor
-  git:
-    clone: yes
-    repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
-    version: "{{ mediawiki.branch }}"
-    dest: "{{ dir.wiki }}/extensions/VisualEditor"
-    depth: 1
-    track_submodules: yes
-    force: yes
-  # Since it requires submodules, we don't install this using composer
-  # https://www.mediawiki.org/wiki/Extension:VisualEditor
+- name: Run post-install scripts for HW extensions
+  # These are not run automatically so we'll just manually invoke them.
+  # https://github.com/composer/composer/issues/1193
+  command: chdir={{ dir.wiki }} composer run-script post-update-cmd -d ./extensions/{{item}}
+  with_items: { HWMap, HitchwikiVector, HWRatings, HWLocationInput }
 
 #- name: Stop Maps extension from setting up a {{#coordinates}} parser function hook # untested
 #  shell: |
@@ -77,8 +72,18 @@
     --scriptpath /{{ dir.wiki }} --lang en "{{ mediawiki.sitename }}" hitchwiki
     # set up wiki in one language ("en") and creates admin user "hitchwiki" with password {{ phpmyadmin_password }}
 
-- name: Create LocalSettings.php
-  template: src=configs/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+# MW visual editor
+- name: Download MW visual editor
+  git:
+    clone: yes
+    repo: https://gerrit.wikimedia.org/r/p/mediawiki/extensions/VisualEditor.git
+    version: "{{ mediawiki.branch }}"
+    dest: "{{ dir.wiki }}/extensions/VisualEditor"
+    depth: 1
+    track_submodules: yes
+    force: yes
+  # Since it requires submodules, we don't install this using composer
+  # https://www.mediawiki.org/wiki/Extension:VisualEditor
 
 - name: Enable MW debugging during installation
   blockinfile:

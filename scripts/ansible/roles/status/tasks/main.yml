@@ -87,7 +87,6 @@
   ignore_errors: yes
 
 - name: Test http://localhost
-  when: item is defined
   uri: url=http://{{ item }} status_code=200,304
   with_items:
     - localhost

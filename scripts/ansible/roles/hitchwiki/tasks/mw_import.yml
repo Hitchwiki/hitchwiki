@@ -1,9 +1,33 @@
 ---
 # Import MW content
 
+- name: Create LocalSettings.php
+  template: src=configs/mediawiki.php dest={{ dir.wiki }}/LocalSettings.php
+
 - name: Import interwiki table - https://www.mediawiki.org/wiki/Extension:Interwiki
   shell: mysql {{ db_credentials }} {{ mediawiki.db.database }} < "{{ dir.script }}/configs/interwiki.sql"
   register: interwiki
+
+- name: Enable Semantic Mediawiki extension
+  file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
+  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
+  # basically SMW extensions are not included in MediaWiki before this
+  # file exists, because it would cause errors when running
+  # `maintenance/install.php`.
+
+- name: Run update script for MediaWiki # If this fails an extension is broken
+  command: chdir={{ dir.wiki }} php maintenance/update.php --doshared --quick
+  register: mw_update
+  ignore_errors: yes # TODO check errors
+- debug:
+    var: mw_update.stdout_lines
+  when: mw_update.rc != 0
+- debug:
+    var: mw_update.stderr_lines
+  when: mw_update.rc != 0
+# Fails when db was not empty:
+#         "Function: Wikimedia\\Rdbms\\Database::sourceFile( /var/www/public/wiki/extensions/HWWaitingTime/sql/db-hw_waiting_time.sql )", 
+#        "Error: 1050 Table 'hw_waiting_time' already exists (localhost)",
 
 - name: Pre-populate the AntiSpoof extension's table
   shell: chdir={{ dir.wiki }} php extensions/AntiSpoof/maintenance/batchAntiSpoof.php
@@ -12,13 +36,6 @@
 - debug:
     var: mw_antispoof.stderr_lines
   when: mw_antispoof.rc != 0
-
-- name: Enable Semantic Mediawiki extension
-  file: state=touch path={{ dir.wiki }}/extensions/SemanticMediaWikiEnabled
-  # Mediawiki config file has a check for `SemanticMediaWikiEnabled` file:
-  # basically SMW extensions are not included in MediaWiki before this
-  # file exists, because it would cause errors when running
-  # `maintenance/install.php`.
 
 - name: Setup Semantic Mediawiki
   # https://www.semantic-mediawiki.org/wiki/Help:Maintenance_script_%22setupStore.php%22

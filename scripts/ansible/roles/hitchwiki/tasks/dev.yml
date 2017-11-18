@@ -24,9 +24,9 @@
     var: mw_user_mail.stderr_lines
   when: mw_user_mail|failed
 
-- name: Install Maildev
-  include_tasks: maildev.yml
-  when: not configured.maildev
+#- name: Install Maildev
+#  include_tasks: maildev.yml
+#  when: not configured.maildev
 
 - name: Install PHPMyAdmin
   include_tasks: phpmyadmin.yml
