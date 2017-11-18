@@ -26,7 +26,8 @@ then echo "Running 'ssh-keygen' first."; ssh-keygen; fi
 rsync ~/.ssh/id_rsa.pub root@$HOST:.ssh/authorized_keys
 
 echo "Starting deployment to $HOST"
-ssh -t root@$HOST "set -ev #apt-get update &&
+ssh -t root@$HOST "set -ev
+  apt-get update
   apt-get install -y $DEPS
   [ -d /etc/ansible ] || mkdir /etc/ansible
   echo 'localhost ansible_connection=local' > /etc/ansible/hosts
@@ -35,6 +36,6 @@ ssh -t root@$HOST "set -ev #apt-get update &&
   tmux -c 'ANSIBLE_FORCE_COLOR=1 ansible-pull $PULL_ARGS'
   curl -s localhost"
 endtime=$(date +%s)
-min=$((endtime-starttime) / 60))
-sec=$((endtime-starttime) % 60))
-echo "Installed Hitchwiki in $min minutes and $sec seconds."
+min=$(((endtime-starttime) / 60))
+sec=$(((endtime-starttime) % 60))
+echo "Installed Hitchwiki on $HOST in $min minutes and $sec seconds."
