@@ -5,39 +5,31 @@
 - debug: var=ansible_user
 - debug: var=ansible_distribution
 - debug: var=ansible_distribution_release
-
 - set_fact:
     os_version: "{{ ansible_distribution_release }}"
   notify: status
 - set_fact:
     os_version: stretch
   when: os_version == 'NA'
-
-- name: Fetch remote settings # store remote settings
-  fetch: src=/var/www/configs/settings.yml dest=logs/status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=yes
-  register: fetch_settings
-
-- name: Copy settings.yml # make sure MW finds it
-  when: fetch_settings|failed
-  copy: src={{item}} dest=/var/www/configs/settings.yml owner={{user}} group={{apache.group}}
-  with_first_found:
-    - "logs/status/{{ ansible_host }}/settings.yml"
-    - configs/settings.yml
-    - /var/www/configs/settings.yml
-    - configs/settings-example.yml
-    - /var/www/configs/settings-example.yml
-
-- name: Load settings
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "status/{{ ansible_host }}/settings.yml"
-    - configs/settings.yml
-    - /var/www/configs/settings.yml
-    - configs/settings-example.yml
-    - /var/www/configs/settings-example.yml
-
 - set_fact: keyserver=hkp://keyserver.ubuntu.com:80
   when: keyserver is not defined
+
+# When managing multiple VPS we want to store their settings locally
+- name: Fetch remote settings # TODO check if that overwrites a locally changed copy
+  fetch: src={{dir.settings}} dest=logs/status/{{ ansible_host }}/ flat=yes fail_on_missing=no validate_checksum=no
+
+# if it was not there, we copy our local settings or use the example version
+- name: Copy settings.yml
+  copy: src={{item}} dest={{dir.settings}} owner={{user}} group={{apache.group}}
+  with_first_found:
+    - "logs/status/{{ ansible_host }}/settings.yml" # transfer the one fetched before
+    - /root/settings.yml # when running deploy_remote.sh with preset config
+    - /var/www/configs/settings.yml
+    - /var/www/configs/settings-example.yml
+  notify: status
+
+- name: Reload settings
+  include_vars: "{{dir.settings}}"
 
 - name: Check if relevant variables are defined
   debug: var={{item}}
@@ -48,7 +40,6 @@
 - name: Check for spyc
   stat: path=/var/www/public/mustangostang
   register: spyc
-  notify: status
 - meta: flush_handlers
 
 # import versus include https://serverfault.com/questions/875247/whats-the-difference-between-include-tasks-and-import-tasks

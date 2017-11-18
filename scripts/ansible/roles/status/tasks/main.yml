@@ -44,14 +44,13 @@
       #                                                                     #
       #                  - YAY! Hitchwiki is installed! -                   #
       #                                                                     #
+      # - Passed chapters: {{chapters}}
+      # - Started services: {{services}}
       # - Point your browser to {{ hostname.stdout }} or {{ ansible_host }}
       {{ info }}#                 Have fun and happy hacking!                         #
       #                                                                     #
       #######################################################################
 
-         - Passed chapters: {{chapters}}
-
-         - Started services: {{services}}
 - name: Installation incomplete.
   when: finished|skipped
   set_fact:
@@ -60,6 +59,8 @@
       #                                                                     #
       #          The installation of Hitchwiki is not finished.             #
       #                                                                     #
+      # - Passed chapters: {{chapters}}
+      # - Started services: {{services}}
       # - Please report the content of the file {{ dir.state }}
       #   to our ansible ticket at
       #   https://github.com/Hitchwiki/hitchwiki/issues/172                 #
@@ -67,36 +68,16 @@
       #                                                                     #
       #######################################################################
 
-         - Passed chapters: {{chapters}}
-
-         - Started services: {{services}}
-      
 - name: Summary
   debug:
     msg: "{{ summary.split('\n') }}"
   when: no_outro is not defined
 
-# Network test
-- name: Test https://localhost
-  when: mediawiki.protocol == 'https' or env == 'production'
-  uri: url=https://{{ item }} status_code=200,304
-  with_items:
-    - 127.0.0.1
-    - "{{ domain }}"
-  register: test_https
-  ignore_errors: yes
-
 - name: Test http://localhost
-  uri: url=http://{{ item }} status_code=200,304
+  uri: url=http://{{ item }} status_code=200,304 validate_certs=False
   with_items:
     - localhost
-    - 127.0.0.1
-    - "{{ hostvars.hostname }}"
-    - "{{ ansible_host }}"
-    - "{{ lookup('pipe', 'hostname') }}"
     - "{{ domain }}"
-    - "{{ domain2 }}"
-  register: test_http
   ignore_errors: yes
 
 ...

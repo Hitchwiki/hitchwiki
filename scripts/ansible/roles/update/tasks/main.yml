@@ -15,7 +15,7 @@
 - name: Run update script for Semantic MediaWiki
   command: chdir={{ dir.wiki }} php extensions/SemanticMediaWiki/maintenance/SMW_refreshData.php -d 50 -v
 
-- name: Import forms, templates etc.
+- name: Import forms, templates, etc.
   command: chdir={{ dir.root }}/.. "{{ dir.script }}/import_pages.sh"
 
 ...

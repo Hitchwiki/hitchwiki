@@ -41,7 +41,7 @@ matrix:
     - env: version=testing
 
 before_install:
-  - echo "CheckHostIP no" > ~/.ssh/config
+  - echo -e "CheckHostIP no\nStrictHostKeyChecking no" > ~/.ssh/config
   - ssh-keygen -N '' -f ~/.ssh/id_rsa
   - cat ~/.ssh/id_rsa.pub >> configs/authorized_keys
   # pull and run prebuilt image
@@ -57,14 +57,13 @@ install:
       echo -e "[local]\nlocalhost ansible_connection=local" > /var/www/hosts'
 
 before_script: # general settings
-  - export ansible_command='cd /var/www/scripts/ansible && ansible-playbook tests/test.yml'
+  - export ansible_command='cd /var/www/scripts/ansible && ansible-playbook hitchwiki.yml'
 
 script: # run tests
   - docker exec "$(cat ${container_id})" bash -c "$ansible_command --syntax-check"
   - docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command"
   #- docker exec "$(cat ${container_id})" bash -c 'sudo /var/www/scripts/clean_server.sh'
-  - ./scripts/deploy_remote.sh 127.0.0.1 5556
-  - curl 127.0.0.1:80
+  #- ./scripts/deploy_remote.sh 127.0.0.1 5556 || 1
 
   - > # Idempotence test
     if [ "$TRAVIS_BRANCH" = "idempotence" ] ; then docker exec "$(cat ${container_id})" env ANSIBLE_FORCE_COLOR=1 bash -c "$ansible_command

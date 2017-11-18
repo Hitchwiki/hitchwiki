@@ -14,7 +14,11 @@
   gather_facts: no
   pre_tasks:
     - name: 'install python2' # Ansible needs python or it fails with "/usr/bin/python: not found"
-      raw: sudo apt-get install -yq python-simplejson
+      become: yes
+      raw: apt-get install -yq python-simplejson
+    - name: Install dependencies
+      include_tasks: roles/hitchwiki/tasks/dependencies.yml
+      tags: deps
     - name: Load settings # if run remotely this file is copied from host to guest
       include_vars: "{{ item }}"
       with_first_found:
@@ -25,9 +29,6 @@
   hosts: all
   remote_user: "{{ user }}"
   pre_tasks:
-    - name: Install dependencies
-      include_tasks: roles/hitchwiki/tasks/dependencies.yml
-      tags: deps
     - name: Check for /home/{{ user }}/src
       stat: path=/home/{{ user }}/src
       register: homedir

@@ -3,6 +3,15 @@
 
 - set_fact: enable_https=true
 
+- name: Check for letsencrypt archive
+  stat: path=/root/letsencrypt.tar.xz
+  register: letsencrypt_archive
+- name: Extracting letsencrypt archive to /etc/letsencrypt
+  when: letsencrypt_archive.stat.exists
+  unarchive: # the file needs to be created with 'tar cJf letsencrypt.tar.xz /etc'
+    src: /root/letsencrypt.tar.xz
+    dest: /
+
 # Let's Encrypt - certbot
 - include_tasks: letsencrypt.yml
   register: certbot
@@ -85,11 +94,6 @@
   command: apache2ctl configtest
   register: syntaxcheck
   when: tls|succeeded
-
-- name: Finished TLS setup
-  when: syntaxcheck|succeeded
-  become: yes
-  shell: "{{ dir.script }}/status.sh"
   notify:
    - apache
 

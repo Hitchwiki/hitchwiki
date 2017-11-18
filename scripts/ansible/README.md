@@ -18,15 +18,12 @@ git reset --hard && git pull
 ```
 
 ## Deploy to a new VPS
+- Prepare `settings.yml` with `env: production` and correct hostname
+- Put `letsencrypt.tar.xz` into `dumps` (should be created with `tar cJf letsencrypt.tar.xz /etc` on a server with working letsencrypt certificate)
 - `deploy_remote.sh HOST [PORT]`: prepares and runs `hitchwiki.yml` playbook
   - insert root key
   - make sure ansible is installed
   - ansible-pull -U $REPO -C $VERSION -d $WEBROOT scripts/ansible/hitchwiki.yml
-```
-# if you already have certificates for production:
-rsync -aP dumps/letsencrypt.tar.xz $remote:
-ssh $remote tar xf letsencrypt.tar.xz && sudo mv etc/letsencrypt/ /etc/
-```
 
 ## Gather installation status
 - `status_all.sh`: runs `status.yml` playbook and gathers `state.yml` and `settings.yml` of all `hosts`

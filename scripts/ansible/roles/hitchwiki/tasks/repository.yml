@@ -20,12 +20,6 @@
   become: yes
   file: state=directory path={{ dir.webroot }} recurse=yes owner={{ user }} group={{ apache.group }}
 
-- name: Copy settings.yml # if run remotely this file copied from host to guest
-  copy: src={{ item }} dest={{ dir.webroot }}/configs/settings.yml owner={{user}} group={{user}}
-  with_first_found:
-    - configs/settings.yml
-    - configs/settings-example.yml
-
 - name: Create ansible hosts file
   lineinfile:
     path: "{{ dir.webroot }}/scripts/ansible/hosts"

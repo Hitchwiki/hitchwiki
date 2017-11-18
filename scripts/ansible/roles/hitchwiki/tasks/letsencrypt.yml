@@ -13,7 +13,7 @@
 
 - name: Configure Certbot
   become: yes
-  template: src={{ dir.conf }}/letsencrypt.ini dest=/etc/letsencrypt/cli.ini
+  template: src={{ dir.conf }}/letsencrypt.ini dest=/etc/letsencrypt/cli.ini force=no
 
 # https://certbot.eff.org/docs/using.html#where-are-my-certificates
 
