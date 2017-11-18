@@ -195,18 +195,6 @@
     {
       "type": "package",
       "package": {
-        "name": "ExternalData",
-        "version": "@dev",
-        "type": "mediawiki-extension",
-        "dist": {
-          "url": "https://github.com/wikimedia/mediawiki-extensions-ExternalData/archive/{{ mediawiki.branch }}.zip",
-          "type": "zip"
-        }
-      }
-    },
-    {
-      "type": "package",
-      "package": {
         "name": "TorBlock",
         "version": "@dev",
         "type": "mediawiki-extension",
