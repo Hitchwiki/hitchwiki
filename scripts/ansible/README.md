@@ -37,9 +37,9 @@ sudo service parsoid stop
 
 # Where to get support
 ## With Mediawiki
-- #mediawiki @ freenode
-- https://www.mediawiki.org/wiki/Project:Support_desk
-
+- #mediawiki @ freenode, [support desk](https://www.mediawiki.org/wiki/Project:Support_desk)
+to [1.30](https://www.mediawiki.org/wiki/Release_notes/1.30)
+[install manual](https://www.mediawiki.org/wiki/Manual:Installing_MediaWiki), [errors and symptoms](https://www.mediawiki.org/wiki/Manual:Errors_and_symptoms), [get a stacktrace](https://www.semantic-mediawiki.org/wiki/Help:Identifying_bugs/stack_trace), [identify bugs](https://www.semantic-mediawiki.org/wiki/Help:Identifying_bugs), [howto debug](https://www.mediawiki.org/wiki/Manual:How_to_debug), [reporting](https://www.mediawiki.org/wiki/Manual:FAQ#I%27ve_found_a_bug_or_have_a_feature_request._Where_do_I_post_it?)
 
 Table of Contents
 =================

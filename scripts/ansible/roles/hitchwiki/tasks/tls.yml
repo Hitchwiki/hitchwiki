@@ -4,9 +4,11 @@
 - set_fact: enable_https=true
 
 - name: Check for letsencrypt archive
+  become: yes
   stat: path=/root/letsencrypt.tar.xz
   register: letsencrypt_archive
 - name: Extracting letsencrypt archive to /etc/letsencrypt
+  become: yes
   when: letsencrypt_archive.stat.exists
   unarchive: # the file needs to be created with 'tar cJf letsencrypt.tar.xz /etc'
     src: /root/letsencrypt.tar.xz

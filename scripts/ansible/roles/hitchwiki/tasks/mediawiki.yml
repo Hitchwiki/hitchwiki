@@ -109,7 +109,8 @@
 
 - name: Grant wiki folder to webuser group
   become: yes
-  at: command="chgrp {{ apache.group }} -R {{ dir.wiki }}" count=1 units=minutes
+  #at: command="chown {{ user }}.{{ apache.group }} -R {{ dir.webroot }}" count=1 units=minutes
+  shell: chown hitchwiki.www-data -R /var/www
   #file: path={{ dir.wiki }} recurse=yes group={{ apache.group }}
 
 - name: Grant wiki settings to webuser
