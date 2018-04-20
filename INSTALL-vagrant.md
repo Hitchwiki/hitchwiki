@@ -22,9 +22,15 @@ cp configs/vagrant-example.yaml configs/vagrant.yaml
  - Domain (`hitchwiki.test` by default) or develop using IP (`192.168.33.10` by default)
 
 #### Install
-1. Start installation script
+1. Start installation script (on MacOS or Linux):
 ```bash
 ./scripts/vagrant/install.sh
+```
+
+If you use Windows instead, you can run these directories directly:
+```
+vagrant plugin install vagrant-hostmanager
+vagrant up
 ```
 
 2. Install will ask for your password to add `hitchwiki.test` to your `/etc/hosts` file.
