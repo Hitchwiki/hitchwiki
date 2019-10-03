@@ -17,8 +17,6 @@ more tips.
 ## Help needed!
 _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
-Read more about developing Hitchwiki [from the wiki](https://github.com/Hitchwiki/hitchwiki/wiki)
-
 We have an active Slack at [hitchwiki.slack.com](https://hitchwiki.slack.com/).
 
 ## License
