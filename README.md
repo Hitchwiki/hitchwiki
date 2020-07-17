@@ -4,7 +4,7 @@
 
 ![Hitchwiki logo](public/wiki-badge.png)
 
-[Hitchwiki.org](http://hitchwiki.org/) is a collaborative website for
+[Hitchwiki.org](https://hitchwiki.org/) is a collaborative website for
 gathering information about
 [hitchhiking](http://hitchwiki.org/en/Hitchhiking) and other ways of
 extremely cheap ways of transport. It is maintained by many active
@@ -19,9 +19,13 @@ more tips.
 As of July 2020 the actual code running on production is still in a
 private repo. Work is going on to make the code public.
 
+## XML dumps and images
+
+XML dumps and images are available at https://hitchwiki.org/dumps (or https://dev.hitchwiki.org/dumps in July 2020).
+
 
 ## Help needed!
-_[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
+_[Contact us](https://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
 We have an active Slack at [hitchwiki.slack.com](https://hitchwiki.slack.com/).
 
