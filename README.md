@@ -14,6 +14,12 @@ more tips.
 
 <!-- [![Build Status](https://travis-ci.org/Hitchwiki/hitchwiki.svg?branch=master)](https://travis-ci.org/Hitchwiki/hitchwiki) -->
 
+## Private repo
+
+As of July 2020 the actual code running on production is still in a
+private repo. Work is going on to make the code public.
+
+
 ## Help needed!
 _[Contact us](http://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 

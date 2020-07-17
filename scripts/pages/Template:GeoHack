@@ -1,5 +1,0 @@
-<includeonly>{{#if: {{{3|}}} | <div class="geohack">[https://tools.wmflabs.org/geohack/geohack.php?pagename={{{1}}}&params={{{2}}}_type:{{{3}}} {{{2}}}]</div> }}</includeonly><noinclude>
-
-Template for linking to [https://tools.wmflabs.org/geohack/ GeoHack].
-
-</noinclude>
