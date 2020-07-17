@@ -2,7 +2,7 @@
 
 #### _The Hitchhiker's Guide to Hitchhiking the World_
 
-![Hitchwiki logo](public/wiki-badge.png)
+<!-- ![Hitchwiki logo](public/wiki-badge.png) --> 
 
 [Hitchwiki.org](https://hitchwiki.org/) is a collaborative website for
 gathering information about
