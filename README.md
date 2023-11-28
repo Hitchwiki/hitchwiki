@@ -21,7 +21,7 @@ private repo. It would be preferable to have a public repo, but there is no clea
 
 ## XML dumps and images
 
-XML dumps and images are available at https://hitchwiki.org/dumps (or https://dev.hitchwiki.org/dumps in July 2020).
+XML dumps and images are available at https://hitchwiki.org/dumps
 
 
 ## Help needed!
