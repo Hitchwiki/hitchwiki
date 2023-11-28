@@ -16,8 +16,8 @@ more tips.
 
 ## Private repo
 
-As of July 2020 the actual code running on production is still in a
-private repo. Work is going on to make the code public.
+As of July 2020 the actual code running on production has been in a
+private repo. It would be preferable to have a public repo, but there is no clear path forward.
 
 ## XML dumps and images
 
