@@ -27,7 +27,6 @@ XML dumps and images are available at https://hitchwiki.org/dumps (or https://de
 ## Help needed!
 _[Contact us](https://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
 
-We have an active Slack at [hitchwiki.slack.com](https://hitchwiki.slack.com/).
 
 ## License
 Code [MIT](LICENSE.md)
