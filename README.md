@@ -24,8 +24,8 @@ private repo. It would be preferable to have a public repo, but there is no clea
 XML dumps and images are available at https://hitchwiki.org/dumps
 
 
-## Help needed!
-_[Contact us](https://hitchwiki.org/en/Template:Communityportal) if you want to join the effort!_
+## Contact
+[Creating an issue here](https://github.com/Hitchwiki/hitchwiki/issues/new) is probably an okay way to contact us.
 
 
 ## License
