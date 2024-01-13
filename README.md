@@ -24,10 +24,6 @@ private repo. It would be preferable to have a public repo, but there is no clea
 XML dumps and images are available at https://hitchwiki.org/dumps
 
 
-## Contact
-[Creating an issue here](https://github.com/Hitchwiki/hitchwiki/issues/new) is probably an okay way to contact us.
-
-
 ## License
 Code [MIT](LICENSE.md)
 Contents [Creative Commons](http://creativecommons.org/licenses/by-sa/4.0/)
