@@ -1,3 +1,5 @@
+Hitchwiki is now running on https://github.com/Hitchwiki/hitchwiki.org.
+
 # Hitchwiki
 
 #### _The Hitchhiker's Guide to Hitchhiking the World_
