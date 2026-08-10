@@ -1,4 +1,4 @@
-Hitchwiki is now running on https://github.com/Hitchwiki/hitchwiki.org.
+The production setup of Hitchwiki is running on https://github.com/Hitchwiki/hitchwiki.org - any human can get unconditional access to it, just [reach out](https://github.com/orgs/Hitchwiki/discussions/199).
 
 # Hitchwiki
 
@@ -15,11 +15,6 @@ hitch out of big cities, how to cover long distances, maps and many
 more tips.
 
 <!-- [![Build Status](https://travis-ci.org/Hitchwiki/hitchwiki.svg?branch=master)](https://travis-ci.org/Hitchwiki/hitchwiki) -->
-
-## Private repo
-
-As of July 2020 the actual code running on production has been in a
-private repo. It would be preferable to have a public repo, but there is no clear path forward.
 
 ## XML dumps and images
 
